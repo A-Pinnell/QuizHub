@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Hub</title>
+<link rel="stylesheet" href="css/title.css" >
+</head>
+<body>
+<div class="sky"><div class="cloud-track"><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div><div class="cloud c5"></div><div class="cloud c6"></div><div class="cloud c7"></div><div class="cloud c8"></div><div class="cloud c9"></div></div></div>
+<div class="ground"></div>
+
+<div class="building">
+  <div class="pillar left"></div><div class="pillar right"></div>
+  <div class="content">
+    <header>
+      <div class="title-wrap"><div class="university">
+        <span class="diamond"></span>Lakehead STEM Hub
+      </div>
+        <h1 aria-label="Lakehead STEM Hub">
+          <span class="stem-letter">Q</span><span class="stem-letter">U</span><span class="stem-letter">I</span><span class="stem-letter">Z</span><span class="stem-letter">&nbsp;</span><span class="stem-letter">H</span><span class="stem-letter">u</span><span class="stem-letter">b</span><span class="stem-letter">!</span></h1>
+      <div class="tagline">Computer Arch Beta v0.1</div></div></header>
+    <main class="menu-area"><section class="menu">
+      <button class="card course-card" data-course="CompArch"><div class="card-content"><h2>COMP-2453</h2><p>Intro Comp Arch</p></div></button>
+      <!-- <button class="card course-card coming-soon" data-coming-soon="true"><div class="card-content"><h2>COMING SOON</h2><p>Computer Graphics</p></div></button>
+      <button class="card course-card coming-soon" data-coming-soon="true"><div class="card-content"><h2>COMING SOON</h2><p>Tech Soc Indi People Can</p></div></button>
+      <button class="card course-card coming-soon" data-coming-soon="true"><div class="card-content"><h2>COMING SOON</h2><p>Cloud Computing</p></div></button>
+      <button class="card course-card coming-soon" data-coming-soon="true"><div class="card-content"><h2>COMING SOON</h2><p>Intro Data Science</p></div></button>
+      <button class="card course-card coming-soon" data-coming-soon="true"><div class="card-content"><h2>COMING SOON</h2><p>COURSE NAME</p></div></button> -->
+    </section></main>
+  </div>
+</div>
+
+<div class="quiz-modal" id="quizModal" aria-hidden="true">
+  <div class="quiz-modal-backdrop" data-close-quiz-menu></div>
+  <div class="quiz-menu" role="dialog" aria-modal="true" aria-labelledby="quizMenuTitle">
+    <button class="quiz-menu-close" type="button" data-close-quiz-menu aria-label="Close quiz menu">&times;</button>
+    <div class="quiz-menu-kicker" id="quizMenuCourse">Quiz Picker</div>
+    <h2 id="quizMenuTitle">Choose an Option</h2>
+    <p>Select which quiz you would like to take.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz="quiz1"><span>Quiz 1 Practice</span><small>for Sept 23</small></button>
+    </div>
+  </div>
+</div>
+
+<div class="transition-black"></div>
+<div class="welcome"><div><div class="welcome-line" id="welcomeLine"></div><div class="loading-status" id="loadingStatus">Loading...</div></div></div>
+<div class="start-cover"></div>
+
+<script>
+const welcomeText="Let's Get Started!";
+const welcomeLine=document.getElementById('welcomeLine');
+[...welcomeText].forEach(ch=>{
+  const span=document.createElement('span');
+  span.className='letter';
+  span.textContent=ch===' '? ' ' : ch;
+  welcomeLine.appendChild(span);
+});
+
+let leaving=false;
+let preloadFrame=null;
+let quizLoaded=false;
+let welcomeVisible=false;
+let navigationTarget='';
+let selectedCourse='';
+
+function preloadQuiz(category, quiz){
+  preloadFrame=document.createElement('iframe');
+  preloadFrame.className='preload-frame';
+  navigationTarget='quiz.html?category='+encodeURIComponent(category)+'&quiz='+encodeURIComponent(quiz);
+  preloadFrame.src=navigationTarget;
+  preloadFrame.onload=()=>{
+    quizLoaded=true;
+    if(welcomeVisible) showLoadingComplete();
+  };
+  document.body.appendChild(preloadFrame);
+}
+
+function showLoadingComplete(){
+  const status=document.getElementById('loadingStatus');
+  status.textContent='Loading Complete';
+  status.classList.remove('complete');
+  void status.offsetWidth;
+  status.classList.add('complete');
+  setTimeout(()=>document.body.classList.add('welcome-out'),900);
+  setTimeout(()=>{ window.location.href=navigationTarget; },1650);
+}
+
+function closeQuizMenu(){
+  const modal=document.getElementById('quizModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+  selectedCourse='';
+}
+
+function openQuizMenu(course){
+  selectedCourse=course;
+  const modal=document.getElementById('quizModal');
+  document.getElementById('quizMenuCourse').textContent=course==='CompArch' ? 'COMP-2453' : course;
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  const first=document.querySelector('.quiz-option');
+  if(first) first.focus();
+}
+
+function startQuiz(course, quiz){
+  if(leaving)return;
+  closeQuizMenu();
+  leaving=true;
+  document.querySelectorAll('.card').forEach(c=>c.disabled=true);
+  quizLoaded=false;
+  preloadQuiz(course, quiz);
+  setTimeout(()=>document.body.classList.add('leaving'),520);
+  setTimeout(()=>{
+    welcomeVisible=true;
+    document.body.classList.add('show-welcome');
+    if(quizLoaded) showLoadingComplete();
+  },1180);
+  setTimeout(()=>{
+    if(!quizLoaded){
+      const status=document.getElementById('loadingStatus');
+      status.textContent='Loading...';
+    }
+  },4500);
+}
+
+document.querySelectorAll('.course-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    // Coming Soon courses intentionally do nothing.
+    if(card.dataset.comingSoon==='true') return;
+    openQuizMenu(card.dataset.course);
+  });
+});
+
+document.querySelectorAll('[data-close-quiz-menu]').forEach(el=>{
+  el.addEventListener('click',closeQuizMenu);
+});
+
+document.querySelectorAll('.quiz-option').forEach(option=>{
+  option.addEventListener('click',()=>{
+    if(selectedCourse) startQuiz(selectedCourse, option.dataset.quiz);
+  });
+});
+
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){
+    const modal=document.getElementById('quizModal');
+    if(modal.classList.contains('open')) closeQuizMenu();
+  }
+});
+
+const stemTitle=document.querySelector('h1');
+const stemLetters=[...stemTitle.querySelectorAll('.stem-letter')];
+function pulseStem(){
+  if(leaving)return;
+  stemTitle.classList.remove('animating');
+  void stemTitle.offsetWidth;
+  stemTitle.classList.add('animating');
+}
+
+// Animated title entrance first; only after it finishes is the full menu revealed.
+setTimeout(()=>document.body.classList.add('intro-complete'),1450);
+setTimeout(()=>document.body.classList.add('menu-visible'),2550);
+
+// First title bounce occurs 15 seconds after the initial menu reveal, then every 15 seconds.
+setTimeout(()=>{
+  pulseStem();
+  setInterval(pulseStem,15000);
+},15000);
+</script>
+</body>
+</html>

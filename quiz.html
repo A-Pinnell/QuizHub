@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEM Quiz</title>
+<link rel="stylesheet" href="css/quiz.css" >
+<script src="./js/questionBank.js" defer></script>
+<script src="./js/quiz.js" defer></script>
+</head>
+<body>
+
+<div class="quiz-page" id="quizPage">
+  <section class="visual">
+    <div class="quiz-heading">
+      <p class="course-code" id="courseCode">COURSE CODE - QUIZ</p>
+      <p class="question-title" id="questionTitle">Setup Menu</p>
+    </div>
+  </section>
+    <div class="quiz-hud">
+      <div class="timer" id="timer" hidden>00:00</div>
+      <div class="score-display" id="scoreDisplay">Score: 0</div>
+      <div class="question-display" id="questionDisplay"></div>
+    </div>
+
+  <main class="panel">
+    <section class="quiz-setup" id="quizSetup" aria-labelledby="setupTitle">
+      <div class="setup-kicker">QUIZ SETUP</div>
+      <h1 id="setupTitle">Customize Your Quiz</h1>
+      <p class="setup-subtitle" id="setupCount">Loading question count…</p>
+
+      <label class="setup-label" for="questionCount">Number of questions</label>
+      <div class="count-row">
+        <input id="questionCount" type="number" min="1" value="6" inputmode="numeric">
+        <span id="countMax">of 6</span>
+      </div>
+
+      <fieldset class="setup-group">
+        <legend>Question order</legend>
+        <label class="choice"><input type="radio" name="order" value="random" checked><span>Random order</span></label>
+        <label class="choice"><input type="radio" name="order" value="static"><span>Static order</span></label>
+      </fieldset>
+
+      <fieldset class="setup-group">
+        <legend>Time limit</legend>
+        <label class="choice"><input type="radio" name="timeLimit" value="none" checked><span>No time limit</span></label>
+        <label class="choice"><input type="radio" name="timeLimit" value="10"><span>10 minutes</span></label>
+        <label class="choice"><input type="radio" name="timeLimit" value="20"><span>20 minutes</span></label>
+        <label class="choice"><input type="radio" name="timeLimit" value="30"><span>30 minutes</span></label>
+        <label class="choice"><input type="radio" name="timeLimit" value="60"><span>60 minutes</span></label>
+      </fieldset>
+
+      <p class="setup-error" id="setupError" aria-live="polite"></p>
+      <button class="control setup-start" id="beginQuiz" type="button">BEGIN QUIZ</button>
+    </section>
+
+    <section class="quiz-content" id="quizContent" hidden>
+
+      <section class="answers" id="answers">
+        <button class="answer"></button>
+        <button class="answer"></button>
+        <button class="answer"></button>
+        <button class="answer"></button>
+      </section>
+
+      <div class="motivation" id="feedback" aria-live="polite"></div>
+
+      <nav class="controls">
+        <button class="control" id="skip" type="button">SKIP</button>
+        <button class="control" id="next" type="button" disabled>NEXT</button>
+        <button class="control" id="quit" type="button">END QUIZ</button>
+      </nav>
+    </section>
+  </main>
+</div>
+
+<div class="fade" id="fade"></div>
+</body>
+</html>
