@@ -2,6 +2,71 @@ const questionBank = window.questionBank || {};
 const codes = window.questionCodes || {};
 const themes = window.quizThemes || {};
 
+const soundFiles={
+  correct:'../sfx/Correct.wav',
+  highlight:'../sfx/highlight.wav',
+  incorrect:'../sfx/Incorrect.wav',
+  begin:'../sfx/QuizBegin.wav',
+  popup:'../sfx/Popup.wav'
+};
+
+const soundCache={};
+let soundsMuted=localStorage.getItem('quizHubMuted')==='true';
+Object.entries(soundFiles).forEach(([name,path])=>{
+  const sound=new Audio(path);
+  sound.preload='auto';
+  soundCache[name]=sound;
+});
+
+function playSound(name){
+  if(soundsMuted) return;
+  const sound=soundCache[name].cloneNode();
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
+
+document.addEventListener('pointerover',event=>{
+  const button=event.target.closest('button');
+  if(button && !button.contains(event.relatedTarget)) playSound('highlight');
+});
+
+const soundToggle=document.getElementById('soundToggle');
+function updateSoundToggle(){
+  soundToggle.textContent=soundsMuted?'🔇':'🔊';
+  soundToggle.setAttribute('aria-label',soundsMuted?'Unmute sounds':'Mute sounds');
+  soundToggle.setAttribute('aria-pressed',String(soundsMuted));
+}
+soundToggle.addEventListener('click',()=>{
+  soundsMuted=!soundsMuted;
+  localStorage.setItem('quizHubMuted',String(soundsMuted));
+  updateSoundToggle();
+});
+updateSoundToggle();
+
+let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
+const musicToggle=document.getElementById('musicToggle');
+const quizMusic=new Audio('../music/QuizMusic.wav');
+const isPreloadedQuiz=window.self!==window.top;
+quizMusic.loop=true;
+quizMusic.volume=.45;
+function updateMusicToggle(){
+  musicToggle.textContent=musicMuted?'♫̸':'♫';
+  musicToggle.setAttribute('aria-label',musicMuted?'Unmute music':'Mute music');
+  musicToggle.setAttribute('aria-pressed',String(musicMuted));
+}
+function startQuizMusic(){
+  if(!isPreloadedQuiz && !musicMuted) quizMusic.play().catch(()=>{});
+}
+musicToggle.addEventListener('click',()=>{
+  musicMuted=!musicMuted;
+  localStorage.setItem('quizHubMusicMuted',String(musicMuted));
+  if(musicMuted) quizMusic.pause();
+  else if(quizStarted) startQuizMusic();
+  updateMusicToggle();
+});
+updateMusicToggle();
+startQuizMusic();
+
 const params = new URLSearchParams(location.search);
 const requestedCategory = params.get("category");
 const defaultCategory = Object.keys(questionBank)[0] || "CompArch";
@@ -47,6 +112,7 @@ const countMax = document.getElementById("countMax");
 const setupCount = document.getElementById("setupCount");
 const setupError = document.getElementById("setupError");
 const beginButton = document.getElementById("beginQuiz");
+const exitSetupButton = document.getElementById("exitSetup");
 const timer = document.getElementById("timer");
 const scoreDisplay = document.getElementById('scoreDisplay');
 const questionDisplay = document.getElementById('questionDisplay');
@@ -193,6 +259,9 @@ function renderQuestion(){
     answersEl.appendChild(button);
   });
 
+  const firstAnswer=answersEl.querySelector('.answer');
+  if(firstAnswer) firstAnswer.focus();
+
   feedback.textContent = '';
   feedback.className = 'feedback';
   answered = false;
@@ -225,7 +294,7 @@ function finishQuiz(reason="complete"){
 
   // The result page receives ONLY the questions the user has actually seen.
   // The total remains the configured quiz length, so ending early is explicit.
-  const payload = encodeURIComponent(JSON.stringify({
+  const results = {
     category,
     score,
     total: selectedQuestionCount,
@@ -233,9 +302,15 @@ function finishQuiz(reason="complete"){
     completed: reason === "complete",
     endReason: reason,
     history
-  }));
+  };
 
-  location.href = `win.html?results=${payload}`;
+  try{
+    sessionStorage.setItem("lakeheadQuizResults",JSON.stringify(results));
+    location.href = "win.html";
+  }catch(error){
+    console.error("Could not save quiz results:",error);
+    quizEnded=false;
+  }
 }
 
 function endQuiz(reason="ended"){
@@ -251,6 +326,7 @@ function revealQuestion(resultType, selectedIndex=null){
   const isCorrect = resultType === "answer" && selectedIndex === correctIndex;
 
   if (resultType === "answer") {
+    playSound(isCorrect ? 'correct' : 'incorrect');
     if (isCorrect) score++;
   }
 
@@ -329,7 +405,15 @@ function goNext(){
 
 function skip(){
   if (!quizStarted || quizEnded || answered) return;
+  playSound('popup');
   revealQuestion('skip');
+}
+
+function exitSetup(){
+  if(quizStarted || quizEnded)return;
+  quizMusic.pause();
+  fade.classList.add('active');
+  setTimeout(()=>{ window.location.href='index.html'; },560);
 }
 
 function quit(){
@@ -366,7 +450,9 @@ function validateSetup(){
 function beginQuiz(){
   if(quizStarted || !validateSetup())return;
 
+  playSound('begin');
   quizStarted = true;
+  startQuizMusic();
   buildQuestionSequence();
   setup.hidden = true;
   content.hidden = false;
@@ -379,6 +465,43 @@ nextButton.addEventListener("click",goNext);
 skipButton.addEventListener("click",skip);
 quitButton.addEventListener("click",quit);
 beginButton.addEventListener("click",beginQuiz);
+exitSetupButton.addEventListener("click",exitSetup);
+
+document.addEventListener("keydown",event=>{
+  if(event.key.toLowerCase()==="m" && event.target.tagName !== "INPUT"){
+    event.preventDefault();
+    const muted=!(soundsMuted && musicMuted);
+    soundsMuted=muted;
+    musicMuted=muted;
+    localStorage.setItem('quizHubMuted',String(muted));
+    localStorage.setItem('quizHubMusicMuted',String(muted));
+    if(muted) quizMusic.pause();
+    else if(quizStarted) startQuizMusic();
+    updateSoundToggle();
+    updateMusicToggle();
+    return;
+  }
+
+  if(!quizStarted || quizEnded || event.target.tagName === "INPUT") return;
+
+  const answerButtons=[...answersEl.querySelectorAll('.answer:not(:disabled)')];
+  if(!answerButtons.length) return;
+
+  const activeIndex=answerButtons.indexOf(document.activeElement);
+  if(event.key === "ArrowDown" || event.key === "ArrowRight"){
+    event.preventDefault();
+    answerButtons[(activeIndex + 1 + answerButtons.length) % answerButtons.length].focus();
+  }else if(event.key === "ArrowUp" || event.key === "ArrowLeft"){
+    event.preventDefault();
+    answerButtons[(activeIndex - 1 + answerButtons.length) % answerButtons.length].focus();
+  }else if(/^[1-4]$/.test(event.key)){
+    event.preventDefault();
+    answerButtons[Number(event.key)-1]?.focus();
+  }else if(/^[a-d]$/i.test(event.key)){
+    event.preventDefault();
+    answerButtons[event.key.toLowerCase().charCodeAt(0)-97]?.focus();
+  }
+});
 
 countInput.addEventListener("input",()=>{
   setupError.textContent = "";

@@ -7,6 +7,11 @@
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:#111}
+.sound-toggle{position:fixed;top:14px;left:14px;z-index:20;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.86);color:#111;font-size:20px;line-height:1;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.22)}
+.sound-toggle:hover{background:#fff;transform:scale(1.06)}
+.win-close{position:absolute;top:14px;right:14px;z-index:6;width:46px;height:46px;border:0;border-radius:50%;background:rgba(17,17,17,.12);color:#111;font-size:32px;line-height:1;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.16)}
+.win-close:hover{background:rgba(17,17,17,.2);transform:scale(1.06)}
+@media(max-width:600px){.sound-toggle{top:auto;left:auto;right:14px;bottom:14px}}
 body{
   min-height:100vh;
   overflow:auto;
@@ -123,6 +128,7 @@ body::after{
   z-index:5;
 }
 .card{
+  position:relative;
   width:min(1050px,100%);
   max-height:calc(100vh - 60px);
   overflow:auto;
@@ -196,6 +202,7 @@ body::after{
 </style>
 </head>
 <body>
+<button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sounds" aria-pressed="false">🔊</button>
 <div class="stars"></div>
 <div class="sun"></div>
 <div class="sunset-haze"></div>
@@ -205,6 +212,7 @@ body::after{
 
 <main class="page">
 <section class="card">
+  <button class="win-close" id="winClose" type="button" aria-label="Return to main menu">&times;</button>
   <div class="kicker">QUIZ COMPLETE</div>
   <h1 class="title">Great work!</h1>
   <div class="score" id="score">0 / 0</div>
@@ -226,6 +234,41 @@ body::after{
 <script>
 (function(){
   "use strict";
+
+  let soundsMuted=localStorage.getItem("quizHubMuted")==="true";
+  const winSound=new Audio("sfx/Win.wav");
+  if(!soundsMuted) winSound.play().catch(()=>{});
+
+  const soundToggle=document.getElementById("soundToggle");
+  function updateSoundToggle(){
+    soundToggle.textContent=soundsMuted?"🔇":"🔊";
+    soundToggle.setAttribute("aria-label",soundsMuted?"Unmute sounds":"Mute sounds");
+    soundToggle.setAttribute("aria-pressed",String(soundsMuted));
+  }
+  soundToggle.addEventListener("click",function(){
+    soundsMuted=!soundsMuted;
+    localStorage.setItem("quizHubMuted",String(soundsMuted));
+    updateSoundToggle();
+  });
+  updateSoundToggle();
+
+  document.addEventListener("keydown",function(event){
+    if(event.key.toLowerCase()!=="m" || event.target.tagName==="INPUT") return;
+    event.preventDefault();
+    soundsMuted=!(soundsMuted && localStorage.getItem("quizHubMusicMuted")==="true");
+    localStorage.setItem("quizHubMuted",String(soundsMuted));
+    localStorage.setItem("quizHubMusicMuted",String(soundsMuted));
+    updateSoundToggle();
+  });
+
+  const highlightSoundPath="sfx/highlight.wav";
+  document.addEventListener("pointerover",function(event){
+    const button=event.target.closest("button");
+    if(!soundsMuted && button && !button.contains(event.relatedTarget)){
+      const highlightSound=new Audio(highlightSoundPath);
+      highlightSound.play().catch(()=>{});
+    }
+  });
 
   const params = new URLSearchParams(window.location.search);
   let data = null;
@@ -251,6 +294,11 @@ body::after{
   const errorEl = document.getElementById("error");
   const retryBtn = document.getElementById("retry");
   const menuBtn = document.getElementById("menu");
+  const winClose = document.getElementById("winClose");
+
+  winClose.addEventListener("click",function(){
+    window.location.href = "index.html";
+  });
 
   if(!data || !Array.isArray(data.history)){
     scoreEl.textContent = "—";

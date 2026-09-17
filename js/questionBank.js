@@ -345,13 +345,486 @@ window.questionBank = {
     {q:"What is the key advantage of a synchronous counter?", a:["All flip-flops change at the same time","It requires no clock","It stores more bits automatically","It uses no gates"], c:0},
     {q:"What is the purpose of the select lines in a multiplexer?", a:["To determine which input is passed to the output","To store data","To perform Boolean NOT","To increment a counter"], c:0},
     {q:"What determines which decoder output is asserted?", a:["The pattern of its input lines","The output of the ALU","The number of registers","The clock frequency"], c:0}
+  ],
 
+  CloudComp: [
+    {q:"What is cloud computing?", a:["On-demand delivery of computing resources over the internet with usage-based billing","A method of physically building data centers","A programming language for cloud applications","A type of computer hardware"], c:0},
+
+    {q:"Which of the following is a key component of cloud computing?", a:["Compute","Keyboard manufacturing","Desktop publishing","Physical cabling only"], c:0},
+
+    {q:"Which type of storage is listed as a cloud computing component?", a:["Object storage","Tape-only storage","BIOS storage","CPU storage"], c:0},
+
+    {q:"Which of the following is an example of cloud networking?", a:["VPCs","CPU registers","RAM slots","USB ports"], c:0},
+
+    {q:"What does cloud computing abstract?", a:["Physical infrastructure","All software code","User passwords","Programming languages"], c:0},
+
+    {q:"What allows organizations to scale globally without owning hardware?", a:["Cloud abstraction of physical infrastructure","Local-only storage","Manual hardware installation","Single-user operating systems"], c:0},
+
+    {q:"What type of billing is associated with cloud computing in the PDF?", a:["Usage-based billing","One-time hardware-only billing","Paper-based billing","No billing"], c:0},
+
+    {q:"Which database types are mentioned as cloud computing components?", a:["SQL and NoSQL","Only spreadsheets","Only CSV files","Only graphing databases"], c:0},
+
+    {q:"What does on-demand self-service mean?", a:["Users can provision resources automatically without human intervention","Users must call a technician for every resource","Resources can only be provisioned once per year","Users cannot provision resources themselves"], c:0},
+
+    {q:"What does broad network access mean in cloud computing?", a:["Services are accessible through standard networks and devices","Services can only be accessed from one computer","Services require physical access to a data center","Services are disconnected from networks"], c:0},
+
+    {q:"Which cloud characteristic involves providers pooling resources for multiple customers?", a:["Resource pooling","Measured service","Broad network access","Rapid deployment"], c:0},
+
+    {q:"What is multi-tenancy associated with?", a:["Resource pooling","Binary storage","Physical isolation of every customer","Manual software installation"], c:0},
+
+    {q:"What does rapid elasticity allow cloud resources to do?", a:["Scale up or down automatically based on demand","Remain permanently fixed","Only increase once","Be manually removed from data centers"], c:0},
+
+    {q:"What does measured service involve?", a:["Monitoring, controlling, and billing usage based on consumption","Providing unlimited free resources","Preventing resource monitoring","Disabling usage tracking"], c:0},
+
+    {q:"Which organization is associated with the five characteristics presented in the PDF?", a:["NIST","NASA","IEEE only","WHO"], c:0},
+
+    {q:"What computing approach was introduced by mainframes and time-sharing in the 1960s?", a:["Shared computing","Serverless computing","Edge computing","Container orchestration"], c:0},
+
+    {q:"What technology enabled hardware abstraction in the 1990s?", a:["Virtualization","Serverless functions","API gateways","Object storage"], c:0},
+
+    {q:"Which company is mentioned in connection with virtualization in the 1990s?", a:["VMware","Salesforce","Oracle","Microsoft"], c:0},
+
+    {q:"What matured during the 2000s according to the PDF?", a:["Web services and distributed systems","Quantum computing and AI chips","Edge computing only","Mobile app stores"], c:0},
+
+    {q:"What happened in 2006 that marked commercial cloud adoption?", a:["AWS launched EC2 and S3","Docker was released","Kubernetes became available","Azure launched"], c:0},
+
+    {q:"Which technologies transformed application deployment during the 2010s?", a:["Containers and orchestration","Mainframes and time-sharing","Physical servers and tape drives","Only SQL databases"], c:0},
+
+    {q:"Which container technology is specifically mentioned?", a:["Docker","VMware","EC2","Salesforce"], c:0},
+
+    {q:"Which orchestration technology is specifically mentioned?", a:["Kubernetes","S3","Azure App Services","Google Workspace"], c:0},
+
+    {q:"Which cloud technologies are described as dominating the 2020s?", a:["Serverless, edge computing, AI-driven cloud services, and multi-cloud architectures","Mainframes, floppy disks, and tape drives","Only physical servers","Only desktop applications"], c:0},
+
+    {q:"According to the PDF, cloud computing is the result of decades of innovation in what area?", a:["Distributed systems","Word processing","Desktop publishing","Computer graphics"], c:0},
+
+    {q:"Which of the following is a modern IT use of cloud computing?", a:["Enterprise applications and SaaS platforms","Only local file storage","Only physical networking","Only BIOS configuration"], c:0},
+
+    {q:"How can cloud computing support web applications?", a:["By supporting global web and mobile applications","By preventing network access","By requiring every application to run locally","By eliminating databases"], c:0},
+
+    {q:"What type of processing can cloud platforms support?", a:["Big data analytics and real-time processing","Only offline processing","Only manual calculations","Only word processing"], c:0},
+
+    {q:"Which workloads can cloud computing support?", a:["Machine learning and AI workloads","Only operating system installation","Only spreadsheet printing","Only hardware testing"], c:0},
+
+    {q:"What development practices can cloud computing support?", a:["DevOps pipelines and CI/CD automation","Only manual software deployment","Only hardware assembly","Only paper documentation"], c:0},
+
+    {q:"Which cybersecurity operations are listed as cloud use cases?", a:["SIEM, SOAR, IAM, and threat detection","Only antivirus installation","Only password printing","Only physical locks"], c:0},
+
+    {q:"How many main cloud service models are presented in the PDF?", a:["Three","Two","Four","Five"], c:0},
+
+    {q:"What does IaaS stand for?", a:["Infrastructure as a Service","Internet as a System","Infrastructure and Application Software","Integrated Application as a Service"], c:0},
+
+    {q:"What does PaaS stand for?", a:["Platform as a Service","Programming as a System","Platform and Storage Service","Private Application as a Service"], c:0},
+
+    {q:"What does SaaS stand for?", a:["Software as a Service","Storage as a System","Server as a Service","Security as a Service"], c:0},
+
+    {q:"What does IaaS primarily provide?", a:["Virtualized hardware resources","Fully managed applications","Only developer frameworks","Only email services"], c:0},
+
+    {q:"What does PaaS primarily provide?", a:["Managed environments for application development","Physical data centers","Fully managed email accounts only","Hardware without networking"], c:0},
+
+    {q:"What does SaaS primarily provide?", a:["Fully managed applications delivered over the internet","Virtual machines only","Raw networking hardware","Operating system kernels only"], c:0},
+
+    {q:"What differs between IaaS, PaaS, and SaaS?", a:["Levels of control, flexibility, and responsibility","The color of their interfaces","The physical size of computers","The number of users allowed"], c:0},
+
+    {q:"What does IaaS provide as foundational resources?", a:["Compute, storage, and networking","Only email and calendars","Only application source code","Only database queries"], c:0},
+
+    {q:"What level of operating system control does IaaS provide?", a:["Full control over operating systems and applications","No control at all","Control only over browser settings","Control only over email"], c:0},
+
+    {q:"What can users configure with IaaS?", a:["Firewalls, networks, and security policies","Only document formatting","Only application icons","Only email signatures"], c:0},
+
+    {q:"Which is an example of an IaaS service?", a:["AWS EC2","Microsoft 365","Google Workspace","Salesforce"], c:0},
+
+    {q:"Which Azure service is listed as an IaaS example?", a:["Azure Virtual Machines","Azure App Services","Microsoft 365","Azure Workspace"], c:0},
+
+    {q:"Which Google Cloud service is listed as an IaaS example?", a:["Google Compute Engine","Google App Engine","Google Workspace","Google Drive"], c:0},
+
+    {q:"Which is a listed use case for IaaS?", a:["Disaster recovery","Email collaboration only","Browser-based CRM only","Online document editing only"], c:0},
+
+    {q:"Which type of system migration is listed as an IaaS use case?", a:["Legacy system migration","Social media migration","Printer migration","Keyboard migration"], c:0},
+
+    {q:"What does PaaS provide for developers?", a:["A managed environment for building, deploying, and scaling applications","Only physical servers","Only network cables","Only finished applications"], c:0},
+
+    {q:"Which task can PaaS perform automatically?", a:["OS patching and updates","Physical data center construction","Keyboard replacement","Manual server assembly"], c:0},
+
+    {q:"What built-in capability is associated with PaaS?", a:["Monitoring and scaling","Physical hardware repair","Manual BIOS updates","Paper-based logging"], c:0},
+
+    {q:"What does PaaS integrate for developers?", a:["Developer tools and frameworks","Only physical storage devices","Only networking cables","Only user passwords"], c:0},
+
+    {q:"Which is an example of PaaS?", a:["AWS Elastic Beanstalk","AWS EC2","Microsoft 365","Salesforce"], c:0},
+
+    {q:"Which Azure service is an example of PaaS?", a:["Azure App Services","Azure Virtual Machines","Microsoft 365","Azure Storage Drives"], c:0},
+
+    {q:"Which Google Cloud service is an example of PaaS?", a:["Google App Engine","Google Compute Engine","Google Workspace","Google Cloud Storage only"], c:0},
+
+    {q:"Which development scenario is a PaaS use case?", a:["Rapid development without managing infrastructure","Managing physical data centers","Replacing computer hardware","Manually installing operating systems"], c:0},
+
+    {q:"How are SaaS applications typically accessed?", a:["Through a browser or API","Only through physical terminals","Only through BIOS","Only through USB devices"], c:0},
+
+    {q:"What does SaaS eliminate for users?", a:["Installation and maintenance","Internet access","All user accounts","All application functionality"], c:0},
+
+    {q:"What type of pricing is commonly associated with SaaS in the PDF?", a:["Subscription-based pricing","Hardware-only pricing","No pricing","Per-keyboard pricing"], c:0},
+
+    {q:"What happens automatically with SaaS applications?", a:["Updates and security patches","Physical server construction","Network cable installation","CPU replacement"], c:0},
+
+    {q:"Which is an example of SaaS?", a:["Microsoft 365","AWS EC2","Google Compute Engine","Azure Virtual Machines"], c:0},
+
+    {q:"Which Google product is listed as a SaaS example?", a:["Google Workspace","Google Compute Engine","Google App Engine","Kubernetes"], c:0},
+
+    {q:"Which Salesforce offering category is listed as a SaaS example?", a:["Salesforce","AWS EC2","Azure Virtual Machines","Google Compute Engine"], c:0},
+
+    {q:"Which is a listed SaaS use case?", a:["Email and collaboration tools","Legacy hardware migration","Firewall configuration","Virtual machine management"], c:0},
+
+    {q:"What is a public cloud?", a:["Shared infrastructure that is scalable and cost-effective","Dedicated infrastructure for one organization only","A combination of private and public infrastructure","Infrastructure shared only by organizations in one industry"], c:0},
+
+    {q:"What is a private cloud?", a:["Dedicated infrastructure offering enhanced control","Shared infrastructure for everyone","A cloud used only for email","A cloud with no security controls"], c:0},
+
+    {q:"What is a hybrid cloud?", a:["A combination of public and private cloud","A combination of two private clouds only","A cloud without infrastructure","A cloud used only by schools"], c:0},
+
+    {q:"What is a community cloud?", a:["A cloud shared by organizations with similar requirements","A cloud available only to one individual","A cloud with no shared infrastructure","A cloud used only for gaming"], c:0},
+
+    {q:"Which sectors are given as examples for community clouds?", a:["Healthcare and education","Retail and entertainment only","Manufacturing and transportation only","Gaming and sports only"], c:0},
+
+    {q:"Which deployment model supports legacy systems according to the PDF?", a:["Hybrid cloud","Public cloud","Community cloud","SaaS"], c:0},
+
+    {q:"Which deployment model is described as compliance-friendly?", a:["Private cloud","Public cloud","SaaS","Community cloud"], c:0},
+
+    {q:"What do deployment models help determine?", a:["Governance, security, and cost strategies","CPU instruction sets","Keyboard layouts","Programming language syntax"], c:0},
+
+    {q:"Which cloud provider is described as having the largest ecosystem?", a:["AWS","Azure","Google Cloud","IBM Cloud"], c:0},
+
+    {q:"Which provider is described as having broad service offerings?", a:["AWS","Oracle Cloud","Alibaba Cloud","Azure only"], c:0},
+
+    {q:"Which provider is associated with strong enterprise integration?", a:["Azure","AWS","Google Cloud","Alibaba Cloud"], c:0},
+
+    {q:"Which provider is described as being strong in Microsoft-centric environments?", a:["Azure","AWS","Google Cloud","IBM Cloud"], c:0},
+
+    {q:"Which provider is described as leading in data analytics and AI?", a:["Google Cloud","Azure","AWS","Oracle Cloud"], c:0},
+
+    {q:"Which of the following is listed as another cloud provider?", a:["IBM Cloud","Docker Cloud only","Kubernetes Cloud","Microsoft Workspace Cloud"], c:0},
+
+    {q:"Which is a cloud computing use case?", a:["Hosting websites and applications","Manufacturing CPUs","Printing textbooks","Repairing keyboards"], c:0},
+
+    {q:"How can cloud computing be used with data?", a:["Data warehousing and analytics","Only physical data filing","Only paper-based storage","Only local spreadsheets"], c:0},
+
+    {q:"What type of pipelines can cloud computing support?", a:["Machine learning pipelines","Only printing pipelines","Only hardware pipelines","Only keyboard pipelines"], c:0},
+
+    {q:"What type of devices can cloud platforms manage?", a:["IoT devices","Only desktop monitors","Only keyboards","Only printers"], c:0},
+
+    {q:"Which recovery-related use case is listed?", a:["Backup and disaster recovery","Only software installation","Only password recovery","Only screen repair"], c:0},
+
+    {q:"What work environment can cloud computing support?", a:["Virtual desktops and remote work","Only local desktop work","Only data center work","Only offline computing"], c:0},
+
+    {q:"What does IAM stand for?", a:["Identity and Access Management","Internet Application Management","Infrastructure Access Machine","Integrated Application Monitoring"], c:0},
+
+    {q:"What are two forms of encryption mentioned in cloud security?", a:["Encryption at rest and in transit","Encryption at startup and shutdown","Encryption at login and logout","Encryption at CPU and RAM"], c:0},
+
+    {q:"What is network segmentation used as in cloud cybersecurity?", a:["A security consideration","A billing model","A storage type","A deployment model"], c:0},
+
+    {q:"What additional form of segmentation is mentioned?", a:["Micro-segmentation","Macro-storage","Virtual partitioning","Cloud division"], c:0},
+
+    {q:"What security activities should cloud environments include?", a:["Logging, monitoring, and threat detection","Only application development","Only billing","Only hardware upgrades"], c:0},
+
+    {q:"Which compliance frameworks are mentioned?", a:["ISO 27001, SOC 2, and NIST","PCI only","GDPR only","HIPAA only"], c:0},
+
+    {q:"According to the PDF, where must security be integrated?", a:["Into every cloud architecture","Only into private clouds","Only into SaaS","Only into physical data centers"], c:0},
+
+    {q:"What is the shared responsibility model?", a:["A model dividing security and operational responsibilities between the cloud provider and customer","A billing system","A cloud deployment model","A method of sharing passwords"], c:0},
+
+    {q:"Who is responsible for physical data center security?", a:["The cloud provider","The customer only","The application developer only","The end user only"], c:0},
+
+    {q:"Who is responsible for hardware and the hypervisor?", a:["The cloud provider","The customer only","The SaaS user","The database administrator only"], c:0},
+
+    {q:"Who is responsible for identity management?", a:["The customer","The cloud provider only","The hardware manufacturer","The internet service provider"], c:0},
+
+    {q:"Who is responsible for data protection?", a:["The customer","The cloud provider only","The network cable manufacturer","The operating system vendor only"], c:0},
+
+    {q:"Who is responsible for application security?", a:["The customer","The physical data center","The cloud provider in every situation","The internet service provider"], c:0},
+
+    {q:"Does responsibility remain identical across IaaS, PaaS, and SaaS?", a:["No, responsibility varies across the service models","Yes, it is always identical","Only in public cloud","Only in private cloud"], c:0},
+
+    {q:"What is a cloud region?", a:["A geographic location of cloud resources","A physical computer","A software application","A security policy"], c:0},
+
+    {q:"What is an Availability Zone?", a:["An independent data center within a region","A cloud billing account","A virtual machine","A type of container"], c:0},
+
+    {q:"What is a virtual machine?", a:["A software-based computer","A physical data center","A network cable","A database table"], c:0},
+
+    {q:"What is a container?", a:["A lightweight, portable application environment","A physical server rack","A database type","A geographic region"], c:0},
+
+    {q:"What is serverless computing?", a:["Event-driven compute without managing servers","Computing without software","Computing without networks","A physical server architecture"], c:0},
+
+    {q:"What is an API Gateway?", a:["An entry point for APIs","A physical firewall","A database","A storage disk"], c:0},
+
+    {q:"What is object storage designed for?", a:["Scalable storage for unstructured data","CPU instructions","Operating system kernels","Network routing tables"], c:0},
+
+    {q:"What does a load balancer do?", a:["Distributes traffic across resources","Encrypts every file automatically","Creates virtual machines","Stores unstructured data"], c:0},
+
+    {q:"Which is a benefit of cloud computing?", a:["Reduced capital expenditure","Increased hardware ownership requirements","Reduced scalability","Slower deployment"], c:0},
+
+    {q:"What type of scalability is listed as a cloud benefit?", a:["Elastic scalability","Fixed scalability","Manual scalability","Hardware-only scalability"], c:0},
+
+    {q:"Which availability-related benefit is mentioned?", a:["High availability and fault tolerance","Guaranteed zero downtime","No redundancy","Single-server availability"], c:0},
+
+    {q:"What geographic benefit does cloud computing provide?", a:["Global distribution","Local-only distribution","Single-device distribution","Offline distribution"], c:0},
+
+    {q:"What can cloud computing improve about deployment?", a:["Deployment cycles can be faster","Deployment becomes entirely manual","Deployment is limited to physical servers","Deployment is eliminated"], c:0},
+
+    {q:"What security-related benefit is mentioned?", a:["Built-in security and compliance tools","No security controls","Automatic removal of all risks","Elimination of cybersecurity"], c:0},
+
+    {q:"What is one challenge associated with cloud computing?", a:["Vendor lock-in","Guaranteed portability","Unlimited resources","Zero configuration requirements"], c:0},
+
+    {q:"What type of concerns can arise from cloud data location?", a:["Data residency and privacy concerns","Keyboard residency concerns","CPU ownership concerns","Monitor placement concerns"], c:0},
+
+    {q:"What can cloud misconfigurations potentially lead to?", a:["Breaches","Automatic security","Lower network latency in every case","Free resources"], c:0},
+
+    {q:"What can poor resource management cause?", a:["Cost overruns","Automatic cost elimination","Guaranteed savings","No billing"], c:0},
+
+    {q:"Why is understanding cloud risks important?", a:["It is essential for secure cloud adoption","It eliminates the need for security","It prevents all cloud usage","It removes the need for governance"], c:0},
+
+    {q:"What is a multi-cloud strategy?", a:["Using multiple cloud environments or providers","Using only one physical server","Using no cloud providers","Using only private cloud"], c:0},
+
+    {q:"What technologies are associated with cloud-native development in the PDF?", a:["Microservices and containers","Mainframes and tape drives","BIOS and USB","Only physical servers"], c:0},
+
+    {q:"What type of cloud services are identified as a modern trend?", a:["AI-driven cloud services","Paper-based cloud services","Offline-only cloud services","Hardware-only cloud services"], c:0},
+
+    {q:"What is edge computing intended to support?", a:["Low-latency workloads","Only offline workloads","Only physical storage","Only email applications"], c:0},
+
+    {q:"What security architecture is listed as a cloud adoption trend?", a:["Zero-trust security architectures","No-trust hardware architecture","Single-password architecture","Physical-only security architecture"], c:0},
+
+    {q:"According to the PDF, how is cloud computing continuing to change modern IT?", a:["It continues to evolve rapidly and shape modern IT","It is being replaced entirely by mainframes","It is becoming limited to local networks","It is no longer changing"], c:0},
+
+    {q:"Which of the following is one of the main learning objectives of the lecture?", a:["Understanding elasticity, scalability, and resource pooling","Learning only assembly language","Building physical CPUs","Designing desktop monitors"], c:0},
+
+    {q:"Which three service models should learners be able to differentiate?", a:["IaaS, PaaS, and SaaS","AWS, Azure, and Google Cloud","Public, private, and hybrid only","VM, container, and serverless"], c:0},
+
+    {q:"Which deployment models should learners be able to identify?", a:["Public, private, hybrid, and community","IaaS, PaaS, and SaaS","VM, container, and serverless","AWS, Azure, and Google"], c:0},
+
+    {q:"Which major cloud providers are specifically discussed?", a:["AWS, Azure, and Google Cloud","Docker, Kubernetes, and VMware","Salesforce, Microsoft 365, and Google Workspace","IBM, Oracle, and Alibaba only"], c:0},
+
+    // {q:"What does cloud architecture define?", a:["How cloud services are built and delivered","How physical keyboards are manufactured","How operating systems are programmed","How databases are deleted"], c:0},
+    // {q:"Cloud architecture determines scalability, reliability, and ________.", a:["security","storage","billing","programming"], c:0},
+    // {q:"Which of the following is a compute component of cloud architecture?", a:["Virtual machines","DNS zones","IAM policies","Object storage"], c:0},
+    // {q:"Which types of storage are listed as cloud architecture components?", a:["Object, block, and file storage","Only database storage","Only local storage","Only tape storage"], c:0},
+    // {q:"Cloud networking includes VPCs, load balancers, and ________.", a:["DNS","RAM","CPUs","Docker"], c:0},
+    // {q:"Which cloud architecture area includes IAM, roles, and policies?", a:["Identity","Compute","Storage","Observability"], c:0},
+    // {q:"Which cloud architecture area includes logs, metrics, and tracing?", a:["Observability","Identity","Compute","Storage"], c:0},
+    // {q:"Virtualization allows multiple virtual machines to run on a single physical ________.", a:["server","database","network","container"], c:0},
+    // {q:"What component provides virtualization between hardware and virtual machines?", a:["Hypervisor","Load balancer","DNS server","API Gateway"], c:0},
+    // {q:"What is a guest OS?", a:["An operating system running inside a virtual machine","The operating system of the physical server only","A cloud database","A container registry"], c:0},
+    // {q:"Virtualization provides strong ________ between workloads.", a:["isolation","encryption","routing","billing"], c:0},
+    // {q:"Which is a benefit of virtualization?", a:["Higher utilization of physical hardware","Eliminating all hardware","Removing operating systems","Preventing scalability"], c:0},
+    // {q:"What flexibility does virtualization provide?", a:["Running multiple OS types on one host","Running only one OS permanently","Removing the need for operating systems","Running only containers"], c:0},
+    // {q:"A Type 1 hypervisor is also called a ________-metal hypervisor.", a:["bare","virtual","hosted","container"], c:0},
+    // {q:"What is a Type 1 hypervisor?", a:["A bare-metal hypervisor that runs directly on hardware","A hypervisor running on a host OS","A container runtime","A Kubernetes controller"], c:0},
+    // {q:"Does a Type 1 hypervisor require a host operating system?", a:["No","Yes, always","Only for containers","Only on public clouds"], c:0},
+    // {q:"Which is an example of a Type 1 hypervisor?", a:["VMware ESXi","Oracle VirtualBox","VMware Workstation","Parallels Desktop"], c:0},
+    // {q:"A Type 2 hypervisor runs on top of a host ________.", a:["operating system","container","database","network"], c:0},
+    // {q:"What is a Type 2 hypervisor?", a:["A hosted hypervisor that runs on top of a host operating system","A bare-metal hypervisor","A container orchestrator","A cloud load balancer"], c:0},
+    // {q:"Which is an example of a Type 2 hypervisor?", a:["Oracle VirtualBox","VMware ESXi","KVM","Microsoft Hyper-V"], c:0},
+    // {q:"Which Microsoft technology is listed as a Type 1 hypervisor?", a:["Microsoft Hyper-V","Microsoft 365","Azure App Services","Azure Functions"], c:0},
+    // {q:"Virtual machines are considered ________ compared with containers.", a:["heavyweight","lightweight","stateless","portable"], c:0},
+    // {q:"What does each virtual machine normally contain?", a:["A full guest operating system","Only an application process","Only a container image","Only a network interface"], c:0},
+    // {q:"How quickly do virtual machines typically start according to the slides?", a:["Minutes","Seconds or less","Instantaneously in every case","Hours"], c:0},
+    // {q:"Containers share the host operating system ________.", a:["kernel","database","firewall","hypervisor"], c:0},
+    // {q:"How are containers characterized compared with virtual machines?", a:["Lightweight","Heavyweight","Hardware-based","Physical"], c:0},
+    // {q:"What type of isolation do containers use?", a:["Namespace and cgroup isolation","Hardware-level separation only","No isolation","Physical isolation"], c:0},
+    // {q:"What type of applications are containers described as ideal for?", a:["Microservices","Only mainframes","Only desktop applications","Only databases"], c:0},
+    // {q:"Docker provides a complete platform for building, shipping, and running ________.", a:["containers","virtual machines","databases","DNS zones"], c:0},
+    // {q:"What does the Docker container runtime do?", a:["Runs and manages container lifecycles","Stores DNS records","Schedules Kubernetes pods","Manages IAM policies"], c:0},
+    // {q:"What does Docker image management allow users to do?", a:["Build, version, and distribute images","Create physical servers","Manage DNS routing","Authenticate users"], c:0},
+    // {q:"Docker supports bridge, host, and ________ networks.", a:["overlay","private","public","DNS"], c:0},
+    // {q:"What is a Docker registry used for?", a:["Storing and distributing container images","Scheduling pods","Managing IAM roles","Routing DNS requests"], c:0},
+    // {q:"Which public Docker registry is specifically mentioned?", a:["Docker Hub","GitHub DNS","AWS Registry only","Kubernetes Hub"], c:0},
+    // {q:"Kubernetes automates deployment, scaling, load balancing, and ________ of containerized applications.", a:["self-healing","encryption","billing","compilation"], c:0},
+    // {q:"What is Kubernetes?", a:["A container orchestration platform","A hypervisor","A database","A DNS service"], c:0},
+    // {q:"What is the smallest deployable unit in Kubernetes?", a:["Pod","Node","Service","Cluster"], c:0},
+    // {q:"How many containers can a pod contain?", a:["One or more","Exactly zero","Exactly one physical server","Only ten"], c:0},
+    // {q:"Kubernetes worker machines that run pods are called ________.", a:["nodes","roles","regions","services"], c:0},
+    // {q:"What is the Kubernetes control plane responsible for?", a:["Controlling and managing the cluster","Running every application directly","Storing user files","Providing internet access"], c:0},
+    // {q:"What is the Kubernetes API Server?", a:["The front door of the cluster","The container runtime","The worker node agent","The database used for application data"], c:0},
+
+    // // 42 FILL IN THE BLANK
+    // {q:"The Kubernetes ________ stores the entire cluster state in a distributed key-value store.", a:["etcd","scheduler","kubelet","kube-proxy"], c:0},
+
+    // // 43
+    // {q:"What does the Kubernetes Controller Manager do?", a:["Ensures the desired state of the cluster is maintained","Runs container images directly","Provides public DNS","Acts as a firewall"], c:0},
+
+    // // 44
+    // {q:"What does the Kubernetes Scheduler decide?", a:["Which worker node should run each new pod","Which user can access a database","Which DNS zone is public","Which container image to build"], c:0},
+
+    // // 45 FILL IN THE BLANK
+    // {q:"The developer can interact with the Kubernetes API Server using ________.", a:["kubectl","Docker Hub","CloudWatch","Kubelet"], c:0},
+
+    // // 46
+    // {q:"What is the Kubelet?", a:["An agent on each worker node that ensures containers are running","The Kubernetes database","The cluster API","A load balancer"], c:0},
+
+    // // 47
+    // {q:"What does Kube-Proxy handle?", a:["Networking and routing traffic to the correct pods","Cluster state storage","Pod scheduling","Container image creation"], c:0},
+
+    // // 48 FILL IN THE BLANK
+    // {q:"The Kubernetes container runtime is responsible for ________ containers.", a:["running","scheduling","authenticating","routing"], c:0},
+
+    // // 49
+    // {q:"Which container runtimes are mentioned in the Kubernetes node architecture?", a:["containerd and CRI-O","Docker Hub and S3","Lambda and EC2","DNS and WAF"], c:0},
+
+    // // 50
+    // {q:"What is the difference between the Kubernetes control plane and workers?", a:["The control plane manages the cluster while workers run application workloads","Workers manage the cluster while the control plane runs every container","Both perform exactly the same function","Neither manages applications"], c:0},
+
+    // // 51 FILL IN THE BLANK
+    // {q:"Serverless computing is ________-driven compute without managing servers.", a:["event","hardware","database","network"], c:0},
+
+    // // 52
+    // {q:"What does serverless allow developers to focus on?", a:["Code","Physical servers","Network cables","Hardware maintenance"], c:0},
+
+    // // 53
+    // {q:"What does automatic scaling in serverless mean?", a:["Functions can scale to zero and up based on demand","Functions always run at maximum capacity","Functions cannot scale","Functions require manual hardware installation"], c:0},
+
+    // // 54 FILL IN THE BLANK
+    // {q:"With serverless pay-per-execution billing, you pay only for actual compute ________ used.", a:["time","storage","servers","users"], c:0},
+
+    // // 55
+    // {q:"What does stateless mean for serverless functions?", a:["There is no persistent local state between invocations","Functions permanently store all state locally","Functions cannot access databases","Functions cannot process events"], c:0},
+
+    // // 56
+    // {q:"Which is an ideal use case for serverless?", a:["Event processing","Long-running operating system tasks","Physical hardware management","Persistent local applications"], c:0},
+
+    // // 57 FILL IN THE BLANK
+    // {q:"AWS ________ is an example of serverless compute.", a:["Lambda","EC2","VPC","IAM"], c:0},
+
+    // // 58
+    // {q:"What does AWS Cognito provide in the serverless architecture?", a:["Authentication and user management","Container orchestration","Database storage","Load balancing"], c:0},
+
+    // // 59
+    // {q:"What can Cognito handle?", a:["User sign-up, sign-in, token generation, and secure identity management","Container scheduling","File storage","Network routing"], c:0},
+
+    // // 60 FILL IN THE BLANK
+    // {q:"API Gateway provides routing, throttling, and security for incoming ________.", a:["requests","containers","VMs","databases"], c:0},
+
+    // // 61
+    // {q:"What is the role of API Gateway in the serverless architecture?", a:["It is the entry point for requests and can route them to Lambda","It stores cluster state","It runs physical servers","It replaces DynamoDB"], c:0},
+
+    // // 62
+    // {q:"What does AWS Lambda do in the serverless architecture?", a:["Runs application code on demand","Stores files","Provides DNS","Manages physical data centers"], c:0},
+
+    // // 63 FILL IN THE BLANK
+    // {q:"DynamoDB is a fully managed ________ database.", a:["NoSQL","SQL","relational-only","file"], c:0},
+
+    // // 64
+    // {q:"What type of storage does Amazon S3 provide?", a:["File/object storage","CPU storage","Kubernetes state storage","DNS storage"], c:0},
+
+    // // 65
+    // {q:"What is one example of an S3 event trigger?", a:["S3 can trigger Lambda","S3 can trigger a physical server","S3 can replace IAM","S3 can replace API Gateway"], c:0},
+
+    // // 66 FILL IN THE BLANK
+    // {q:"A VPC is an isolated virtual ________ in the cloud.", a:["network","machine","database","container"], c:0},
+
+    // // 67
+    // {q:"What are subnets?", a:["Segmented ranges of IP addresses","Cloud databases","Container images","IAM policies"], c:0},
+
+    // // 68
+    // {q:"What do route tables control?", a:["Traffic routing paths","User passwords","Container images","CPU allocation"], c:0},
+
+    // // 69 FILL IN THE BLANK
+    // {q:"An Internet Gateway provides public ________ access for a VPC.", a:["internet","database","container","storage"], c:0},
+
+    // // 70
+    // {q:"What does a NAT Gateway provide?", a:["Outbound internet access for private subnets","Inbound public access to every private resource","Container scheduling","DNS health checks"], c:0},
+
+    // // 71
+    // {q:"What are security groups?", a:["Stateful firewall rules at the instance level","Stateless subnet-level rules","DNS routing policies","Kubernetes pods"], c:0},
+
+    // // 72 FILL IN THE BLANK
+    // {q:"A public subnet is accessible from the ________.", a:["internet","hypervisor","container","control plane"], c:0},
+
+    // // 73
+    // {q:"Which is a typical use of a public subnet?", a:["Load balancers","Databases only","Sensitive data stores","Backend workers only"], c:0},
+
+    // // 74
+    // {q:"What is a private subnet?", a:["A subnet with no direct internet access","A subnet accessible directly from the public internet","A subnet used only for load balancers","A subnet with no IP addresses"], c:0},
+
+    // // 75 FILL IN THE BLANK
+    // {q:"Databases and sensitive data stores are typical workloads for a ________ subnet.", a:["private","public","host","overlay"], c:0},
+
+    // // 76
+    // {q:"What is the purpose of a load balancer?", a:["To distribute traffic across multiple resources","To store cluster state","To authenticate users","To run containers"], c:0},
+
+    // // 77
+    // {q:"What are load balancers designed to improve?", a:["High availability and scalability","Only storage capacity","Only authentication","Only container image size"], c:0},
+
+    // // 78 FILL IN THE BLANK
+    // {q:"An Application Load Balancer operates at Layer ________.", a:["7","2","3","4"], c:0},
+
+    // // 79
+    // {q:"Which protocols are associated with an Application Load Balancer?", a:["HTTP/HTTPS","TCP only","UDP only","DNS only"], c:0},
+
+    // // 80
+    // {q:"At which layer does a Network Load Balancer operate?", a:["Layer 4","Layer 7","Layer 2","Layer 1"], c:0},
+
+    // // 81 FILL IN THE BLANK
+    // {q:"A Network Load Balancer operates using TCP and ________.", a:["UDP","HTTP","HTTPS","DNS"], c:0},
+
+    // // 82
+    // {q:"What does IAM control?", a:["Who can access what","How containers are built","How DNS records are stored","How CPUs are manufactured"], c:0},
+
+    // // 83
+    // {q:"What are IAM roles?", a:["Temporary permissions assumed by users or services","Permanent physical servers","Network segments","Container images"], c:0},
+
+    // // 84 FILL IN THE BLANK
+    // {q:"IAM policies are ________ documents that define permissions.", a:["JSON","HTML","XML","CSV"], c:0},
+
+    // // 85
+    // {q:"What do IAM permissions determine?", a:["Whether specific actions on resources are allowed or denied","How fast a container starts","Which node schedules a pod","How DNS routes traffic"], c:0},
+
+    // // 86 FILL IN THE BLANK
+    // {q:"Least privilege means granting only the ________ required access.", a:["minimum","maximum","shared","temporary"], c:0},
+
+    // // 87
+    // {q:"What is MFA used for?", a:["Stronger security through multi-factor authentication","Container orchestration","Network routing","Load balancing"], c:0},
+
+    // // 88
+    // {q:"What is logging used for in cloud observability?", a:["Capturing detailed events and application output for debugging and audit","Assigning pods to nodes","Encrypting network traffic","Managing containers"], c:0},
+
+    // // 89 FILL IN THE BLANK
+    // {q:"Metrics are quantitative measurements such as CPU usage, latency, and ________ rates.", a:["error","storage","network","billing"], c:0},
+
+    // // 90
+    // {q:"What does tracing do?", a:["Follows requests across distributed services end-to-end","Creates virtual machines","Manages user identities","Routes internet traffic"], c:0},
+
+    // // 91 FILL IN THE BLANK
+    // {q:"In virtualization, assigning more virtual CPUs than physical cores exist is called vCPU ________.", a:["overcommitment","scaling","ballooning","provisioning"], c:0},
+
+    // // 92
+    // {q:"What is memory ballooning?", a:["Dynamically reclaiming unused guest memory","Allocating more CPUs than physical cores","Allocating storage only when needed","Routing network traffic"], c:0},
+
+    // // 93
+    // {q:"What is thin provisioning?", a:["Allocating storage on demand rather than upfront","Allocating all storage immediately","Removing storage virtualization","Creating physical disks for every VM"], c:0},
+
+    // // 94 FILL IN THE BLANK
+    // {q:"NUMA awareness means respecting CPU and memory ________ for performance.", a:["topology","security","routing","billing"], c:0},
+
+    // // 95
+    // {q:"What is overlay networking?", a:["Multi-host networking for clusters","A local-only container network","A physical network cable","An IAM system"], c:0},
+
+    // // 96 FILL IN THE BLANK
+    // {q:"A service mesh uses sidecar proxies to manage traffic, security, and ________ between services.", a:["observability","storage","billing","virtualization"], c:0},
+
+    // // 97
+    // {q:"What is a cold start in serverless computing?", a:["Latency when a function is invoked after being idle","The process of creating a VM","A network failure","A database timeout"], c:0},
+
+    // // 98 FILL IN THE BLANK
+    // {q:"The Zero Trust principle is commonly summarized as 'Never trust, always ________.'", a:["verify","encrypt","scale","route"], c:0},
+
+    // // 99
+    // {q:"At which layer does a Web Application Firewall inspect HTTP/HTTPS traffic?", a:["Layer 7","Layer 3","Layer 4","Layer 1"], c:0},
+
+    // // 100 FILL IN THE BLANK
+    // {q:"The modern cloud application stack includes CI/CD and Infrastructure as ________ in its delivery layer.", a:["Code","Service","Storage","Security"], c:0}
   ]
-
 };
 
 window.questionCodes = {
-  CompArch: "COMP-2453"
+  CompArch: "COMP-2453",
+  CloudComp: "COMP-4312",
+  SocIndi: "SOCI-2755"
 };
 
 window.quizThemes = {
@@ -376,6 +849,30 @@ window.quizThemes = {
     panelBorder: "#d38517",
     buttonBg: "#ecd506",
     buttonAccent: "#7a6617",
+    success: "#39c85a",
+    danger: "#d94b4b"
+  },
+  CloudComp: {
+    pageBg: "#6f7d86",
+    visualBg: "#348ac0",
+    courseText: "#0e426c",
+    questionText: "#0e426c",
+    panelBg: "#6f7d86",
+    panelBorder: "#91a4bf",
+    buttonBg: "#b9bec0",
+    buttonAccent: "#7a1731",
+    success: "#39c85a",
+    danger: "#d94b4b"
+  },
+  SocIndi: {
+    pageBg: "#6b4d6e",
+    visualBg: "#b85ac4",
+    courseText: "#321a3b",
+    questionText: "#fdf3ff",
+    panelBg: "#d9a8d9",
+    panelBorder: "#c38ad3",
+    buttonBg: "#f4d5ea",
+    buttonAccent: "#7a1f60",
     success: "#39c85a",
     danger: "#d94b4b"
   }

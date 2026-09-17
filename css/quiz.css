@@ -14,6 +14,10 @@
 *{box-sizing:border-box}
 html,body{width:100%;height:100%;margin:0;overflow:hidden}
 body{font-family:Arial,Helvetica,sans-serif;background:#000;color:#000}
+.sound-toggle{position:fixed;top:14px;left:14px;z-index:30;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.86);color:#111;font-size:20px;line-height:1;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.22)}
+.sound-toggle:hover{background:#fff;transform:scale(1.06)}
+.music-toggle{position:fixed;top:14px;left:64px;z-index:30;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.86);color:#111;font-size:21px;line-height:1;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.22)}
+.music-toggle:hover{background:#fff;transform:scale(1.06)}
 
 /* --- Animated scene --- */
 .quiz-page{
@@ -148,6 +152,8 @@ color:rgba(255,255,255,.9);font-size:clamp(11px,1vw,15px);min-height:18px;
 opacity:0;transform:translateY(8px);transition:opacity .2s ease,transform .2s ease;
 }
 .feedback.visible{opacity:1;transform:translateY(0);animation:feedbackPop .35s ease}
+.motivation{font-size:clamp(18px,1.8vw,28px);font-weight:800;text-align:center}
+.motivation.visible{animation:motivationEntrance .6s cubic-bezier(.16,1,.3,1) both}
 .fade{position:fixed;inset:0;z-index:20;background:#000;opacity:0;pointer-events:none}
 .fade.active{animation:fadeOutScene .55s ease forwards}
 
@@ -214,24 +220,25 @@ html,body{overflow:auto}
 .controls{height:78px;margin-top:18px;gap:12px}.control{font-size:clamp(18px,5.5vw,29px)}
 .motivation{
 position:fixed;
-left:3.2%;
+left:5%;
 bottom:4.2%;
-right:auto;
+right:5%;
 z-index:50;
-max-width:42%;
+max-width:none;
 min-height:30px;
 color:#fff;
-font-size:clamp(15px,1.45vw,23px);
-font-weight:700;
+font-size:clamp(17px,4vw,28px);
+font-weight:800;
+text-align:center;
 letter-spacing:.35px;
 line-height:1.2;
-text-align:left;
 text-shadow:0 2px 7px rgba(0,0,0,.55);
 opacity:0;
 transform:translateX(-55px) translateY(12px) scale(.82) rotate(-1deg);
 transform-origin:left center;
 }
 }
+@media(max-width:760px){.sound-toggle{top:auto;left:auto;right:14px;bottom:48px}.music-toggle{top:auto;left:auto;right:64px;bottom:48px}}
 @media(max-height:650px) and (min-width:761px){
 .panel{padding-top:3vh}.answers{gap:1.5vh}.controls{height:12vh;margin-top:2.5vh}.feedback{bottom:17vh}
 }
@@ -272,8 +279,25 @@ animation:skipDisappear .28s ease forwards;
 .choice{display:flex;align-items:center;gap:10px;min-height:42px;cursor:pointer}
 .choice input{width:18px;height:18px;accent-color:currentColor}
 .setup-error{min-height:22px;margin:2px 0 8px;font-weight:700}
-.setup-start{width:100%;min-height:48px}
+.setup-start,.setup-exit{width:100%;min-height:48px;font-weight:800}
+.setup-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .quiz-content{position:relative;}
+
+@media(max-width:760px){
+  .quiz-page:has(.quiz-setup:not([hidden])){grid-template-rows:25vh auto}
+  .quiz-page:has(.quiz-setup:not([hidden])) .visual{height:25vh}
+  .quiz-page:has(.quiz-setup:not([hidden])) .panel{height:auto;min-height:75vh;padding:14px 16px 18px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .quiz-setup{padding:0;max-width:none}
+  .quiz-page:has(.quiz-setup:not([hidden])) .quiz-setup h1{font-size:clamp(24px,7vw,34px);margin:2px 0 3px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-subtitle{margin-bottom:10px;font-size:14px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .count-row{margin-bottom:10px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-group{margin-bottom:9px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .choice{min-height:30px;gap:8px;font-size:14px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .choice input{width:16px;height:16px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-error{min-height:18px;margin:0 0 4px;font-size:13px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-actions{gap:8px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-start,.quiz-page:has(.quiz-setup:not([hidden])) .setup-exit{min-height:42px;font-size:16px}
+}
 
 @media (max-width:600px){
   .quiz-hud{left:14px;bottom:14px;font-size:13px;}

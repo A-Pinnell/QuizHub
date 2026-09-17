@@ -9,6 +9,8 @@
 <script src="./js/quiz.js" defer></script>
 </head>
 <body>
+<button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sounds" aria-pressed="false">🔊</button>
+<button class="music-toggle" id="musicToggle" type="button" aria-label="Mute music" aria-pressed="false">♫</button>
 
 <div class="quiz-page" id="quizPage">
   <section class="visual">
@@ -51,7 +53,10 @@
       </fieldset>
 
       <p class="setup-error" id="setupError" aria-live="polite"></p>
-      <button class="control setup-start" id="beginQuiz" type="button">BEGIN QUIZ</button>
+      <div class="setup-actions">
+        <button class="control setup-start" id="beginQuiz" type="button">BEGIN QUIZ</button>
+        <button class="control setup-exit" id="exitSetup" type="button">EXIT TO MENU</button>
+      </div>
     </section>
 
     <section class="quiz-content" id="quizContent" hidden>
