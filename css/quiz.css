@@ -211,7 +211,7 @@ to{width:78%;opacity:1}
 @keyframes fadeOutScene{from{opacity:0}to{opacity:1}}
 
 @media(max-width:760px){
-html,body{overflow:auto}
+html,body{overflow:hidden}
 .quiz-page{min-height:100vh;height:auto;grid-template-columns:1fr;grid-template-rows:42vh 58vh}
 .visual{height:42vh}.panel{height:58vh;min-height:520px;border-left:0;border-top:8px solid #91a4bf;padding:18px 20px 22px}
 .quiz-heading{left:5%;top:7%}.course-code{font-size:clamp(24px,7vw,38px)}
@@ -284,19 +284,23 @@ animation:skipDisappear .28s ease forwards;
 .quiz-content{position:relative;}
 
 @media(max-width:760px){
-  .quiz-page:has(.quiz-setup:not([hidden])){grid-template-rows:25vh auto}
-  .quiz-page:has(.quiz-setup:not([hidden])) .visual{height:25vh}
-  .quiz-page:has(.quiz-setup:not([hidden])) .panel{height:auto;min-height:75vh;padding:14px 16px 18px}
+  .quiz-page:has(.quiz-setup:not([hidden])){grid-template-rows:18vh 82vh}
+  .quiz-page:has(.quiz-setup:not([hidden])) .visual{height:18vh}
+  .quiz-page:has(.quiz-setup:not([hidden])) .panel{height:82vh;min-height:0;padding:10px 16px 12px}
   .quiz-page:has(.quiz-setup:not([hidden])) .quiz-setup{padding:0;max-width:none}
-  .quiz-page:has(.quiz-setup:not([hidden])) .quiz-setup h1{font-size:clamp(24px,7vw,34px);margin:2px 0 3px}
-  .quiz-page:has(.quiz-setup:not([hidden])) .setup-subtitle{margin-bottom:10px;font-size:14px}
-  .quiz-page:has(.quiz-setup:not([hidden])) .count-row{margin-bottom:10px}
-  .quiz-page:has(.quiz-setup:not([hidden])) .setup-group{margin-bottom:9px}
-  .quiz-page:has(.quiz-setup:not([hidden])) .choice{min-height:30px;gap:8px;font-size:14px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .quiz-setup h1{font-size:clamp(22px,7vw,32px);margin:1px 0 2px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-subtitle{margin-bottom:7px;font-size:13px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-label{margin-bottom:4px;font-size:14px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .count-row{margin-bottom:7px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .count-row input{min-height:36px;padding:6px 10px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-group{margin-bottom:6px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-group legend{margin-bottom:3px;font-size:14px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .choice{min-height:26px;gap:7px;font-size:13px}
   .quiz-page:has(.quiz-setup:not([hidden])) .choice input{width:16px;height:16px}
-  .quiz-page:has(.quiz-setup:not([hidden])) .setup-error{min-height:18px;margin:0 0 4px;font-size:13px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .setup-error{min-height:16px;margin:0 0 3px;font-size:12px}
   .quiz-page:has(.quiz-setup:not([hidden])) .setup-actions{gap:8px}
   .quiz-page:has(.quiz-setup:not([hidden])) .setup-start,.quiz-page:has(.quiz-setup:not([hidden])) .setup-exit{min-height:42px;font-size:16px}
+  .quiz-page:has(.quiz-setup:not([hidden])) .panel{max-height:none;overflow:visible}
 }
 
 @media (max-width:600px){
@@ -325,4 +329,20 @@ animation:skipDisappear .28s ease forwards;
 @media (max-width:600px){
   .quiz-hud{left:14px;bottom:14px;max-width:calc(100vw - 28px);}
   .quiz-hud .timer{font-size:16px;}
+}
+
+@media(max-width:760px){
+  body .sound-toggle{position:fixed;top:14px;right:64px;bottom:auto;left:auto;z-index:120}
+  body .music-toggle{position:fixed;top:14px;right:14px;bottom:auto;left:auto;z-index:120}
+  .quiz-page:has(#quizSetup[hidden]){grid-template-rows:35vh 65vh}
+  .quiz-page:has(#quizSetup[hidden]) .visual{height:35vh}
+  .quiz-page:has(#quizSetup[hidden]) .panel{padding-top:58px}
+  .quiz-page:has(#quizSetup[hidden]) .panel{height:65vh;min-height:0;padding-bottom:12px}
+  .quiz-page:has(#quizSetup[hidden]) .controls{height:64px;min-height:64px;margin-top:10px}
+  .quiz-page:has(#quizSetup[hidden]) .control{font-size:clamp(15px,4.5vw,23px)}
+  body:has(#quizSetup[hidden]) .quiz-hud{position:fixed;left:14px;top:calc(35vh + 8px);bottom:auto;z-index:120;max-width:calc(100vw - 150px);font-size:12px;gap:1px}
+  body:has(#quizSetup[hidden]) .quiz-hud .score-display{font-size:13px}
+  body:has(#quizSetup[hidden]) .quiz-hud .question-display{font-size:12px;white-space:nowrap}
+  body:has(#quizSetup[hidden]) .sound-toggle{position:fixed;top:14px;right:64px;bottom:auto;left:auto;z-index:120}
+  body:has(#quizSetup[hidden]) .music-toggle{position:fixed;top:14px;right:14px;bottom:auto;left:auto;z-index:120}
 }

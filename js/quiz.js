@@ -29,6 +29,12 @@ document.addEventListener('pointerover',event=>{
   const button=event.target.closest('button');
   if(button && !button.contains(event.relatedTarget)) playSound('highlight');
 });
+document.addEventListener('pointerdown',event=>{
+  const button=event.target.closest('button');
+  if(button && !button.classList.contains('sound-toggle') && !button.classList.contains('music-toggle')){
+    playSound('highlight');
+  }
+});
 
 const soundToggle=document.getElementById('soundToggle');
 function updateSoundToggle(){
@@ -66,6 +72,8 @@ musicToggle.addEventListener('click',()=>{
 });
 updateMusicToggle();
 startQuizMusic();
+document.addEventListener('pointerdown',startQuizMusic);
+document.addEventListener('touchstart',startQuizMusic,{passive:true});
 
 const params = new URLSearchParams(location.search);
 const requestedCategory = params.get("category");

@@ -28,7 +28,7 @@
       </div>
         <h1 aria-label="Lakehead STEM Hub">
           <span class="stem-letter">Q</span><span class="stem-letter">U</span><span class="stem-letter">I</span><span class="stem-letter">Z</span><span class="stem-letter">&nbsp;</span><span class="stem-letter">H</span><span class="stem-letter">u</span><span class="stem-letter">b</span><span class="stem-letter">!</span></h1>
-      <div class="tagline">Version 1.0</div></div></header>
+      <div class="tagline">Version 1.1</div></div></header>
     <main class="menu-area">
       <button class="menu-arrow menu-arrow-left" type="button" aria-label="Show previous page">&#8249;</button>
       <div class="menu-viewport">
@@ -112,6 +112,12 @@ document.addEventListener('pointerover',event=>{
   const button=event.target.closest('button');
   if(button && !button.contains(event.relatedTarget)) playSound('highlight');
 });
+document.addEventListener('pointerdown',event=>{
+  const button=event.target.closest('button');
+  if(button && !button.classList.contains('sound-toggle') && !button.classList.contains('music-toggle')){
+    playSound('highlight');
+  }
+});
 
 const soundToggle=document.getElementById('soundToggle');
 function updateSoundToggle(){
@@ -148,6 +154,7 @@ musicToggle.addEventListener('click',()=>{
   updateMusicToggle();
 });
 document.addEventListener('pointerdown',startMenuMusic);
+document.addEventListener('touchstart',startMenuMusic,{passive:true});
 updateMusicToggle();
 
 document.addEventListener('keydown',event=>{
@@ -375,6 +382,9 @@ Version 1.0
 - You can now quit the win screen without needing to scroll down
 - This patch notes menu now exists
 - Removed Herobrine
+
+Version 1.1
+- Fixed mobile presentation
 
 `;
 
