@@ -18,11 +18,35 @@ Object.entries(soundFiles).forEach(([name,path])=>{
   soundCache[name]=sound;
 });
 
+let audioUnlocked=false;
+function unlockQuizAudio(){
+  if(audioUnlocked) return;
+  audioUnlocked=true;
+  Object.values(soundCache).forEach(sound => {
+    try {
+      sound.load();
+      sound.muted = false;
+    } catch (error) {
+      console.warn('Could not unlock audio:', error);
+    }
+  });
+  if(!musicMuted && quizMusic && quizMusic.paused){
+    startQuizMusic();
+  }
+}
+
 function playSound(name){
   if(soundsMuted) return;
-  const sound=soundCache[name].cloneNode();
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
+  unlockQuizAudio();
+  const sound=soundCache[name];
+  if(!sound) return;
+  try {
+    const soundClone=sound.cloneNode();
+    soundClone.currentTime=0;
+    soundClone.play().catch(()=>{});
+  } catch (error) {
+    console.warn('Could not play sound:', error);
+  }
 }
 
 document.addEventListener('pointerover',event=>{
@@ -45,14 +69,20 @@ function updateSoundToggle(){
 soundToggle.addEventListener('click',()=>{
   soundsMuted=!soundsMuted;
   localStorage.setItem('quizHubMuted',String(soundsMuted));
+  unlockQuizAudio();
   updateSoundToggle();
 });
 updateSoundToggle();
 
 let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
-const quizMusic=new Audio('../music/QuizMusic.wav');
+const requestedMusicCategory=new URLSearchParams(location.search).get('category');
+const quizMusicFile=requestedMusicCategory==='DataSci'
+  ? '../music/DataSciMusic.wav'
+  : '../music/QuizMusic.wav';
+const quizMusic=new Audio(quizMusicFile);
 const isPreloadedQuiz=window.self!==window.top;
+let quizMusicPending=false;
 quizMusic.loop=true;
 quizMusic.volume=.45;
 function updateMusicToggle(){
@@ -61,19 +91,29 @@ function updateMusicToggle(){
   musicToggle.setAttribute('aria-pressed',String(musicMuted));
 }
 function startQuizMusic(){
-  if(!isPreloadedQuiz && !musicMuted) quizMusic.play().catch(()=>{});
+  if(isPreloadedQuiz || musicMuted) return;
+  quizMusic.play()
+    .then(()=>{quizMusicPending=false;})
+    .catch(()=>{quizMusicPending=true;});
 }
 musicToggle.addEventListener('click',()=>{
   musicMuted=!musicMuted;
   localStorage.setItem('quizHubMusicMuted',String(musicMuted));
+  unlockQuizAudio();
   if(musicMuted) quizMusic.pause();
   else if(quizStarted) startQuizMusic();
   updateMusicToggle();
 });
 updateMusicToggle();
 startQuizMusic();
-document.addEventListener('pointerdown',startQuizMusic);
-document.addEventListener('touchstart',startQuizMusic,{passive:true});
+document.addEventListener('pointerdown',unlockQuizAudio,{capture:true});
+document.addEventListener('touchstart',unlockQuizAudio,{capture:true,passive:true});
+document.addEventListener('click',unlockQuizAudio,{capture:true});
+document.addEventListener('keydown',unlockQuizAudio,{capture:true});
+window.addEventListener('pageshow',startQuizMusic);
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') startQuizMusic();
+});
 
 const params = new URLSearchParams(location.search);
 const requestedCategory = params.get("category");
@@ -99,6 +139,7 @@ root.style.setProperty("--quiz-page-bg", theme.pageBg);
 root.style.setProperty("--quiz-visual-bg", theme.visualBg);
 root.style.setProperty("--quiz-course-text", theme.courseText);
 root.style.setProperty("--quiz-question-text", theme.questionText);
+root.style.setProperty("--quiz-hud-text", theme.hudText || "#111111");
 root.style.setProperty("--quiz-panel-bg", theme.panelBg);
 root.style.setProperty("--quiz-panel-border", theme.panelBorder);
 root.style.setProperty("--quiz-button-bg", theme.buttonBg);
@@ -154,6 +195,28 @@ function shuffle(array){
     const j=Math.floor(Math.random()*(i+1));
     [copy[i],copy[j]]=[copy[j],copy[i]];
   }
+  return copy;
+}
+
+function shuffleWithoutConsecutiveDuplicates(array){
+  const copy = [...array];
+
+  if (copy.length < 2) return copy;
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+
+  for (let i = 1; i < copy.length; i++) {
+    if (copy[i] === copy[i - 1]) {
+      const swapIndex = copy.findIndex((value, index) => index > i && value !== copy[i - 1]);
+      if (swapIndex !== -1) {
+        [copy[i], copy[swapIndex]] = [copy[swapIndex], copy[i]];
+      }
+    }
+  }
+
   return copy;
 }
 
@@ -256,14 +319,19 @@ function renderQuestion(){
   skipButton.style.removeProperty('visibility');
   skipButton.style.removeProperty('pointer-events');
 
+  const randomizedAnswerOrder = shuffleWithoutConsecutiveDuplicates(current.a.map((_, index) => index));
+
   answersEl.innerHTML = '';
-  current.a.forEach((answer, index) => {
+  const answerLabels = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+
+  randomizedAnswerOrder.forEach((originalIndex, displayIndex) => {
+    const answer = current.a[originalIndex];
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'answer';
-    button.dataset.originalIndex = String(index);
-    button.textContent = `${['A','B','C','D'][index]}. ${formatPowerText(answer)}`;
-    button.addEventListener('click', () => chooseAnswer(index));
+    button.dataset.originalIndex = String(originalIndex);
+    button.textContent = `${answerLabels[displayIndex] || String(displayIndex + 1)}. ${formatPowerText(answer)}`;
+    button.addEventListener('click', () => chooseAnswer(originalIndex));
     answersEl.appendChild(button);
   });
 

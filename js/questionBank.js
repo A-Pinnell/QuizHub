@@ -818,13 +818,326 @@ window.questionBank = {
 
     // // 100 FILL IN THE BLANK
     // {q:"The modern cloud application stack includes CI/CD and Infrastructure as ________ in its delivery layer.", a:["Code","Service","Storage","Security"], c:0}
+  ],
+
+  DataSci: [
+
+      // =========================
+      // INTRODUCTION TO DATA SCIENCE
+      // =========================
+
+      {q:"What is essentially at the heart of the information revolution?", a:["The collection and analysis of data","The creation of video games","The development of operating systems","The invention of databases"], c:0},
+      {q:"What is the ultimate goal of data science?", a:["To gain knowledge and communicate conclusions drawn from data","To store as much data as possible","To replace all human decisions","To create computer hardware"], c:0},
+      {q:"Why does society need people who understand data science?", a:["To make sense of data and visualize it for others","To build only databases","To replace computer programmers","To create more data"], c:0},
+      {q:"What problem does YouTube have when reviewing uploaded videos?", a:["There is not enough human time and resources to review all videos","Videos cannot be stored","Users cannot upload videos","Videos cannot contain advertisements"], c:0},
+      {q:"How can data analysis help YouTube with videos?", a:["By judging videos as appropriate or monetizable","By deleting every uploaded video","By converting videos into text","By increasing video resolution"], c:0},
+      {q:"According to the lecture, what is an important takeaway from the YouTube example?", a:["Data analysis is always easy to get right","There is not always a good technological solution to a social problem","Humans should never review data","All social problems can be solved with software"], c:1},
+      {q:"Which of the following is an example of data?", a:["Numbers and values","Only computer programs","Only databases","Only written documents"], c:0},
+      {q:"What is the singular form of data mentioned in the lecture?", a:["Datum","Datae","Datas","Daton"], c:0},
+      {q:"Which of the following is listed as a source of data?", a:["Measurements","Keyboard drivers","Logic gates","Operating systems"], c:0},
+      {q:"Which of the following is another source of data?", a:["Transactions","Compilers","CPUs","Monitors"], c:0},
+
+      // =========================
+      // TYPES OF DATA
+      // =========================
+
+      {q:"What are the two large categories that data tends to fall into?", a:["Quantitative and categorical","Binary and hexadecimal","Text and binary","Continuous and nominal"], c:0},
+      {q:"What is quantitative data?", a:["Numerical values that can be measured and ordered","Values belonging to categories with no numbers","Only text values","Only Boolean values"], c:0},
+      {q:"Which is an example of quantitative data?", a:["Temperature","Colour name","University name","Music genre"], c:0},
+      {q:"What is categorical data?", a:["Values normally belonging to the same category","Numerical values that are always continuous","Only measurements","Values that must be calculated"], c:0},
+      {q:"Which is an example of categorical data?", a:["Music genre","Temperature","Distance","Speed"], c:0},
+      {q:"What are the two types of quantitative data discussed in the lecture?", a:["Continuous and discrete","Nominal and ordinal","Binary and text","Measured and categorical"], c:0},
+      {q:"What is continuous data?", a:["Numerical values that are infinite along a range","Countable values that are finite within a range","Labels with no order","Labels with an order"], c:0},
+      {q:"Which is an example of continuous data?", a:["Temperature of 22.25C","Number of computers in a lab","Number of fingers","Population count"], c:0},
+      {q:"What is discrete data?", a:["Countable numerical values that are finite within a range","Numerical values that are infinite along a range","Labels with no order","Text that represents categories"], c:0},
+      {q:"Which is an example of discrete data?", a:["Number of computers in a lab","Speed of a car","Temperature","Distance"], c:0},
+      {q:"What are the two types of categorical data discussed in the lecture?", a:["Nominal and ordinal","Continuous and discrete","Binary and hexadecimal","Text and numerical"], c:0},
+      {q:"What is nominal data?", a:["Values in categories with no order","Values in categories with an ordering","Infinite numerical values","Finite numerical values"], c:0},
+      {q:"Which is an example of nominal data?", a:["Colour","Letter grade","Movie rating","Sentiment level"], c:0},
+      {q:"What is ordinal data?", a:["Values in a category with an ordering","Values in categories with no order","Numerical values that are infinite","Numerical values that are countable"], c:0},
+      {q:"Which is an example of ordinal data?", a:["Letter grades","Country of birth","Colour","University name"], c:0},
+
+      // =========================
+      // DATA REPRESENTATION
+      // =========================
+
+      {q:"How can data be represented by humans?", a:["Writing, drawings, speech, and body language","Only binary numbers","Only databases","Only computer files"], c:0},
+      {q:"How is data represented by computers?", a:["Using bits and binary interpretation","Using only decimal numbers","Using only text","Using only images"], c:0},
+      {q:"Where can data be located according to the lecture?", a:["In memory and in files","Only in RAM","Only in databases","Only in cloud services"], c:0},
+      {q:"What is the basic representation of data in computers?", a:["Bits","Pixels","Characters","Files"], c:0},
+      {q:"What is the interpretation of computer data based on?", a:["Binary","Decimal only","Hexadecimal only","ASCII only"], c:0},
+      {q:"What is the decimal value of binary 0110?", a:["4","5","6","7"], c:2},
+      {q:"What is hexadecimal A equal to in decimal?", a:["8","9","10","11"], c:2},
+      {q:"What is hexadecimal F equal to in decimal?", a:["13","14","15","16"], c:2},
+      {q:"What is ASCII used for?", a:["Converting numbers to characters","Compressing images","Storing databases","Creating binary files"], c:0},
+      {q:"What does Unicode provide compared to ASCII?", a:["More characters, including other languages, math symbols, and emoji","Fewer characters using less storage","Only numbers","Only English letters"], c:0},
+      {q:"How are images represented according to the lecture?", a:["As pixels","As database tables","As text only","As XML tags"], c:0},
+      {q:"What three colours are represented by the three bytes in the example?", a:["Red, green, and blue","Red, yellow, and blue","Cyan, magenta, and yellow","Black, white, and grey"], c:0},
+      {q:"How can the RGB colour value 79, 38, 131 be represented?", a:["#4F2683","#793813","#4F8313","#26834F"], c:0},
+
+      // =========================
+      // FILE FORMATS
+      // =========================
+
+      {q:"Which three types of file formats are discussed in the lecture?", a:["Text, binary, and XML","JPEG, PNG, and GIF","RAM, ROM, and CPU","ASCII, RGB, and HTML"], c:0},
+      {q:"How are text files commonly encoded?", a:["ASCII, UTF, or Unicode","RGB only","Binary images only","XML only"], c:0},
+      {q:"What can invisible characters in text files represent?", a:["Spaces and line breaks","Colours and pixels","Database tables","CPU instructions only"], c:0},
+      {q:"What is a characteristic of binary files?", a:["They define their own format or encoding","They are always human readable","They only contain text","They cannot store images"], c:0},
+      {q:"Which is an advantage of binary files?", a:["They can store data more compactly","They are easier for humans to read","They always use more storage","They are not specific to programs"], c:0},
+      {q:"Which is a disadvantage of binary files?", a:["They are harder for humans to read and program","They require no special format","They always use less processing time","They cannot store data"], c:0},
+      {q:"Which is an example of a binary file?", a:["PNG image","Plain text document","XML document","ASCII text"], c:0},
+      {q:"What is XML?", a:["A text file format that is both human and machine readable","A binary-only format","A type of processor","A type of database hardware"], c:0},
+      {q:"What is one advantage of XML?", a:["It can represent complex data objects","It always requires less space than binary","It cannot be read by humans","It is not structured"], c:0},
+      {q:"What is one disadvantage of XML?", a:["It can require more space than binary or text files","It cannot represent structured data","It cannot be read by computers","It cannot transport data"], c:0},
+
+      // =========================
+      // DATA PIPELINE
+      // =========================
+
+      {q:"What is the first stage of the data pipeline?", a:["Collect or create","Analyze","Visualize","Store"], c:0},
+      {q:"Which stage of the data pipeline deals with invalid and untrusted data?", a:["Validate","Visualize","Analyze","Combine"], c:0},
+      {q:"What is the purpose of cleaning data?", a:["To fix or remove incorrect, broken, duplicate, or missing information","To create more duplicate information","To visualize the dataset","To convert all data to binary"], c:0},
+      {q:"Which stage removes unneeded and redundant data?", a:["Filter","Collect","Visualize","Analyze"], c:0},
+      {q:"Which stage of the data pipeline involves putting data into storage?", a:["Store","Analyze","Clean","Collect"], c:0},
+      {q:"Which stage combines data from different sources?", a:["Combine","Validate","Filter","Visualize"], c:0},
+      {q:"Which stage is used to examine data and find useful information?", a:["Analyze","Store","Collect","Filter"], c:0},
+      {q:"What is the final stage shown in the data pipeline?", a:["Visualize","Collect","Validate","Clean"], c:0},
+      {q:"Which can provide data for the data pipeline?", a:["Databases, sensors, measurements, and transactions","Only CPUs","Only text files","Only cloud services"], c:0},
+      {q:"What does data science focus on in this course?", a:["Methods for analyzing data sets","Building computer hardware","Designing operating systems","Creating databases only"], c:0},
+
+
+      // DATASETS & DATA PREPARATION
+      {q:"What are three problems that data science datasets can be used to solve?", a:["Classification, regression, and clustering","Sorting, searching, and compiling","Encryption, compression, and networking","Testing, debugging, and deployment"], c:0},
+      {q:"What does a typical dataset contain besides features?", a:["A class or output","Only text","A file extension","A regular expression"], c:0},
+      {q:"What is data preparation also called by data scientists?", a:["Data wrangling","Data compiling","Data rendering","Data modeling"], c:0},
+      {q:"What is another term used for data preparation?", a:["Data munging","Data rendering","Data indexing","Data encoding"], c:0},
+      {q:"What is another informal term for data preparation?", a:["Data janitor work","Data engineering","Data mining","Data processing"], c:0},
+      {q:"Approximately what percentage of their time can data scientists spend collecting and preparing unruly digital data?", a:["50% to 80%","5% to 10%","10% to 20%","90% to 100%"], c:0},
+      {q:"Why is data preparation necessary before exploring data?", a:["The data may need to be cleaned and organized","It automatically creates a machine learning model","It converts all data into images","It removes the need for analysis"], c:0},
+      {q:"What can happen when data is copied and pasted from a web page or document?", a:["The data can have an incomplete or irregular format","The data always becomes perfectly formatted","The data is automatically converted to binary","The data is automatically analyzed"], c:0},
+      {q:"What is one problem that can occur when pasting data into a spreadsheet?", a:["All the data may be placed into one cell","All the data is deleted","The data becomes encrypted","The spreadsheet becomes a database"], c:0},
+      {q:"Why might editing a data file by hand be impractical?", a:["The file could contain millions of lines","The file may contain only one line","The file cannot contain numbers","The file is always encrypted"], c:0},
+
+      // DATA CLEANING EXAMPLE
+      {q:"In the wine spending example, what could be stored in the same cell?", a:["The college name and amount spent on wine","A password and username","A date and file name","A city and country"], c:0},
+      {q:"What type of unwanted information can appear in a dataset?", a:["Unwanted text","Only numbers","Only formulas","Only headers"], c:0},
+      {q:"What is another issue that can occur in a poorly prepared dataset?", a:["Extra rows","Automatic sorting","Automatic validation","Encrypted columns"], c:0},
+      {q:"What kind of information may be missing from an incomplete dataset?", a:["Required data values","File extensions","Computer programs","Regular expressions"], c:0},
+      {q:"What was an example of text that was incorrectly included with a value in the wine dataset?", a:["A pound sign","An HTML tag","An IP address","A comma"], c:0},
+      {q:"What format can be used to separate fields using tabs?", a:["TSV","XML","PNG","MP3"], c:0},
+      {q:"What does TSV stand for?", a:["Tab-Separated Values","Text-Structured Variables","Typed Spreadsheet Values","Table-Separated Variables"], c:0},
+      {q:"What does CSV stand for?", a:["Comma-Separated Values","Computer-Separated Variables","Categorical Structured Values","Column-Sorted Values"], c:0},
+      {q:"What can potentially be used to modify messy data automatically?", a:["Regex or a program","A video editor","A graphics editor","A media player"], c:0},
+      {q:"When can editing a short data file by hand be reasonable?", a:["When the file has around 30 lines","When the file has 30 million lines","When the file is encrypted","When the file contains only images"], c:0},
+
+      // REGULAR EXPRESSIONS
+      {q:"What is a regular expression?", a:["A language used to describe text patterns","A database format","A type of spreadsheet","A programming language for graphics"], c:0},
+      {q:"What does a regular expression describe?", a:["A certain amount or pattern of text","A computer's hardware","A database schema","A file's storage size"], c:0},
+      {q:"What is required to use regular expressions?", a:["A regular expression engine","A graphics card","A database server","An XML file"], c:0},
+      {q:"What does a regular expression engine do?", a:["Processes expressions and attempts to match them to a string","Converts images into pixels","Stores data in a database","Calculates averages"], c:0},
+      {q:"Which programming language mentioned in the PDF has a regular expression engine?", a:["Python","C#","Swift","Kotlin"], c:0},
+      {q:"Which other programming language mentioned in the PDF has a regular expression engine?", a:["Java","C++","JavaScript","R"], c:0},
+      {q:"Are regular expressions always completely compatible between different languages and tools?", a:["No, they can use slightly different syntax","Yes, they always use identical syntax","Only in Python","Only in Java"], c:0},
+      {q:"What is one use of Regex in data preparation?", a:["Identifying, cleaning, and transforming messy text","Creating images","Running databases","Calculating hardware performance"], c:0},
+      {q:"How can Regex help with data cleaning and standardization?", a:["It can locate variations and standardize them","It automatically creates new datasets","It converts all data to images","It deletes every text value"], c:0},
+      {q:"What Regex concept can be used to find non-digit characters?", a:["\\D","\\s+","\\d+","\\W"], c:0},
+
+      // REGEX USES
+      {q:"What can \\s+ be used to help clean?", a:["Whitespace","Numbers","Images","Dates only"], c:0},
+      {q:"What can Regex remove from numerical data?", a:["Currency symbols, parentheses, or dashes","Only decimal points","Database tables","File extensions"], c:0},
+      {q:"What can Regex help remove from text?", a:["HTML tags or markdown markers","Computer hardware","Database records","Image pixels"], c:0},
+      {q:"What is one use of Regex for information extraction?", a:["Extracting timestamps from logs","Calculating variance","Creating spreadsheets","Sorting images"], c:0},
+      {q:"What can Regex extract from server log files?", a:["IP addresses or error codes","Images or videos","Excel formulas","Audio files"], c:0},
+      {q:"What can Regex do with a raw email string?", a:["Pull out a domain name","Convert it into an image","Calculate its mean","Store it as binary"], c:0},
+      {q:"How can Regex help with dates?", a:["Break a date into components such as day, month, and year","Automatically predict future dates","Remove every date","Convert dates into images"], c:0},
+      {q:"What date format is given as an example for universal formatting?", a:["YYYY-MM-DD","DD-YYYY-MM","MM-DD-YYYY","YYYY-DD-MM"], c:0},
+      {q:"How can Regex be used for data validation?", a:["It can check whether incoming text fits required patterns","It automatically fills in missing values","It calculates standard deviation","It creates charts"], c:0},
+      {q:"What can Regex validate according to the PDF?", a:["Email addresses, ZIP codes, and Social Security Numbers","Images, videos, and audio","Means, medians, and modes","Databases and spreadsheets"], c:0},
+
+      // STATISTICS
+      {q:"What are three types of statistical measures introduced in the PDF?", a:["Central tendency, spread, and correlations","Classification, regression, and clustering","Mean, XML, and Regex","Text, binary, and categorical"], c:0},
+      {q:"What is the mean?", a:["The sum of the values divided by the number of values","The most common value","The middle value only","The largest value"], c:0},
+      {q:"What is another name for the mean?", a:["Average","Median","Mode","Range"], c:0},
+      {q:"What is the median?", a:["The value separating the higher half from the lower half","The most frequently occurring value","The largest value","The difference between two values"], c:0},
+      {q:"What is the mode?", a:["The value that appears most often","The middle value","The average value","The smallest value"], c:0},
+      {q:"What is the range?", a:["The difference between the largest and smallest values","The average of all values","The middle value","The most common value"], c:0},
+      {q:"What is variance used to describe?", a:["How far a set of numbers is spread out from its average","The middle value of a dataset","The most common value","The largest value"], c:0},
+      {q:"What is standard deviation?", a:["The square root of the variance","The square of the variance","The average of the dataset","The difference between the mean and median"], c:0},
+      {q:"What does Pearson correlation measure?", a:["The strength of the connection between two variables","The number of values in a dataset","The largest value in a dataset","The amount of missing data"], c:0},
+      {q:"What range can Pearson correlation have?", a:["-1 to 1","0 to 100","-100 to 100","1 to 10"], c:0},
+
+      // CORRELATION
+      {q:"What does a Pearson correlation of -1 represent?", a:["A perfect negative correlation","No correlation","A perfect positive correlation","A weak correlation"], c:0},
+      {q:"What does a Pearson correlation of 0 represent?", a:["No correlation","A perfect negative correlation","A perfect positive correlation","A perfect nonlinear correlation"], c:0},
+      {q:"What does a Pearson correlation of 1 represent?", a:["A perfect positive correlation","No correlation","A perfect negative correlation","A weak correlation"], c:0},
+      {q:"What does Pearson correlation basically attempt to do?", a:["Draw a line of best fit through the data","Remove missing values","Calculate the median","Group data into categories"], c:0},
+      {q:"What type of correlations does Pearson correlation work for?", a:["Linear correlations","Only categorical correlations","Only nonlinear correlations","Only text correlations"], c:0},
+      {q:"Does finding a correlation necessarily mean that one variable causes another?", a:["No","Yes","Only when the correlation is 1","Only when the correlation is -1"], c:0},
+
+
+      // DATASETS & STATISTICS
+      {q:"What are three problems that data science datasets can be used to solve?", a:["Classification, regression, and clustering","Sorting, searching, and compiling","Encryption, compression, and networking","Testing, debugging, and deployment"], c:0},
+      {q:"What are the two main types of statistics?", a:["Descriptive and inferential statistics","Quantitative and categorical statistics","Linear and nonlinear statistics","Discrete and continuous statistics"], c:0},
+      {q:"What does descriptive statistics help us do?", a:["Simplify and organize large amounts of data","Predict the future with certainty","Create machine learning models","Remove all outliers"], c:0},
+      {q:"Why is descriptive statistics useful?", a:["It makes large amounts of data easier to understand","It guarantees accurate predictions","It removes the need for data collection","It converts data into binary"], c:0},
+      {q:"What does inferential statistics use to make conclusions about a larger group?", a:["A small amount of data","Every possible data point","Only categorical data","Only historical data"], c:0},
+      {q:"What larger group are inferential statistics used to draw conclusions about?", a:["A population","A sample","A variable","A dataset column"], c:0},
+
+      // MEASURES OF CENTRAL TENDENCY
+      {q:"What is the arithmetic mean?", a:["The sum of the values divided by the number of values","The most frequently occurring value","The middle value","The largest value"], c:0},
+      {q:"What is another name for the arithmetic mean?", a:["Average","Mode","Median","Range"], c:0},
+      {q:"What is the geometric mean useful for?", a:["Comparing values that change over time","Finding the largest value","Finding the middle value","Counting categories"], c:0},
+      {q:"What type of values is the geometric mean especially useful for?", a:["Growth rates or percentages","Only whole numbers","Only categorical values","Only negative values"], c:0},
+      {q:"Which is an example where the geometric mean can be useful?", a:["Investment returns","Finding a student's mode","Counting computers","Finding the maximum value"], c:0},
+      {q:"When values vary greatly, which mean can be useful?", a:["Geometric mean","Mode","Median","Range"], c:0},
+      {q:"What is the mode?", a:["The value that has the maximum frequency","The value in the middle","The average of all values","The largest value"], c:0},
+      {q:"What is the median?", a:["The value that divides a set into two equal parts","The most common value","The average of all values","The difference between two values"], c:0},
+      {q:"In a dataset, what does the median separate?", a:["The observations above and below it","The largest and smallest values","The positive and negative values","The categorical and numerical values"], c:0},
+
+      // VARIABILITY & STANDARD DEVIATION
+      {q:"What do measures of spread describe?", a:["Variability in the data","The most common value","The middle value","The number of categories"], c:0},
+      {q:"What is standard deviation?", a:["The square root of the variance","The square of the variance","The average of the values","The difference between the mean and median"], c:0},
+      {q:"Why is standard deviation calculated as the square root of variance?", a:["So it has the same units as the individual values","So it becomes a percentage","So it removes outliers","So it becomes a correlation"], c:0},
+      {q:"What problem occurs with the units of variance?", a:["They are not the same as the units of the individual values","They cannot contain numbers","They are always percentages","They are always negative"], c:0},
+      {q:"What does standard deviation allow us to do regarding units?", a:["Use the same units as the individual data values","Remove the units completely","Convert the values to percentages","Change the values into categories"], c:0},
+
+      // CORRELATION & COVARIANCE
+      {q:"What does correlation measure?", a:["The relationship between two variables","The number of observations","The spread of one variable","The middle of a dataset"], c:0},
+      {q:"What is the possible range of a correlation value?", a:["-1 to 1","0 to 100","-100 to 100","1 to 10"], c:0},
+      {q:"What does a correlation of -1 represent?", a:["A perfect negative correlation","No correlation","A perfect positive correlation","A weak correlation"], c:0},
+      {q:"What does a correlation of 0 represent?", a:["No correlation at all","A perfect negative correlation","A perfect positive correlation","Maximum correlation"], c:0},
+      {q:"What does a correlation of 1 represent?", a:["A perfect correlation","No correlation","A perfect negative correlation","A weak correlation"], c:0},
+      {q:"What does covariance measure?", a:["The relationship between two variables","The middle value of a dataset","The frequency of a value","The number of categories"], c:0},
+      {q:"What range can covariance take?", a:["Negative infinity to positive infinity","-1 to 1","0 to 1","0 to 100"], c:0},
+      {q:"What does covariance help us understand?", a:["The direction of a relationship","Only the strength of a relationship","The median of a dataset","The number of outliers"], c:0},
+      {q:"What does covariance assess?", a:["How much two variables change together","How many values are in a dataset","How far values are from zero","How many categories exist"], c:0},
+      {q:"What does correlation show compared with covariance?", a:["Both direction and strength","Only direction","Only frequency","Only the average"], c:0},
+      {q:"What does covariance mainly show?", a:["The direction of the relationship","The exact strength on a -1 to 1 scale","The median","The standard deviation"], c:0},
+      {q:"If two variables increase together, what type of relationship would covariance indicate?", a:["A positive relationship","A negative relationship","No relationship","A categorical relationship"], c:0},
+
+      // QUARTILES & IQR
+      {q:"What do quartiles divide a dataset into?", a:["Four equal parts","Two equal parts","Three equal parts","Five equal parts"], c:0},
+      {q:"What does Q1 represent?", a:["The first quartile and the median of the lower half","The middle value of the entire dataset","The median of the upper half","The largest value"], c:0},
+      {q:"What percentage of the data is below Q1?", a:["25%","50%","75%","100%"], c:0},
+      {q:"What is Q2?", a:["The second quartile or median","The first quartile","The third quartile","The range"], c:0},
+      {q:"What does Q2 divide the dataset into?", a:["Two equal parts","Four equal parts","Three equal parts","Two unequal parts"], c:0},
+      {q:"What does Q3 represent?", a:["The median of the upper half","The median of the lower half","The middle value of the entire dataset","The minimum value"], c:0},
+      {q:"What percentage of the data does Q3 separate from the top?", a:["25%","50%","75%","10%"], c:0},
+      {q:"What does IQR stand for?", a:["Interquartile Range","Internal Quartile Range","Individual Quantitative Range","Interrelated Quartile Range"], c:0},
+      {q:"What is the interquartile range?", a:["The range between Q1 and Q3","The range between the minimum and maximum","The difference between the mean and median","The range between Q2 and Q3"], c:0},
+      {q:"Why is IQR useful when compared with the regular range?", a:["It is less sensitive to extreme values","It always has a larger value","It removes the median","It measures correlation"], c:0},
+      {q:"What should be done before calculating Q1 and Q3 for IQR?", a:["Arrange the data in ascending order","Remove the median","Calculate the correlation","Convert the data to percentages"], c:0},
+
+      // OUTLIERS & SKEWNESS
+      {q:"What can IQR be used for?", a:["Outlier detection","Calculating correlation","Finding the mode only","Creating categorical data"], c:0},
+      {q:"In which areas does the PDF mention IQR being used for outlier detection?", a:["Finance, healthcare, and quality control","Gaming, networking, and programming","Education, music, and art","Sports, travel, and weather"], c:0},
+      {q:"When is a data point considered an outlier using the IQR method?", a:["When it falls outside Q1 - 1.5 × IQR or Q3 + 1.5 × IQR","When it is equal to the median","When it is below Q2","When it is equal to Q1"], c:0},
+      {q:"What does skewness tell us?", a:["Whether data points are skewed left or right in relation to the mean","How many values are in a dataset","The correlation between two variables","The number of categories"], c:0},
+      {q:"What does skewness based on quartiles examine?", a:["The distances between the quartiles","The number of observations","The maximum and minimum values only","The correlation between variables"], c:0},
+      {q:"In a symmetric distribution, what should ideally be equal?", a:["Q3 minus the median and the median minus Q1","Q1 and Q3","The mean and mode only","The minimum and maximum"], c:0},
+
+      // DISTRIBUTIONS & FREQUENCY
+      {q:"What does a histogram represent?", a:["The frequency of each interval of continuous data","The relationship between two variables","Only categorical data","The median of a dataset"], c:0},
+      {q:"How are the bars in a histogram described in the PDF?", a:["They have equal width","They have random widths","They overlap completely","They are circular"], c:0},
+      {q:"What does a frequency polygon use to represent frequency?", a:["Lines connecting frequency points","Circular slices","Bars only","Quartiles"], c:0},
+      {q:"How is a frequency polygon different from a histogram?", a:["It uses lines instead of bars","It only displays categorical data","It does not display frequency","It only displays outliers"], c:0},
+      {q:"What does a pie chart show?", a:["Proportional sizes as slices of a circle","Continuous data using bars","Correlation between variables","The median of a dataset"], c:0},
+      {q:"What is a normal distribution?", a:["A symmetrical, bell-shaped distribution with data concentrated around the mean","A distribution with only negative values","A distribution with no mean","A distribution containing only outliers"], c:0},
+      {q:"What is a skewed distribution?", a:["A distribution that is not symmetric","A perfectly symmetrical distribution","A distribution with no median","A distribution with no variables"], c:0},
+
+      // INFERENTIAL STATISTICS & CONFIDENCE INTERVALS
+      {q:"Why is analyzing an entire population often impossible?", a:["The entire population may be too large to analyze","Populations cannot contain data","Populations only contain categorical data","Statistics cannot be used on populations"], c:0},
+      {q:"What do we collect instead of analyzing an entire population?", a:["A sample","A histogram","A quartile","A correlation"], c:0},
+      {q:"What can inferential statistics help us do with a sample?", a:["Make conclusions about the whole population","Remove the population","Guarantee the result","Convert the sample into binary"], c:0},
+      {q:"What do confidence intervals help quantify?", a:["Uncertainty of an estimate","The mode of a dataset","The number of variables","The correlation strength"], c:0},
+      {q:"What does a confidence interval provide?", a:["A range of values","A single guaranteed value","A frequency table","A correlation coefficient"], c:0},
+      {q:"What percentage confidence was used in the example in the PDF?", a:["95%","50%","75%","99%"], c:0},
+      {q:"In the example, if the mean is 4.63 and the standard deviation is 0.54, what is the stated 95% confidence interval?", a:["4.480 to 4.780","3.63 to 5.63","4.09 to 5.17","0.54 to 4.63"], c:0},
+
+      // PYTHON
+      {q:"What programming language does the final slide introduce?", a:["Python","Java","C++","C#"], c:0},
+      {q:"What does Python have that is useful for data analysis and learning?", a:["Many functions and libraries","Only graphics tools","Only database tools","Only networking libraries"], c:0},
+
+      
+    // R BASICS
+    {q:"What programming language is introduced in Unit 02b?", a:["R","Python","Java","C++"], c:0},
+    {q:"What topics are mentioned as part of R basics?", a:["Variables, vectors, and loops","Classes, objects, and inheritance","HTML, CSS, and JavaScript","Threads, sockets, and processes"], c:0},
+    {q:"What can be used when help is needed for R functions?", a:["The help() function","The assist() function","The guide() function","The manual() function"], c:0},
+    {q:"What example is given for getting help with a function such as mean?", a:["help(mean)","mean(help)","?mean only","gethelp(mean)"], c:0},
+
+    // CENTRAL TENDENCY WITH R
+    {q:"Which statistical topic is demonstrated using R?", a:["Measures of central tendency","Network security","File compression","Machine learning classification"], c:0},
+    {q:"Which R function can be used to calculate the mean?", a:["mean()","average()","avg()","central()"], c:0},
+    {q:"What type of statistical measure does mean() calculate?", a:["Mean","Median","Mode","Range"], c:0},
+    {q:"What can you use when you need information about how to use mean() in R?", a:["help(mean)","mean.info()","info(mean)","describe(mean)"], c:0},
+
+    // SPREAD & VARIABILITY
+    {q:"Which R function is used to calculate variance?", a:["var()","variance()","spread()","sdvar()"], c:0},
+    {q:"What statistical concept does var() calculate?", a:["Variance","Mean","Median","Correlation"], c:0},
+    {q:"Which topic is demonstrated with the var() function?", a:["Measures of spread or variability","Measures of central tendency only","Frequency labels","Data visualization only"], c:0},
+    {q:"Which R function is associated with calculating quartiles and summary statistics?", a:["quantile()","quartile()","fourparts()","split()"], c:0},
+    {q:"Which R function can provide a statistical summary of data?", a:["summary()","statistics()","statsummary()","describeData()"], c:0},
+    {q:"Which R function is listed alongside summary(), quantile(), and IQR()?", a:["fivenum()","fournum()","fivevalues()","five()"], c:0},
+    {q:"What does IQR() represent?", a:["Interquartile range","Individual quantitative range","Internal quantity ratio","Indexed quartile result"], c:0},
+    {q:"Which R function can calculate the interquartile range?", a:["IQR()","range4()","quartileRange()","spread()"], c:0},
+    {q:"Which R function can calculate quantiles?", a:["quantile()","quartiles()","q()","percentile()"], c:0},
+    {q:"What does the PDF note about calculating the 25% quantile in R?", a:["R is a little different from the demonstrated method","R cannot calculate it","R always gives the same result as the manual method","R only supports 50% quantiles"], c:0},
+
+    // CORRELATION & COVARIANCE
+    {q:"Which R function is used for correlation?", a:["cor()","corr()","correlation()","relate()"], c:0},
+    {q:"What statistical relationship can be calculated with cor()?", a:["Correlation","Variance","Median","Frequency"], c:0},
+    {q:"Which R function is used for covariance?", a:["cov()","covariance()","co()","relationship()"], c:0},
+    {q:"What statistical relationship can be calculated with cov()?", a:["Covariance","Correlation","Mode","IQR"], c:0},
+    {q:"Which function would you use to calculate correlation between two columns in R?", a:["cor()","cov()","mean()","hist()"], c:0},
+    {q:"Which function would you use to calculate covariance between two columns in R?", a:["cov()","cor()","var()","plot()"], c:0},
+
+    // HISTOGRAMS
+    {q:"What type of graph is demonstrated in R using hist()?", a:["Histogram","Scatter plot","Pie chart","Frequency polygon"], c:0},
+    {q:"Which R function creates a histogram?", a:["hist()","histogram()","bar()","frequency()"], c:0},
+    {q:"What function is used in the example with x <- c(40, 41, 42, 43, 50)?", a:["hist(x)","plot(x)","pie(x)","graph(x)"], c:0},
+    {q:"What type of skew does the histogram example with 40, 41, 42, 43, and 50 have?", a:["Positive skew","Negative skew","No skew","Perfect symmetry"], c:0},
+    {q:"Which function is used to create another histogram after changing the values of x?", a:["hist()","plot()","pie()","lines()"], c:0},
+    {q:"What type of data visualization is a histogram?", a:["A frequency distribution graph","A relationship graph between two variables","A circular graph","A line graph"], c:0},
+
+    // SCATTER PLOTS
+    {q:"Which R function is used to create scatter plots?", a:["plot()","scatter()","points()","graph()"], c:0},
+    {q:"What type of graph is demonstrated using plot()?", a:["Scatter plot","Histogram","Pie chart","Frequency polygon"], c:0},
+    {q:"What can the plot() function be used for in the examples?", a:["Creating scatter plots","Calculating variance","Finding quartiles","Calculating covariance only"], c:0},
+    {q:"Which R function can be used to add lines to plots?", a:["lines()","addline()","line()","drawlines()"], c:0},
+    {q:"What does the lines() function allow you to do?", a:["Add lines to plots","Calculate correlation","Create a data frame","Calculate the mean"], c:0},
+
+    // PIE CHARTS
+    {q:"Which R function is used to create a pie chart?", a:["pie()","chart()","circle()","piechart()"], c:0},
+    {q:"What type of graph does pie() create?", a:["Pie chart","Histogram","Scatter plot","Frequency polygon"], c:0},
+    {q:"In the pie chart example, what does slices contain?", a:["Numerical values for the slices","The names of countries only","The chart title","The percentages only"], c:0},
+    {q:"What does lbls contain in the pie chart example?", a:["Labels such as US, UK, and Australia","Numerical slice values","The percentages","The chart title"], c:0},
+    {q:"What function is used to calculate percentages in the pie chart example?", a:["round()","percent()","percentage()","calcpercent()"], c:0},
+    {q:"What operation is used to calculate the percentages for the pie chart?", a:["slices/sum(slices)*100","slices*sum(slices)","sum(slices)/100","slices/100"], c:0},
+    {q:"What function is used to combine the labels and percentages?", a:["paste()","combine()","join()","merge()"], c:0},
+    {q:"What argument is used to specify the labels in the pie() function?", a:["labels","lbl","names","text"], c:0},
+    {q:"What argument is used to specify the title of the pie chart?", a:["main","title","heading","caption"], c:0},
+
+    // ARRAYS & DATA FRAMES
+    {q:"What additional data structure is introduced in the PDF?", a:["Arrays","Trees","Stacks","Queues"], c:0},
+    {q:"What data structure is specifically demonstrated after arrays?", a:["Data frame","Linked list","Hash table","Binary tree"], c:0},
+    {q:"Which built-in R dataset is used to demonstrate data frames?", a:["mtcars","iris","wine","diabetes"], c:0},
+    {q:"What does mtcars[1,] select?", a:["The first row of mtcars","The first column of mtcars","Rows 1 through 3","The mpg column"], c:0},
+    {q:"What does mtcars[1:3,] select?", a:["Rows 1 through 3","Columns 1 through 3","The first three values","The first three named columns"], c:0},
+    {q:"What does mtcars[1] select?", a:["The first column","The first row","The first three rows","The mpg column only"], c:0},
+    {q:"What does mtcars[\"mpg\"] access?", a:["The mpg column","The first row","The first three rows","The hp column"], c:0},
+    {q:"What does mtcars[c(\"mpg\", \"hp\")] access?", a:["The mpg and hp columns","Rows 1 and 2","The first two values","Only the mpg column"], c:0},
+    {q:"What symbol is used to read columns from a dataset in R?", a:["$","@","#","%"], c:0},
+    {q:"Which dataset is used in the final example of the PDF?", a:["Iris plants data","California Housing","Diabetes","mtcars only"], c:0},
+    {q:"Which function is used to display the first part of the iris dataset?", a:["head(iris)","first(iris)","show(iris)","top(iris)"], c:0},
+    {q:"Which function is used to create plots of the iris dataset?", a:["plot()","irisplot()","graph()","draw()"], c:0}
   ]
 };
 
 window.questionCodes = {
   CompArch: "COMP-2453",
   CloudComp: "COMP-4312",
-  SocIndi: "SOCI-2755"
+  SocIndi: "SOCI-2755",
+  DataSci: "COMP-4112"
 };
 
 window.quizThemes = {
@@ -845,6 +1158,7 @@ window.quizThemes = {
     visualBg: "#7f1818",
     courseText: "#440a0a",
     questionText: "#fff6f6",
+    hudText: "#ffffff",
     panelBg: "#c37714",
     panelBorder: "#d38517",
     buttonBg: "#ecd506",
@@ -873,6 +1187,19 @@ window.quizThemes = {
     panelBorder: "#c38ad3",
     buttonBg: "#f4d5ea",
     buttonAccent: "#7a1f60",
+    success: "#39c85a",
+    danger: "#d94b4b"
+  },
+  DataSci: {
+    pageBg: "#4b2e16",
+    visualBg: "#6b431d",
+    courseText: "#3a210e",
+    questionText: "#fff4bf",
+    hudText: "#ffffff",
+    panelBg: "#a96f24",
+    panelBorder: "#d39a32",
+    buttonBg: "#f0d34f",
+    buttonAccent: "#6b431d",
     success: "#39c85a",
     danger: "#d94b4b"
   }
