@@ -1,10 +1,12 @@
+const resolveAssetUrl=(path)=>new URL(path, window.location.href).toString();
+
 const soundFiles={
-  highlight:'sfx/highlight.wav',
-  popup:'sfx/Popup.wav',
-  arrow:'sfx/ArrowButton.wav',
-  select:'sfx/QuizSelect.wav',
-  incorrect:'sfx/Incorrect.wav',
-  titleEnd:'sfx/TitleEnd.wav'
+  highlight:resolveAssetUrl('sfx/highlight.wav'),
+  popup:resolveAssetUrl('sfx/Popup.wav'),
+  arrow:resolveAssetUrl('sfx/ArrowButton.wav'),
+  select:resolveAssetUrl('sfx/QuizSelect.wav'),
+  incorrect:resolveAssetUrl('sfx/Incorrect.wav'),
+  titleEnd:resolveAssetUrl('sfx/TitleEnd.wav')
 };
 
 const soundCache={};
@@ -48,7 +50,7 @@ updateSoundToggle();
 
 let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
-const menuMusic=new Audio('music/MenuMusic.wav');
+const menuMusic=new Audio(resolveAssetUrl('music/MenuMusic.wav'));
 let menuVisible=false;
 menuMusic.loop=true;
 menuMusic.volume=.45;

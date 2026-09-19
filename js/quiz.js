@@ -1,13 +1,14 @@
 const questionBank = window.questionBank || {};
 const codes = window.questionCodes || {};
 const themes = window.quizThemes || {};
+const resolveAssetUrl=(path)=>new URL(path, window.location.href).toString();
 
 const soundFiles={
-  correct:'sfx/Correct.wav',
-  highlight:'sfx/highlight.wav',
-  incorrect:'sfx/Incorrect.wav',
-  begin:'sfx/QuizBegin.wav',
-  popup:'sfx/Popup.wav'
+  correct:resolveAssetUrl('./sfx/Correct.wav'),
+  highlight:resolveAssetUrl('./sfx/highlight.wav'),
+  incorrect:resolveAssetUrl('./sfx/Incorrect.wav'),
+  begin:resolveAssetUrl('./sfx/QuizBegin.wav'),
+  popup:resolveAssetUrl('./sfx/Popup.wav')
 };
 
 const soundCache={};
@@ -78,8 +79,8 @@ let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
 const requestedMusicCategory=new URLSearchParams(location.search).get('category');
 const quizMusicFile=requestedMusicCategory==='DataSci'
-  ? '../music/DataSciMusic.wav'
-  : '../music/QuizMusic.wav';
+  ? resolveAssetUrl('./music/DataSciMusic.wav')
+  : resolveAssetUrl('./music/QuizMusic.wav');
 const quizMusic=new Audio(quizMusicFile);
 const isPreloadedQuiz=window.self!==window.top;
 let quizMusicPending=false;

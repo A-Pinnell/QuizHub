@@ -10,12 +10,13 @@
     accepting: false, timerId: null, feedbackTimer: null
   };
   const music = $("music");
+  const resolveAssetUrl = (path) => new URL(path, window.location.href).toString();
   const soundFiles = {
-    correct: "./sfx/Correct.wav",
-    highlight: "./sfx/highlight.wav",
-    incorrect: "./sfx/Incorrect.wav",
-    begin: "./sfx/QuizBegin.wav",
-    popup: "./sfx/Popup.wav"
+    correct: resolveAssetUrl("./sfx/Correct.wav"),
+    highlight: resolveAssetUrl("./sfx/highlight.wav"),
+    incorrect: resolveAssetUrl("./sfx/Incorrect.wav"),
+    begin: resolveAssetUrl("./sfx/QuizBegin.wav"),
+    popup: resolveAssetUrl("./sfx/Popup.wav")
   };
   const soundCache = {};
   Object.entries(soundFiles).forEach(([name, path]) => {
