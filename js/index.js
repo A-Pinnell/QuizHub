@@ -332,6 +332,9 @@ document.querySelectorAll('[data-close-patchnotes]').forEach(el=>{
 });
 
 patchnotesContent.textContent=`
+Version 1.3
+- Fixed minor bugs
+- Added Binary Arithmetic practice to Computer Arch, allowing you to practice binary to decimal and vise versa, as well as operations with binary!
 Version 1.2
 - Fixed back button through browser softlocking
 - Mobile Adjustments, including fix to sound on mobile

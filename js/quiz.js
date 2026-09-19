@@ -3,11 +3,11 @@ const codes = window.questionCodes || {};
 const themes = window.quizThemes || {};
 
 const soundFiles={
-  correct:'../sfx/Correct.wav',
-  highlight:'../sfx/highlight.wav',
-  incorrect:'../sfx/Incorrect.wav',
-  begin:'../sfx/QuizBegin.wav',
-  popup:'../sfx/Popup.wav'
+  correct:'sfx/Correct.wav',
+  highlight:'sfx/highlight.wav',
+  incorrect:'sfx/Incorrect.wav',
+  begin:'sfx/QuizBegin.wav',
+  popup:'sfx/Popup.wav'
 };
 
 const soundCache={};
