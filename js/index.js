@@ -123,7 +123,8 @@ const courseCodes={
 
 const courseQuizCatalog={
   CompArch:[
-    {id:'quiz1', label:'First Slides Practice', detail:'for Sept 23'}
+    {id:'quiz1', label:'First Slides Practice', detail:'for Sept 23'},
+    {id:'binary-quiz', label:'Binary Arithmetic', detail:'Standalone binary conversion practice', external:'binary-quiz.html'}
   ],
   CloudComp:[
     {id:'quiz1', label:'First Slides Practice', detail:'for Sept 24'}
@@ -151,10 +152,13 @@ function renderQuizOptions(course){
     button.dataset.quiz=quiz.id;
     button.innerHTML=`<span>${quiz.label}</span><small>${quiz.detail}</small>`;
     button.addEventListener('click',()=>{
-      if(selectedCourse){
-        playSound('select');
-        startQuiz(selectedCourse, button.dataset.quiz);
+      if(!selectedCourse) return;
+      playSound('select');
+      if(quiz.external){
+        startExternalQuiz(quiz.external);
+        return;
       }
+      startQuiz(selectedCourse, button.dataset.quiz);
     });
     container.appendChild(button);
   });
@@ -173,6 +177,37 @@ function preloadQuiz(category, quiz){
     if(welcomeVisible) showLoadingComplete();
   };
   document.body.appendChild(preloadFrame);
+}
+
+function startExternalQuiz(target){
+  if(leaving) return;
+  menuMusic.pause();
+  menuMusic.currentTime=0;
+  closeQuizMenu();
+  leaving=true;
+  document.querySelectorAll('.card').forEach(c=>c.disabled=true);
+  quizLoaded=false;
+  preloadFrame=document.createElement('iframe');
+  preloadFrame.className='preload-frame';
+  navigationTarget=target;
+  preloadFrame.src=navigationTarget;
+  preloadFrame.onload=()=>{
+    quizLoaded=true;
+    if(welcomeVisible) showLoadingComplete();
+  };
+  document.body.appendChild(preloadFrame);
+  setTimeout(()=>document.body.classList.add('leaving'),520);
+  setTimeout(()=>{
+    welcomeVisible=true;
+    document.body.classList.add('show-welcome');
+    if(quizLoaded) showLoadingComplete();
+  },1180);
+  setTimeout(()=>{
+    if(!quizLoaded){
+      const status=document.getElementById('loadingStatus');
+      status.textContent='Loading...';
+    }
+  },4500);
 }
 
 function showLoadingComplete(){

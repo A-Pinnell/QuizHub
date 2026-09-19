@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary Arithmetic Quiz</title>
+  <link rel="stylesheet" href="./css/binary-quiz.css">
+</head>
+<body>
+  <main id="app">
+    <section id="setupScreen" class="screen">
+      <div class="panel setup-panel">
+        <div class="brand">
+          <div class="brand-mark">01</div>
+          <div>
+            <p class="eyebrow">BINARY TRAINING</p>
+            <h1>Binary Arithmetic</h1>
+          </div>
+        </div>
+
+        <div class="setup-grid">
+          <div class="setting-card">
+            <label>Game Type</label>
+            <div class="choice-grid" id="gameTypeChoices">
+              <button class="choice selected" data-value="conversion" type="button">⇄ Conversion Game</button>
+              <button class="choice" data-value="operation" type="button">＋ Operation Game</button>
+            </div>
+          </div>
+
+          <div class="setting-card" id="operationSetting">
+            <label>Operation</label>
+            <div class="choice-grid" id="operationChoices">
+              <button class="choice selected" data-value="+" type="button">＋ Addition</button>
+              <button class="choice" data-value="-" type="button">− Subtraction</button>
+              <button class="choice" data-value="*" type="button">× Multiplication</button>
+              <button class="choice" data-value="/" type="button">÷ Division</button>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <label>Questions</label>
+            <div class="choice-grid compact" id="questionChoices">
+              <button class="choice selected" data-value="10" type="button">10</button>
+              <button class="choice" data-value="20" type="button">20</button>
+              <button class="choice" data-value="50" type="button">50</button>
+              <button class="choice" data-value="endless" type="button">∞ Endless</button>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <label>Time Limit</label>
+            <div class="choice-grid compact" id="timerChoices">
+              <button class="choice selected" data-value="0" type="button">Off</button>
+              <button class="choice" data-value="30" type="button">30 sec</button>
+              <button class="choice" data-value="60" type="button">60 sec</button>
+              <button class="choice" data-value="120" type="button">2 min</button>
+              <button class="choice" data-value="300" type="button">5 min</button>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <label>Place Value Guide</label>
+            <div class="choice-grid compact">
+              <button class="choice selected" id="guideOff" data-value="off" type="button">Guide Off</button>
+              <button class="choice" id="guideOn" data-value="on" type="button">Show Guide</button>
+            </div>
+            <p class="hint">Shows the 128, 64, 32, 16, 8, 4, 2, 1 place values above the binary numbers.</p>
+          </div>
+
+          <div class="setting-card toggles">
+            <label>Options</label>
+            <button class="toggle active" id="musicToggle" type="button">
+              <span class="toggle-icon">♫</span><span>Music</span><strong>ON</strong>
+            </button>
+            <button class="toggle active" id="soundToggle" type="button">
+              <span class="toggle-icon">🔊</span><span>Sound Effects</span><strong>ON</strong>
+            </button>
+            <button class="toggle" id="decimalToggle" type="button">
+              <span class="toggle-icon">128</span><span>Show Decimal Values</span><strong>OFF</strong>
+            </button>
+          </div>
+        </div>
+
+        <div class="setup-actions">
+          <button class="secondary-button" id="exitSetup" type="button">Exit to Menu</button>
+          <button class="start-button" id="startButton" type="button">Start Quiz <span>→</span></button>
+        </div>
+        <p class="hint">Choose your settings, then solve each problem in binary.</p>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen hidden">
+      <div class="game-shell">
+        <header class="game-header">
+          <button class="small-button" id="gameMenuButton" type="button">☰ Menu</button>
+          <div class="game-title">BINARY <span>ARITHMETIC</span></div>
+          <div class="header-stats">
+            <div><small>Score</small><strong id="score">0</strong></div>
+            <div><small>Question</small><strong id="questionNumber">1 / 10</strong></div>
+            <div id="timerBox"><small>Time</small><strong id="timer">—</strong></div>
+          </div>
+        </header>
+
+        <div class="game-content">
+          <div class="problem-panel">
+            <div class="operation-badge" id="operationBadge">CONVERSION</div>
+            <div id="placeValueGuide" class="place-value-guide hidden" aria-label="Binary place values">
+              <div class="guide-labels"><span>128</span><span>64</span><span>32</span><span>16</span><span>8</span><span>4</span><span>2</span><span>1</span></div>
+              <div class="guide-bits"><span>2⁷</span><span>2⁶</span><span>2⁵</span><span>2⁴</span><span>2³</span><span>2²</span><span>2¹</span><span>2⁰</span></div>
+            </div>
+            <div id="conversionProblem" class="problem"></div>
+            <div id="operationProblem" class="problem operation-problem hidden"></div>
+            <p class="question-hint" id="questionHint">Choose the bits to build your answer.</p>
+            <div id="feedback" class="feedback"></div>
+          </div>
+
+          <aside class="side-panel">
+            <div class="stat-card"><span>Correct</span><strong id="correct">0</strong></div>
+            <div class="stat-card"><span>Incorrect</span><strong id="incorrect">0</strong></div>
+            <button class="side-button" id="pauseButton" type="button">Pause</button>
+            <button class="side-button" id="musicButton" type="button">♫ Music: On</button>
+            <button class="side-button" id="soundButton" type="button">🔊 Sound: On</button>
+            <button class="side-button danger" id="endGameButton" type="button">End Game</button>
+          </aside>
+        </div>
+      </div>
+
+      <div id="pauseOverlay" class="overlay hidden">
+        <div class="dialog">
+          <p class="eyebrow">QUIZ PAUSED</p>
+          <h2>Take a breather.</h2>
+          <button class="start-button" id="resumeButton" type="button">Resume</button>
+          <button class="secondary-button" id="pauseMenuButton" type="button">Setup Menu</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultsScreen" class="screen hidden">
+      <div class="panel results-panel">
+        <p class="eyebrow">QUIZ COMPLETE</p>
+        <h1 id="resultsTitle">Great work!</h1>
+        <div class="big-score"><span id="finalScore">0</span><small>POINTS</small></div>
+        <div class="results-grid">
+          <div><span>Correct</span><strong id="finalCorrect">0</strong></div>
+          <div><span>Incorrect</span><strong id="finalIncorrect">0</strong></div>
+          <div><span>Accuracy</span><strong id="finalAccuracy">0%</strong></div>
+        </div>
+        <div class="results-actions">
+          <button class="secondary-button" id="resultsMenuButton" type="button">Setup Menu</button>
+          <button class="start-button" id="againButton" type="button">Play Again <span>↻</span></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <audio id="music" src="./music/BinaryTrack.wav" loop preload="auto"></audio>
+  <script src="./js/binary-quiz.js"></script>
+</body>
+</html>
