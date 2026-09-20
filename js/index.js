@@ -126,7 +126,8 @@ const courseCodes={
 const courseQuizCatalog={
   CompArch:[
     {id:'quiz1', label:'First Slides Practice', detail:'for Sept 23'},
-    {id:'binary-quiz', label:'Binary Arithmetic', detail:'Standalone binary conversion practice', external:'binary-quiz.html'}
+    {id:'binary-quiz', label:'Binary Practice', detail:'Standalone binary practice', external:'binary-quiz.html'},
+    {id:'hexadecimal-quiz', label:'Hexadecimal Practice', detail:'Standalone hexadecimal practice', external:'hexadecimal-quiz.html'}
   ],
   CloudComp:[
     {id:'quiz1', label:'First Slides Practice', detail:'for Sept 24'}
@@ -334,9 +335,22 @@ document.querySelectorAll('[data-close-patchnotes]').forEach(el=>{
 });
 
 patchnotesContent.textContent=`
+Version 1.4
+- Added Hexadecimal Practice, with options for Binary -> Hex, Hex -> Decimal, Decimal -> Hex and Hex -> Binary.
+- Added Hexadecimal Practice for Operations, including Addition, Subtraction, Multiplication and Division
+- Added Hexadecimal Practice Guide, to show the hexadecimal letter values for 10 through 15
+- Added Manual next question button to Binary and Hexadecimal games, to allow review of correct anwser
+- Changed time limit in Hexadecimal and Binary game to be for each individual question
+- Added sorting on win screen for general quizzes, to allow you to just see correct and incorrect anwsers
+- Added incorrect question retaking for general quizzes, to allow specific review of incorrect questions
+- General Optimization
+- Removed "in example" questions on Comp Arch
+- Improved question wording flow
+
 Version 1.3
 - Fixed minor bugs
 - Added Binary Arithmetic practice to Computer Arch, allowing you to practice binary to decimal and vise versa, as well as operations with binary!
+
 Version 1.2
 - Fixed back button through browser softlocking
 - Mobile Adjustments, including fix to sound on mobile

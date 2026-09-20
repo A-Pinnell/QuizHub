@@ -121,6 +121,11 @@ const requestedCategory = params.get("category");
 const defaultCategory = Object.keys(questionBank)[0] || "CompArch";
 const category = requestedCategory && (questionBank[requestedCategory] || codes[requestedCategory]) ? requestedCategory : defaultCategory;
 const bank = questionBank[category] || [];
+const rawMiniQuestions = params.get("miniQuestions");
+const customQuestionSequence = rawMiniQuestions
+  ? rawMiniQuestions.split(",").map((value) => Number.parseInt(value, 10)).filter((value) => Number.isInteger(value) && value >= 0)
+  : [];
+const miniQuizMode = params.get("miniQuiz") === "true" || customQuestionSequence.length > 0;
 
 const theme = themes[category] || themes.CompArch || {
   pageBg: "#6f7d86",
@@ -181,6 +186,7 @@ let selectedQuestionCount = totalAvailable;
 let questionSequence = [];
 let sequencePosition = 0;
 let current = null;
+let currentQuestionIndex = null;
 let questionNumber = 0;
 let score = 0;
 let answered = false;
@@ -359,6 +365,7 @@ function loadQuestion(){
     return;
   }
 
+  currentQuestionIndex = questionIndex;
   current = bank[questionIndex];
   questionNumber = sequencePosition + 1;
   renderQuestion();
@@ -409,6 +416,7 @@ function revealQuestion(resultType, selectedIndex=null){
 
   history.push({
     question: current.q,
+    questionIndex: currentQuestionIndex,
     selected: resultType === "skip" ? "" : current.a[selectedIndex],
     correctAnswer: current.a[correctIndex],
     correct: isCorrect,
@@ -525,12 +533,26 @@ function validateSetup(){
 }
 
 function beginQuiz(){
-  if(quizStarted || !validateSetup())return;
+  if(quizStarted) return;
+
+  if (miniQuizMode && customQuestionSequence.length) {
+    const validIndexes = customQuestionSequence.filter((index) => index < bank.length);
+    if (!validIndexes.length) {
+      setupError.textContent = "No missed questions are available to retake.";
+      return;
+    }
+    selectedQuestionCount = validIndexes.length;
+    questionSequence = validIndexes.slice();
+    sequencePosition = 0;
+  } else if (!validateSetup()) {
+    return;
+  } else {
+    buildQuestionSequence();
+  }
 
   playSound('begin');
   quizStarted = true;
   startQuizMusic();
-  buildQuestionSequence();
   setup.hidden = true;
   content.hidden = false;
   startTimer();
@@ -586,3 +608,7 @@ countInput.addEventListener("input",()=>{
   if(Number.isFinite(value) && value > totalAvailable) countInput.value = totalAvailable;
   if(Number.isFinite(value) && value < 1) countInput.value = 1;
 });
+
+if (miniQuizMode && customQuestionSequence.length) {
+  beginQuiz();
+}

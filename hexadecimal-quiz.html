@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Binary Arithmetic Quiz</title>
-  <link rel="stylesheet" href="./css/binary-quiz.css">
+  <title>Hexadecimal Quiz</title>
+  <link rel="stylesheet" href="./css/hexadecimal-quiz.css">
 </head>
 <body>
   <main id="app">
     <section id="setupScreen" class="screen">
       <div class="panel setup-panel">
         <div class="brand">
-          <div class="brand-mark">01</div>
+          <div class="brand-mark">02</div>
           <div>
-            <p class="eyebrow">BINARY TRAINING</p>
-            <h1>Binary Arithmetic</h1>
+            <p class="eyebrow">HEXADECIMAL TRAINING</p>
+            <h1>Hexadecimal Practice</h1>
           </div>
         </div>
 
@@ -24,11 +24,20 @@
             <div class="choice-grid" id="gameTypeChoices">
               <button class="choice selected" data-value="conversion" type="button">⇄ Conversion Game</button>
               <button class="choice" data-value="operation" type="button">＋ Operation Game</button>
-              <button class="choice" data-value="twos" type="button">± Two's Complement</button>
             </div>
           </div>
 
-          <div class="setting-card" id="operationSetting">
+          <div class="setting-card" id="practiceSetting">
+            <label>Practice Type</label>
+            <div class="choice-grid" id="practiceTypeChoices">
+              <button class="choice selected" data-value="b2h" type="button">Binary → Hex</button>
+              <button class="choice" data-value="h2d" type="button">Hex → Decimal</button>
+              <button class="choice" data-value="d2h" type="button">Decimal → Hex</button>
+              <button class="choice" data-value="h2b" type="button">Hex → Binary</button>
+            </div>
+          </div>
+
+          <div class="setting-card hidden" id="operationSetting">
             <label>Operation</label>
             <div class="choice-grid" id="operationChoices">
               <button class="choice selected" data-value="+" type="button">＋ Addition</button>
@@ -68,6 +77,15 @@
             <p class="hint">Shows the 128, 64, 32, 16, 8, 4, 2, 1 place values above the binary numbers.</p>
           </div>
 
+          <div class="setting-card">
+            <label>Hexadecimal Guide</label>
+            <div class="choice-grid compact">
+              <button class="choice selected" id="hexGuideOff" data-value="off" type="button">Guide Off</button>
+              <button class="choice" id="hexGuideOn" data-value="on" type="button">Show Guide</button>
+            </div>
+            <p class="hint">Shows the hexadecimal letter values for 10 through 15: A, B, C, D, E, F.</p>
+          </div>
+
           <div class="setting-card toggles">
             <label>Options</label>
             <button class="toggle active" id="musicToggle" type="button">
@@ -86,7 +104,7 @@
           <button class="secondary-button" id="exitSetup" type="button">Exit to Menu</button>
           <button class="start-button" id="startButton" type="button">Start Quiz <span>→</span></button>
         </div>
-        <p class="hint">Choose your settings, then solve each problem in binary.</p>
+        <p class="hint">Choose your settings, then solve each problem in hexadecimal.</p>
       </div>
     </section>
 
@@ -94,7 +112,7 @@
       <div class="game-shell">
         <header class="game-header">
           <button class="small-button" id="gameMenuButton" type="button">☰ Menu</button>
-          <div class="game-title">BINARY <span>ARITHMETIC</span></div>
+          <div class="game-title">HEXADECIMAL <span>PRACTICE</span></div>
           <div class="header-stats">
             <div><small>Score</small><strong id="score">0</strong></div>
             <div><small>Question</small><strong id="questionNumber">1 / 10</strong></div>
@@ -104,10 +122,20 @@
 
         <div class="game-content">
           <div class="problem-panel">
-            <div class="operation-badge" id="operationBadge">CONVERSION</div>
+            <div class="operation-badge" id="operationBadge">BINARY → HEX</div>
             <div id="placeValueGuide" class="place-value-guide hidden" aria-label="Binary place values">
               <div class="guide-labels"><span>128</span><span>64</span><span>32</span><span>16</span><span>8</span><span>4</span><span>2</span><span>1</span></div>
               <div class="guide-bits"><span>2⁷</span><span>2⁶</span><span>2⁵</span><span>2⁴</span><span>2³</span><span>2²</span><span>2¹</span><span>2⁰</span></div>
+            </div>
+            <div id="hexGuide" class="hex-guide hidden" aria-label="Hexadecimal letter values">
+              <div class="hex-guide-grid">
+                <span>10=A</span>
+                <span>11=B</span>
+                <span>12=C</span>
+                <span>13=D</span>
+                <span>14=E</span>
+                <span>15=F</span>
+              </div>
             </div>
             <div id="conversionProblem" class="problem"></div>
             <div id="operationProblem" class="problem operation-problem hidden"></div>
@@ -156,7 +184,7 @@
     </section>
   </main>
 
-  <audio id="music" src="./music/BinaryTrack.wav" loop preload="auto"></audio>
-  <script src="./js/binary-quiz.js"></script>
+  <audio id="music" src="./music/HexadecimalTrack.wav" loop preload="auto"></audio>
+  <script src="./js/hexadecimal-quiz.js"></script>
 </body>
 </html>

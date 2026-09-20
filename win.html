@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Quiz Hub - Complete</title>
+<script src="./js/questionBank.js" defer></script>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:#111}
@@ -155,6 +156,14 @@ body::after{
   font-size:17px;font-weight:700;color:#59636a;margin:5px 0 30px;
   animation:rise .6s .25s both;
 }
+.review-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.review-filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{
+  border:1px solid rgba(122,23,49,.3);background:rgba(255,255,255,.8);color:#2d2d2d;
+  min-height:42px;padding:0 16px;border-radius:999px;font:inherit;font-weight:900;letter-spacing:.8px;cursor:pointer;transition:all .18s ease;
+}
+.filter-btn.active{background:#7a1731;color:#fff;border-color:#7a1731;box-shadow:0 10px 20px rgba(122,23,49,.2)}
+.filter-btn:hover{transform:translateY(-2px)}
 .review{display:grid;gap:11px;margin-bottom:30px}
 .item{
   background:rgba(255,255,255,.94);
@@ -177,7 +186,9 @@ body::after{
   cursor:pointer;transition:transform .18s,box-shadow .18s;
 }
 .btn:hover{transform:translateY(-4px);box-shadow:0 10px 25px rgba(0,0,0,.2)}
+.btn:disabled{cursor:not-allowed;opacity:.55;transform:none;box-shadow:none}
 .retry{background:#7a1731;color:#fff}
+.secondary{background:#dfe6eb;color:#111}
 .menu{background:#c8ced1;color:#111}
 .error{
   display:none;margin-top:20px;padding:18px;background:#fff;
@@ -218,6 +229,14 @@ body::after{
   <div class="score" id="score">0 / 0</div>
   <p class="summary" id="summary">Loading your results...</p>
 
+  <div class="review-toolbar">
+    <div class="review-filters" aria-label="Review question filters">
+      <button class="filter-btn active" type="button" data-filter="all">ALL</button>
+      <button class="filter-btn" type="button" data-filter="correct">CORRECT</button>
+      <button class="filter-btn" type="button" data-filter="incorrect">INCORRECT</button>
+    </div>
+  </div>
+
   <section class="review" id="review"></section>
 
   <div class="error" id="error">
@@ -226,13 +245,14 @@ body::after{
 
   <div class="actions">
     <button class="btn retry" id="retry" type="button">RETRY</button>
+    <button class="btn secondary" id="retakeIncorrect" type="button">RETAKE MISSED</button>
     <button class="btn menu" id="menu" type="button">QUIT TO MENU</button>
   </div>
 </section>
 </main>
 
 <script>
-(function(){
+window.addEventListener("load", function(){
   "use strict";
 
   let soundsMuted=localStorage.getItem("quizHubMuted")==="true";
@@ -294,6 +314,8 @@ body::after{
   const errorEl = document.getElementById("error");
   const retryBtn = document.getElementById("retry");
   const menuBtn = document.getElementById("menu");
+  const retakeIncorrectBtn = document.getElementById("retakeIncorrect");
+  const filterButtons = [...document.querySelectorAll(".filter-btn")];
   const winClose = document.getElementById("winClose");
 
   winClose.addEventListener("click",function(){
@@ -305,6 +327,7 @@ body::after{
     summaryEl.textContent = "Results could not be loaded.";
     errorEl.classList.add("show");
     retryBtn.style.display = "none";
+    retakeIncorrectBtn.style.display = "none";
     return;
   }
 
@@ -321,58 +344,148 @@ body::after{
     ? Number(data.score)
     : 0;
 
+  const correctCount = data.history.filter((item) => item && item.correct === true).length;
+  const incorrectCount = data.history.filter((item) => item && item.correct !== true).length;
+
   scoreEl.textContent = score + " / " + total;
 
   // Passing = at least 50%.
   const passed = total > 0 && score / total >= 0.5;
 
   summaryEl.textContent = passed
-    ? "You passed! Your STEM knowledge is on fire."
-    : "Keep practicing — every question is another step forward.";
+    ? `You passed! ${correctCount} correct and ${incorrectCount} missed.`
+    : `Keep practicing — ${incorrectCount} missed questions are ready to retry.`;
 
-  reviewEl.innerHTML = "";
+  function findQuestionIndex(item){
+    if (!item || typeof item !== "object") return null;
 
-  data.history.forEach(function(item,index){
-    const article = document.createElement("article");
-    const correct = item && item.correct === true;
-    const skipped = item && item.skipped === true;
+    if (Number.isInteger(Number(item.questionIndex)) && Number(item.questionIndex) >= 0) {
+      return Number(item.questionIndex);
+    }
 
-    article.className = "item " + (correct ? "correct" : "wrong");
-    article.style.animationDelay = (index * 65) + "ms";
+    const bank = window.questionBank && window.questionBank[category]
+      ? window.questionBank[category]
+      : [];
 
-    const q = document.createElement("div");
-    q.className = "q";
-    q.textContent = (index + 1) + ". " + (item.question || "Question");
+    const normalized = typeof item.question === "string"
+      ? item.question.trim().toLowerCase().replace(/\s+/g, " ")
+      : "";
 
-    const answer = document.createElement("div");
-    answer.className = "answer";
+    const foundIndex = bank.findIndex((entry) => {
+      if (!entry || typeof entry.q !== "string") return false;
+      return entry.q.trim().toLowerCase().replace(/\s+/g, " ") === normalized;
+    });
 
-    const yourLabel = document.createElement("strong");
-    yourLabel.textContent = "Your answer:";
-    answer.appendChild(yourLabel);
-    answer.appendChild(document.createTextNode(
-      " " + (skipped ? "Skipped" : (item.selected || "No answer"))
-    ));
+    return foundIndex >= 0 ? foundIndex : null;
+  }
 
-    answer.appendChild(document.createElement("br"));
+  function getIncorrectQuestionIndexes(){
+    const bank = window.questionBank && window.questionBank[category]
+      ? window.questionBank[category]
+      : [];
 
-    const correctLabel = document.createElement("strong");
-    correctLabel.textContent = "Correct answer:";
-    answer.appendChild(correctLabel);
-    answer.appendChild(document.createTextNode(
-      " " + (item.correctAnswer || "—")
-    ));
+    const indexes = [];
+    data.history.forEach((item) => {
+      if (!item || item.correct === true) return;
+      const questionIndex = findQuestionIndex(item);
+      if (questionIndex === null || !bank[questionIndex]) return;
+      if (!indexes.includes(questionIndex)) {
+        indexes.push(questionIndex);
+      }
+    });
 
-    const status = document.createElement("div");
-    status.className = "status";
-    status.textContent =
-      correct ? "CORRECT" : (skipped ? "SKIPPED" : "INCORRECT");
+    return indexes;
+  }
 
-    article.appendChild(q);
-    article.appendChild(answer);
-    article.appendChild(status);
-    reviewEl.appendChild(article);
+  let activeFilter = "all";
+
+  function renderReview(){
+    reviewEl.innerHTML = "";
+    const items = data.history.filter((item) => {
+      if (activeFilter === "correct") return item && item.correct === true;
+      if (activeFilter === "incorrect") return item && item.correct !== true;
+      return true;
+    });
+
+    if (!items.length){
+      const empty = document.createElement("div");
+      empty.className = "answer";
+      empty.textContent = activeFilter === "all"
+        ? "No questions were recorded for this quiz."
+        : "No questions match this filter.";
+      reviewEl.appendChild(empty);
+      return;
+    }
+
+    items.forEach(function(item,index){
+      const originalIndex = data.history.indexOf(item);
+      const article = document.createElement("article");
+      const correct = item && item.correct === true;
+      const skipped = item && item.skipped === true;
+
+      article.className = "item " + (correct ? "correct" : "wrong");
+      article.style.animationDelay = (index * 65) + "ms";
+
+      const q = document.createElement("div");
+      q.className = "q";
+      q.textContent = (originalIndex + 1) + ". " + (item.question || "Question");
+
+      const answer = document.createElement("div");
+      answer.className = "answer";
+
+      const yourLabel = document.createElement("strong");
+      yourLabel.textContent = "Your answer:";
+      answer.appendChild(yourLabel);
+      answer.appendChild(document.createTextNode(
+        " " + (skipped ? "Skipped" : (item.selected || "No answer"))
+      ));
+
+      answer.appendChild(document.createElement("br"));
+
+      const correctLabel = document.createElement("strong");
+      correctLabel.textContent = "Correct answer:";
+      answer.appendChild(correctLabel);
+      answer.appendChild(document.createTextNode(
+        " " + (item.correctAnswer || "—")
+      ));
+
+      const status = document.createElement("div");
+      status.className = "status";
+      status.textContent =
+        correct ? "CORRECT" : (skipped ? "SKIPPED" : "INCORRECT");
+
+      article.appendChild(q);
+      article.appendChild(answer);
+      article.appendChild(status);
+      reviewEl.appendChild(article);
+    });
+  }
+
+  filterButtons.forEach(function(button){
+    button.addEventListener("click",function(){
+      activeFilter = button.dataset.filter || "all";
+      filterButtons.forEach((btn) => btn.classList.toggle("active", btn === button));
+      renderReview();
+    });
   });
+
+  const incorrectQuestionIndexes = getIncorrectQuestionIndexes();
+  retakeIncorrectBtn.disabled = incorrectQuestionIndexes.length === 0;
+  retakeIncorrectBtn.textContent = incorrectQuestionIndexes.length > 0
+    ? `RETAKE ${incorrectQuestionIndexes.length} MISSED`
+    : "NO MISSED QUESTIONS";
+
+  retakeIncorrectBtn.addEventListener("click",function(){
+    if (incorrectQuestionIndexes.length === 0) return;
+
+    const target = new URL("quiz.html", window.location.href);
+    target.searchParams.set("category", category);
+    target.searchParams.set("miniQuiz", "true");
+    target.searchParams.set("miniQuestions", incorrectQuestionIndexes.join(","));
+    window.location.href = target.toString();
+  });
+
+  renderReview();
 
   retryBtn.addEventListener("click",function(){
     window.location.href =
@@ -557,7 +670,7 @@ body::after{
     if(launchTimer) clearInterval(launchTimer);
     if(animationId) cancelAnimationFrame(animationId);
   });
-})();
+});
 </script>
 </body>
 </html>

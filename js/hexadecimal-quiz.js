@@ -4,6 +4,7 @@
   const $ = (id) => document.getElementById(id);
   const state = {
     gameType: "conversion",
+    conversionMode: "b2h",
     operation: "+",
     questions: 10,
     timerLimit: 30,
@@ -11,14 +12,15 @@
     sound: true,
     decimal: false,
     guide: false,
+    hexGuide: false,
     current: 0,
     score: 0,
     correct: 0,
     incorrect: 0,
-    answer: 0,
+    answer: "",
     first: 0,
     second: 0,
-    conversionDirection: "b2d",
+    conversionDirection: "b2h",
     userBits: [],
     remaining: 0,
     paused: false,
@@ -89,6 +91,7 @@
   }
 
   chooseGroup("gameTypeChoices", value => { state.gameType = value; updateSetupVisibility(); });
+  chooseGroup("practiceTypeChoices", value => { state.conversionMode = value; });
   chooseGroup("operationChoices", value => state.operation = value);
   chooseGroup("questionChoices", value => state.questions = value === "endless" ? "endless" : Number(value));
 
@@ -147,10 +150,26 @@
     [$("guideOff"), $("guideOn")].forEach(b => b.classList.remove("selected"));
     button.classList.add("selected");
     state.guide = button.dataset.value === "on";
+    updateGuideVisibility();
   }));
 
+  [$("hexGuideOff"), $("hexGuideOn")].forEach(button => button.addEventListener("click", () => {
+    [$("hexGuideOff"), $("hexGuideOn")].forEach(b => b.classList.remove("selected"));
+    button.classList.add("selected");
+    state.hexGuide = button.dataset.value === "on";
+    updateGuideVisibility();
+  }));
+
+  function updateGuideVisibility() {
+    $("placeValueGuide").classList.toggle("hidden", !state.guide);
+    $("hexGuide").classList.toggle("hidden", !state.hexGuide);
+  }
+
   function updateSetupVisibility() {
-    $("operationSetting").classList.toggle("hidden", state.gameType !== "operation");
+    const practiceSetting = $("practiceSetting");
+    const operationSetting = $("operationSetting");
+    if (practiceSetting) practiceSetting.classList.toggle("hidden", state.gameType !== "conversion");
+    if (operationSetting) operationSetting.classList.toggle("hidden", state.gameType !== "operation");
   }
 
   function setToggle(button, enabled) {
@@ -222,112 +241,196 @@
     host.replaceChildren(bitButtons(state.userBits, true));
   }
 
-  function makeConversionProblem() {
-    const value = randomInt(0, 255);
-    state.answer = value;
-    state.first = value;
-    state.conversionDirection = Math.random() < .5 ? "b2d" : "d2b";
-    const host = $("conversionProblem");
-    host.replaceChildren();
-    const title = document.createElement("div");
-    title.className = "conversion-title";
-
-    if (state.conversionDirection === "b2d") {
-      $("operationBadge").textContent = "BINARY → DECIMAL";
-      title.textContent = "Convert this binary number to decimal";
-      host.append(title, bitButtons(bitsFor(value), false, "given-bits"));
-      const eq = document.createElement("div");
-      eq.className = "conversion-equals";
-      eq.textContent = "=";
-      host.appendChild(eq);
-      const answer = document.createElement("input");
-      answer.className = "decimal-answer-input";
-      answer.id = "conversionAnswer";
-      answer.type = "number";
-      answer.min = "0";
-      answer.max = "255";
-      answer.inputMode = "numeric";
-      answer.placeholder = "?";
-      answer.setAttribute("aria-label", "Decimal answer");
-      host.appendChild(answer);
-      state.userBits = [];
-      $("questionHint").textContent = "Enter the decimal answer, then submit.";
-    } else {
-      $("operationBadge").textContent = "DECIMAL → BINARY";
-      title.textContent = "Convert this decimal number to binary";
-      const decimal = document.createElement("div");
-      decimal.className = "conversion-decimal";
-      decimal.textContent = value;
-      host.append(title, decimal);
-      const eq = document.createElement("div");
-      eq.className = "conversion-equals";
-      eq.textContent = "=";
-      host.appendChild(eq);
-      const user = document.createElement("div");
-      user.id = "userBits";
-      user.className = "user-bits-host";
-      host.appendChild(user);
-      state.userBits = Array(8).fill("0");
-      renderUserBits();
-      $("questionHint").textContent = "Click each bit to switch it between 0 and 1, then submit.";
-    }
-
-    addSubmitButton(host);
-    state.accepting = true;
+  function toHex(value) {
+    return Number(value).toString(16).toUpperCase();
   }
 
-  function makeTwosComplementProblem() {
-    const sourceValue = randomInt(0, 255);
-    const sourceBits = sourceValue.toString(2).padStart(8, "0");
-    state.answer = ((~sourceValue) + 1) & 0xFF;
-    state.first = sourceValue;
+  function makeBinaryToHexProblem() {
+    const value = randomInt(0, 255);
+    state.answer = toHex(value);
+    state.first = value;
+    state.conversionDirection = "b2h";
     const host = $("conversionProblem");
     host.replaceChildren();
-    $("operationBadge").textContent = "TWO'S COMPLEMENT";
-
     const title = document.createElement("div");
     title.className = "conversion-title";
-    title.textContent = "Find the two's complement of this binary number";
-
-    const binary = document.createElement("div");
-    binary.className = "conversion-decimal";
-    binary.textContent = sourceBits;
-
+    $("operationBadge").textContent = "BINARY → HEX";
+    title.textContent = "Convert this binary number to hexadecimal";
+    host.append(title, bitButtons(bitsFor(value), false, "given-bits"));
     const eq = document.createElement("div");
     eq.className = "conversion-equals";
     eq.textContent = "=";
-
-    const user = document.createElement("div");
-    user.id = "userBits";
-    user.className = "user-bits-host";
-
-    host.append(title, bitButtons(sourceBits.split(""), false, "given-bits"), eq, user);
-    state.userBits = Array(8).fill("0");
-    renderUserBits();
-    $("questionHint").textContent = "";
+    host.appendChild(eq);
+    const answer = document.createElement("input");
+    answer.className = "decimal-answer-input";
+    answer.id = "conversionAnswer";
+    answer.type = "text";
+    answer.inputMode = "text";
+    answer.placeholder = "?";
+    answer.maxLength = 2;
+    answer.setAttribute("aria-label", "Hexadecimal answer");
+    host.appendChild(answer);
+    state.userBits = [];
+    $("questionHint").textContent = "Enter the hexadecimal value (0–F) for this byte.";
     addSubmitButton(host);
     state.accepting = true;
   }
 
-  function addConversionDecimalControls(host) {
-    const controls = document.createElement("div");
-    controls.className = "decimal-keypad";
-    controls.id = "decimalKeypad";
-    for (let n = 0; n <= 255; n++) {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.textContent = n;
-      b.className = "decimal-choice";
-      b.dataset.value = n;
-      b.addEventListener("click", () => {
-        state.userBits = String(n).split("");
-        $("conversionAnswer").textContent = n;
-        controls.querySelectorAll(".selected").forEach(x => x.classList.remove("selected"));
-        b.classList.add("selected");
-      });
-      controls.appendChild(b);
+  function makeHexToDecimalProblem() {
+    const value = randomInt(0, 255);
+    state.answer = String(value);
+    state.first = value;
+    state.conversionDirection = "h2d";
+    const host = $("conversionProblem");
+    host.replaceChildren();
+    const title = document.createElement("div");
+    title.className = "conversion-title";
+    $("operationBadge").textContent = "HEX → DECIMAL";
+    title.textContent = "Convert this hexadecimal value to decimal";
+    const hexValue = document.createElement("div");
+    hexValue.className = "conversion-decimal";
+    hexValue.textContent = toHex(value);
+    host.append(title, hexValue);
+    const eq = document.createElement("div");
+    eq.className = "conversion-equals";
+    eq.textContent = "=";
+    host.appendChild(eq);
+    const answer = document.createElement("input");
+    answer.className = "decimal-answer-input";
+    answer.id = "conversionAnswer";
+    answer.type = "number";
+    answer.min = "0";
+    answer.max = "255";
+    answer.inputMode = "numeric";
+    answer.placeholder = "?";
+    answer.setAttribute("aria-label", "Decimal answer");
+    host.appendChild(answer);
+    $("questionHint").textContent = "Type the decimal value for this hex number.";
+    addSubmitButton(host);
+    state.accepting = true;
+  }
+
+  function makeDecimalToHexProblem() {
+    const value = randomInt(0, 255);
+    state.answer = toHex(value);
+    state.first = value;
+    state.conversionDirection = "d2h";
+    const host = $("conversionProblem");
+    host.replaceChildren();
+    const title = document.createElement("div");
+    title.className = "conversion-title";
+    $("operationBadge").textContent = "DECIMAL → HEX";
+    title.textContent = "Convert this decimal value to hexadecimal";
+    const decimal = document.createElement("div");
+    decimal.className = "conversion-decimal";
+    decimal.textContent = value;
+    host.append(title, decimal);
+    const eq = document.createElement("div");
+    eq.className = "conversion-equals";
+    eq.textContent = "=";
+    host.appendChild(eq);
+    const answer = document.createElement("input");
+    answer.className = "decimal-answer-input";
+    answer.id = "conversionAnswer";
+    answer.type = "text";
+    answer.inputMode = "text";
+    answer.placeholder = "?";
+    answer.maxLength = 2;
+    answer.setAttribute("aria-label", "Hexadecimal answer");
+    host.appendChild(answer);
+    $("questionHint").textContent = "Enter the hex value for this decimal number.";
+    addSubmitButton(host);
+    state.accepting = true;
+  }
+
+  function makeHexToBinaryProblem() {
+    const value = randomInt(0, 255);
+    state.answer = value.toString(2).padStart(8, "0");
+    state.first = value;
+    state.conversionDirection = "h2b";
+    const host = $("conversionProblem");
+    host.replaceChildren();
+    const title = document.createElement("div");
+    title.className = "conversion-title";
+    $("operationBadge").textContent = "HEX → BINARY";
+    title.textContent = "Convert this hexadecimal value to binary";
+    const hexValue = document.createElement("div");
+    hexValue.className = "conversion-decimal";
+    hexValue.textContent = toHex(value);
+    host.append(title, hexValue);
+    const eq = document.createElement("div");
+    eq.className = "conversion-equals";
+    eq.textContent = "=";
+    host.appendChild(eq);
+    const user = document.createElement("div");
+    user.id = "userBits";
+    user.className = "user-bits-host";
+    host.appendChild(user);
+    state.userBits = Array(8).fill("0");
+    renderUserBits();
+    $("questionHint").textContent = "Click each bit to switch it between 0 and 1, then submit.";
+    addSubmitButton(host);
+    state.accepting = true;
+  }
+
+  function makeHexOperationProblem() {
+    let a = 0;
+    let b = 0;
+    let answer = 0;
+
+    if (state.operation === "+") {
+      a = randomInt(0, 255);
+      b = randomInt(0, 255);
+      answer = a + b;
+    } else if (state.operation === "-") {
+      a = randomInt(0, 255);
+      b = randomInt(0, a);
+      answer = a - b;
+    } else if (state.operation === "*") {
+      a = randomInt(0, 31);
+      b = randomInt(0, 31);
+      answer = a * b;
+    } else {
+      b = randomInt(1, 15);
+      answer = randomInt(0, 15);
+      a = b * answer;
     }
-    host.appendChild(controls);
+
+    state.first = a;
+    state.second = b;
+    state.answer = toHex(Math.min(255, answer));
+
+    const host = $("conversionProblem");
+    host.replaceChildren();
+    $("operationBadge").textContent = operationNames[state.operation];
+    const title = document.createElement("div");
+    title.className = "conversion-title";
+    title.textContent = "Solve this hexadecimal question";
+    const first = document.createElement("div");
+    first.className = "conversion-decimal";
+    first.textContent = toHex(a);
+    const op = document.createElement("div");
+    op.className = "conversion-equals";
+    op.textContent = operationSymbols[state.operation];
+    const second = document.createElement("div");
+    second.className = "conversion-decimal";
+    second.textContent = toHex(b);
+    const eq = document.createElement("div");
+    eq.className = "conversion-equals";
+    eq.textContent = "=";
+    const input = document.createElement("input");
+    input.className = "decimal-answer-input";
+    input.id = "conversionAnswer";
+    input.type = "text";
+    input.inputMode = "text";
+    input.placeholder = "?";
+    input.maxLength = 2;
+    input.setAttribute("aria-label", "Hexadecimal answer");
+
+    host.append(title, first, op, second, eq, input);
+    $("questionHint").textContent = "Enter the hexadecimal result, then submit.";
+    addSubmitButton(host);
+    state.accepting = true;
   }
 
   function addSubmitButton(host) {
@@ -340,63 +443,34 @@
     host.appendChild(button);
   }
 
-  function makeOperationProblem() {
-    let a, b, answer;
-    if (state.operation === "+") { a = randomInt(0, 127); b = randomInt(0, 255 - a); answer = a + b; }
-    else if (state.operation === "-") { a = randomInt(0, 255); b = randomInt(0, a); answer = a - b; }
-    else if (state.operation === "*") { a = randomInt(0, 15); b = randomInt(0, 15); answer = a * b; }
-    else { b = randomInt(1, 15); answer = randomInt(0, 15); a = b * answer; }
-
-    state.first = a;
-    state.second = b;
-    state.answer = answer;
-    $("operationBadge").textContent = operationNames[state.operation];
-    const host = $("operationProblem");
-    host.replaceChildren();
-    state.userBits = Array(8).fill("0");
-    const table = document.createElement("div");
-    table.className = "binary-operation";
-    const row = (value, symbol, answerRow = false) => {
-      const r = document.createElement("div");
-      r.className = "operation-row" + (answerRow ? " answer-row" : "");
-      const sign = document.createElement("span");
-      sign.className = "operation-sign";
-      sign.textContent = symbol || "";
-      r.appendChild(sign);
-      r.appendChild(bitButtons(answerRow ? state.userBits : bitsFor(value), answerRow, answerRow ? "operation-answer-bits" : "given-bits"));
-      return r;
-    };
-    table.append(row(a, ""), row(b, operationSymbols[state.operation]), row(answer, "=", true));
-    host.appendChild(table);
-    $("questionHint").textContent = "Click each answer bit to switch it between 0 and 1, then submit.";
-    const submit = document.createElement("button");
-    submit.type = "button";
-    submit.className = "submit-answer";
-    submit.id = "submitAnswer";
-    submit.textContent = "Submit Answer →";
-    submit.addEventListener("click", submitAnswer);
-    host.appendChild(submit);
-    state.accepting = true;
-  }
-
   function makeProblem() {
-    $("conversionProblem").classList.toggle("hidden", state.gameType === "operation");
+    $("conversionProblem").classList.toggle("hidden", state.gameType !== "conversion");
     $("operationProblem").classList.toggle("hidden", state.gameType !== "operation");
+    updateGuideVisibility();
     const feedback = $("feedback");
     feedback.textContent = "";
     feedback.className = "feedback";
 
     if (state.gameType === "operation") {
-      makeOperationProblem();
+      makeHexOperationProblem();
       return;
     }
 
-    if (state.gameType === "twos") {
-      makeTwosComplementProblem();
-      return;
+    switch (state.conversionMode) {
+      case "b2h":
+        makeBinaryToHexProblem();
+        break;
+      case "h2d":
+        makeHexToDecimalProblem();
+        break;
+      case "d2h":
+        makeDecimalToHexProblem();
+        break;
+      case "h2b":
+      default:
+        makeHexToBinaryProblem();
+        break;
     }
-
-    makeConversionProblem();
   }
 
   function updateStats() {
@@ -460,7 +534,7 @@
     state.nextPending = false;
     setNextButtonVisible(false);
     show("gameScreen");
-    $("placeValueGuide").classList.toggle("hidden", !state.guide);
+    updateGuideVisibility();
     updateStats();
     startTimer();
     updateMusic();
@@ -499,27 +573,31 @@
   function submitAnswer() {
     if (!state.accepting || state.paused) return;
 
-    let userAnswer;
+    let userAnswer = "";
 
     if (state.gameType === "operation") {
-      userAnswer = parseInt(state.userBits.join(""), 2);
-    } else if (state.gameType === "twos") {
-      userAnswer = parseInt(state.userBits.join(""), 2);
-    } else {
-      if (state.conversionDirection === "b2d") {
-        const chosen = $("conversionAnswer")?.value.trim() || "";
-        if (chosen === "") {
-          showFeedback("Enter a decimal answer first.", false);
-          return;
-        }
-        userAnswer = Number(chosen);
-        if (!Number.isInteger(userAnswer) || userAnswer < 0 || userAnswer > 255) {
-          showFeedback("Enter a whole number from 0 to 255.", false);
-          return;
-        }
-      } else {
-        userAnswer = parseInt(state.userBits.join(""), 2);
+      const chosen = $("conversionAnswer")?.value.trim() || "";
+      if (chosen === "") {
+        showFeedback("Enter the hex answer first.", false);
+        return;
       }
+      userAnswer = chosen.toUpperCase();
+    } else if (state.conversionMode === "h2d") {
+      const chosen = $("conversionAnswer")?.value.trim() || "";
+      if (chosen === "") {
+        showFeedback("Enter a decimal answer first.", false);
+        return;
+      }
+      userAnswer = Number(chosen);
+    } else if (state.conversionMode === "b2h" || state.conversionMode === "d2h") {
+      const chosen = $("conversionAnswer")?.value.trim() || "";
+      if (chosen === "") {
+        showFeedback("Enter the answer first.", false);
+        return;
+      }
+      userAnswer = chosen.toUpperCase();
+    } else {
+      userAnswer = state.userBits.join("");
     }
 
     state.accepting = false;
@@ -527,7 +605,8 @@
     clearInterval(state.timerId);
     setNextButtonVisible(true);
 
-    const ok = userAnswer === state.answer;
+    const ok = typeof userAnswer === "number" ? Number(userAnswer) === Number(state.answer) : String(userAnswer).toUpperCase() === String(state.answer).toUpperCase();
+
     if (ok) {
       state.correct++;
       state.score += 100;
@@ -537,9 +616,7 @@
       setTimeout(() => playTone(980, .1), 65);
     } else {
       state.incorrect++;
-      const expected = state.gameType === "twos"
-        ? state.answer.toString(2).padStart(8, "0")
-        : state.answer.toString(2).padStart(8, "0") + ` (${state.answer})`;
+      const expected = typeof state.answer === "number" ? state.answer : String(state.answer).toUpperCase();
       showFeedback(`✕ Incorrect — ${expected}.`, false);
       playSound("incorrect");
       playTone(180, .14, "sawtooth");
