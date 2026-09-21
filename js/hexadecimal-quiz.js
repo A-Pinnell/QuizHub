@@ -400,7 +400,7 @@
     state.second = b;
     state.answer = toHex(Math.min(255, answer));
 
-    const host = $("conversionProblem");
+    const host = $("operationProblem");
     host.replaceChildren();
     $("operationBadge").textContent = operationNames[state.operation];
     const title = document.createElement("div");

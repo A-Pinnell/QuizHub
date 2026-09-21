@@ -353,9 +353,9 @@ window.questionBank = {
 
     {q:"What allows organizations to scale globally without owning hardware?", a:["Cloud abstraction of physical infrastructure","Local-only storage","Manual hardware installation","Single-user operating systems"], c:0},
 
-    {q:"What type of billing is associated with cloud computing in the PDF?", a:["Usage-based billing","One-time hardware-only billing","Paper-based billing","No billing"], c:0},
+    {q:"What type of billing is associated with cloud computing?", a:["Usage-based billing","One-time hardware-only billing","Paper-based billing","No billing"], c:0},
 
-    {q:"Which database types are mentioned as cloud computing components?", a:["SQL and NoSQL","Only spreadsheets","Only CSV files","Only graphing databases"], c:0},
+    {q:"Which database types are used for cloud computing components?", a:["SQL and NoSQL","Only spreadsheets","Only CSV files","Only graphing databases"], c:0},
 
     {q:"What does on-demand self-service mean?", a:["Users can provision resources automatically without human intervention","Users must call a technician for every resource","Resources can only be provisioned once per year","Users cannot provision resources themselves"], c:0},
 
@@ -367,9 +367,7 @@ window.questionBank = {
 
     {q:"What does rapid elasticity allow cloud resources to do?", a:["Scale up or down automatically based on demand","Remain permanently fixed","Only increase once","Be manually removed from data centers"], c:0},
 
-    {q:"What does measured service involve?", a:["Monitoring, controlling, and billing usage based on consumption","Providing unlimited free resources","Preventing resource monitoring","Disabling usage tracking"], c:0},
-
-    {q:"Which organization is associated with the five characteristics presented in the PDF?", a:["NIST","NASA","IEEE only","WHO"], c:0},
+    {q:"What does measured service involve?", a:["Monitoring, controlling, and billing usage based on consumption", "Providing and allocating resources without tracking usage", "Limiting and reserving resources regardless of usage", "Managing and deploying resources without measuring usage"], c:0},
 
     {q:"What computing approach was introduced by mainframes and time-sharing in the 1960s?", a:["Shared computing","Serverless computing","Edge computing","Container orchestration"], c:0},
 
@@ -377,33 +375,31 @@ window.questionBank = {
 
     {q:"Which company is mentioned in connection with virtualization in the 1990s?", a:["VMware","Salesforce","Oracle","Microsoft"], c:0},
 
-    {q:"What matured during the 2000s according to the PDF?", a:["Web services and distributed systems","Quantum computing and AI chips","Edge computing only","Mobile app stores"], c:0},
+    {q:"What matured during the 2000s in Cloud Computing?", a:["Web services and distributed systems","Quantum computing and AI chips","Edge computing only","Mobile app stores"], c:0},
 
     {q:"What happened in 2006 that marked commercial cloud adoption?", a:["AWS launched EC2 and S3","Docker was released","Kubernetes became available","Azure launched"], c:0},
 
     {q:"Which technologies transformed application deployment during the 2010s?", a:["Containers and orchestration","Mainframes and time-sharing","Physical servers and tape drives","Only SQL databases"], c:0},
 
-    {q:"Which container technology is specifically mentioned?", a:["Docker","VMware","EC2","Salesforce"], c:0},
+    {q:"Which technology is used to create and run containers?", a:["Docker","VMware","EC2","Salesforce"], c:0},
 
-    {q:"Which orchestration technology is specifically mentioned?", a:["Kubernetes","S3","Azure App Services","Google Workspace"], c:0},
+    {q:"Which technology is used to manage and orchestrate containers?", a:["Kubernetes","S3","Azure App Services","Google Workspace"], c:0},
 
     {q:"Which cloud technologies are described as dominating the 2020s?", a:["Serverless, edge computing, AI-driven cloud services, and multi-cloud architectures","Mainframes, floppy disks, and tape drives","Only physical servers","Only desktop applications"], c:0},
 
-    {q:"According to the PDF, cloud computing is the result of decades of innovation in what area?", a:["Distributed systems","Word processing","Desktop publishing","Computer graphics"], c:0},
+    {q:"Cloud computing is the result of decades of innovation in what area?", a:["Distributed systems","Word processing","Desktop publishing","Computer graphics"], c:0},
 
     {q:"Which of the following is a modern IT use of cloud computing?", a:["Enterprise applications and SaaS platforms","Only local file storage","Only physical networking","Only BIOS configuration"], c:0},
 
     {q:"How can cloud computing support web applications?", a:["By supporting global web and mobile applications","By preventing network access","By requiring every application to run locally","By eliminating databases"], c:0},
 
-    {q:"What type of processing can cloud platforms support?", a:["Big data analytics and real-time processing","Only offline processing","Only manual calculations","Only word processing"], c:0},
+    {q:"What type of processing can cloud platforms support?", a:["Big data analytics and real-time processing","Only offline processing and analytics","Only manual calculations and manual statistics","Only word processing and data implimentation"], c:0},
 
     {q:"Which workloads can cloud computing support?", a:["Machine learning and AI workloads","Only operating system installation","Only spreadsheet printing","Only hardware testing"], c:0},
 
     {q:"What development practices can cloud computing support?", a:["DevOps pipelines and CI/CD automation","Only manual software deployment","Only hardware assembly","Only paper documentation"], c:0},
 
     {q:"Which cybersecurity operations are listed as cloud use cases?", a:["SIEM, SOAR, IAM, and threat detection","Only antivirus installation","Only password printing","Only physical locks"], c:0},
-
-    {q:"How many main cloud service models are presented in the PDF?", a:["Three","Two","Four","Five"], c:0},
 
     {q:"What does IaaS stand for?", a:["Infrastructure as a Service","Internet as a System","Infrastructure and Application Software","Integrated Application as a Service"], c:0},
 
@@ -415,27 +411,27 @@ window.questionBank = {
 
     {q:"What does PaaS primarily provide?", a:["Managed environments for application development","Physical data centers","Fully managed email accounts only","Hardware without networking"], c:0},
 
-    {q:"What does SaaS primarily provide?", a:["Fully managed applications delivered over the internet","Virtual machines only","Raw networking hardware","Operating system kernels only"], c:0},
+    {q:"What does SaaS primarily provide?", a:["Fully managed applications delivered over the internet","Virtual machines only in a confided software space","Raw networking hardware to be used with various other pieces of software","Operating system kernels only"], c:0},
 
     {q:"What differs between IaaS, PaaS, and SaaS?", a:["Levels of control, flexibility, and responsibility","The color of their interfaces","The physical size of computers","The number of users allowed"], c:0},
 
     {q:"What does IaaS provide as foundational resources?", a:["Compute, storage, and networking","Only email and calendars","Only application source code","Only database queries"], c:0},
 
-    {q:"What level of operating system control does IaaS provide?", a:["Full control over operating systems and applications","No control at all","Control only over browser settings","Control only over email"], c:0},
+    {q:"What level of operating system control does IaaS provide?", a:["Full control over operating systems and applications","No control at all","Control only over browser settings and web based applications","Control only over email services and other network applications"], c:0},
 
     {q:"What can users configure with IaaS?", a:["Firewalls, networks, and security policies","Only document formatting","Only application icons","Only email signatures"], c:0},
 
     {q:"Which is an example of an IaaS service?", a:["AWS EC2","Microsoft 365","Google Workspace","Salesforce"], c:0},
 
-    {q:"Which Azure service is listed as an IaaS example?", a:["Azure Virtual Machines","Azure App Services","Microsoft 365","Azure Workspace"], c:0},
+    {q:"Which Azure service is an IaaS example?", a:["Azure Virtual Machines","Azure App Services","Microsoft 365","Azure Workspace"], c:0},
 
-    {q:"Which Google Cloud service is listed as an IaaS example?", a:["Google Compute Engine","Google App Engine","Google Workspace","Google Drive"], c:0},
+    {q:"Which Google Cloud service is an IaaS example?", a:["Google Compute Engine","Google App Engine","Google Workspace","Google Drive"], c:0},
 
-    {q:"Which is a listed use case for IaaS?", a:["Disaster recovery","Email collaboration only","Browser-based CRM only","Online document editing only"], c:0},
+    {q:"Which is a use case for IaaS?", a:["Disaster recovery","Email collaboration only","Browser-based CRM only","Online document editing only"], c:0},
 
-    {q:"Which type of system migration is listed as an IaaS use case?", a:["Legacy system migration","Social media migration","Printer migration","Keyboard migration"], c:0},
+    {q:"Which type of system migration is an IaaS use case?", a:["Legacy system migration","Social media migration","Printer migration","Keyboard migration"], c:0},
 
-    {q:"What does PaaS provide for developers?", a:["A managed environment for building, deploying, and scaling applications","Only physical servers","Only network cables","Only finished applications"], c:0},
+    {q:"What does PaaS provide for developers?", a:["A managed environment for building, deploying, and scaling applications", "A service for storing files and managing user accounts", "A system for monitoring network traffic and hardware", "A tool for purchasing and configuring physical servers"], c:0},
 
     {q:"Which task can PaaS perform automatically?", a:["OS patching and updates","Physical data center construction","Keyboard replacement","Manual server assembly"], c:0},
 
@@ -455,15 +451,15 @@ window.questionBank = {
 
     {q:"What does SaaS eliminate for users?", a:["Installation and maintenance","Internet access","All user accounts","All application functionality"], c:0},
 
-    {q:"What type of pricing is commonly associated with SaaS in the PDF?", a:["Subscription-based pricing","Hardware-only pricing","No pricing","Per-keyboard pricing"], c:0},
+    {q:"What type of pricing is commonly associated with SaaS?", a:["Subscription-based pricing","Hardware-only pricing","No pricing","Per-keyboard pricing"], c:0},
 
     {q:"What happens automatically with SaaS applications?", a:["Updates and security patches","Physical server construction","Network cable installation","CPU replacement"], c:0},
 
     {q:"Which is an example of SaaS?", a:["Microsoft 365","AWS EC2","Google Compute Engine","Azure Virtual Machines"], c:0},
 
-    {q:"Which Google product is listed as a SaaS example?", a:["Google Workspace","Google Compute Engine","Google App Engine","Kubernetes"], c:0},
+    {q:"Which Google product is a good SaaS example?", a:["Google Workspace","Google Compute Engine","Google App Engine","Kubernetes"], c:0},
 
-    {q:"Which Salesforce offering category is listed as a SaaS example?", a:["Salesforce","AWS EC2","Azure Virtual Machines","Google Compute Engine"], c:0},
+    {q:"Which of these is a good SaaS example?", a:["Salesforce","AWS EC2","Azure Virtual Machines","Google Compute Engine"], c:0},
 
     {q:"Which is a listed SaaS use case?", a:["Email and collaboration tools","Legacy hardware migration","Firewall configuration","Virtual machine management"], c:0},
 
@@ -473,11 +469,11 @@ window.questionBank = {
 
     {q:"What is a hybrid cloud?", a:["A combination of public and private cloud","A combination of two private clouds only","A cloud without infrastructure","A cloud used only by schools"], c:0},
 
-    {q:"What is a community cloud?", a:["A cloud shared by organizations with similar requirements","A cloud available only to one individual","A cloud with no shared infrastructure","A cloud used only for gaming"], c:0},
+    {q:"What is a community cloud?", a:["A cloud shared by organizations with similar requirements","A cloud available only to one individual and to be viewed by multiple organizations","A cloud with no shared infrastructure and no means of sharing it to other organizations","A cloud used only for gaming"], c:0},
 
     {q:"Which sectors are given as examples for community clouds?", a:["Healthcare and education","Retail and entertainment only","Manufacturing and transportation only","Gaming and sports only"], c:0},
 
-    {q:"Which deployment model supports legacy systems according to the PDF?", a:["Hybrid cloud","Public cloud","Community cloud","SaaS"], c:0},
+    {q:"Which deployment model supports legacy systems according?", a:["Hybrid cloud","Public cloud","Community cloud","SaaS"], c:0},
 
     {q:"Which deployment model is described as compliance-friendly?", a:["Private cloud","Public cloud","SaaS","Community cloud"], c:0},
 
@@ -495,15 +491,13 @@ window.questionBank = {
 
     {q:"Which of the following is listed as another cloud provider?", a:["IBM Cloud","Docker Cloud only","Kubernetes Cloud","Microsoft Workspace Cloud"], c:0},
 
-    {q:"Which is a cloud computing use case?", a:["Hosting websites and applications","Manufacturing CPUs","Printing textbooks","Repairing keyboards"], c:0},
+    {q:"Which is a cloud computing use case?", a:["Hosting websites and applications","Manufacturing CPUs","Digital storing media files like textbooks","Handling servicing for keyboards"], c:0},
 
     {q:"How can cloud computing be used with data?", a:["Data warehousing and analytics","Only physical data filing","Only paper-based storage","Only local spreadsheets"], c:0},
 
     {q:"What type of pipelines can cloud computing support?", a:["Machine learning pipelines","Only printing pipelines","Only hardware pipelines","Only keyboard pipelines"], c:0},
 
     {q:"What type of devices can cloud platforms manage?", a:["IoT devices","Only desktop monitors","Only keyboards","Only printers"], c:0},
-
-    {q:"Which recovery-related use case is listed?", a:["Backup and disaster recovery","Only software installation","Only password recovery","Only screen repair"], c:0},
 
     {q:"What work environment can cloud computing support?", a:["Virtual desktops and remote work","Only local desktop work","Only data center work","Only offline computing"], c:0},
 
@@ -513,16 +507,13 @@ window.questionBank = {
 
     {q:"What is network segmentation used as in cloud cybersecurity?", a:["A security consideration","A billing model","A storage type","A deployment model"], c:0},
 
-    {q:"What additional form of segmentation is mentioned?", a:["Micro-segmentation","Macro-storage","Virtual partitioning","Cloud division"], c:0},
+    {q:"What is an additional form of segmentation?", a:["Micro-segmentation","Macro-storage","Virtual partitioning","Cloud division"], c:0},
 
     {q:"What security activities should cloud environments include?", a:["Logging, monitoring, and threat detection","Only application development","Only billing","Only hardware upgrades"], c:0},
 
-    {q:"Which compliance frameworks are mentioned?", a:["ISO 27001, SOC 2, and NIST","PCI only","GDPR only","HIPAA only"], c:0},
+    {q:"Where must security be integrated?", a:["Into every cloud architecture","Only into private clouds","Only into SaaS","Only into physical data centers"], c:0},
 
-    {q:"According to the PDF, where must security be integrated?", a:["Into every cloud architecture","Only into private clouds","Only into SaaS","Only into physical data centers"], c:0},
-
-    {q:"What is the shared responsibility model?", a:["A model dividing security and operational responsibilities between the cloud provider and customer","A billing system","A cloud deployment model","A method of sharing passwords"], c:0},
-
+{q:"What is the shared responsibility model?", a:["A model dividing security responsibilities between the provider and customer","A model dividing cloud resources between multiple customers","A model dividing application costs between different departments","A model dividing network traffic between multiple servers"], c:0},
     {q:"Who is responsible for physical data center security?", a:["The cloud provider","The customer only","The application developer only","The end user only"], c:0},
 
     {q:"Who is responsible for hardware and the hypervisor?", a:["The cloud provider","The customer only","The SaaS user","The database administrator only"], c:0},
@@ -541,7 +532,7 @@ window.questionBank = {
 
     {q:"What is a virtual machine?", a:["A software-based computer","A physical data center","A network cable","A database table"], c:0},
 
-    {q:"What is a container?", a:["A lightweight, portable application environment","A physical server rack","A database type","A geographic region"], c:0},
+    {q:"What is a container?", a:["A lightweight, portable application environment","A physical, heavy server rack","A database type","A large-scale, geographic region"], c:0},
 
     {q:"What is serverless computing?", a:["Event-driven compute without managing servers","Computing without software","Computing without networks","A physical server architecture"], c:0},
 
@@ -554,8 +545,6 @@ window.questionBank = {
     {q:"Which is a benefit of cloud computing?", a:["Reduced capital expenditure","Increased hardware ownership requirements","Reduced scalability","Slower deployment"], c:0},
 
     {q:"What type of scalability is listed as a cloud benefit?", a:["Elastic scalability","Fixed scalability","Manual scalability","Hardware-only scalability"], c:0},
-
-    {q:"Which availability-related benefit is mentioned?", a:["High availability and fault tolerance","Guaranteed zero downtime","No redundancy","Single-server availability"], c:0},
 
     {q:"What geographic benefit does cloud computing provide?", a:["Global distribution","Local-only distribution","Single-device distribution","Offline distribution"], c:0},
 
@@ -575,7 +564,7 @@ window.questionBank = {
 
     {q:"What is a multi-cloud strategy?", a:["Using multiple cloud environments or providers","Using only one physical server","Using no cloud providers","Using only private cloud"], c:0},
 
-    {q:"What technologies are associated with cloud-native development in the PDF?", a:["Microservices and containers","Mainframes and tape drives","BIOS and USB","Only physical servers"], c:0},
+    {q:"What technologies are associated with cloud-native development?", a:["Microservices and containers","Mainframes and tape drives","BIOS and USB","Only physical servers"], c:0},
 
     {q:"What type of cloud services are identified as a modern trend?", a:["AI-driven cloud services","Paper-based cloud services","Offline-only cloud services","Hardware-only cloud services"], c:0},
 
@@ -583,9 +572,9 @@ window.questionBank = {
 
     {q:"What security architecture is listed as a cloud adoption trend?", a:["Zero-trust security architectures","No-trust hardware architecture","Single-password architecture","Physical-only security architecture"], c:0},
 
-    {q:"According to the PDF, how is cloud computing continuing to change modern IT?", a:["It continues to evolve rapidly and shape modern IT","It is being replaced entirely by mainframes","It is becoming limited to local networks","It is no longer changing"], c:0},
+    {q:"How is cloud computing continuing to change modern IT?", a:["It continues to evolve rapidly and shape modern IT","It is being replaced entirely by mainframes","It is becoming limited to local networks","It is no longer changing"], c:0},
 
-    {q:"Which of the following is one of the main learning objectives of the lecture?", a:["Understanding elasticity, scalability, and resource pooling","Learning only assembly language","Building physical CPUs","Designing desktop monitors"], c:0},
+    {q:"Which of the following is one of the main learning objectives of learning Cloud Computing?", a:["Understanding elasticity, scalability, and resource pooling","Learning only assembly language","Building physical CPUs","Designing desktop monitors"], c:0},
 
     {q:"Which three service models should learners be able to differentiate?", a:["IaaS, PaaS, and SaaS","AWS, Azure, and Google Cloud","Public, private, and hybrid only","VM, container, and serverless"], c:0},
 
@@ -813,6 +802,264 @@ window.questionBank = {
     // {q:"The modern cloud application stack includes CI/CD and Infrastructure as ________ in its delivery layer.", a:["Code","Service","Storage","Security"], c:0}
   ],
 
+
+  SocIndi: {
+    review: [
+    ],
+    textbook: [
+      // =========================
+      // CHAPTER 1: THE NATURE OF TECHNOLOGY
+      // =========================
+
+      {q:"What does the textbook identify as the ultimate basis of technology?", a:["Knowledge in the social context when applied to technology","Hardware in the social context when applied to technology","Energy in the social context when applied to technology","Money in the social context when applied to technology"], c:0},
+      {q:"Which two elements are identified as the first components of technology?", a:["Tools and techniques within technological systems when applied to technology","Science and politics within technological systems when applied to technology","Machines and factories within technological systems when applied to technology","Energy and information within technological systems when applied to technology"], c:0},
+      {q:"Why is organization included in the textbook's definition of technology?", a:["Technology requires coordinated human and material inputs","Organization is another word for a machine","Only governments can create technology in the social context","Organizations replace tools and techniques in the social context"], c:0},
+      {q:"What does 'presentism' mean when thinking about technology?", a:["Using contemporary technology as the benchmark for judging technologies of the past","Believing all technology is harmful in the social context","Predicting future technological change in technological development","Treating technology as purely scientific in the social context"], c:0},
+      {q:"What distinction does the textbook make between technological advance and progress?", a:["Technological advance does not necessarily make things better for everyone","They are exactly the same concept in this broader context","Progress refers only to older technologies in this broader context","Technological advance always produces social improvement in this broader context"], c:0},
+      {q:"What is technological determinism primarily concerned with?", a:["The idea that technology can strongly shape social change","The idea that society never affects technology","The rejection of technological change in the social context","The use of technology only in factories"], c:0},
+      // =========================
+      // CHAPTER 2: WINNERS AND LOSERS
+      // =========================
+
+      {q:"Why can technological change produce both winners and losers?", a:["Its effects can benefit some groups while disadvantaging others","All technologies distribute benefits equally in the social context","Technology affects only consumers in technological development","Technological change has no economic effects in this broader context"], c:0},
+      {q:"Who were the Luddites?", a:["English workers who opposed aspects of industrial technological change","Scientists who promoted computers in technological development","Engineers who designed steam engines in the social context","Farmers who introduced irrigation in technological development"], c:0},
+      {q:"What was a major concern behind Luddite resistance?", a:["New machinery threatened established work and livelihoods","Machines were too expensive for governments in this broader context","Science was replacing religion in technological development","Factories could not produce enough goods in this broader context"], c:0},
+      {q:"What does neo-Luddism generally involve?", a:["Contemporary criticism or resistance to technologies seen as socially harmful","A movement to increase factory automation in this broader context","A method for developing software in the social context","A theory that all technology is ancient"], c:0},
+      {q:"What question is raised by the chapter's discussion of 'Whose Technology?'?", a:["Who controls technology and who benefits from it","Who invented the first computer in the social context","Who owns all scientific knowledge in the social context","Who operates every machine in technological development"], c:0},
+      {q:"What limitation of technology does the chapter emphasize?", a:["Technology cannot by itself determine the social outcomes of its use","Technology can solve every social problem in this broader context","Technology always creates equal benefits in the social context","Technology eliminates political choices in technological development"], c:0},
+      // =========================
+      // CHAPTER 3: SOURCES OF TECHNOLOGICAL CHANGE
+      // =========================
+
+      {q:"How does the textbook characterize technological change?", a:["As a social process involving many actors and conditions","As an entirely individual process in the social context","As a process controlled only by scientists","As an automatic result of economic growth"], c:0},
+      {q:"What does the 'D' in R&D stand for?", a:["Development in the social context when applied to technology","Diffusion in the social context when applied to technology","Demand in the social context when applied to technology","Design in the social context when applied to technology"], c:0},
+      {q:"What is a reverse salient in technological development?", a:["A bottleneck or lagging component that holds back a larger system","The most advanced part of a system","A failed market survey in technological development","A type of patent in technological development"], c:0},
+      {q:"What is meant by the 'technology push' model?", a:["New technological possibilities help drive innovation and adoption","Consumers always create inventions first in the social context","Governments prohibit new products in technological development","Demand is irrelevant to innovation in the social context"], c:0},
+      {q:"What is meant by the 'market pull' model?", a:["Demand for products or services helps stimulate technological innovation","Technology develops without users in technological development","Markets prevent technological change in technological development","Only military organizations drive innovation in the social context"], c:0},
+      {q:"Why can market timing matter for a new technology?", a:["A technology may arrive before users or markets are ready to adopt it","All technologies are immediately profitable in the social context","Markets never influence adoption in technological development","Timing matters only for military weapons in this broader context"], c:0},
+      // =========================
+      // CHAPTER 4: SCIENTIFIC KNOWLEDGE AND TECHNOLOGICAL ADVANCE
+      // =========================
+
+      {q:"How does the textbook distinguish science from technology?", a:["Science seeks knowledge about the natural world, while technology applies knowledge to practical purposes","Science and technology are identical in the social context","Technology studies only nature while science builds machines","Science is always newer than technology in this broader context"], c:0},
+      {q:"What historical relationship between science and technology does the chapter emphasize?", a:["They were often separated institutionally and developed somewhat independently","They have always been one profession in this broader context","Technology did not exist before modern science","Science always directly preceded every technology in this broader context"], c:0},
+      {q:"How can technology facilitate scientific discovery?", a:["New instruments and techniques can make previously inaccessible observations possible","Technology prevents scientists from collecting data in this broader context","Technology replaces scientific theories in technological development","Technology makes experimentation unnecessary in technological development"], c:0},
+      {q:"How can successful technology help legitimate science?", a:["Practical technological achievements can demonstrate the usefulness of scientific knowledge","Technology proves every scientific claim in the social context","Technology eliminates scientific uncertainty in technological development","Technology makes science independent of evidence in this broader context"], c:0},
+      {q:"What does translating science into technology involve?", a:["Turning scientific knowledge into workable techniques, devices, or processes","Replacing experiments with opinions in technological development","Converting all science into mathematics in the social context","Removing social considerations from design in the social context"], c:0},
+      {q:"What do science and technology have in common?", a:["Both depend on systematic knowledge, skills, and organized practices","Neither requires specialized knowledge in technological development","Both are entirely independent of society in this broader context","Both have identical goals in every situation"], c:0},
+      // =========================
+      // CHAPTER 5: CULTURAL DIFFUSION AND NON-DIFFUSION
+      // =========================
+
+      {q:"What does technological diffusion refer to?", a:["The spread of a technology from one setting or society to another","The destruction of obsolete technology in the social context","The invention of a new machine in this broader context","The patenting of every technology in the social context"], c:0},
+      {q:"Why are 'clever copyists' important to technological change?", a:["People and societies can learn from and adapt technologies developed elsewhere","Copying prevents all innovation in technological development","Only inventors can use technology in the social context","Copying is always illegal in technological development"], c:0},
+      {q:"What is the difference between adaptation and adoption?", a:["Adoption involves accepting a technology, while adaptation involves modifying it to fit circumstances","They are identical terms in technological development","Adaptation means rejecting technology in technological development","Adoption always requires invention in technological development"], c:0},
+      {q:"What does the example of learning to make steel in old Japan illustrate?", a:["Technology can be learned, adapted, and developed within a different cultural setting","Japan rejected all foreign technologies in the social context","Steelmaking requires no social learning in the social context","Technology cannot cross cultural boundaries in the social context"], c:0},
+      {q:"What is 'appropriate technology' concerned with?", a:["Technologies suited to the social, economic, and environmental conditions of their users","Using the most expensive technology available in this broader context","Using only technologies invented locally in the social context","Replacing all traditional practices in technological development"], c:0},
+      {q:"How can patents affect technological diffusion?", a:["They can provide incentives for invention while also restricting access to protected technologies","They always make technologies freely available in this broader context","They eliminate ownership claims in technological development","They prevent all technological innovation in the social context"], c:0},
+      // =========================
+      // CHAPTER 6: SOCIAL CONSTRUCTION AND DIFFUSION
+      // =========================
+
+      {q:"What does the social construction of technology emphasize?", a:["Social groups and their interests help shape what technologies become","Technology develops independently of society in the social context","Only engineers determine technological meaning in the social context","Consumers never influence design in technological development"], c:0},
+      {q:"What does it mean for a technology to 'work' in a social-construction perspective?", a:["Its technical performance and its acceptance and use within a social setting both matter","It must operate without users in the social context","It must be profitable immediately in the social context","It must be approved by a government"], c:0},
+      {q:"How do consumers and organizations affect technological diffusion?", a:["Their choices, resources, practices, and expectations influence adoption","They have no influence once a technology is invented","Only governments decide adoption in technological development","Consumers can adopt technology without changing anything"], c:0},
+      {q:"What is the 'NIH Syndrome' discussed in the chapter?", a:["Resistance to ideas because they were not developed within one's own organization","A medical condition caused by technology in this broader context","A method for measuring innovation in the social context","A patenting strategy within technological systems when applied to technology"], c:0},
+      {q:"What does inclusion mean in the context of technological development?", a:["Different groups can be included or excluded through design choices and practices","All technologies automatically include everyone in the social context","Inclusion concerns only software licensing in the social context","Inclusion means eliminating all user choices in this broader context"], c:0},
+      {q:"What is path dependency?", a:["Prior choices can shape and constrain the options available later","Future choices completely erase past decisions in this broader context","Technology develops without historical influence in the social context","Only government decisions create technological paths in this broader context"], c:0},
+      // =========================
+      // CHAPTER 7: TECHNOLOGY, ENERGY, AND THE ENVIRONMENT
+      // =========================
+
+      {q:"What major environmental problem is strongly associated with fossil-fuel use?", a:["Air pollution and climate change in the social context","Reduced biodiversity from all technologies in the social context","The disappearance of all renewable energy in this broader context","Universal soil fertility within technological systems when applied to technology"], c:0},
+      {q:"Why does the textbook discuss transitioning away from fossil fuels?", a:["Fossil-fuel use creates environmental costs that motivate alternatives","Fossil fuels cannot produce energy in the social context","Renewable energy does not exist in the social context","Fossil fuels are used only in transportation"], c:0},
+      {q:"Which is an alternative to fossil fuels discussed in the chapter?", a:["Renewable energy sources within technological systems when applied to technology","Coal gasification only within technological systems when applied to technology","Lead batteries as a fuel in the social context","Manual labor in this broader context when applied to technology"], c:0},
+      {q:"What does 'doing more with less' refer to in environmental technology?", a:["Improving efficiency so that fewer resources are used for a given output","Producing less while using more resources in this broader context","Eliminating all technological systems in technological development","Increasing fuel consumption within technological systems when applied to technology"], c:0},
+      {q:"Why can government policies affect environmental outcomes?", a:["Policies can shape incentives, regulations, and the adoption of technologies","Governments have no effect on markets in this broader context","Environmental technologies are independent of policy in this broader context","Only consumers can affect energy use in this broader context"], c:0},
+      {q:"Why does the chapter ask whether technology is the problem or the solution?", a:["Technology can contribute to environmental problems while also possible ways to address them","Technology is always either harmful or beneficial","Technology has no environmental effects in the social context","Environmental problems are unrelated to technology in this broader context"], c:0},
+      // =========================
+      // CHAPTER 8: TOOLS FOR ENVIRONMENTAL ASSESSMENT
+      // =========================
+
+      {q:"What is the purpose of environmental assessment tools?", a:["To evaluate and compare the environmental impacts of technologies and products","To calculate only financial profits in the social context","To determine whether a product is patented","To measure consumer popularity in technological development"], c:0},
+      {q:"Why does the chapter consider matters of scale?", a:["Environmental effects can look different depending on the scale of analysis","Scale has no effect on environmental assessment","Only local effects matter in technological development","Only global effects matter in technological development"], c:0},
+      {q:"What does the phone-in-your-pocket case study illustrate?", a:["A common device can depend on complex materials, production, use, and disposal systems","Phones have no environmental impacts in the social context","Phones are produced entirely by one company","Digital products require no physical resources in this broader context"], c:0},
+      {q:"What is a commodity chain?", a:["The connected sequence through goods and materials are produced, moved, and used","A list of retail prices in the social context","A single factory's production schedule in the social context","A patent database within technological systems when applied to technology"], c:0},
+      {q:"What is an externality?", a:["A cost or benefit of an activity that is not fully reflected in the direct transaction","A cost paid entirely by the producer","A government subsidy within technological systems when applied to technology","A product's retail price in technological development"], c:0},
+      {q:"Why can some technological impacts be difficult to measure?", a:["Some effects are indirect, dispersed, delayed, or difficult to assign monetary values","All impacts are immediately measurable in the social context","Only financial impacts exist in technological development","Environmental effects occur only during manufacturing in this broader context"], c:0},
+      // =========================
+      // CHAPTER 9: MEDICAL TECHNOLOGIES
+      // =========================
+
+      {q:"Why can new medical technologies involve trade-offs?", a:["They can provide benefits while also creating costs, risks, ethical questions, or unequal access","Medical technologies have only positive effects in this broader context","Medical technologies never involve uncertainty in the social context","Trade-offs occur only with old medicine in this broader context"], c:0},
+      {q:"What is a central concern of medical ethics?", a:["How medical technologies should be used in ways consistent with ethical principles","How to maximize machine speed in the social context","How to eliminate all medical choices in this broader context","How to patent every treatment in the social context"], c:0},
+      {q:"Why does the chapter ask 'When Does Life End?'", a:["Medical technologies can complicate definitions and decisions concerning death","Technology makes death impossible in technological development","Only hospitals can define life in the social context","The question concerns computer shutdowns in the social context"], c:0},
+      {q:"What are 'halfway technologies'?", a:["Technologies that partially address a problem without fully resolving its underlying causes","Technologies that are used for half a year","Technologies that require no medical knowledge in this broader context","Technologies used only in developing countries in this broader context"], c:0},
+      {q:"What kind of issue can arise when deciding whether to adopt an expensive medical technology?", a:["The balance between medical benefits, costs, risks, and access","Whether technology should replace doctors entirely in this broader context","Whether all patients should receive identical treatment","Whether medical research should stop in the social context"], c:0},
+      {q:"Why can medical technology create ethical dilemmas even when it works technically?", a:["Technical success does not by itself determine whether its use is ethically acceptable","Ethics applies only when technology fails in this broader context","Medical devices cannot affect ethical decisions in this broader context","Technical performance and ethics are identical in this broader context"], c:0},
+      // =========================
+      // CHAPTER 10: GENETIC TECHNOLOGIES
+      // =========================
+
+      {q:"What is the 'genetic fix' idea?", a:["The expectation that genetic interventions can correct or prevent particular problems","The use of computers to repair DNA files","A method of patenting machines in the social context","A farming technique unrelated to genes in this broader context"], c:0},
+      {q:"Why has patenting genes been controversial?", a:["It raises questions about ownership and the boundaries of intellectual property over biological information","Genes cannot be studied scientifically in the social context","Patents never affect research in technological development","All genes are manufactured products in the social context"], c:0},
+      {q:"How can genetic technologies be used in agriculture?", a:["They can be used to alter organisms or traits in crops and livestock","They can only diagnose human diseases in this broader context","They eliminate the need for farming in this broader context","They affect only farm machinery in the social context"], c:0},
+      {q:"What is genetic screening used for?", a:["Identifying genetic characteristics or risks in individuals or populations","Creating computer networks within technological systems when applied to technology","Measuring crop prices within technological systems when applied to technology","Replacing all medical diagnoses in technological development"], c:0},
+      {q:"What ethical questions surround cloning?", a:["Questions about safety, identity, reproduction, and the purposes for cloning might be used","Whether computers can be copied in the social context","Whether plants need sunlight in technological development","Whether patents should expire in technological development"], c:0},
+      {q:"Why are genetic interventions described as having perils?", a:["Changing genetic makeup can have unintended consequences and ethical implications","Genes never interact with other biological systems","Genetic interventions are always harmless in the social context","Only economic risks are involved in the social context"], c:0},
+      // =========================
+      // CHAPTER 11: WORK IN NONINDUSTRIAL SOCIETIES
+      // =========================
+
+      {q:"What does the chapter's discussion of early tools emphasize?", a:["Tools greatly expanded human capabilities and changed patterns of work","Early humans had no technologies in the social context","Tools were used only for warfare in this broader context","Technology began with factories in technological development"], c:0},
+      {q:"What does the !Kung example challenge?", a:["The assumption that people in nonindustrial societies necessarily spend all their time working","The idea that agriculture requires labor in this broader context","The importance of tools in technological development","The existence of leisure in technological development"], c:0},
+      {q:"How did agriculture transform work?", a:["It created more settled production systems and changed patterns of labor and time","It eliminated work within technological systems when applied to technology","It made tools unnecessary in technological development","It made all societies nomadic in the social context"], c:0},
+      {q:"What is one irony of agricultural 'progress' discussed by the chapter?", a:["Greater productive capacity could be accompanied by harder or less flexible work","Agriculture always reduced population in technological development","Farming eliminated social organization in technological development","Agriculture made all work recreational in the social context"], c:0},
+      {q:"What role did guilds play in craft production?", a:["They organized and regulated artisans and aspects of craft work","They replaced all farmers in technological development","They operated only military forces in the social context","They eliminated specialized skills in technological development"], c:0},
+      {q:"How did clocks affect working patterns?", a:["They helped coordinate and regulate work according to standardized measures of time","They made time irrelevant in technological development","They eliminated schedules within technological systems when applied to technology","They were used only for religious ceremonies"], c:0},
+      // =========================
+      // CHAPTER 12: TECHNOLOGY AND JOBS
+      // =========================
+
+      {q:"Why has technological unemployment been a recurring concern?", a:["New technologies can replace or reduce demand for some kinds of labor","Technology never changes jobs in technological development","Automation affects only consumers in technological development","Employment cannot change with technology in the social context"], c:0},
+      {q:"What is one argument for optimism about technology and employment?", a:["Technological change can create new jobs and industries as well as eliminate some jobs","Every worker keeps the same job forever","Technology always creates more jobs than it removes","Employment is unrelated to technology in the social context"], c:0},
+      {q:"How can technological change create jobs indirectly?", a:["New technologies can generate demand for complementary products, services, and workers","Only the inventor receives employment in the social context","New technologies eliminate all supporting industries in this broader context","Indirect effects occur only in agriculture in this broader context"], c:0},
+      {q:"Why does the chapter argue that robots are not necessarily ready to take over all work?", a:["Many tasks remain difficult to automate because they require flexibility, judgment, or complex interaction","Robots cannot perform any physical tasks in this broader context","Robots are banned everywhere in technological development","Automation has already ended in technological development"], c:0},
+      {q:"How can technology affect income inequality?", a:["It can change the rewards to different skills and alter the distribution of income","Technology has identical effects on every worker","Technology affects only prices in technological development","Income inequality is unrelated to technology in this broader context"], c:0},
+      {q:"How can globalization interact with technological change and jobs?", a:["Technology can make it easier to coordinate production across locations and contribute to changes in employment","Globalization prevents technological change in technological development","Technology stops international production in technological development","Jobs cannot move between countries in the social context"], c:0},
+      // =========================
+      // CHAPTER 13: TECHNOLOGICAL CHANGE AND LIFE ON THE JOB
+      // =========================
+
+      {q:"What did industrial production change about work?", a:["It increasingly organized work around machinery, factories, and specialized processes","It eliminated machines within technological systems when applied to technology","It returned most workers to subsistence farming","It removed all division of labor in this broader context"], c:0},
+      {q:"What is machine-paced labor?", a:["Work in the pace is substantially determined by the operation of machinery","Work performed only by machine operators in this broader context","Work with no schedules in technological development","Work controlled entirely by workers in the social context"], c:0},
+      {q:"How can industrial technology affect worker autonomy?", a:["Highly structured machinery and production systems can constrain how workers perform tasks","Machines always increase autonomy in technological development","Technology has no effect on work organization","Autonomy depends only on wages in the social context"], c:0},
+      {q:"What is the division of labor?", a:["Breaking production into specialized tasks performed by different workers","Giving one worker every task in the social context","Eliminating specialization in this broader context when applied to technology","Replacing workers with managers in technological development"], c:0},
+      {q:"What was scientific management intended to do?", a:["Analyze and organize work to improve efficiency and control of production","Eliminate measurement from factories in technological development","Increase worker discretion in every task in this broader context","Replace machines with craft labor in the social context"], c:0},
+      {q:"Which newer forms of work are discussed in the chapter?", a:["Telework and the gig economy in the social context","Only agricultural labor within technological systems when applied to technology","Only guild craftsmanship within technological systems when applied to technology","Only military service within technological systems when applied to technology"], c:0},
+      // =========================
+      // CHAPTER 14: PRINTING, LITERACY, AND MEDIA
+      // =========================
+
+      {q:"Why was the printing revolution significant?", a:["It greatly expanded the ability to reproduce and circulate written information","It ended literacy within technological systems when applied to technology","It eliminated books within technological systems when applied to technology","It affected only governments in technological development"], c:0},
+      {q:"How did printing contribute to the expansion of knowledge?", a:["It made written materials easier to reproduce and distribute widely","It prevented scientific communication in technological development","It reduced the number of available texts","It restricted books to monasteries in the social context"], c:0},
+      {q:"How were printing and the rise of Protestantism connected?", a:["Printed materials helped circulate religious texts and ideas","Printing prevented religious debate in technological development","Protestantism banned printed Bibles in technological development","The two developments were unrelated in the social context"], c:0},
+      {q:"How did literacy and printing reinforce each other?", a:["More printed material encouraged literacy, while literate populations created demand for printed material","Literacy reduced demand for books in the social context","Printing made reading unnecessary in technological development","Only governments could become literate in the social context"], c:0},
+      {q:"What change is associated with digitizing the news?", a:["News can be distributed electronically and updated rapidly through digital media","News must remain in print in the social context","Newspapers became impossible to access in the social context","Digital news cannot be reproduced in the social context"], c:0},
+      {q:"What issue does 'reading digitally' raise?", a:["Digital reading can change how people encounter, navigate, and process written material","Digital text cannot contain information in the social context","Reading behavior is unaffected by media in this broader context","Digital reading eliminates literacy in technological development"], c:0},
+      // =========================
+      // CHAPTER 15: ELECTRONIC MEDIA
+      // =========================
+
+      {q:"What was the telegraph's major communication significance?", a:["It allowed messages to travel rapidly over long distances using electrical signals","It transmitted television images in technological development","It required no coded signals in the social context","It replaced all printed books in the social context"], c:0},
+      {q:"Who is commonly associated with the practical development of radio, though not its sole inventor?", a:["Guglielmo Marconi in this broader context when applied to technology","Johannes Gutenberg in this broader context when applied to technology","Tim Berners-Lee in this broader context when applied to technology","James Watt in this broader context when applied to technology"], c:0},
+      {q:"What helped make radio a commercial medium in the United States?", a:["Broadcasting developed alongside advertising, private ownership, and commercial financing","Radio was funded only by monasteries in this broader context","Radio could not transmit news in the social context","Commercial broadcasting was impossible in technological development"], c:0},
+      {q:"Why did governments become involved in broadcasting?", a:["Radio and television used scarce frequencies and had important public effects","Broadcasting had no public significance in the social context","Governments invented every program in technological development","Television could not reach audiences in the social context"], c:0},
+      {q:"What concern has surrounded violence on television?", a:["Researchers and policymakers have debated possible effects of exposure to televised violence","Television violence has never been studied in this broader context","Violence appears only in news broadcasts in this broader context","Television cannot influence viewers in technological development"], c:0},
+      {q:"How has television affected politics?", a:["It has changed how political information, candidates, and events are presented to mass audiences","It eliminated political communication in technological development","It made campaigns impossible in technological development","It affects only entertainment in technological development"], c:0},
+      // =========================
+      // CHAPTER 16: THE INTERNET AGE
+      // =========================
+
+      {q:"What was ARPANET?", a:["An early computer network developed with support from the U.S. Department of Defense","A commercial television network in technological development","A social media company in technological development","A satellite television system in technological development"], c:0},
+      {q:"What important networking principle was used by ARPANET?", a:["Breaking information into packets that could be transmitted through a network","Sending every message as a physical letter","Using only one permanent communication path in this broader context","Encoding every message as a television signal"], c:0},
+      {q:"Who developed the World Wide Web while working at CERN?", a:["Tim Berners-Lee in this broader context when applied to technology","Guglielmo Marconi in this broader context when applied to technology","Johannes Gutenberg in this broader context when applied to technology","Charles Perrow in this broader context when applied to technology"], c:0},
+      {q:"What is a network effect?", a:["A service can become more valuable as more people use it","A network becomes less useful when more people join","A network can work only with one user","A network effect concerns only electricity in this broader context"], c:0},
+      {q:"What is the digital divide?", a:["Differences in access to and effective use of digital technologies","A division between computer programs in the social context","The separation of the internet from phones","A method of encrypting data in the social context"], c:0},
+      {q:"Why is intellectual property an issue in the Internet age?", a:["Digital information can be copied and distributed easily, raising questions about ownership and control","Digital information cannot be copied in the social context","Copyright applies only to physical machines in this broader context","The internet eliminates ownership in technological development"], c:0},
+      // =========================
+      // CHAPTER 17: ISSUES IN ICTs
+      // =========================
+
+      {q:"What issue has been debated regarding video games and gaming?", a:["Their possible effects on behavior, health, social interaction, and learning","Whether games can use electricity in the social context","Whether games existed before computers in the social context","Whether games can be sold in the social context"], c:0},
+      {q:"What is one potential educational or career-related benefit discussed for esports?", a:["It can involve engagement with STEM and related skills","It eliminates the need for education in this broader context","It prevents teamwork within technological systems when applied to technology","It requires no technology in technological development"], c:0},
+      {q:"What are cryptocurrencies?", a:["Digital forms of value that use cryptographic technologies and decentralized systems in many implementations","Printed government banknotes within technological systems when applied to technology","Analog radio signals within technological systems when applied to technology","Medical technologies in this broader context when applied to technology"], c:0},
+      {q:"What concern is associated with social media harms?", a:["Social media can contribute to problems such as harassment, misinformation, or other negative effects","Social media has no social consequences in this broader context","Social media cannot affect communication in the social context","Only governments use social media in the social context"], c:0},
+      {q:"What is disinformation?", a:["False or misleading information that is deliberately spread","Any information that is difficult to understand","Accidental spelling errors within technological systems when applied to technology","A form of hardware in technological development"], c:0},
+      {q:"What can algorithms contribute to online information environments?", a:["They can shape what users see, including through recommendations, targeting, and personalization","They only repair computer hardware in the social context","They prevent all bias in technological development","They operate without using information in the social context"], c:0},
+      // =========================
+      // CHAPTER 18: WEAPONS AND THEIR CONSEQUENCES
+      // =========================
+
+      {q:"How did military technology influence ancient warfare?", a:["Weapons and military organization shaped tactics, political power, and the outcomes of conflicts","Ancient warfare was independent of technology in this broader context","Weapons were used only for hunting in this broader context","Military technology began with firearms in the social context"], c:0},
+      {q:"What was a major military advantage of the medieval horse?", a:["Mounted warfare supported the power of heavily equipped cavalry","Horses eliminated the need for weapons in this broader context","Horses made castles unnecessary immediately in the social context","Mounted warfare was used only for transport"], c:0},
+      {q:"What did the longbow demonstrate about military technology?", a:["A relatively accessible weapon could challenge established military arrangements and defenses","Longbows were useful only for hunting in this broader context","Longbows ended all warfare in technological development","Longbows were firearms within technological systems when applied to technology"], c:0},
+      {q:"What was the gunpowder revolution?", a:["A major transformation in warfare associated with the adoption of gunpowder weapons","The invention of the printing press in this broader context","The replacement of all ships by aircraft","The elimination of artillery in technological development"], c:0},
+      {q:"How did gunpowder weapons contribute to changes in political organization?", a:["They helped alter military power and contributed to the development of centralized states","They made governments unnecessary in technological development","They eliminated taxation within technological systems when applied to technology","They reduced the importance of armies in this broader context"], c:0},
+      {q:"What does the chapter's discussion of battleships illustrate?", a:["Naval technology can shape military strategy, organizational culture, and international power","Ships have no political significance in the social context","Battleships were used only for commerce in this broader context","Naval technology never changes warfare in the social context"], c:0},
+      // =========================
+      // CHAPTER 19: THE ERA OF SMART WEAPONS
+      // =========================
+
+      {q:"What is a cruise missile?", a:["A guided missile designed to travel toward a target using navigation and propulsion systems","A conventional artillery shell without guidance in this broader context","A surveillance camera within technological systems when applied to technology","A type of tank in technological development"], c:0},
+      {q:"What are smart bombs or precision-guided munitions designed to do?", a:["Improve the ability to direct a weapon toward a selected target","Increase the randomness of bombing in the social context","Eliminate the need for aircraft in the social context","Operate only as defensive shields in the social context"], c:0},
+      {q:"What is high-tech surveillance used for?", a:["Detecting, monitoring, and collecting information about people, places, or activities","Producing food in this broader context when applied to technology","Printing newspapers in this broader context when applied to technology","Manufacturing textiles in this broader context when applied to technology"], c:0},
+      {q:"What is one military use of drones?", a:["They can conduct surveillance or carry out strikes without placing a pilot in the aircraft","They can only transport civilians in the social context","They are used only for weather forecasting","They cannot be remotely controlled in the social context"], c:0},
+      {q:"What is one cost of increasing technological sophistication in weapons?", a:["Greater complexity can bring financial, technical, organizational, and maintenance burdens","Sophistication always makes weapons cheaper in the social context","Complexity eliminates training needs in technological development","Advanced systems require no infrastructure in the social context"], c:0},
+      {q:"What is asymmetrical warfare?", a:["Conflict in opposing sides have substantially different capabilities or strategies","War fought only with equal armies in this broader context","A conflict without technology in technological development","A form of naval communication in the social context"], c:0},
+      // =========================
+      // CHAPTER 20: HOW NEW WEAPONS EMERGE
+      // =========================
+
+      {q:"What does 'action and reaction' mean in military technological development?", a:["One side's innovations can stimulate responses and countermeasures by opponents","Military technology develops without opponents in the social context","Weapons never influence strategy in technological development","Only civilian technology creates military change in this broader context"], c:0},
+      {q:"Why can social structure influence military technology?", a:["Organizations, institutions, doctrines, and interests affect technologies are developed and adopted","Military technology is chosen only by physics","Organizations cannot affect weapons in technological development","Doctrine has no relation to equipment in this broader context"], c:0},
+      {q:"What does the chapter's discussion of the air weapon illustrate?", a:["Organizational interests can shape how new military technologies are understood and used","Aircraft were accepted immediately everywhere in the social context","Air power has no organizational implications in this broader context","Air weapons developed independently of military institutions"], c:0},
+      {q:"How can social revolution enlarge the scale of warfare?", a:["Political and social transformations can mobilize more people and resources for war","Revolutions always reduce military capacity in the social context","Social change cannot affect armies in the social context","War becomes impossible after revolutions in the social context"], c:0},
+      {q:"What does industrial technology provide for warfare?", a:["Large-scale production and infrastructure for weapons, transport, and military logistics","Only individual hand tools in technological development","No additional production capacity in technological development","Only communication services within technological systems when applied to technology"], c:0},
+      {q:"Why is controlling military technologies difficult?", a:["Military technologies can spread, be difficult to regulate, and involve competing security interests","All governments agree on every weapon in this broader context","Weapons cannot cross borders in technological development","Military technologies are always publicly controlled in this broader context"], c:0},
+      // =========================
+      // CHAPTER 21: ACCIDENTS, DISASTERS, AND NEGATIVE CONSEQUENCES
+      // =========================
+
+      {q:"What is a 'simple' technological failure?", a:["A failure that may arise from a relatively straightforward breakdown or error","A failure that requires no consequences in this broader context","A failure caused only by natural disasters","A failure that cannot be investigated in this broader context"], c:0},
+      {q:"What are 'normal accidents' in Charles Perrow's framework?", a:["Accidents that can arise from complex interactions and tightly coupled systems","Accidents that occur only because workers are careless","Accidents that are always predictable in the social context","Accidents caused only by weather in the social context"], c:0},
+      {q:"What does tight coupling mean in complex technological systems?", a:["Parts or processes are closely connected so changes can propagate rapidly","Components are completely independent in technological development","Systems have no feedback in technological development","All components are manually operated in the social context"], c:0},
+      {q:"Why can responsibility be difficult to assign after a technological disaster?", a:["Multiple decisions, organizations, and system conditions may contribute to the outcome","Only one person is always responsible in this broader context","Technology cannot involve organizations in technological development","Victims never need to be considered in this broader context"], c:0},
+      {q:"What is a chronic disaster?", a:["A harmful condition that persists over time rather than occurring as one isolated event","A disaster that lasts exactly one day","A natural disaster with no human contribution","A failure with no victims in the social context"], c:0},
+      {q:"What does the chapter's discussion of infrastructure emphasize?", a:["Technological systems depend on interconnected physical and organizational systems whose failures can have cascading effects","Infrastructure is unrelated to technology in the social context","Infrastructure failures remain isolated in technological development","Only buildings count as infrastructure in the social context"], c:0},
+      // =========================
+      // CHAPTER 22: ORGANIZATIONS AND TECHNOLOGICAL CHANGE
+      // =========================
+
+      {q:"How can technology be a cause of organizational structure?", a:["The characteristics of a technology can influence how organizations divide work and coordinate activities","Technology has no effect on organizations in this broader context","Organizations always predate every technology in the social context","Only laws determine structure in technological development"], c:0},
+      {q:"How can organizational structure be a consequence of technology?", a:["Organizations may change their structures in response to new technologies","Organizations never adapt within technological systems when applied to technology","Technology cannot change communication in technological development","Structure is unrelated to equipment in the social context"], c:0},
+      {q:"Why can organizational size affect technological innovation?", a:["Size can influence resources, specialization, communication, and the ability to support innovation","Size has no relationship to innovation in this broader context","Only small organizations innovate in technological development","Only governments can innovate in technological development"], c:0},
+      {q:"How have new information technologies affected organizations?", a:["They can change communication, coordination, information processing, and work practices","They eliminate all organizational hierarchies in the social context","They affect only hardware manufacturers in the social context","They make information less important in the social context"], c:0},
+      {q:"What are interorganizational relations?", a:["Relationships among organizations that can influence technological development and adoption","Relationships only within one department in the social context","Personal relationships unrelated to technology in the social context","Government ownership of all firms in the social context"], c:0},
+      {q:"What role can entrepreneurs play in organizations and technological change?", a:["They can identify opportunities, mobilize resources, and help introduce new technologies","They only operate existing machines in the social context","They cannot affect organizational change in the social context","They work exclusively for governments in the social context"], c:0},
+      // =========================
+      // CHAPTER 23: PROFESSIONS, EXPERTISE, AND ETHICS
+      // =========================
+
+      {q:"Why are experts important in shaping technology?", a:["They possess specialized knowledge that can influence technical choices and policy decisions","Experts have no role in technology in this broader context","Experts only operate machines in technological development","Expertise is unrelated to decision-making in the social context"], c:0},
+      {q:"What role do engineers play in the control of technology?", a:["Engineering decisions can shape how technologies are designed, implemented, and constrained","Engineers only perform administrative work in the social context","Engineers cannot influence safety in technological development","Engineering has no ethical dimension in the social context"], c:0},
+      {q:"Why does the chapter discuss institutional norms in science?", a:["Scientific institutions establish expectations about conduct, evidence, and professional behavior","Science operates without norms in technological development","Norms replace evidence within technological systems when applied to technology","Scientific ethics applies only to engineers in this broader context"], c:0},
+      {q:"What is an ethical problem with focusing only on technological means?", a:["A technically effective means can still serve ethically troubling ends","Technical means are always morally neutral in every context","Ends never matter within technological systems when applied to technology","Ethics applies only to unsuccessful technologies in this broader context"], c:0},
+      {q:"Why can expert disagreement matter in public policy?", a:["Different experts may interpret evidence, uncertainty, and appropriate action differently","Experts always agree on every issue in this broader context","Disagreement means evidence is irrelevant in the social context","Experts cannot affect policy in technological development"], c:0},
+      {q:"What tension can arise between expertise and democratic decision-making?", a:["Technical expertise can inform decisions while democratic institutions must also address public values and choices","Experts should always replace democratic institutions in this broader context","Democracy makes expertise unnecessary in technological development","Technical issues never involve public values in this broader context"], c:0},
+      // =========================
+      // CHAPTER 24: GOVERNING TECHNOLOGY
+      // =========================
+
+      {q:"How can governments shape technological change?", a:["Through laws, regulation, funding, procurement, standards, and other policies","Governments can influence technology only through patents","Governments have no technological role in the social context","Governments only respond after technologies disappear in this broader context"], c:0},
+      {q:"What constitutional power in the United States concerns intellectual property?", a:["Congress can promote science and useful arts by securing limited exclusive rights to authors and inventors","Congress can prohibit all inventions in the social context","The Constitution bans patents in technological development","The judiciary controls all inventions in the social context"], c:0},
+      {q:"What was the Bayh-Dole Act of 1980 important for?", a:["It changed how federally funded research inventions could be managed and commercialized","It abolished all patents in technological development","It ended university research in technological development","It prohibited technology transfer in technological development"], c:0},
+      {q:"Why does the government fund science and technology research?", a:["Public funding can support research whose benefits may not be captured by private markets alone","Government research has no public purpose in this broader context","Only private firms can perform research in this broader context","Government funding always produces immediate profits in this broader context"], c:0},
+      {q:"What is one reason governments establish institutions to guide technology?", a:["Technologies can have broad social consequences requiring regulation, oversight, or public coordination","Technology never affects the public in the social context","Institutions prevent all innovation in technological development","Only scientists need institutions in technological development"], c:0},
+      {q:"What is meant by democratic control of technology?", a:["Public institutions and citizens have a role in shaping decisions about technological development and use","Only engineers should make all technological decisions","Technology is outside politics in technological development","Democratic control means banning technology in the social context"], c:0},
+      // =========================
+      // TEXTBOOK OVERVIEW
+      // =========================
+
+      {q:"What central relationship does the textbook examine throughout its chapters?", a:["Technology shapes society while social, economic, cultural, and political forces shape technology","Technology develops independently of society in the social context","Society is unaffected by technology in the social context","Only economics determines technology in technological development"], c:0},
+      {q:"Which broad issue connects technological change to globalization?", a:["Technologies can facilitate worldwide connections while societies and cultures respond differently","Globalization prevents technology from spreading in the social context","Technology has no role in globalization in this broader context","Globalization affects only agriculture in technological development"], c:0},
+      {q:"Why does the textbook discuss inequality in relation to technology?", a:["Technological change can alter employment, skills, wealth, and access to opportunities","Technology always reduces inequality in technological development","Inequality is unrelated to technological change in this broader context","Technology affects only environmental conditions in the social context"], c:0},
+      {q:"Which pair of topics reflects the book's concern with the health of Earth and its inhabitants?", a:["Environmental technologies and medical/genetic technologies in this broader context","Printing and guilds only in technological development","Military weapons and clocks only in the social context","Television and newspapers only in technological development"], c:0},
+      {q:"Why does the textbook include both technological benefits and technological disruptions?", a:["Technological change can create opportunities while also producing risks, costs, and unintended consequences","Technology has only negative consequences in the social context","Technology has only positive consequences in the social context","Benefits and disruptions cannot occur together in this broader context"], c:0},
+      {q:"What broad question does the final part of the textbook address?", a:["How organizations, experts, professions, and governments shape and control technology","How to eliminate all technology in the social context","How to return every society to preindustrial life","How to make technology independent of politics"], c:0}
+    ]
+  },
+
   DataSci: [
 
       // =========================
@@ -928,8 +1175,8 @@ window.questionBank = {
       {q:"What does a regular expression describe?", a:["A certain amount or pattern of text","A computer's hardware","A database schema","A file's storage size"], c:0},
       {q:"What is required to use regular expressions?", a:["A regular expression engine","A graphics card","A database server","An XML file"], c:0},
       {q:"What does a regular expression engine do?", a:["Processes expressions and attempts to match them to a string","Converts images into pixels","Stores data in a database","Calculates averages"], c:0},
-      {q:"Which programming language mentioned in the PDF has a regular expression engine?", a:["Python","C#","Swift","Kotlin"], c:0},
-      {q:"Which other programming language mentioned in the PDF has a regular expression engine?", a:["Java","C++","JavaScript","R"], c:0},
+      {q:"Which programming language has a regular expression engine?", a:["Python","C#","Swift","Kotlin"], c:0},
+      {q:"Which programming language has a regular expression engine?", a:["Java","C++","JavaScript","R"], c:0},
       {q:"Are regular expressions always completely compatible between different languages and tools?", a:["No, they can use slightly different syntax","Yes, they always use identical syntax","Only in Python","Only in Java"], c:0},
       {q:"What is one use of Regex in data preparation?", a:["Identifying, cleaning, and transforming messy text","Creating images","Running databases","Calculating hardware performance"], c:0},
       {q:"How can Regex help with data cleaning and standardization?", a:["It can locate variations and standardize them","It automatically creates new datasets","It converts all data to images","It deletes every text value"], c:0},
@@ -945,10 +1192,10 @@ window.questionBank = {
       {q:"How can Regex help with dates?", a:["Break a date into components such as day, month, and year","Automatically predict future dates","Remove every date","Convert dates into images"], c:0},
       {q:"What date format is given as an example for universal formatting?", a:["YYYY-MM-DD","DD-YYYY-MM","MM-DD-YYYY","YYYY-DD-MM"], c:0},
       {q:"How can Regex be used for data validation?", a:["It can check whether incoming text fits required patterns","It automatically fills in missing values","It calculates standard deviation","It creates charts"], c:0},
-      {q:"What can Regex validate according to the PDF?", a:["Email addresses, ZIP codes, and Social Security Numbers","Images, videos, and audio","Means, medians, and modes","Databases and spreadsheets"], c:0},
+      {q:"What can Regex validate?", a:["Email addresses, ZIP codes, and Social Security Numbers","Images, videos, and audio","Means, medians, and modes","Databases and spreadsheets"], c:0},
 
       // STATISTICS
-      {q:"What are three types of statistical measures introduced in the PDF?", a:["Central tendency, spread, and correlations","Classification, regression, and clustering","Mean, XML, and Regex","Text, binary, and categorical"], c:0},
+      {q:"What are three types of statistical measures?", a:["Central tendency, spread, and correlations","Classification, regression, and clustering","Mean, XML, and Regex","Text, binary, and categorical"], c:0},
       {q:"What is the mean?", a:["The sum of the values divided by the number of values","The most common value","The middle value only","The largest value"], c:0},
       {q:"What is another name for the mean?", a:["Average","Median","Mode","Range"], c:0},
       {q:"What is the median?", a:["The value separating the higher half from the lower half","The most frequently occurring value","The largest value","The difference between two values"], c:0},
@@ -1023,7 +1270,7 @@ window.questionBank = {
 
       // OUTLIERS & SKEWNESS
       {q:"What can IQR be used for?", a:["Outlier detection","Calculating correlation","Finding the mode only","Creating categorical data"], c:0},
-      {q:"In which areas does the PDF mention IQR being used for outlier detection?", a:["Finance, healthcare, and quality control","Gaming, networking, and programming","Education, music, and art","Sports, travel, and weather"], c:0},
+      {q:"In which areas is IQR being used for outlier detection?", a:["Finance, healthcare, and quality control","Gaming, networking, and programming","Education, music, and art","Sports, travel, and weather"], c:0},
       {q:"When is a data point considered an outlier using the IQR method?", a:["When it falls outside Q1 - 1.5 × IQR or Q3 + 1.5 × IQR","When it is equal to the median","When it is below Q2","When it is equal to Q1"], c:0},
       {q:"What does skewness tell us?", a:["Whether data points are skewed left or right in relation to the mean","How many values are in a dataset","The correlation between two variables","The number of categories"], c:0},
       {q:"What does skewness based on quartiles examine?", a:["The distances between the quartiles","The number of observations","The maximum and minimum values only","The correlation between variables"], c:0},
@@ -1031,7 +1278,7 @@ window.questionBank = {
 
       // DISTRIBUTIONS & FREQUENCY
       {q:"What does a histogram represent?", a:["The frequency of each interval of continuous data","The relationship between two variables","Only categorical data","The median of a dataset"], c:0},
-      {q:"How are the bars in a histogram described in the PDF?", a:["They have equal width","They have random widths","They overlap completely","They are circular"], c:0},
+      {q:"How are the bars in a histogram described?", a:["They have equal width","They have random widths","They overlap completely","They are circular"], c:0},
       {q:"What does a frequency polygon use to represent frequency?", a:["Lines connecting frequency points","Circular slices","Bars only","Quartiles"], c:0},
       {q:"How is a frequency polygon different from a histogram?", a:["It uses lines instead of bars","It only displays categorical data","It does not display frequency","It only displays outliers"], c:0},
       {q:"What does a pie chart show?", a:["Proportional sizes as slices of a circle","Continuous data using bars","Correlation between variables","The median of a dataset"], c:0},
@@ -1044,7 +1291,6 @@ window.questionBank = {
       {q:"What can inferential statistics help us do with a sample?", a:["Make conclusions about the whole population","Remove the population","Guarantee the result","Convert the sample into binary"], c:0},
       {q:"What do confidence intervals help quantify?", a:["Uncertainty of an estimate","The mode of a dataset","The number of variables","The correlation strength"], c:0},
       {q:"What does a confidence interval provide?", a:["A range of values","A single guaranteed value","A frequency table","A correlation coefficient"], c:0},
-      {q:"What percentage confidence was used in the example in the PDF?", a:["95%","50%","75%","99%"], c:0},
       {q:"In the example, if the mean is 4.63 and the standard deviation is 0.54, what is the stated 95% confidence interval?", a:["4.480 to 4.780","3.63 to 5.63","4.09 to 5.17","0.54 to 4.63"], c:0},
 
       // PYTHON
@@ -1102,7 +1348,7 @@ window.questionBank = {
     // PIE CHARTS
     {q:"Which R function is used to create a pie chart?", a:["pie()","chart()","circle()","piechart()"], c:0},
     {q:"What type of graph does pie() create?", a:["Pie chart","Histogram","Scatter plot","Frequency polygon"], c:0},
-    {q:"In the pie chart example, what does slices contain?", a:["Numerical values for the slices","The names of countries only","The chart title","The percentages only"], c:0},
+
     {q:"What does lbls contain in the pie chart example?", a:["Labels such as US, UK, and Australia","Numerical slice values","The percentages","The chart title"], c:0},
     {q:"What function is used to calculate percentages in the pie chart example?", a:["round()","percent()","percentage()","calcpercent()"], c:0},
     {q:"What operation is used to calculate the percentages for the pie chart?", a:["slices/sum(slices)*100","slices*sum(slices)","sum(slices)/100","slices/100"], c:0},
@@ -1111,7 +1357,6 @@ window.questionBank = {
     {q:"What argument is used to specify the title of the pie chart?", a:["main","title","heading","caption"], c:0},
 
     // ARRAYS & DATA FRAMES
-    {q:"What additional data structure is introduced in the PDF?", a:["Arrays","Trees","Stacks","Queues"], c:0},
     {q:"What data structure is specifically demonstrated after arrays?", a:["Data frame","Linked list","Hash table","Binary tree"], c:0},
     {q:"Which built-in R dataset is used to demonstrate data frames?", a:["mtcars","iris","wine","diabetes"], c:0},
     {q:"What does mtcars[1,] select?", a:["The first row of mtcars","The first column of mtcars","Rows 1 through 3","The mpg column"], c:0},

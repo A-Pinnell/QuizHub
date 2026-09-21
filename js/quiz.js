@@ -118,9 +118,39 @@ document.addEventListener('visibilitychange',()=>{
 
 const params = new URLSearchParams(location.search);
 const requestedCategory = params.get("category");
+const requestedQuiz = params.get("quiz");
 const defaultCategory = Object.keys(questionBank)[0] || "CompArch";
 const category = requestedCategory && (questionBank[requestedCategory] || codes[requestedCategory]) ? requestedCategory : defaultCategory;
-const bank = questionBank[category] || [];
+
+function resolveQuestionBank(course, quizId = null) {
+  const source = questionBank[course];
+  if (Array.isArray(source)) return source;
+  if (!source || typeof source !== "object") return [];
+
+  if (quizId === "textbookQuiz") {
+    return Array.isArray(source.textbook)
+      ? source.textbook
+      : Array.isArray(source.textbookQuestions)
+        ? source.textbookQuestions
+        : [];
+  }
+
+  if (quizId === "reviewQuiz") {
+    return Array.isArray(source.review)
+      ? source.review
+      : Array.isArray(source.reviewQuestions)
+        ? source.reviewQuestions
+        : [];
+  }
+
+  return Array.isArray(source.review)
+    ? source.review
+    : Array.isArray(source.textbook)
+      ? source.textbook
+      : [];
+}
+
+const bank = resolveQuestionBank(category, requestedQuiz);
 const rawMiniQuestions = params.get("miniQuestions");
 const customQuestionSequence = rawMiniQuestions
   ? rawMiniQuestions.split(",").map((value) => Number.parseInt(value, 10)).filter((value) => Number.isInteger(value) && value >= 0)
@@ -228,7 +258,7 @@ function shuffleWithoutConsecutiveDuplicates(array){
 }
 
 function buildQuestionSequence(){
-  const bank = questionBank[category] || [];
+  const bank = resolveQuestionBank(category, requestedQuiz);
   const originalSequence = bank.map((_, index) => index);
 
   if (orderMode === 'random') {
@@ -357,7 +387,7 @@ function loadQuestion(){
     return;
   }
 
-  const bank = questionBank[category] || [];
+  const bank = resolveQuestionBank(category, requestedQuiz);
   const questionIndex = questionSequence[sequencePosition];
 
   if (!bank[questionIndex]){
@@ -380,6 +410,7 @@ function finishQuiz(reason="complete"){
   // The total remains the configured quiz length, so ending early is explicit.
   const results = {
     category,
+    quizType: requestedQuiz || "reviewQuiz",
     score,
     total: selectedQuestionCount,
     seen: history.length,

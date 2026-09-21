@@ -335,6 +335,11 @@ document.querySelectorAll('[data-close-patchnotes]').forEach(el=>{
 });
 
 patchnotesContent.textContent=`
+Version 1.5
+- Hexadecimal Operation practice now functions
+- UI Updates
+- Added Sociology Textbook Practice, focus on the entire textbook
+
 Version 1.4
 - Added Hexadecimal Practice, with options for Binary -> Hex, Hex -> Decimal, Decimal -> Hex and Hex -> Binary.
 - Added Hexadecimal Practice for Operations, including Addition, Subtraction, Multiplication and Division
