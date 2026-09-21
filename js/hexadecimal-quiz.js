@@ -374,6 +374,9 @@
   }
 
   function makeHexOperationProblem() {
+    // Each operand is a full two-digit hexadecimal byte (00–FF).
+    // Results are not limited to one byte: addition can reach 1FE and
+    // multiplication can reach FE01.
     let a = 0;
     let b = 0;
     let answer = 0;
@@ -383,48 +386,61 @@
       b = randomInt(0, 255);
       answer = a + b;
     } else if (state.operation === "-") {
+      // Keep subtraction non-negative.
       a = randomInt(0, 255);
       b = randomInt(0, a);
       answer = a - b;
     } else if (state.operation === "*") {
-      a = randomInt(0, 31);
-      b = randomInt(0, 31);
+      a = randomInt(0, 255);
+      b = randomInt(0, 255);
       answer = a * b;
     } else {
-      b = randomInt(1, 15);
-      answer = randomInt(0, 15);
-      a = b * answer;
+      // Generate an exact division using byte-sized operands so there
+      // are no fractional hexadecimal answers.
+      b = randomInt(1, 255);
+      const quotient = randomInt(0, Math.floor(255 / b));
+      a = b * quotient;
+      answer = quotient;
     }
 
     state.first = a;
     state.second = b;
-    state.answer = toHex(Math.min(255, answer));
+    // Preserve the complete mathematical result. Do not clamp it to FF.
+    state.answer = toHex(answer);
 
     const host = $("operationProblem");
     host.replaceChildren();
     $("operationBadge").textContent = operationNames[state.operation];
+
     const title = document.createElement("div");
     title.className = "conversion-title";
     title.textContent = "Solve this hexadecimal question";
+
     const first = document.createElement("div");
     first.className = "conversion-decimal";
     first.textContent = toHex(a);
+
     const op = document.createElement("div");
     op.className = "conversion-equals";
     op.textContent = operationSymbols[state.operation];
+
     const second = document.createElement("div");
     second.className = "conversion-decimal";
     second.textContent = toHex(b);
+
     const eq = document.createElement("div");
     eq.className = "conversion-equals";
     eq.textContent = "=";
+
     const input = document.createElement("input");
     input.className = "decimal-answer-input";
     input.id = "conversionAnswer";
     input.type = "text";
     input.inputMode = "text";
     input.placeholder = "?";
-    input.maxLength = 2;
+    // Addition needs up to 3 hex digits (1FE); multiplication needs up to
+    // 4 hex digits (FE01).
+    input.maxLength = 4;
     input.setAttribute("aria-label", "Hexadecimal answer");
 
     host.append(title, first, op, second, eq, input);
