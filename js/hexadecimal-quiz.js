@@ -415,7 +415,7 @@
 
     const first = document.createElement("div");
     first.className = "conversion-decimal";
-    first.textContent = toHex(a, 2);
+    first.textContent = `0x${toHex(a, 2)}`;
 
     const op = document.createElement("div");
     op.className = "conversion-equals";
@@ -423,7 +423,7 @@
 
     const second = document.createElement("div");
     second.className = "conversion-decimal";
-    second.textContent = toHex(b, 2);
+    second.textContent = `0x${toHex(b, 2)}`;
 
     const eq = document.createElement("div");
     eq.className = "conversion-equals";
@@ -434,10 +434,11 @@
     input.id = "conversionAnswer";
     input.type = "text";
     input.inputMode = "text";
-    input.placeholder = "?";
-    // Addition needs up to 3 hex digits (1FE); multiplication needs up to
-    // 4 hex digits (FE01).
-    input.maxLength = 4;
+    input.placeholder = "0x00";
+    // Show the hexadecimal prefix in the answer field as well. The input
+    // accepts either 0x09 or 09, but displays the expected format clearly.
+    // Results can be up to 4 hex digits (FE01), plus the 0x prefix.
+    input.maxLength = 6;
     input.setAttribute("aria-label", "Hexadecimal answer");
 
     host.append(title, first, op, second, eq, input);
@@ -594,7 +595,9 @@
         showFeedback("Enter the hex answer first.", false);
         return;
       }
-      userAnswer = chosen.toUpperCase();
+      // Allow the user to enter either 0x09 or 09, while comparing only
+      // the hexadecimal digits.
+      userAnswer = chosen.toUpperCase().replace(/^0X/, "");
     } else if (state.conversionMode === "h2d") {
       const chosen = $("conversionAnswer")?.value.trim() || "";
       if (chosen === "") {
@@ -630,7 +633,7 @@
     } else {
       state.incorrect++;
       const expected = typeof state.answer === "number" ? state.answer : String(state.answer).toUpperCase();
-      showFeedback(`✕ Incorrect — ${expected}.`, false);
+      showFeedback(`✕ Incorrect — 0x${expected}.`, false);
       playSound("incorrect");
       playTone(180, .14, "sawtooth");
     }
