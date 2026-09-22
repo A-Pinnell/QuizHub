@@ -241,8 +241,8 @@
     host.replaceChildren(bitButtons(state.userBits, true));
   }
 
-  function toHex(value) {
-    return Number(value).toString(16).toUpperCase();
+  function toHex(value, minDigits = 1) {
+    return Number(value).toString(16).toUpperCase().padStart(minDigits, "0");
   }
 
   function makeBinaryToHexProblem() {
@@ -374,9 +374,6 @@
   }
 
   function makeHexOperationProblem() {
-    // Each operand is a full two-digit hexadecimal byte (00–FF).
-    // Results are not limited to one byte: addition can reach 1FE and
-    // multiplication can reach FE01.
     let a = 0;
     let b = 0;
     let answer = 0;
@@ -395,8 +392,7 @@
       b = randomInt(0, 255);
       answer = a * b;
     } else {
-      // Generate an exact division using byte-sized operands so there
-      // are no fractional hexadecimal answers.
+      // Generate an exact division so the result is always an integer.
       b = randomInt(1, 255);
       const quotient = randomInt(0, Math.floor(255 / b));
       a = b * quotient;
@@ -405,8 +401,9 @@
 
     state.first = a;
     state.second = b;
-    // Preserve the complete mathematical result. Do not clamp it to FF.
-    state.answer = toHex(answer);
+    // Do not clamp the result to FF. Addition can reach 1FE and
+    // multiplication can reach FE01. Keep at least two hex digits.
+    state.answer = toHex(answer, 2);
 
     const host = $("operationProblem");
     host.replaceChildren();
@@ -418,7 +415,7 @@
 
     const first = document.createElement("div");
     first.className = "conversion-decimal";
-    first.textContent = toHex(a);
+    first.textContent = toHex(a, 2);
 
     const op = document.createElement("div");
     op.className = "conversion-equals";
@@ -426,7 +423,7 @@
 
     const second = document.createElement("div");
     second.className = "conversion-decimal";
-    second.textContent = toHex(b);
+    second.textContent = toHex(b, 2);
 
     const eq = document.createElement("div");
     eq.className = "conversion-equals";
