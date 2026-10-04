@@ -683,14 +683,14 @@ window.questionBank = {
         {q:"What is the primary goal of a Software-Defined Perimeter?",a:["Hide resources until identity is proven","Expose all network resources publicly","Remove authentication requirements","Allow unsolicited traffic to every application"],c:0},
         {q:"True or False: Software-Defined Perimeters can reduce the attack surface by avoiding open ports waiting for unsolicited traffic.",a:["True","False","BLANK","BLANK"],c:0},
 
-        {q:"What is workload identity used for?",a:["Identifying applications, services, machines, and workloads","Identifying only human users","Identifying only physical buildings","Identifying only IP addresses"],c:0},
+        {q:"What is workload identity used for?",a:["Identifying applications, services, and workloads","Identifying users, employees, and customers","Identifying devices, networks, and locations","Identifying IP addresses, ports, and protocols"],c:0},
         {q:"What can machine identities use to identify devices and VMs?",a:["Certificates and keys","Only passwords","Only usernames","Network cables"],c:0},
         {q:"What are API identities?",a:["Credentials used by APIs and microservices","Physical identities of employees","Firewall rules","Network addresses only"],c:0},
         {q:"What do workload certificates provide?",a:["Cryptographic proof of workload identity","Physical proof of device ownership","A network subnet","A user password"],c:0},
         {q:"Fill in the blank: Identity boundaries define who can access ______.",a:["what","where","when only","nothing"],c:0},
         {q:"What do identity boundaries map?",a:["Identities to allowed workloads and actions","IP addresses to passwords","Users to physical buildings","Ports to operating systems"],c:0},
         {q:"True or False: Identity boundaries are defined by identity rather than IP ranges.",a:["True","False","BLANK","BLANK"],c:0},
-        {q:"What is separation of duties intended to prevent?",a:["Over-privileged identities from spanning zones","Users from authenticating","All network communication","Cloud workloads from having identities"],c:0},
+        {q:"What is separation of duties intended to prevent?",a:["Over-privileged identities from spanning zones","Users from authenticating","All network communication over a local area","Cloud workloads from having seperate identities"],c:0},
         {q:"What is an over-privileged identity?",a:["An identity with more permissions than necessary","An identity without a username","An identity that has no permissions","An identity used only for logging"],c:0},
         {q:"What do cross-environment policies provide?",a:["Consistent rules across cloud, hybrid, and on-prem environments","Different authentication requirements for every device","Only local network access","Automatic removal of identity boundaries"],c:0},
 
@@ -717,7 +717,7 @@ window.questionBank = {
         {q:"Fill in the blank: mTLS stands for Mutual ______.",a:["TLS","Trust Layer","Traffic Login Service","Token Login System"],c:0},
 
         {q:"What does identity-based routing use instead of IP addresses?",a:["Service identity","Physical location","User passwords","Subnet size"],c:0},
-        {q:"What can policy enforcement at the service mesh layer provide?",a:["Authorization and rate limits","Only file storage","Only DNS records","Only physical security"],c:0},
+        {q:"What can policy enforcement at the service mesh layer provide?",a:["Authorization and rate limits","File storage and file records","DNS records and Service speed","Only physical security"],c:0},
         {q:"Why is telemetry and monitoring important in a service mesh?",a:["It can observe East-West traffic for anomalies","It removes all traffic controls","It replaces authentication","It disables microsegmentation"],c:0},
         {q:"True or False: Service meshes can use mTLS to authenticate service-to-service communication.",a:["True","False","BLANK","BLANK"],c:0},
         {q:"What does pod-level identity provide in Kubernetes?",a:["Each pod gets a unique, verifiable identity","All pods share one identity","Pods have no identity","Only users receive identities"],c:0},
@@ -1306,14 +1306,442 @@ window.questionBank = {
     {q:"Which dataset is used in the final example of the PDF?", a:["Iris plants data","California Housing","Diabetes","mtcars only"], c:0},
     {q:"Which function is used to display the first part of the iris dataset?", a:["head(iris)","first(iris)","show(iris)","top(iris)"], c:0},
     {q:"Which function is used to create plots of the iris dataset?", a:["plot()","irisplot()","graph()","draw()"], c:0}
-  ]
+  ],
+  SoftEngi: {
+    quiz1: [
+        {q:"What is software engineering?",a:["A branch of computer science and engineering focused on designing, developing, testing, and maintaining software","The process of writing code as quickly as possible","A method used only for testing software","A technique for designing computer hardware"],c:0},
+
+        {q:"Why is programming alone not enough when building large software systems?",a:["Large systems must also address requirements, reliability, security, maintainability, scalability, and change","Programming languages cannot be used for large systems","Programming is only useful for databases","Large systems do not require testing"],c:0},
+
+        {q:"What is the main difference between programming and software engineering?",a:["Programming focuses on making code work, while software engineering focuses on making the entire system succeed","Programming focuses on requirements while software engineering only writes code","Programming is used for hardware while software engineering is used for software","There is no meaningful difference"],c:0},
+
+        {q:"Which sequence best represents the software engineering process presented in the slideshow?",a:["Requirements → Design → Code → Test → Deploy → Evolve","Code → Deploy → Requirements → Design → Test → Delete","Design → Code → Requirements → Deploy → Test → Evolve","Test → Code → Design → Requirements → Deploy → Evolve"],c:0},
+
+        {q:"A developer creates an application that works correctly on their laptop, but it cannot handle thousands of users. What concept from the lecture does this demonstrate?",a:["A system can work technically while still failing to meet software engineering requirements such as scalability","The application is automatically good software because it runs","The developer only needs to learn another programming language","The application does not need testing"],c:0},
+
+        {q:"Which of the following is NOT one of the qualities of good software discussed in the slideshow?",a:["Dependable and secure","Maintainable","Efficient","Guaranteed to require no future changes"],c:3},
+
+        {q:"A banking application calculates every balance correctly but allows users to access other customers' accounts. Which software quality is most clearly suffering?",a:["Security","Efficiency","Maintainability","Compatibility"],c:0},
+
+        {q:"A video streaming application is easy to use and fast, but every modification breaks another feature. Which quality is suffering?",a:["Maintainability","Efficiency","Acceptability","Physical safety"],c:0},
+
+        {q:"A banking application works correctly, but every page takes 25 seconds to load. Which quality is most clearly affected?",a:["Efficiency","Security","Maintainability","Acceptability"],c:0},
+
+        {q:"Why is maintainability important according to the slideshow?",a:["Software changes are inevitable, so adding or modifying features should be manageable","Software should never be modified after release","Maintainability only matters during initial coding","Maintainability eliminates the need for testing"],c:0},
+
+        {q:"What does it mean for software to be dependable and secure?",a:["It should avoid causing physical or economic harm and prevent malicious attacks","It should always use the newest programming language","It should never require maintenance","It should only work on one computer"],c:0},
+
+        {q:"A team builds software without discussing requirements first. Different developers make incompatible assumptions about the system. What is a likely result?",a:["Integration failures, defects, security risks, rework, and missed deadlines","The project will automatically become more efficient","The lack of requirements will eliminate defects","The project will require less communication but have no other consequences"],c:0},
+
+        {q:"Why does the slideshow emphasize that software engineering should be systematic rather than ad-hoc?",a:["A structured approach provides defined processes, methods, and evidence instead of relying on unplanned coding","Ad-hoc coding always uses too many programming languages","Systematic development eliminates the need for developers","A systematic process guarantees that software will never contain defects"],c:0},
+
+        {q:"A software team receives new requirements every week. Which software engineering mindset is most appropriate?",a:["Treat the software as evolutionary and prepare for continual change","Assume the original requirements can never change","Rewrite the entire application after every requirement change","Stop testing once Version 1.0 works"],c:0},
+
+        {q:"Which statement best explains why building software is difficult?",a:["Users, technology, regulations, security threats, scale, teams, budgets, and requirements can all change","Programming languages are inherently impossible to understand","Software never changes after it is released","Only hardware limitations make software difficult"],c:0},
+
+        {q:"A team successfully releases Version 1.0 but struggles when users request major changes. What lesson from the slideshow best applies?",a:["Software engineering must prepare software to survive future versions and changing conditions","Version 1.0 should always be considered the final version","Future changes should be ignored until the software fails","The team should avoid collecting user feedback"],c:0},
+
+        {q:"What is a software process?",a:["A structured way of building software","A programming language used to build software","A tool used exclusively for debugging","A document containing only source code"],c:0},
+
+        {q:"What question does the Specification/Requirements stage answer?",a:["What should we build?","How should we deploy it?","Did we build it correctly?","How should we modify the code next year?"],c:0},
+
+        {q:"What question does the Design stage answer?",a:["How should we build it?","What should the customer buy?","Did we test every line of code?","When should the software be retired?"],c:0},
+
+        {q:"What is the purpose of Verification and Validation?",a:["To determine whether the software was built correctly and meets the intended needs","To decide which programming language should be used","To replace requirements with code","To eliminate the need for users"],c:0},
+
+        {q:"What does the Evolution stage of the software process address?",a:["What happens when the software needs to change","How to write the first line of code","How to purchase computer hardware","How to remove all documentation"],c:0},
+
+        {q:"A process step has a clearly defined objective, input, and output. Why is this useful?",a:["It makes the work more structured and allows the result of the step to be checked","It guarantees that no developer will ever make a mistake","It removes the need for specialized skills","It means the project no longer needs requirements"],c:0},
+
+        {q:"Why should a good software process support early detection of faults?",a:["Late detection is more costly and can lead to more rework","Early detection makes testing unnecessary","Faults found early cannot affect software quality","Late detection is always cheaper"],c:0},
+
+        {q:"A development team follows the same defined process across several projects and can predict what activities will occur. Which characteristic of a good process does this demonstrate?",a:["Predictability and repeatability","Randomness","Ad-hoc development","Elimination of testing"],c:0},
+
+        {q:"Why should a software process support testing and maintainability?",a:["A good process should produce testable outcomes and make the software easier to adapt to changes","Testing prevents software from ever changing","Maintainability means software cannot be modified","Testing is only necessary after the project is abandoned"],c:0},
+
+        {q:"A team decides to immediately code a hospital database without clearly determining what the system should do. Why is this a poor software engineering decision?",a:["Unclear requirements can lead to incompatible designs, defects, security risks, rework, and missed deadlines","Coding first guarantees that requirements will become clearer automatically","Databases do not require requirements","Hospital systems are too simple to require a process"],c:0},
+
+        {q:"Why would simply hiring more programmers not necessarily solve the problems of a growing software system?",a:["More developers do not automatically solve problems involving requirements, coordination, security, scalability, maintainability, and process","More programmers always make software worse","Programming cannot be used by teams","Hiring programmers prevents requirements from changing"],c:0},
+
+        {q:"A team has software that works but only one developer understands the code. From a software engineering perspective, what is the main concern?",a:["Maintainability and understandability are poor because the system is difficult for others to safely modify","The system is automatically efficient","The system has no requirements","The system is necessarily secure"],c:0},
+
+        {q:"Which statement best justifies the idea that 'good software' means more than 'software that works'?",a:["Software must also consider qualities such as security, reliability, usability, efficiency, maintainability, and scalability","Working software never needs testing","Correctness is not important in software","Software quality only depends on how many lines of code exist"],c:0},
+
+        {q:"A team uses GitHub pull requests and code reviews during development. Which modern software engineering practice from the slideshow does this represent?",a:["Collaborative development","Cloud-native systems","AI-assisted engineering","Only traditional programming"],c:0},
+
+        {q:"A company automatically runs tests whenever developers submit changes and uses automated deployment pipelines. Which modern practice does this best represent?",a:["Continuous engineering using automated tests and CI/CD","Only manual development","Traditional waterfall-only development","Requirements gathering"],c:0},
+
+        {q:"A team uses Scrum and repeatedly gathers feedback while developing a product. Which modern software engineering approach is being demonstrated?",a:["Iterative development","Hardware engineering","Database normalization","Manual deployment"],c:0},
+
+        {q:"A system is built using APIs, services, containers, and cloud infrastructure. Which modern software engineering area from the slideshow does this represent?",a:["Cloud-native systems","Collaborative development only","Manual testing","Traditional debugging"],c:0},
+
+        {q:"A team uses AI to help generate code, create tests, review code, and produce documentation. Which concept from the slideshow does this demonstrate?",a:["AI-assisted engineering","Cloud-native development","Only requirements engineering","Manual software engineering"],c:0},
+
+        {q:"A team is deciding whether to prioritize making a feature work quickly or designing it so that future developers can safely modify it. Which decision better reflects software engineering, and why?",a:["Designing for future modification because software engineering prepares systems for change and maintainability","Making it work once because future changes are never expected","Avoiding both approaches because software engineering only concerns testing","Writing more code because more code always means better software"],c:0},
+
+        {q:"What is the main idea behind the statement 'We don't just build software. We engineer software that can survive change'?",a:["Software should be designed to handle future changes and evolve over time","Software should never be modified after release","Software should only focus on making the first version work","Software should avoid user feedback"],c:0},
+
+        {q:"Which sequence represents the learning approach presented in the slideshow?",a:["Learn → Apply → Build → Break → Improve → Change → Evolve","Build → Learn → Deploy → Forget → Replace → Repeat","Code → Test → Submit → Finish → Stop → Restart","Plan → Code → Submit → Ignore → Deploy → Finish"],c:0},
+
+        {q:"Why does the course emphasize practice rather than only listening to lectures?",a:["Software engineering skills require students to apply concepts and practice engineering decisions","Software engineering can only be learned through programming competitions","Lectures are not part of the course","Practice eliminates the need to understand concepts"],c:0},
+
+        {q:"Which topic belongs to the Foundations portion of the course?",a:["Software Engineering, SDLC, processes, Agile, XP, Scrum, planning, and risk","Only APIs and cloud services","Only testing and refactoring","Only ethics and responsible AI"],c:0},
+
+        {q:"Which topics are included in the Design portion of the software engineering journey?",a:["Requirements, User Stories, UML, Design Patterns, and Architecture","Testing, TDD, CI, and version control","Cloud, APIs, and microservices only","Ethics, accountability, and responsible AI only"],c:0},
+
+        {q:"Which topics are part of Build & Verify?",a:["Clean Code, SOLID, Testing, TDD, Version Control, and CI","User Stories, UML, and Architecture only","Distributed Systems and Microservices only","Planning, risk, and Scrum only"],c:0},
+
+        {q:"A developer finishes a feature but the code contains duplicated logic and is difficult to modify. Which part of the course journey is most relevant?",a:["Improve & Evolve, including code smells and refactoring","Foundations only","Professional Practice only","Project team formation"],c:0},
+
+        {q:"Why is technical debt included in the Improve & Evolve portion of the course?",a:["Software may accumulate problems that make future changes more difficult and require improvement","Technical debt means a project has borrowed money","Technical debt guarantees that software will become faster","Technical debt eliminates the need for maintenance"],c:0},
+
+        {q:"Which topic belongs to Modern Software Engineering?",a:["Distributed Systems, APIs, Microservices, Cloud, AI-Assisted SE, and Agentic SE","Only UML and requirements","Only Scrum and XP","Only clean code and SOLID"],c:0},
+
+        {q:"A developer uses an AI system to help generate code but reviews the output before accepting it. Which course area does this relate to?",a:["AI-Assisted Software Engineering and professional engineering responsibility","Only project team formation","Only UML design","Only version control"],c:0},
+
+        {q:"Why does the course include Professional Practice as part of software engineering?",a:["Engineering involves responsibility, including human oversight, ethics, accountability, and responsible AI","Professional practice is only about writing more code","Software engineers do not make decisions that affect others","Professional practice replaces technical skills"],c:0},
+
+        {q:"What is the purpose of lectures in the course?",a:["To understand concepts, examples, real-world cases, and demonstrations","To complete the entire team project","To replace labs and assignments","To perform only programming exercises"],c:0},
+
+        {q:"What is the main purpose of labs?",a:["To practice Git, testing, UML, refactoring, tools, and development workflows","To replace all lectures","To complete quizzes for marks only","To avoid using development tools"],c:0},
+
+        {q:"What makes the assignments different from simple coding exercises?",a:["They involve individual engineering challenges and require engineering decisions","They only require memorizing programming syntax","They are always completed as a team","They contain no software engineering concepts"],c:0},
+
+        {q:"What is the purpose of the team project?",a:["To build and evolve a real software system as an engineering team","To submit one final code file without development history","To practice programming individually without collaboration","To avoid using version control"],c:0},
+
+        {q:"A student receives feedback on a failed test, revises the implementation, and adapts the solution. Which course learning activity does this demonstrate?",a:["Feedback and reflection","Project formation","Assessment weighting","Repository setup"],c:0},
+
+        {q:"Which sequence best describes the broader learning cycle shown in the course?",a:["Hear it → See it → Try it → Apply it → Explain it → Improve it","Hear it → Memorize it → Submit it → Forget it → Repeat it","Code it → Submit it → Ignore it → Finish it","Read it → Test it → Delete it → Replace it"],c:0},
+
+        {q:"What does 'Assessment = Show Me You Can Engineer' emphasize?",a:["Students are expected to demonstrate engineering ability rather than simply produce working code","Students are graded only on how quickly they write code","Students only need to memorize terminology","Assessment is unrelated to engineering decisions"],c:0},
+
+        {q:"A student completes an assignment but cannot explain why they selected their architecture. Based on the course assessment philosophy, what is missing?",a:["Engineering reasoning and justification for the decision","More lines of source code","A second programming language","A larger GitHub repository"],c:0},
+
+        {q:"Which topics are specifically associated with Assignment A1?",a:["Requirements, Process, Planning, and Risk","Testing, Quality, Refactoring, and Change","UML, Architecture, Trade-offs, and AI Critique","Cloud, APIs, and Microservices"],c:0},
+
+        {q:"Which topics are specifically associated with Assignment A2?",a:["Testing, Quality, Refactoring, and Change","Requirements, Process, Planning, and Risk","UML, Architecture, Trade-offs, and AI Critique","GitHub, teamwork, and project formation"],c:0},
+
+        {q:"Which topics are specifically associated with Assignment A3?",a:["UML, Architecture, Trade-offs, and AI Critique","Requirements, Process, Planning, and Risk","Testing, Quality, Refactoring, and Change","Only Scrum and XP"],c:0},
+
+        {q:"A team creates a working application, but the architecture is difficult to maintain. Which project evaluation category is most directly concerned with this issue?",a:["Engineering Quality","Correctness only","Process Evidence only","Team Formation"],c:0},
+
+        {q:"A team can demonstrate that its application works, but cannot explain how it knows the system works. Which evaluation category is most directly affected?",a:["Verification","Engineering Quality","Reasoning","Team Formation"],c:0},
+
+        {q:"Why is 'Because it works' not always considered an engineering justification?",a:["A working result does not explain why a particular decision was made or provide evidence of the engineering process","Working software is never important","Engineering decisions do not require reasoning","A system cannot be verified"],c:0},
+
+        {q:"A team chooses a database technology because it is popular but cannot explain how it fits the project's requirements. What would the course expect the team to provide?",a:["Reasoning that explains and justifies the engineering decision","Only a screenshot of the database","More GitHub commits without explanations","A different programming language"],c:0},
+
+        {q:"What is the first mandatory step in the project journey?",a:["Team and project repository setup","Final Engineering Release","Iteration Release II","Demo and Engineering Defense"],c:0},
+
+        {q:"Why does the project use multiple engineering iterations instead of only one final submission?",a:["The project is intended to be built and evolved through multiple stages of engineering work","Multiple iterations prevent students from using version control","The final release is not important","Iteration makes requirements unnecessary"],c:0},
+
+        {q:"What does the project Requirements + Plan stage provide before later development?",a:["A defined understanding of requirements and a plan for the project","A completed final application","Only a GitHub README","A finished deployment"],c:0},
+
+        {q:"A team waits until the night before submission to create its GitHub commits so the repository looks active. Why does this conflict with the course expectations?",a:["GitHub is intended to show the actual story and evolution of the project, not manufactured history","GitHub cannot store commits","Teams are not allowed to use branches","Pull requests are only for individual assignments"],c:0},
+
+        {q:"What can GitHub commits tell an instructor about a project?",a:["What changed during development","Which programming language the instructor prefers","How much money the project cost","Whether the project will never need maintenance"],c:0},
+
+        {q:"What can branches demonstrate in the project's GitHub repository?",a:["How work was organized","Whether users liked the application","How many students are in the university","Whether the application is physically secure"],c:0},
+
+        {q:"What can pull requests and reviews demonstrate?",a:["How team members collaborated and reviewed changes","Which requirements were written before the project began","How much cloud storage was purchased","Whether the application is guaranteed to be bug-free"],c:0},
+
+        {q:"What can issues and backlog information show?",a:["What the team was working on","Which programming language is objectively best","How many lines of code are required for the project","Whether the instructor approved every commit"],c:0},
+
+        {q:"A team has extensive GitHub history showing commits, branches, pull requests, tests, and changes over time. Why is this valuable according to the slideshow?",a:["The repository provides evidence of how the team engineered and evolved the software","GitHub automatically proves that the software has no defects","The repository replaces the need for testing","GitHub makes project requirements unnecessary"],c:0},
+
+        {q:"What are the three major elements of successful software engineering?",a:["People, Process, and Technology","Code, Hardware, and Networks","Users, Databases, and Servers","Planning, Coding, and Deployment"],c:0},
+
+        {q:"What is the main role of the people involved in software engineering?",a:["They provide skills, collaboration, communication, creativity, and human judgment","They only write source code","They replace the need for a software process","They eliminate the need for technology"],c:0},
+
+        {q:"According to the slideshow, what is the main purpose of a software process?",a:["To structure and coordinate how software development work gets done","To replace developers with automated tools","To ensure every project uses exactly the same model","To eliminate all changes to requirements"],c:0},
+
+        {q:"Why can great technology become a liability when used without the right people and process?",a:["Technology alone cannot replace human judgment, coordination, and engineering discipline","Technology automatically creates poor software","Technology cannot be used by software developers","Technology prevents teams from communicating"],c:0},
+
+        {q:"Which sequence represents the Software Development Life Cycle presented in the slideshow?",a:["Specification → Design → Implementation → Validation → Maintenance & Evolution","Design → Implementation → Specification → Maintenance → Validation","Implementation → Specification → Design → Validation → Maintenance","Validation → Design → Specification → Implementation → Maintenance"],c:0},
+
+        {q:"What is the purpose of the Specification stage?",a:["To specify what the software should do and its constraints","To convert the design into working code","To test individual units","To modify the system after release"],c:0},
+
+        {q:"What happens during the Design stage?",a:["The organization of the software's components is defined","Customer requirements are completely ignored","The system is immediately deployed","Only maintenance tasks are performed"],c:0},
+
+        {q:"What is the purpose of the Implementation stage?",a:["To convert the conceptual design into a real software system","To determine whether the customer wants the product","To gather only future requirements","To replace the software process"],c:0},
+
+        {q:"What does Validation check?",a:["Whether the software does what the customer wants","Whether developers used the same programming language","Whether the design document is long enough","Whether the project has enough developers"],c:0},
+
+        {q:"What is the purpose of Maintenance and Evolution?",a:["To change the system in response to changing customer or market needs","To prevent any changes after deployment","To rewrite the entire system after every release","To remove customer feedback"],c:0},
+
+        {q:"What is the Opportunistic model?",a:["An ad-hoc approach where developers directly build the software without systematically applying software engineering principles","A highly structured process with formal verification at every stage","A model based entirely on customer prototypes","A risk-driven iterative model"],c:0},
+
+        {q:"A beginner immediately starts coding without defining requirements, design, testing, or maintenance plans. Which model does this most closely represent?",a:["Opportunistic development","Waterfall","V-Model","Prototyping"],c:0},
+
+        {q:"What is a major danger of the Opportunistic model?",a:["Client requirements may not be properly met because there is no systematic process","Requirements are documented too carefully","Testing happens too early","The system is changed too frequently"],c:0},
+
+        {q:"Why can Opportunistic development result in high maintenance costs?",a:["There is no clear plan for maintenance and design can deteriorate, making future changes difficult","The model requires too much documentation","The model requires too many testing stages","The model prevents developers from changing code"],c:0},
+
+        {q:"What is the central idea of the Waterfall model?",a:["Complete one major stage before moving to the next, with defined outcomes for each stage","Continuously change requirements throughout development","Build multiple prototypes and discard them","Perform testing before defining requirements"],c:0},
+
+        {q:"Which project would be the best fit for the Waterfall model?",a:["A project with stable, well-understood requirements and clear milestones and deliverables","A project where requirements change every week","A project where customers do not know what they want","A project requiring constant experimentation"],c:0},
+
+        {q:"Why does Waterfall struggle when requirements change frequently?",a:["Changes can require significant rework across design, code, and testing","Waterfall has no documentation","Waterfall does not have defined stages","Waterfall prevents developers from writing code"],c:0},
+
+        {q:"A government project has stable requirements, strict documentation requirements, and contract-driven milestones. Which process model may be appropriate?",a:["Waterfall","Opportunistic","Evolutionary Prototyping","Only Agile"],c:0},
+
+        {q:"A company discovers a major requirement mistake late in a Waterfall project. Why could fixing it be expensive?",a:["The mistake may affect completed design, code, and testing stages and require significant rework","Waterfall does not allow requirements to exist","Waterfall automatically deletes previous work","Waterfall prevents testing"],c:0},
+
+        {q:"Which statement best describes a limitation of Waterfall?",a:["It provides structure and predictability but handles changing requirements poorly","It has no defined stages","It does not allow documentation","It is designed specifically for constantly changing requirements"],c:0},
+
+        {q:"What is the V-Model?",a:["An extension of Waterfall that connects development activities with corresponding testing activities","A version of Opportunistic development without coding","A model that completely eliminates requirements","A prototype-only development process"],c:0},
+
+        {q:"What is the main difference between Verification and Validation in the V-Model?",a:["Verification asks whether we are building the product right, while Validation asks whether we are building the right product","Verification asks what customers want, while Validation writes the code","Verification happens only after deployment, while Validation happens before requirements","There is no difference between them"],c:0},
+
+        {q:"A developer reviews a design against its specification without executing the software. Is this primarily verification or validation?",a:["Verification","Validation","Maintenance","Implementation"],c:0},
+
+        {q:"A testing team executes the completed software to determine whether it meets customer needs. Is this primarily verification or validation?",a:["Validation","Verification","Specification","Design"],c:0},
+
+        {q:"In the V-Model, what testing activity corresponds to Business Requirements?",a:["Acceptance Testing","Unit Testing","Component Testing","System/Integration Testing"],c:0},
+
+        {q:"In the V-Model, what testing activity corresponds to Low-Level Design?",a:["Unit Testing","Acceptance Testing","System Testing","Integration Testing"],c:0},
+
+        {q:"Why does the V-Model encourage thinking about testing while requirements and design are being created?",a:["Development decisions on the left side guide corresponding testing activities on the right side","Testing can only be performed before requirements exist","It prevents developers from writing code","It eliminates the need for validation"],c:0},
+
+        {q:"What is a major strength of the V-Model?",a:["Testing is considered early and systematically, with a clear relationship between development and testing","It completely eliminates rework","It handles constantly changing requirements extremely well","It requires no documentation"],c:0},
+
+        {q:"What is a major limitation of the V-Model?",a:["It remains relatively rigid and can have difficulty accommodating changing requirements","It has no connection between development and testing","It does not support defect detection","It has no defined development stages"],c:0},
+
+        {q:"What is the central idea behind the Prototyping model?",a:["Build an early version, let customers evaluate it, refine requirements, and repeat until requirements are better understood","Complete all requirements before showing anything to customers","Avoid customer feedback until deployment","Build the final system immediately without experimentation"],c:0},
+
+        {q:"A customer cannot clearly explain what they want from a new application. Which process model is particularly appropriate according to the slideshow?",a:["Prototyping","Waterfall","Opportunistic development","V-Model only"],c:0},
+
+        {q:"Why are prototypes useful when requirements are unclear?",a:["Customers can evaluate something concrete and provide feedback that helps clarify missing or misunderstood requirements","Prototypes eliminate the need for customers","Prototypes guarantee the final system will have no defects","Prototypes prevent requirements from changing"],c:0},
+
+        {q:"What is the key difference between throw-away and evolutionary prototyping?",a:["Throw-away prototypes are discarded after learning, while evolutionary prototypes are progressively refined toward the required system","Throw-away prototypes become the final product while evolutionary prototypes are discarded","Both approaches always produce the final system immediately","There is no difference between the two"],c:0},
+
+        {q:"A team creates a quick user-interface prototype to discover what customers actually want, then discards the prototype before building the real system. What type of prototyping is this?",a:["Throw-away prototyping","Evolutionary prototyping","Waterfall prototyping","V-Model prototyping"],c:0},
+
+        {q:"A team repeatedly improves its prototype based on user feedback until the prototype becomes the required system. What type of prototyping is this?",a:["Evolutionary prototyping","Throw-away prototyping","Opportunistic development","Waterfall"],c:0},
+
+        {q:"A customer assumes that a prototype is ready for production even though it was built only to answer specific questions. What problem does this demonstrate?",a:["A prototype may be mistaken for a finished product even though its purpose is learning and evaluation","Waterfall requirements are too stable","The V-Model does not support testing","Prototypes cannot receive customer feedback"],c:0},
+
+    {q:"What is the main focus of the Spiral Model?",a:["Identifying and reducing important risks throughout development","Completing all requirements before any development begins","Delivering the entire system before collecting feedback","Avoiding prototypes and experiments during development"],c:0},
+
+    {q:"A team understands the requirements for a new AI-based feature, but they are unsure whether the technology will perform accurately enough. Which process model best addresses this situation?",a:["Spiral Model because it uses risk analysis to investigate uncertain solutions","Waterfall because all requirements should be completed before development","Opportunistic development because the team should immediately start coding","V-Model because testing only happens after the implementation is complete"],c:0},
+
+    {q:"What are the four main sectors of the Spiral Model?",a:["Determine objectives, identify and resolve risks, develop the next version, review and plan the next phase","Gather requirements, write documentation, deploy the system, retire the system","Design the interface, write code, release the product, collect complaints","Plan the entire project, build everything, test everything, deliver everything"],c:0},
+
+    {q:"In the Spiral Model, what happens during the 'Determine Objectives' sector?",a:["The team identifies objectives, alternatives, and constraints for the next cycle","The team deploys the finished product to all users","The team performs only final acceptance testing","The team removes all previous prototypes from the project"],c:0},
+
+    {q:"What is the purpose of the 'Identify & Resolve Risks' sector in the Spiral Model?",a:["To analyze risks, explore alternatives, and reduce uncertainty before making larger commitments","To ensure every requirement is permanently fixed before development starts","To replace all testing with customer interviews","To complete the final system documentation before coding begins"],c:0},
+
+    {q:"A Spiral Model loop has finished development and validation. What should happen next?",a:["The team reviews what was learned and plans the next phase","The team automatically ends the entire project","The team returns to the original requirements without considering new information","The team discards the software regardless of its quality"],c:0},
+
+    {q:"What does moving outward through the Spiral Model loops generally represent?",a:["More knowledge, more investment, and a more complete system","Less testing, less knowledge, and fewer project commitments","A reduction in requirements and a smaller final system","A move away from risk analysis toward completely fixed planning"],c:0},
+
+    {q:"What is the purpose of the first Spiral Model loop?",a:["To explore whether the idea can work using techniques such as experiments, prototypes, or feasibility studies","To deliver every planned feature to customers","To complete the final production system","To perform only maintenance activities"],c:0},
+
+    {q:"A team uses a small experiment to determine whether a new technology is feasible before committing significant resources. Which Spiral loop activity does this best represent?",a:["Loop 1 — Explore","Loop 2 — Understand & Refine","Loop 3 — Develop Further","Later loops — Toward the Complete System"],c:0},
+
+    {q:"What is the main purpose of Loop 2 in the Spiral Model?",a:["To understand what has been learned, refine requirements, and investigate remaining risks and alternatives","To immediately release the complete system to customers","To eliminate all future planning from the project","To perform only final acceptance testing"],c:0},
+
+    {q:"Which activities are associated with Loop 3 of the Spiral Model?",a:["Design, implementation, and testing to further develop and validate the solution","Only brainstorming and identifying initial project objectives","Only gathering customer opinions without building anything","Only planning the project's budget and schedule"],c:0},
+
+    {q:"Which statement correctly describes the relationship between the Spiral Model and prototyping?",a:["Prototypes can be used as risk-reduction techniques within the Spiral Model, but the Spiral Model is not the same as prototyping","The Spiral Model and prototyping are exactly the same process model","Prototyping cannot be used during Spiral development","The Spiral Model is simply another name for evolutionary prototyping"],c:0},
+
+    {q:"What is a major strength of the Spiral Model?",a:["Major risks can be identified and addressed before larger commitments are made","All project requirements are guaranteed to remain unchanged","It eliminates the need for experienced risk analysis","It always requires exactly four development loops"],c:0},
+
+    {q:"Why can the Spiral Model have significant management overhead?",a:["Repeated risk analysis, development, and evaluation require additional effort","Every loop must produce a completely separate final product","The model does not allow any automation","The model requires every developer to work independently"],c:0},
+
+    {q:"Why does the Spiral Model require risk expertise?",a:["Effective identification and analysis of important risks can be difficult","Every project must use the same predetermined risk list","Risk analysis is performed only after deployment","Risk expertise is needed to prevent developers from writing code"],c:0},
+
+    {q:"Which project is the best fit for the Spiral Model?",a:["A large, complex system with significant technical uncertainty and high-risk decisions","A tiny project with no significant uncertainty and a very small scope","A simple program where requirements and implementation are already completely known","A small script that will be discarded after one use"],c:0},
+
+    {q:"What is the key idea behind choosing a software process model?",a:["Different projects have different needs, so the process should match the project's requirements, change, feedback, risk, and context","Every software project should use exactly the same process model","Agile should always be selected regardless of project characteristics","The oldest available process model should always be selected"],c:0},
+
+    {q:"What is the main difference between Plan-Driven and Agile development?",a:["Plan-Driven emphasizes more planning upfront, while Agile plans throughout development and adapts to change","Plan-Driven does not involve planning, while Agile requires all planning before coding","Plan-Driven uses testing while Agile does not","Agile requires all requirements to be finalized before development"],c:0},
+
+    {q:"How are requirements generally handled in Plan-Driven development compared with Agile development?",a:["Plan-Driven defines requirements earlier, while Agile allows requirements to evolve","Plan-Driven avoids requirements, while Agile fixes every requirement permanently","Both approaches require all requirements to remain unchanged","Agile defines all requirements before development and Plan-Driven discovers them after deployment"],c:0},
+
+    {q:"A project uses short iterations, regularly delivers increments, and incorporates changing requirements. Which approach does this describe?",a:["Agile development","Opportunistic development","Traditional Waterfall development","Strictly plan-driven development"],c:0},
+
+    {q:"Which statement about planning in Agile is correct?",a:["Agile involves planning throughout development rather than eliminating planning","Agile means the team does not need a plan","Agile requires every project decision to be made before development begins","Agile replaces planning with random development"],c:0},
+
+    {q:"Why can Agile be useful for software projects?",a:["Teams often learn what they really need while building the software and receiving feedback","Software requirements never change once development begins","Agile prevents customers from changing priorities","Agile eliminates the need for users to provide feedback"],c:0},
+
+    {q:"A team delivers a working feature, receives user feedback, learns from it, and changes the next version. Which Agile cycle does this demonstrate?",a:["Deliver → Feedback → Learn → Adapt → Deliver Again","Plan → Freeze → Document → Deploy → Stop","Design → Code → Ignore Feedback → Release → Repeat","Requirements → Contract → Implementation → Retirement"],c:0},
+
+    {q:"Why does the lecture emphasize that Agile is more than simply being fast?",a:["Moving quickly without feedback can result in moving quickly in the wrong direction","Agile requires developers to avoid delivering software quickly","Agile means completing the entire project before collecting feedback","Being fast automatically guarantees software quality"],c:0},
+
+    {q:"Which of the following best describes the Agile mindset?",a:["Deliver value, collaborate, learn from feedback, embrace useful change, and improve continuously","Follow the original plan regardless of new information","Avoid customer involvement until the project is complete","Focus primarily on producing documentation instead of working software"],c:0},
+
+    {q:"Which statement is one of the four Agile Manifesto values?",a:["Individuals and interactions over processes and tools","Processes and tools over individuals and interactions","Comprehensive documentation over working software","Following a plan over responding to change"],c:0},
+
+    {q:"A customer requests an important change after seeing the first working version of a system. According to the Agile Manifesto in practice, what should the team do?",a:["Discuss the value and impact of the change, then adapt appropriately","Reject the request because the original requirements were finalized","Implement the change immediately without discussing its impact","Ignore the request until the entire system is completed"],c:0},
+
+    {q:"What does 'Working software over comprehensive documentation' mean in the Agile Manifesto?",a:["Working software is valued more, while documentation still has value","Agile teams should never create documentation","Documentation is always more important than working software","Agile teams should only document the project after it is cancelled"],c:0},
+
+    {q:"Which Agile theme focuses on delivering useful software early and frequently?",a:["Value","Change","People","Quality & Improvement"],c:0},
+
+    {q:"Which Agile theme emphasizes collaboration, communication, and trust within the team?",a:["People","Value","Change","Quality & Improvement"],c:0},
+
+    {q:"When is Agile particularly helpful?",a:["When requirements may evolve, frequent delivery creates value, and customers can provide feedback","When requirements must never change and customer feedback is impossible","When the project cannot be divided into useful increments","When stakeholders are unavailable throughout development"],c:0},
+
+    {q:"A team cannot regularly access customers for feedback and the project requires strict regulatory traceability. What should the team recognize about Agile?",a:["Agile may face challenges because customer availability and compliance requirements can affect how it is applied","Agile automatically eliminates the need for customer involvement and traceability","Agile requires the team to remove all documentation","Agile guarantees that regulatory requirements no longer apply"],c:0},
+
+    {q:"Why can too little documentation become a problem for an Agile project?",a:["It can make maintenance and onboarding more difficult","It guarantees that requirements will never change","It prevents working software from being delivered","It eliminates the need for technical discipline"],c:0},
+
+    {q:"What is the relationship between Agile and Scrum?",a:["Agile is a set of values, principles, and a mindset, while Scrum is one framework for applying Agile ideas","Agile and Scrum are exactly the same thing","Scrum is a software development language and Agile is a testing tool","Agile is a Scrum-specific documentation standard"],c:0},
+
+    {q:"A team argues that Agile means accepting every requirement change immediately. Which response is most accurate?",a:["Agile welcomes useful change, but teams still need to discuss value, impact, and appropriate adaptation","Agile requires every requested change to be implemented immediately","Agile prohibits all requirement changes after development starts","Agile means requirements do not need to be evaluated"],c:0},
+
+    {q:"What is the main idea behind Extreme Programming (XP)?",a:["Take proven software-development practices and apply them continuously and intensively","Avoid automated testing so developers can work faster","Complete all requirements before writing any code","Use large releases with long periods between feedback"],c:0},
+
+    {q:"When is XP particularly applicable?",a:["When requirements change frequently, the team is small and collaborative, and automated testing is possible","When requirements never change and the team works independently","When customer feedback is unavailable and testing cannot be automated","When development consists of one large release with no intermediate versions"],c:0},
+
+    {q:"What does XP require regarding tests and builds?",a:["All tests should run with each build and all tests must pass for the build to be accepted","Tests should only be performed after the entire project is completed","Only the newest feature needs to be tested after each release","Tests are optional when the development team is experienced"],c:0},
+
+    {q:"What is incremental planning in XP?",a:["Selecting release stories based on available time and relative priority, then breaking stories into development tasks","Creating a complete detailed plan that cannot change during development","Allowing developers to choose features without considering priorities","Planning only after the final software release"],c:0},
+
+    {q:"What is the goal of small releases in XP?",a:["Develop minimal useful functionality that provides business value and release it frequently","Delay all releases until every planned feature is completed","Release large amounts of functionality as rarely as possible","Release unfinished software without collecting feedback"],c:0},
+
+    {q:"What does the XP practice of simple design recommend?",a:["Do enough design to meet the current requirements and no more","Design every possible future feature before development begins","Avoid design completely and immediately begin coding","Create the most complex architecture possible for future expansion"],c:0},
+
+    {q:"What is Test-First Development in XP?",a:["Writing automated unit tests for new functionality before implementing the functionality","Writing tests only after the software has been released","Testing only the user interface before writing the application logic","Allowing customers to manually test every line of code"],c:0},
+
+    {q:"A developer notices that an existing section of code can be simplified without changing its behavior. Which XP practice addresses this?",a:["Refactoring","Collective Ownership","Planning Game","On-Site Customer"],c:0},
+
+    {q:"What is pair programming?",a:["Two developers work together, checking each other's work and providing continuous support","Two customers independently write requirements for the same feature","Two teams develop completely separate versions of the same system","A developer writes code while another developer performs only project management"],c:0},
+
+    {q:"What is the purpose of collective ownership in XP?",a:["All developers share responsibility for the code so that no isolated islands of expertise develop","Only the original developer is allowed to modify a section of code","Each developer owns a permanent section of the system and cannot modify other areas","Customers are given direct control over the source code"],c:0},
+
+    {q:"What happens during continuous integration in XP?",a:["Completed work is integrated into the whole system and the unit tests must pass after integration","Developers wait until the end of the project before combining their code","Only documentation is integrated after each task","The entire system is rewritten after every completed task"],c:0},
+
+    {q:"Why does XP promote a sustainable pace?",a:["Excessive overtime can reduce code quality and medium-term productivity","Developers should work as many hours as possible to maximize output","Shorter work hours eliminate the need for testing","Sustainable pace allows teams to avoid releasing software frequently"],c:0},
+
+    {q:"What is the role of the on-site customer in XP?",a:["A representative of the end user is available to the team and brings system requirements to them","The customer writes all of the source code for the development team","The customer is responsible only for testing after deployment","The customer manages the development team's working hours"],c:0},
+
+    {q:"What is the main purpose of fine-grained feedback in XP?",a:["To shorten the feedback loop so problems and misunderstandings can be discovered earlier","To reduce communication between developers and customers","To postpone feedback until after the final release","To eliminate the need for automated testing"],c:0},
+
+    {q:"Which sequence best represents the continuous process emphasized in XP?",a:["Integrate → Test → Improve → Deliver → Repeat","Plan → Freeze → Code → Stop → Deploy","Design → Document → Wait → Release → Retire","Code → Release → Ignore feedback → Rewrite → Stop"],c:0},
+
+    {q:"A development team wants to prevent knowledge about the system from becoming concentrated in one developer. Which XP practices are most directly relevant?",a:["Collective ownership, pair programming, and shared understanding","Small releases, simple design, and planning only","Sprint planning, velocity, and product backlog","Acceptance criteria, user stories, and story points"],c:0},
+
+    {q:"What is Scrum?",a:["An Agile framework for organizing iterative development","A programming language used to implement Agile systems","A testing method that replaces unit testing","A documentation standard for software projects"],c:0},
+
+    {q:"What is a Product Backlog?",a:["A list of work the Scrum team may need to address","A list containing only completed features","A list of bugs that cannot be fixed","A schedule containing only developer vacations"],c:0},
+
+    {q:"Which item could appear in a Product Backlog?",a:["Features, user stories, engineering improvements, architecture work, documentation, or investigation","Only customer-facing features that will appear in the final interface","Only tasks assigned to the ScrumMaster","Only defects discovered after deployment"],c:0},
+
+    {q:"What is the purpose of a Sprint?",a:["To complete a selected amount of work within a fixed-length period and produce a product increment","To continue indefinitely until every Product Backlog item is completed","To replace the Product Backlog with a permanent project plan","To perform only documentation work"],c:0},
+
+    {q:"What happens to unfinished work when a Sprint ends?",a:["It does not extend the Sprint and returns to the Product Backlog","The Sprint is automatically extended until the work is finished","It is permanently deleted from the Product Backlog","It automatically becomes part of the next Sprint without replanning"],c:0},
+
+    {q:"What is velocity in Scrum?",a:["An estimate of how much Product Backlog effort a team can cover in one Sprint","The number of developers assigned to a Scrum team","The number of bugs found during testing","The amount of time remaining before a Sprint ends"],c:0},
+
+    {q:"How should previous Sprint velocity be used?",a:["Observed velocity can help the team determine how much work it can reasonably select for the next Sprint","Previous velocity should be ignored because every Sprint must contain the same amount of work","Velocity determines which programming language the team must use","Velocity guarantees that every future Sprint will have identical results"],c:0},
+
+    {q:"What is the purpose of the Daily Scrum?",a:["To review progress, identify problems, and coordinate what the team plans to do next","To allow the ScrumMaster to assign every task individually","To replace Sprint Reviews and Retrospectives","To create the entire Product Backlog from scratch each day"],c:0},
+
+    {q:"Which sequence best represents the purpose of the end-of-Sprint review process?",a:["Review the product → review how the team worked → learn → feed improvements into the next Sprint","Deploy the product → freeze requirements → stop testing → begin a new project","Write requirements → code everything → avoid feedback → repeat the same Sprint","Assign tasks → remove the Product Backlog → restart development"],c:0},
+
+    {q:"What is a user story?",a:["A short description of functionality from the perspective of a user or stakeholder","A detailed technical design document written only for developers","A list of programming tasks without a user or business purpose","A complete specification of every system component"],c:0},
+
+    {q:"Which format best represents a typical user story?",a:["As a <type of user>, I want <user requirement> so that <rationale or benefit>","The system must <technical implementation> using <programming language> because <developer preference>","Developer: <task>; Tester: <bug>; Customer: <deadline>","If <developer action>, then <database query>, because <technical constraint>"],c:0},
+
+    {q:"Which user story is strongest according to the lecture?",a:["As a student, I want to book an available counselling appointment so that I can receive support without calling the clinic","As a user, I want a good website","As a student, I want login, booking, cancellation, payment, reminders, profile editing, and AI recommendations","Build the wellness system with all required features"],c:0},
+
+    {q:"What does the 'I' in INVEST stand for?",a:["Independent","Integrated","Iterative","Important"],c:0},
+
+    {q:"What does the 'N' in INVEST mean?",a:["Negotiable","Necessary","Networked","Normalized"],c:0},
+
+    {q:"What does the 'V' in INVEST mean?",a:["Valuable","Verified","Versioned","Visual"],c:0},
+
+    {q:"What does the 'T' in INVEST mean?",a:["Testable","Traceable","Technical","Timed"],c:0},
+
+    {q:"What are the Three C's of a User Story?",a:["Card → Conversation → Confirmation","Code → Compile → Commit","Customer → Coding → Completion","Create → Change → Correct"],c:0},
+
+    {q:"What is the purpose of the Conversation in the Three C's?",a:["To discuss the story with stakeholders and explore its real value and details","To automatically generate the source code for the story","To permanently finalize every technical implementation detail","To replace acceptance tests with informal discussion"],c:0},
+
+    {q:"What is the purpose of acceptance criteria?",a:["To define the conditions that must be satisfied for a user story to be accepted","To determine which developer should receive the story","To estimate the team's velocity without testing the story","To describe the complete architecture of the software"],c:0},
+
+    {q:"Which format is used for the acceptance-test structure shown in the lecture?",a:["Given → When → Then","Who → What → Why","Plan → Build → Release","Card → Conversation → Confirmation"],c:0},
+
+    {q:"What is the main purpose of the Planning Game?",a:["To plan work by combining customer priorities with developer estimates and risk information","To allow developers to choose requirements without customer involvement","To create a fixed plan that cannot change during development","To replace user stories with technical documentation"],c:0},
+
+    {q:"Who participates in Release Planning?",a:["The customer and developers","Only the developers","Only the customer","Only the project manager"],c:0},
+
+    {q:"What is the main goal of Release Planning?",a:["Select user stories and decide the schedule","Convert every user story into programming tasks immediately","Assign individual tasks to specific developers","Review completed software from the previous iteration"],c:0},
+
+    {q:"What is the main goal of Iteration Planning?",a:["Convert user stories into tasks and assign them","Determine the long-term business strategy of the organization","Select the product's entire feature set","Create the final project budget"],c:0},
+
+    {q:"What is the customer's primary responsibility during the Planning Game?",a:["Make decisions about requirements","Provide developer effort estimates","Calculate team velocity","Assign programming tasks to developers"],c:0},
+
+    {q:"What is the developer's responsibility during Release Planning?",a:["Provide effort estimates, estimation confidence, risk assessment, and team velocity","Determine which requirements are most valuable to customers","Approve all business requirements without customer input","Set the organization's marketing priorities"],c:0},
+
+    {q:"During the Exploration phase of the Planning Game, what happens?",a:["Customers provide or confirm stories while developers estimate difficulty, ask questions, and break large stories into smaller ones","Customers select stories and developers immediately begin coding them","Developers assign all tasks and calculate individual workloads","The team reviews the completed product and closes the project"],c:0},
+
+    {q:"During the Commitment phase of the Planning Game, what happens?",a:["Customers prioritize stories by business value while developers consider risk and velocity before stories are selected","Developers write acceptance tests while customers perform software testing","Customers assign tasks directly to individual developers","Developers permanently freeze the Product Backlog"],c:0},
+
+    {q:"What is the purpose of the Steering phase of the Planning Game?",a:["Adjust the plan during the iteration as new stories, changes, or removals arise","Prevent any changes to the plan after the iteration begins","Estimate all future projects at the beginning of development","Replace the customer with the development team"],c:0},
+
+    {q:"Why is exact effort estimation difficult?",a:["Software work is difficult to predict precisely and estimates can be affected by complexity, uncertainty, and incomplete knowledge","Software tasks always take exactly the same amount of time","Developers are always given complete information before estimating","Every software project uses identical technology and requirements"],c:0},
+
+    {q:"Which approach uses formulas derived from historical data for effort estimation?",a:["Formal estimation models such as COCOMO, SLIM, and SEER-SEM","Planning poker","Expert estimation only","Velocity tracking"],c:0},
+
+    {q:"What is expert estimation?",a:["Using the judgment and opinions of one or more expert developers to estimate effort","Using only a mathematical formula based on historical project data","Allowing customers to assign story points without developer input","Calculating effort only after the work has been completed"],c:0},
+
+    {q:"What is combination-based estimation?",a:["Using both formal estimation models and expert judgment","Using only customer opinions","Using only the team's previous velocity","Using only the number of lines of code"],c:0},
+
+    {q:"What is the main idea behind story points?",a:["They estimate relative effort by comparing one user story with another","They represent exact numbers of hours required to complete a story","They measure only the financial cost of a user story","They measure only the number of developers assigned to a story"],c:0},
+
+    {q:"Which three factors are considered when estimating story points?",a:["Amount of work, complexity of work, and risk or uncertainty","Number of developers, project budget, and customer satisfaction","Programming language, documentation size, and office location","Schedule length, number of meetings, and number of customers"],c:0},
+
+    {q:"Story A requires more work, is technically more difficult, and has greater uncertainty than Story B. What should generally happen to their story-point estimates?",a:["Story A should receive more story points than Story B","Story A should receive fewer story points than Story B","Both stories should automatically receive the same number of points","Story points cannot be used to compare the stories"],c:0},
+
+    {q:"Why does the lecture emphasize relative effort rather than absolute effort when using story points?",a:["Comparing stories helps teams estimate difficulty without pretending that an exact amount of time can be predicted","Story points are intended to represent exact hours for every developer","Relative estimates eliminate the need to compare different stories","Story points are calculated directly from project salary costs"],c:0},
+
+    {q:"Why can estimating software work directly in hours be difficult?",a:["Humans are poor at estimating time and development work does not progress linearly","Hours always produce estimates that are too large","Software development always takes exactly the same amount of time","Hours cannot be used to measure any form of software work"],c:0},
+
+    {q:"What is a characteristic of story points in Scrum according to the lecture?",a:["They represent relative effort and may use a Fibonacci sequence such as 1, 2, 3, 5, 8, 13, and 21","They always represent exact one-hour blocks","They must always equal the number of lines of code","They are determined only by the customer"],c:0},
+
+    {q:"What happens first in Planning Poker?",a:["A story is selected for effort estimation","The highest estimate is automatically accepted","The customer assigns points to each developer","The team calculates its final velocity"],c:0},
+
+    {q:"During Planning Poker, what happens after everyone secretly selects an estimate?",a:["Everyone reveals their cards simultaneously","The developer with the highest estimate automatically wins","Only the customer reveals their estimate","The lowest estimate becomes the final answer"],c:0},
+
+    {q:"During Planning Poker, two developers choose very different estimates. What should happen next?",a:["The developers with the lowest and highest estimates explain their reasoning, then everyone revises their estimates","The highest estimate automatically becomes the final estimate","The lowest estimate automatically becomes the final estimate","The story is immediately removed from the Product Backlog"],c:0},
+
+    {q:"What is team velocity?",a:["The amount of story points completed by a team during an iteration","The number of developers working during an iteration","The amount of time remaining in an iteration","The number of user stories currently in the Product Backlog"],c:0},
+
+    {q:"How can a team improve its estimates over multiple iterations?",a:["Use previous performance, compare similar stories, and build domain knowledge from experience","Ignore previous iterations and estimate every story from scratch","Increase every estimate by the same number of story points","Allow customers to determine all future story-point values"],c:0},
+
+    {q:"What does the 'Yesterday's Weather' rule suggest about future team velocity?",a:["The team's recent performance is a useful guide because today's results are likely to be more similar to recent results than unrelated values","The team should always double its previous velocity","The team should never use previous performance when planning","The team's future velocity should always equal the largest historical velocity"],c:0},
+
+    {q:"When should risk management take place?",a:["At the start of a project, at the start of Agile iterations, and at the start of major phases","Only after the software has been released","Only when a customer reports a defect","Only after the final project review"],c:0},
+
+    {q:"What are the four steps of risk management presented in the lecture?",a:["Risk identification, risk analysis, risk management planning, and risk review","Risk coding, risk testing, risk deployment, and risk retirement","Risk estimation, risk programming, risk release, and risk maintenance","Risk planning, coding, documentation, and customer approval"],c:0},
+
+    {q:"Which of the following is a project risk?",a:["A risk affecting the project schedule, development process, or resources","A risk affecting only the quality of the finished software","A risk affecting only the organization's competitors","A risk affecting only the user interface design"],c:0},
+
+    {q:"A development team adopts a new game engine and is unsure whether it will perform well. What type of risk is this?",a:["Product risk","Project risk","Business risk","Scheduling risk"],c:0},
+
+    {q:"A competitor releases a new product and the company's sales may decrease. What type of risk is this?",a:["Business risk","Product risk","Project risk","Implementation risk"],c:0},
+
+    {q:"When analyzing the risk of a user story, what does completeness measure?",a:["How well the details of the story are known","How many developers are assigned to the story","How many lines of code the story requires","How much money the customer will spend"],c:0},
+
+    {q:"A user story is highly likely to change during development. Which risk-analysis factor does this describe?",a:["High volatility","High completeness","High simplicity","Low complexity"],c:0},
+
+    {q:"A user story is technically difficult and complicated to implement. Which risk-analysis factor should receive a higher value?",a:["Complexity","Completeness","Volatility","Priority"],c:0},
+
+    {q:"A user story has a risk score of 5 using the lecture's completeness, volatility, and complexity scoring. How is the risk classified?",a:["High risk","Low risk","Medium risk","No risk"],c:0},
+
+    {q:"A user story has Complete = 0, Medium Volatility = 1, and Complex = 2. What is its total risk score and classification?",a:["3, which is Medium risk","2, which is Medium risk","4, which is High risk","5, which is High risk"],c:0}
+]
+  }
 };
 
 window.questionCodes = {
   CompArch: "COMP-2453",
   CloudComp: "COMP-4312",
   SocIndi: "SOCI-2755",
-  DataSci: "COMP-4112"
+  DataSci: "COMP-4112",
+  SoftEngi: "COMP-3415"
 };
 
 window.quizThemes = {

@@ -52,6 +52,8 @@ let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
 const menuMusic=new Audio(resolveAssetUrl('music/MenuMusic.wav'));
 let menuVisible=false;
+let menuMusicFadeFrame=null;
+let menuMusicFadePending=false;
 menuMusic.loop=true;
 menuMusic.volume=.45;
 function updateMusicToggle(){
@@ -59,8 +61,39 @@ function updateMusicToggle(){
   musicToggle.setAttribute('aria-label',musicMuted?'Unmute music':'Mute music');
   musicToggle.setAttribute('aria-pressed',String(musicMuted));
 }
-function startMenuMusic(){
-  if(menuVisible && !musicMuted) menuMusic.play().catch(()=>{});
+function startMenuMusic(fadeIn=false){
+  if(fadeIn) menuMusicFadePending=true;
+  if(!menuVisible || musicMuted) return;
+
+  if(menuMusicFadeFrame!==null){
+    cancelAnimationFrame(menuMusicFadeFrame);
+    menuMusicFadeFrame=null;
+  }
+
+  if(!menuMusicFadePending){
+    menuMusic.volume=.45;
+    menuMusic.play().catch(()=>{});
+    return;
+  }
+
+  menuMusic.volume=0;
+  menuMusic.play().then(()=>{
+    menuMusicFadePending=false;
+    const fadeStartedAt=performance.now();
+    const fadeDuration=1150;
+    const raiseVolume=(now)=>{
+      if(musicMuted){
+        menuMusic.volume=0;
+        menuMusicFadeFrame=null;
+        return;
+      }
+      const progress=Math.min((now-fadeStartedAt)/fadeDuration,1);
+      menuMusic.volume=.45*progress;
+      if(progress<1) menuMusicFadeFrame=requestAnimationFrame(raiseVolume);
+      else menuMusicFadeFrame=null;
+    };
+    menuMusicFadeFrame=requestAnimationFrame(raiseVolume);
+  }).catch(()=>{});
 }
 musicToggle.addEventListener('click',()=>{
   musicMuted=!musicMuted;
@@ -69,8 +102,8 @@ musicToggle.addEventListener('click',()=>{
   else startMenuMusic();
   updateMusicToggle();
 });
-document.addEventListener('pointerdown',startMenuMusic);
-document.addEventListener('touchstart',startMenuMusic,{passive:true});
+document.addEventListener('pointerdown',()=>startMenuMusic());
+document.addEventListener('touchstart',()=>startMenuMusic(),{passive:true});
 updateMusicToggle();
 
 document.addEventListener('keydown',event=>{
@@ -120,7 +153,8 @@ const courseCodes={
   CompArch:'COMP-2453',
   CloudComp:'COMP-4312',
   SocIndi: "SOCI-2755",
-  DataSci: 'COMP-4112'
+  DataSci: 'COMP-4112',
+  SoftEngi: 'COMP-3415'
 };
 
 const courseQuizCatalog={
@@ -141,7 +175,7 @@ const courseQuizCatalog={
     {id:'test1', label:'Test 1 Practice', detail:'for Oct 22'}
   ],
   SoftEngi:[
-    {id:'test1', label:'Test 1 Practice', detail:'for Oct 22'}
+    {id:'test1', label:'Lectures 1–6 Practice', detail:'for Oct 8'}
   ]
 };
 
@@ -339,6 +373,12 @@ document.querySelectorAll('[data-close-patchnotes]').forEach(el=>{
 });
 
 patchnotesContent.textContent=`
+Version 1.6
+- Added Cloud Computing Quiz based on Slide 4
+- Cloud Computing now has unique music
+- Added Software Engineering Lectures 1–6 practice with a visual twist, let's just say it's the one they play when the world gets loud!
+- Returning to the menu is now faster, and skips the animations
+
 Version 1.5
 - Hexadecimal Operation practice now functions
 - UI Updates
@@ -483,13 +523,35 @@ window.addEventListener('pageshow',event=>{
   startMenuMusic();
 });
 
-// Animated title entrance first; only after it finishes is the full menu revealed.
-setTimeout(()=>document.body.classList.add('intro-complete'),1450);
-setTimeout(()=>{
+const returnParams = new URLSearchParams(window.location.search);
+const returningFromSetup = returnParams.get('fromSetup') === '1';
+const returningFromWin = returnParams.get('fromWin') === '1';
+if (returningFromSetup || returningFromWin) {
+  const cleanUrl = new URL(window.location.href);
+  cleanUrl.searchParams.delete(returningFromSetup ? 'fromSetup' : 'fromWin');
+  window.history.replaceState(null, '', cleanUrl);
+}
+
+if (returningFromSetup) {
   menuVisible=true;
-  document.body.classList.add('menu-visible');
-  startMenuMusic();
-},2550);
+  document.body.classList.add('menu-return-setup','skip-title-intro','intro-complete','menu-visible');
+  startMenuMusic(true);
+} else if (returningFromWin) {
+  document.body.classList.add('menu-return-win','skip-title-intro','intro-complete');
+  setTimeout(()=>{
+    menuVisible=true;
+    document.body.classList.add('menu-visible');
+    startMenuMusic();
+  },1450);
+} else {
+  // Animated title entrance first; only after it finishes is the full menu revealed.
+  setTimeout(()=>document.body.classList.add('intro-complete'),1450);
+  setTimeout(()=>{
+    menuVisible=true;
+    document.body.classList.add('menu-visible');
+    startMenuMusic();
+  },2550);
+}
 
 // First title bounce occurs 15 seconds after the initial menu reveal, then every 15 seconds.
 setTimeout(()=>{

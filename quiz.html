@@ -13,6 +13,22 @@
 <button class="music-toggle" id="musicToggle" type="button" aria-label="Mute music" aria-pressed="false">♫</button>
 
 <div class="quiz-page" id="quizPage">
+  <aside class="softengi-sidebar" id="softengiSidebar" aria-label="Quiz statistics" hidden>
+    <div class="softengi-brand">
+     
+      <span><strong>SoftENGPT</strong></span>
+    </div>
+    <div class="softengi-sidebar-stats">
+      <p class="softengi-sidebar-label">YOUR STATS</p>
+      <div class="softengi-stat"><span>Score</span><strong id="softengiScore">0 / 0</strong></div>
+      <div class="softengi-stat"><span>Accuracy</span><strong id="softengiAccuracy">0%</strong></div>
+      <div class="softengi-stat"><span>Progress</span><strong id="softengiProgress">Ready</strong></div>
+      <div class="softengi-progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span id="softengiProgressBar"></span>
+      </div>
+      <div class="softengi-stat"><span>Time</span><strong id="softengiTime">No limit</strong></div>
+    </div>
+  </aside>
   <section class="visual">
     <div class="quiz-heading">
       <p class="course-code" id="courseCode">COURSE CODE - QUIZ</p>
@@ -60,21 +76,22 @@
     </section>
 
     <section class="quiz-content" id="quizContent" hidden>
+      <div class="softengi-composer">
+        <section class="answers" id="answers">
+          <button class="answer"></button>
+          <button class="answer"></button>
+          <button class="answer"></button>
+          <button class="answer"></button>
+        </section>
 
-      <section class="answers" id="answers">
-        <button class="answer"></button>
-        <button class="answer"></button>
-        <button class="answer"></button>
-        <button class="answer"></button>
-      </section>
+        <div class="motivation" id="feedback" aria-live="polite"></div>
 
-      <div class="motivation" id="feedback" aria-live="polite"></div>
-
-      <nav class="controls">
-        <button class="control" id="skip" type="button">SKIP</button>
-        <button class="control" id="next" type="button" disabled>NEXT</button>
-        <button class="control" id="quit" type="button">END QUIZ</button>
-      </nav>
+        <nav class="controls">
+          <button class="control" id="skip" type="button" aria-label="Skip question" title="Skip question"><span class="control-visible-label">SKIP</span><span class="softengi-control-icon" aria-hidden="true">»</span></button>
+          <button class="control" id="next" type="button" aria-label="Next question" title="Next question" disabled><span class="control-visible-label">NEXT</span><span class="softengi-control-icon" aria-hidden="true">→</span></button>
+          <button class="control" id="quit" type="button">END QUIZ</button>
+        </nav>
+      </div>
     </section>
   </main>
 </div>

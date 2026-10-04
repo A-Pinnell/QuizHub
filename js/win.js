@@ -65,7 +65,7 @@ window.addEventListener("load", function(){
   const winClose = document.getElementById("winClose");
 
   winClose.addEventListener("click",function(){
-    window.location.href = "index.html";
+    window.location.href = "index.html?fromWin=1";
   });
 
   if(!data || !Array.isArray(data.history)){
@@ -270,7 +270,7 @@ window.addEventListener("load", function(){
   });
 
   menuBtn.addEventListener("click",function(){
-    window.location.href = "index.html";
+    window.location.href = "index.html?fromWin=1";
   });
 
   /* -------------------------------------------------------

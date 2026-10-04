@@ -78,7 +78,11 @@ updateSoundToggle();
 let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
 const requestedMusicCategory=new URLSearchParams(location.search).get('category');
-const quizMusicFile=requestedMusicCategory==='DataSci' ? resolveAssetUrl('./music/DataSciMusic.wav') : requestedMusicCategory==='CloudComp' ? resolveAssetUrl('./music/CloudCompMusic.wav') : resolveAssetUrl('./music/QuizMusic.wav');
+const quizMusicFile=
+requestedMusicCategory==='DataSci' ? resolveAssetUrl('./music/DataSciMusic.wav') 
+: requestedMusicCategory==='CloudComp' ? resolveAssetUrl('./music/CloudCompMusic.wav') 
+: requestedMusicCategory==='SoftEngi' ? resolveAssetUrl('./music/SoftEngiMusic.wav') 
+: resolveAssetUrl('./music/QuizMusic.wav');
 const quizMusic=new Audio(quizMusicFile);
 const isPreloadedQuiz=window.self!==window.top;
 let quizMusicPending=false;
@@ -202,6 +206,25 @@ const timer = document.getElementById("timer");
 const scoreDisplay = document.getElementById('scoreDisplay');
 const questionDisplay = document.getElementById('questionDisplay');
 const questionTitle = document.getElementById('questionTitle');
+const isSoftEngi = category === "SoftEngi";
+const softengiSidebar = document.getElementById('softengiSidebar');
+const softengiScore = document.getElementById('softengiScore');
+const softengiAccuracy = document.getElementById('softengiAccuracy');
+const softengiProgress = document.getElementById('softengiProgress');
+const softengiProgressTrack = document.querySelector('.softengi-progress-track');
+const softengiProgressBar = document.getElementById('softengiProgressBar');
+const softengiTime = document.getElementById('softengiTime');
+
+if (isSoftEngi) {
+  document.body.classList.add('softengi-mode');
+  softengiSidebar.hidden = false;
+  const softengiComposer = document.querySelector('.softengi-composer');
+  const questionHeading = questionTitle.closest('.quiz-heading');
+  if (softengiComposer && questionHeading) {
+    softengiComposer.parentElement.insertBefore(questionHeading, softengiComposer);
+    softengiComposer.after(feedback);
+  }
+}
 
 courseCode.textContent = `${codes[category] || category} - QUIZ`;
 const totalAvailable = bank.length;
@@ -225,6 +248,8 @@ let quizStarted = false;
 let remainingSeconds = null;
 let timerInterval = null;
 let quizEnded = false;
+let questionTypingTimer = null;
+let feedbackTypingTimer = null;
 
 function shuffle(array){
   const copy = [...array];
@@ -285,7 +310,21 @@ function updateMeta(){
       questionDisplay.textContent = 'Question 0 of 0';
     }
   }
-  if (questionTitle) questionTitle.textContent = current ? formatPowerText(current.q) : 'Question';
+  if (softengiScore) softengiScore.textContent = `${score} / ${selectedQuestionCount}`;
+  if (softengiAccuracy) {
+    const accuracy = history.length ? Math.round((score / history.length) * 100) : 0;
+    softengiAccuracy.textContent = `${accuracy}%`;
+  }
+  if (softengiProgress) {
+    softengiProgress.textContent = current
+      ? `${questionNumber} / ${selectedQuestionCount}`
+      : `0 / ${totalAvailable}`;
+  }
+  if (softengiProgressTrack && softengiProgressBar) {
+    const progress = selectedQuestionCount ? (questionNumber / selectedQuestionCount) * 100 : 0;
+    softengiProgressTrack.setAttribute('aria-valuenow', String(Math.round(progress)));
+    softengiProgressBar.style.width = `${progress}%`;
+  }
 }
 
 function formatTime(seconds){
@@ -308,14 +347,90 @@ function formatPowerText(value){
   });
 }
 
+function showQuestionTitle(){
+  if (!questionTitle || !current) return;
+  if (questionTypingTimer !== null) {
+    clearInterval(questionTypingTimer);
+    questionTypingTimer = null;
+  }
+
+  if (!isSoftEngi) {
+    questionTitle.textContent = formatPowerText(current.q);
+    return;
+  }
+
+  const emojis = ['✨','💡','🧠','🚀','🔍','🎯'];
+  const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+  const title = `${formatPowerText(current.q)} ${emoji}`;
+  const titleLength = Array.from(title).length;
+  questionTitle.classList.toggle('question-long', titleLength > 100);
+  questionTitle.classList.toggle('question-very-long', titleLength > 160);
+  questionTitle.classList.add('typing');
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    questionTitle.textContent = title;
+    questionTitle.classList.remove('typing');
+    return;
+  }
+
+  const characters = Array.from(title);
+  let position = 0;
+  questionTitle.textContent = '';
+  const typeNextCharacter = () => {
+    questionTitle.textContent = characters.slice(0, position + 1).join('');
+    position++;
+    if (position >= characters.length) {
+      clearInterval(questionTypingTimer);
+      questionTypingTimer = null;
+      questionTitle.classList.remove('typing');
+    }
+  };
+
+  typeNextCharacter();
+  questionTypingTimer = setInterval(typeNextCharacter, titleLength > 120 ? 8 : 12);
+}
+
+function typeSoftEngiFeedback(){
+  if (!isSoftEngi) return;
+  if (feedbackTypingTimer !== null) {
+    clearInterval(feedbackTypingTimer);
+    feedbackTypingTimer = null;
+  }
+
+  const text = feedback.textContent;
+  feedback.classList.add('softengi-typing');
+  if (!text || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    feedback.classList.remove('softengi-typing');
+    return;
+  }
+
+  const characters = Array.from(text);
+  let position = 0;
+  feedback.textContent = '';
+  const typeNextCharacter = () => {
+    feedback.textContent = characters.slice(0, position + 1).join('');
+    position++;
+    if (position >= characters.length) {
+      clearInterval(feedbackTypingTimer);
+      feedbackTypingTimer = null;
+      feedback.classList.remove('softengi-typing');
+    }
+  };
+
+  typeNextCharacter();
+  feedbackTypingTimer = setInterval(typeNextCharacter, characters.length > 120 ? 8 : 12);
+}
+
 function updateTimer(){
   if(remainingSeconds === null){
     timer.hidden = true;
+    if (softengiTime) softengiTime.textContent = 'No limit';
     return;
   }
   timer.hidden = false;
   timer.textContent = formatTime(remainingSeconds);
   timer.classList.toggle("warning", remainingSeconds <= 60);
+  if (softengiTime) softengiTime.textContent = formatTime(remainingSeconds);
 }
 
 function stopTimer(){
@@ -346,8 +461,12 @@ function startTimer(){
 
 function renderQuestion(){
   if (!current) return;
+  if (feedbackTypingTimer !== null) {
+    clearInterval(feedbackTypingTimer);
+    feedbackTypingTimer = null;
+  }
 
-  questionTitle.textContent = formatPowerText(current.q);
+  showQuestionTitle();
   nextButton.disabled = true;
   skipButton.disabled = false;
   skipButton.classList.remove('skip-hidden', 'animate-hide');
@@ -370,7 +489,20 @@ function renderQuestion(){
     button.type = 'button';
     button.className = 'answer';
     button.dataset.originalIndex = String(originalIndex);
-    button.textContent = `${answerLabels[displayIndex] || String(displayIndex + 1)}. ${formatPowerText(answer)}`;
+    const answerLabel = answerLabels[displayIndex] || String(displayIndex + 1);
+    if (isSoftEngi) {
+      button.classList.add('softengi-answer');
+      button.setAttribute('aria-label', `${answerLabel}. ${formatPowerText(answer)}`);
+      const marker = document.createElement('span');
+      marker.className = 'softengi-answer-marker';
+      marker.textContent = answerLabel;
+      const answerText = document.createElement('span');
+      answerText.className = 'softengi-answer-text';
+      answerText.textContent = formatPowerText(answer);
+      button.append(marker, answerText);
+    } else {
+      button.textContent = `${answerLabel}. ${formatPowerText(answer)}`;
+    }
     button.addEventListener('click', () => chooseAnswer(originalIndex));
     answersEl.appendChild(button);
   });
@@ -408,6 +540,14 @@ function finishQuiz(reason="complete"){
   if(quizEnded)return;
   quizEnded=true;
   stopTimer();
+  if (questionTypingTimer !== null) {
+    clearInterval(questionTypingTimer);
+    questionTypingTimer = null;
+  }
+  if (feedbackTypingTimer !== null) {
+    clearInterval(feedbackTypingTimer);
+    feedbackTypingTimer = null;
+  }
 
   // The result page receives ONLY the questions the user has actually seen.
   // The total remains the configured quiz length, so ending early is explicit.
@@ -494,6 +634,8 @@ function revealQuestion(resultType, selectedIndex=null){
     feedback.className = "motivation visible wrong";
   }
 
+  typeSoftEngiFeedback();
+
   nextButton.disabled = false;
   skipButton.disabled = true;
   skipButton.classList.remove("skip-show");
@@ -532,7 +674,7 @@ function exitSetup(){
   if(quizStarted || quizEnded)return;
   quizMusic.pause();
   fade.classList.add('active');
-  setTimeout(()=>{ window.location.href='index.html'; },560);
+  setTimeout(()=>{ window.location.href='index.html?fromSetup=1'; },560);
 }
 
 function quit(){
@@ -586,6 +728,7 @@ function beginQuiz(){
 
   playSound('begin');
   quizStarted = true;
+  if (isSoftEngi) document.body.classList.add('softengi-active');
   startQuizMusic();
   setup.hidden = true;
   content.hidden = false;
