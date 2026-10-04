@@ -130,13 +130,17 @@ const courseQuizCatalog={
     {id:'hexadecimal-quiz', label:'Hexadecimal Practice', detail:'Standalone hexadecimal practice', external:'hexadecimal-quiz.html'}
   ],
   CloudComp:[
-    {id:'quiz1', label:'First Slides Practice', detail:'for Sept 24'}
+    {id:'quiz1', label:'First Slides Practice', detail:'for Sept 24'},
+    {id:'quiz2', label:'Week 3 Slides Practice', detail:'for This week'}
   ],
   SocIndi:[
     {id:'reviewQuiz', label:'Review Quiz', detail:'Based on D2L Review Questions'},
     {id:'textbookQuiz', label:'Textbook Quiz', detail:'Based on Textbook contents'},
   ],
   DataSci:[
+    {id:'test1', label:'Test 1 Practice', detail:'for Oct 22'}
+  ],
+  SoftEngi:[
     {id:'test1', label:'Test 1 Practice', detail:'for Oct 22'}
   ]
 };

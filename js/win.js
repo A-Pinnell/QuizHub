@@ -110,6 +110,8 @@ window.addEventListener("load", function(){
     if (Array.isArray(source)) return source;
     if (!source || typeof source !== "object") return [];
 
+    if (quizType && Array.isArray(source[quizType])) return source[quizType];
+
     if (quizType === "textbookQuiz") {
       return Array.isArray(source.textbook)
         ? source.textbook
@@ -130,7 +132,7 @@ window.addEventListener("load", function(){
       ? source.review
       : Array.isArray(source.textbook)
         ? source.textbook
-        : [];
+        : Object.values(source).find(Array.isArray) || [];
   }
 
   function findQuestionIndex(item){

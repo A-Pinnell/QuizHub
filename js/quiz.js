@@ -78,9 +78,7 @@ updateSoundToggle();
 let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
 const requestedMusicCategory=new URLSearchParams(location.search).get('category');
-const quizMusicFile=requestedMusicCategory==='DataSci'
-  ? resolveAssetUrl('./music/DataSciMusic.wav')
-  : resolveAssetUrl('./music/QuizMusic.wav');
+const quizMusicFile=requestedMusicCategory==='DataSci' ? resolveAssetUrl('./music/DataSciMusic.wav') : requestedMusicCategory==='CloudComp' ? resolveAssetUrl('./music/CloudCompMusic.wav') : resolveAssetUrl('./music/QuizMusic.wav');
 const quizMusic=new Audio(quizMusicFile);
 const isPreloadedQuiz=window.self!==window.top;
 let quizMusicPending=false;
@@ -127,6 +125,8 @@ function resolveQuestionBank(course, quizId = null) {
   if (Array.isArray(source)) return source;
   if (!source || typeof source !== "object") return [];
 
+  if (quizId && Array.isArray(source[quizId])) return source[quizId];
+
   if (quizId === "textbookQuiz") {
     return Array.isArray(source.textbook)
       ? source.textbook
@@ -147,7 +147,7 @@ function resolveQuestionBank(course, quizId = null) {
     ? source.review
     : Array.isArray(source.textbook)
       ? source.textbook
-      : [];
+      : Object.values(source).find(Array.isArray) || [];
 }
 
 const bank = resolveQuestionBank(category, requestedQuiz);
@@ -356,7 +356,10 @@ function renderQuestion(){
   skipButton.style.removeProperty('visibility');
   skipButton.style.removeProperty('pointer-events');
 
-  const randomizedAnswerOrder = shuffleWithoutConsecutiveDuplicates(current.a.map((_, index) => index));
+  const answerIndices = current.a
+    .map((_, index) => index)
+    .filter(index => current.a[index] !== 'BLANK');
+  const randomizedAnswerOrder = shuffleWithoutConsecutiveDuplicates(answerIndices);
 
   answersEl.innerHTML = '';
   const answerLabels = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];

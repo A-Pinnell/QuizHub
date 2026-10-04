@@ -340,7 +340,8 @@ window.questionBank = {
     {q:"What determines which decoder output is asserted?", a:["The pattern of its input lines","The output of the ALU","The number of registers","The clock frequency"], c:0}
   ],
 
-  CloudComp: [
+  CloudComp: {
+    quiz1: [
     {q:"What is cloud computing?", a:["On-demand delivery of computing resources over the internet with usage-based billing","A method of physically building data centers","A programming language for cloud applications","A type of computer hardware"], c:0},
 
     {q:"Which of the following is a key component of cloud computing?", a:["Compute","Keyboard manufacturing","Desktop publishing","Physical cabling only"], c:0},
@@ -581,226 +582,163 @@ window.questionBank = {
     {q:"Which deployment models should learners be able to identify?", a:["Public, private, hybrid, and community","IaaS, PaaS, and SaaS","VM, container, and serverless","AWS, Azure, and Google"], c:0},
 
     {q:"Which major cloud providers are specifically discussed?", a:["AWS, Azure, and Google Cloud","Docker, Kubernetes, and VMware","Salesforce, Microsoft 365, and Google Workspace","IBM, Oracle, and Alibaba only"], c:0},
+    ],
+    quiz2: [
+        {q:"What is Zero Trust based on?",a:["Never trust, always verify","Trust all internal network traffic","Trust users after one successful login","Allow access based only on IP address"],c:0},
+        {q:"True or False: Zero Trust assumes that attackers may already be inside the environment.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What problem does Zero Trust address when attackers move between systems after compromising one system?",a:["Lateral movement","Data compression","DNS resolution","Load balancing"],c:0},
+        {q:"Fill in the blank: Zero Trust requires organizations to ______ every request.",a:["verify","ignore","encrypt","cache"],c:0},
+        {q:"Which statement best describes the traditional castle-and-moat security model?",a:["Security is concentrated around a network perimeter","Every request is continuously verified","Every workload receives its own identity","All internal traffic is denied"],c:0},
+        {q:"True or False: Cloud-native architectures make static network perimeters more effective.",a:["True","False","BLANK","BLANK"],c:1},
+        {q:"Which factor helped drive the adoption of Zero Trust?",a:["Remote workforce expansion","Reduced internet usage","Elimination of cloud computing","Fewer connected devices"],c:0},
+        {q:"What is meant by the phrase 'identity as the new perimeter'?",a:["Who or what you are becomes more important than where you are","Physical firewalls are no longer needed anywhere","Only users inside a building can access resources","IP addresses become the primary identity"],c:0},
+        {q:"Which Zero Trust principle means granting only the minimum rights required?",a:["Least privilege access","Assume breach","Continuous monitoring","Network openness"],c:0},
+        {q:"True or False: Zero Trust gives users implicit trust when they are connected to the corporate network.",a:["True","False","BLANK","BLANK"],c:1},
 
-    // {q:"What does cloud architecture define?", a:["How cloud services are built and delivered","How physical keyboards are manufactured","How operating systems are programmed","How databases are deleted"], c:0},
-    // {q:"Cloud architecture determines scalability, reliability, and ________.", a:["security","storage","billing","programming"], c:0},
-    // {q:"Which of the following is a compute component of cloud architecture?", a:["Virtual machines","DNS zones","IAM policies","Object storage"], c:0},
-    // {q:"Which types of storage are listed as cloud architecture components?", a:["Object, block, and file storage","Only database storage","Only local storage","Only tape storage"], c:0},
-    // {q:"Cloud networking includes VPCs, load balancers, and ________.", a:["DNS","RAM","CPUs","Docker"], c:0},
-    // {q:"Which cloud architecture area includes IAM, roles, and policies?", a:["Identity","Compute","Storage","Observability"], c:0},
-    // {q:"Which cloud architecture area includes logs, metrics, and tracing?", a:["Observability","Identity","Compute","Storage"], c:0},
-    // {q:"Virtualization allows multiple virtual machines to run on a single physical ________.", a:["server","database","network","container"], c:0},
-    // {q:"What component provides virtualization between hardware and virtual machines?", a:["Hypervisor","Load balancer","DNS server","API Gateway"], c:0},
-    // {q:"What is a guest OS?", a:["An operating system running inside a virtual machine","The operating system of the physical server only","A cloud database","A container registry"], c:0},
-    // {q:"Virtualization provides strong ________ between workloads.", a:["isolation","encryption","routing","billing"], c:0},
-    // {q:"Which is a benefit of virtualization?", a:["Higher utilization of physical hardware","Eliminating all hardware","Removing operating systems","Preventing scalability"], c:0},
-    // {q:"What flexibility does virtualization provide?", a:["Running multiple OS types on one host","Running only one OS permanently","Removing the need for operating systems","Running only containers"], c:0},
-    // {q:"A Type 1 hypervisor is also called a ________-metal hypervisor.", a:["bare","virtual","hosted","container"], c:0},
-    // {q:"What is a Type 1 hypervisor?", a:["A bare-metal hypervisor that runs directly on hardware","A hypervisor running on a host OS","A container runtime","A Kubernetes controller"], c:0},
-    // {q:"Does a Type 1 hypervisor require a host operating system?", a:["No","Yes, always","Only for containers","Only on public clouds"], c:0},
-    // {q:"Which is an example of a Type 1 hypervisor?", a:["VMware ESXi","Oracle VirtualBox","VMware Workstation","Parallels Desktop"], c:0},
-    // {q:"A Type 2 hypervisor runs on top of a host ________.", a:["operating system","container","database","network"], c:0},
-    // {q:"What is a Type 2 hypervisor?", a:["A hosted hypervisor that runs on top of a host operating system","A bare-metal hypervisor","A container orchestrator","A cloud load balancer"], c:0},
-    // {q:"Which is an example of a Type 2 hypervisor?", a:["Oracle VirtualBox","VMware ESXi","KVM","Microsoft Hyper-V"], c:0},
-    // {q:"Which Microsoft technology is listed as a Type 1 hypervisor?", a:["Microsoft Hyper-V","Microsoft 365","Azure App Services","Azure Functions"], c:0},
-    // {q:"Virtual machines are considered ________ compared with containers.", a:["heavyweight","lightweight","stateless","portable"], c:0},
-    // {q:"What does each virtual machine normally contain?", a:["A full guest operating system","Only an application process","Only a container image","Only a network interface"], c:0},
-    // {q:"How quickly do virtual machines typically start according to the slides?", a:["Minutes","Seconds or less","Instantaneously in every case","Hours"], c:0},
-    // {q:"Containers share the host operating system ________.", a:["kernel","database","firewall","hypervisor"], c:0},
-    // {q:"How are containers characterized compared with virtual machines?", a:["Lightweight","Heavyweight","Hardware-based","Physical"], c:0},
-    // {q:"What type of isolation do containers use?", a:["Namespace and cgroup isolation","Hardware-level separation only","No isolation","Physical isolation"], c:0},
-    // {q:"What type of applications are containers described as ideal for?", a:["Microservices","Only mainframes","Only desktop applications","Only databases"], c:0},
-    // {q:"Docker provides a complete platform for building, shipping, and running ________.", a:["containers","virtual machines","databases","DNS zones"], c:0},
-    // {q:"What does the Docker container runtime do?", a:["Runs and manages container lifecycles","Stores DNS records","Schedules Kubernetes pods","Manages IAM policies"], c:0},
-    // {q:"What does Docker image management allow users to do?", a:["Build, version, and distribute images","Create physical servers","Manage DNS routing","Authenticate users"], c:0},
-    // {q:"Docker supports bridge, host, and ________ networks.", a:["overlay","private","public","DNS"], c:0},
-    // {q:"What is a Docker registry used for?", a:["Storing and distributing container images","Scheduling pods","Managing IAM roles","Routing DNS requests"], c:0},
-    // {q:"Which public Docker registry is specifically mentioned?", a:["Docker Hub","GitHub DNS","AWS Registry only","Kubernetes Hub"], c:0},
-    // {q:"Kubernetes automates deployment, scaling, load balancing, and ________ of containerized applications.", a:["self-healing","encryption","billing","compilation"], c:0},
-    // {q:"What is Kubernetes?", a:["A container orchestration platform","A hypervisor","A database","A DNS service"], c:0},
-    // {q:"What is the smallest deployable unit in Kubernetes?", a:["Pod","Node","Service","Cluster"], c:0},
-    // {q:"How many containers can a pod contain?", a:["One or more","Exactly zero","Exactly one physical server","Only ten"], c:0},
-    // {q:"Kubernetes worker machines that run pods are called ________.", a:["nodes","roles","regions","services"], c:0},
-    // {q:"What is the Kubernetes control plane responsible for?", a:["Controlling and managing the cluster","Running every application directly","Storing user files","Providing internet access"], c:0},
-    // {q:"What is the Kubernetes API Server?", a:["The front door of the cluster","The container runtime","The worker node agent","The database used for application data"], c:0},
+        {q:"Which of the following is a core Zero Trust principle?",a:["Continuous monitoring","Permanent trust","Open internal access","Location-based authorization"],c:0},
+        {q:"Fill in the blank: Zero Trust operates on the principle 'Never Trust, Always ______.'",a:["Verify","Connect","Permit","Encrypt"],c:0},
+        {q:"What does 'Assume Breach' mean in Zero Trust?",a:["Design security as if attackers are already inside","Assume every user is trustworthy","Assume the firewall cannot fail","Assume all traffic is encrypted"],c:0},
+        {q:"Which Zero Trust pillar focuses on users, services, and machines?",a:["Identity","Data","Networks","Infrastructure"],c:0},
+        {q:"Which Zero Trust pillar focuses on managed and unmanaged endpoints?",a:["Devices","Applications","Data","Identity"],c:0},
+        {q:"True or False: Applications and APIs are included as a Zero Trust pillar.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"Which Zero Trust pillar includes classification and protection?",a:["Data","Networks","Devices","Identity"],c:0},
+        {q:"Which pillar includes hosts, containers, and cloud resources?",a:["Infrastructure","Applications","Data","Devices"],c:0},
+        {q:"Which pillar focuses on segmentation and traffic control?",a:["Networks","Identity","Applications","Data"],c:0},
+        {q:"Fill in the blank: Zero Trust treats identity as a primary ______ rather than relying only on traditional network boundaries.",a:["security control","database","firewall rule","subnet"],c:0},
 
-    // // 42 FILL IN THE BLANK
-    // {q:"The Kubernetes ________ stores the entire cluster state in a distributed key-value store.", a:["etcd","scheduler","kubelet","kube-proxy"], c:0},
+        {q:"What is authentication?",a:["Proving who or what is making a request","Determining what resources a user may access","Encrypting network traffic","Creating a network segment"],c:0},
+        {q:"What is authorization?",a:["Determining what an authenticated identity is allowed to do","Proving the identity of a requester","Checking whether a device has an IP address","Encrypting a password"],c:0},
+        {q:"True or False: Authentication should happen before access is granted.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"Which of the following can be used as an authentication method?",a:["Password","Role","Network segment","Application permission"],c:0},
+        {q:"Which of the following is an example of authorization?",a:["Allowing Alice to access the HR application but not the Finance database","Checking Alice's password","Checking Alice's fingerprint","Verifying Alice's security token"],c:0},
+        {q:"Fill in the blank: Authentication answers the question 'Who are ______?'",a:["you","they","allowed","connected"],c:0},
+        {q:"Fill in the blank: Authorization answers the question 'What can you ______?'",a:["access","authenticate","encrypt","verify"],c:0},
+        {q:"Which of the following represents the correct order?",a:["Identity → Authentication → Authorization","Authorization → Identity → Authentication","Authentication → Authorization → Identity","Identity → Authorization → Authentication"],c:0},
+        {q:"True or False: Authorization determines what an identity is permitted to access.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"Which is an example of a workload identity?",a:["A container or Kubernetes pod","An employee's home address","A physical building","A network cable"],c:0},
 
-    // // 43
-    // {q:"What does the Kubernetes Controller Manager do?", a:["Ensures the desired state of the cluster is maintained","Runs container images directly","Provides public DNS","Acts as a firewall"], c:0},
+        {q:"Which identity represents an employee such as john@company.com?",a:["User identity","Machine identity","API identity","Workload identity"],c:0},
+        {q:"Which identity represents a web application accessing a database?",a:["Service identity","User identity","Location identity","Network identity"],c:0},
+        {q:"Which identity can represent a laptop, server, or virtual machine?",a:["Machine identity","User identity","API identity","Data identity"],c:0},
+        {q:"Which identity represents an API or microservice making a request?",a:["API identity","User identity","Device posture","Network identity"],c:0},
+        {q:"True or False: A service account is a non-human identity commonly used for automation.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What does SSO stand for?",a:["Single Sign-On","Secure Service Operation","System Security Organization","Single Security Object"],c:0},
+        {q:"What does federation allow?",a:["Single sign-on across systems and clouds","All users to bypass authentication","Devices to operate without identities","Networks to eliminate segmentation"],c:0},
+        {q:"Which is an example of an Identity Provider mentioned in the slideshow?",a:["Microsoft Entra ID","Docker Desktop","Kubernetes","Apache"],c:0},
+        {q:"Which other service is listed as an Identity Provider?",a:["Okta","MongoDB","Node.js","Istio"],c:0},
+        {q:"Fill in the blank: Employees, partners, and customers commonly use ______ identities.",a:["user","machine","workload","API"],c:0},
 
-    // // 44
-    // {q:"What does the Kubernetes Scheduler decide?", a:["Which worker node should run each new pod","Which user can access a database","Which DNS zone is public","Which container image to build"], c:0},
+        {q:"What does MFA stand for?",a:["Multi-Factor Authentication","Managed Firewall Access","Multiple File Authorization","Machine Federation Access"],c:0},
+        {q:"How many types of evidence does MFA require?",a:["More than one","Exactly one","None","Only three"],c:0},
+        {q:"Which is an example of 'something you know'?",a:["Password or PIN","Fingerprint","Phone","Security key"],c:0},
+        {q:"Which is an example of 'something you have'?",a:["Security key","Password","Fingerprint","Facial recognition"],c:0},
+        {q:"Which is an example of 'something you are'?",a:["Fingerprint","Password","PIN","Authentication code"],c:0},
+        {q:"True or False: MFA can provide additional protection even if an attacker obtains a user's password.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"Fill in the blank: MFA can require a username, password, and an authentication ______.",a:["code","firewall","policy","segment"],c:0},
+        {q:"What does adaptive access evaluate before granting access?",a:["Context and risk information","Only the username","Only the IP address","Only the password"],c:0},
+        {q:"Which of the following is a factor considered by adaptive access?",a:["Device posture","Keyboard brand","Screen size","File format"],c:0},
+        {q:"True or False: Adaptive access makes decisions based only on a username and password.",a:["True","False","BLANK","BLANK"],c:1},
 
-    // // 45 FILL IN THE BLANK
-    // {q:"The developer can interact with the Kubernetes API Server using ________.", a:["kubectl","Docker Hub","CloudWatch","Kubelet"], c:0},
+        {q:"What does device posture describe?",a:["The security condition of the device being used","The physical position of a laptop","The user's job title","The network's geographic location"],c:0},
+        {q:"Which condition may be checked as part of device posture?",a:["Whether the operating system is up to date","The user's favorite application","The monitor's resolution","The computer's color"],c:0},
+        {q:"True or False: A device being company-managed can be considered when evaluating access.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"If Alice normally uses a managed laptop but suddenly uses an unmanaged computer, what could Zero Trust do?",a:["Require additional verification or restrict access","Automatically trust the device","Disable all authentication","Ignore the device status"],c:0},
+        {q:"Why can location be useful in adaptive access?",a:["It can provide another signal about whether a request is unusual","It proves an activity is malicious by itself","It replaces authentication","It determines the user's password"],c:0},
+        {q:"True or False: Location alone should be treated as proof that an activity is malicious.",a:["True","False","BLANK","BLANK"],c:1},
+        {q:"What is a risk score?",a:["An assessment of how unusual or potentially risky a request appears","A user's password strength only","A network bandwidth measurement","A database performance value"],c:0},
+        {q:"Which situation would generally produce a higher risk assessment?",a:["Login from an unusual device","Normal login from a managed laptop","Normal use of expected applications","Expected user behavior"],c:0},
+        {q:"Fill in the blank: Anomalous actions can trigger ______ authentication.",a:["step-up","single-factor","network-level","anonymous"],c:0},
+        {q:"What is step-up authentication?",a:["Stronger authentication requested when additional risk is detected","Authentication that happens only once per year","Removing authentication after a risk event","Authentication performed only by administrators"],c:0},
 
-    // // 46
-    // {q:"What is the Kubelet?", a:["An agent on each worker node that ensures containers are running","The Kubernetes database","The cluster API","A load balancer"], c:0},
+        {q:"What is the Policy Decision Point responsible for?",a:["Evaluating access requests and making the security decision","Physically storing all user devices","Encrypting every database","Creating user passwords"],c:0},
+        {q:"True or False: The PDP is sometimes described as the 'central policy brain.'",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What does PDP stand for?",a:["Policy Decision Point","Policy Data Processor","Protected Device Protocol","Private Data Point"],c:0},
+        {q:"What does PEP stand for?",a:["Policy Enforcement Point","Policy Evaluation Process","Protected Endpoint Protocol","Private Enforcement Policy"],c:0},
+        {q:"Which component sits in the data path?",a:["Policy Enforcement Point","Policy Decision Point","Identity Provider only","Risk score"],c:0},
+        {q:"Fill in the blank: PDP decides → PEP ______.",a:["enforces","authenticates","encrypts","segments"],c:0},
+        {q:"True or False: A PEP can be implemented as a gateway, proxy, or agent.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What does the PDP return after evaluating an access request?",a:["An allow or deny decision","A new IP address","A database record","A password"],c:0},
+        {q:"If the PDP returns DENY, what should the PEP do?",a:["Block the request","Allow the request","Create a new identity","Disable MFA"],c:0},
+        {q:"Which information can the PDP evaluate?",a:["Identity, resource, requested action, permissions, and security policies","Only the user's physical location","Only the user's password","Only the destination IP address"],c:0},
 
-    // // 47
-    // {q:"What does Kube-Proxy handle?", a:["Networking and routing traffic to the correct pods","Cluster state storage","Pod scheduling","Container image creation"], c:0},
+        {q:"What is microsegmentation?",a:["Dividing a network into small, isolated security segments","Combining all networks into one large network","Removing all network controls","Allowing all internal traffic"],c:0},
+        {q:"True or False: Microsegmentation can limit unnecessary communication between systems.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What does identity-based segmentation control access based on?",a:["Who or what is requesting access","Only the IP address","Only the physical location","Only the subnet mask"],c:0},
+        {q:"What is a least-privilege path?",a:["A communication path where only required communication is allowed","A path where all communication is allowed","A path that requires no authentication","A path available only to administrators"],c:0},
+        {q:"How does workload-level isolation help security?",a:["It gives individual applications and services their own security boundaries","It removes application identities","It allows unrestricted service communication","It disables all network traffic"],c:0},
+        {q:"Fill in the blank: Microsegmentation helps stop lateral ______.",a:["movement","authentication","encryption","federation"],c:0},
+        {q:"What does limiting the blast radius mean?",a:["Keeping a compromise contained to a limited segment","Increasing the number of affected systems","Removing all network boundaries","Allowing attackers to move freely"],c:0},
+        {q:"True or False: Microsegmentation primarily focuses on East-West traffic.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"Which technique enforces rules on each endpoint or VM?",a:["Host-based firewalls","Identity Providers","Service accounts","Network ACLs only"],c:0},
+        {q:"Which technique uses gateways that check identity before forwarding traffic?",a:["Identity-aware proxies","Host-based firewalls","Network ACLs","DNS servers"],c:0},
 
-    // // 48 FILL IN THE BLANK
-    // {q:"The Kubernetes container runtime is responsible for ________ containers.", a:["running","scheduling","authenticating","routing"], c:0},
+        {q:"What does Software-Defined Networking provide in microsegmentation?",a:["Central control of forwarding and isolation","Only physical firewall management","Password-based authentication","Manual hardware replacement"],c:0},
+        {q:"What is policy-driven segmentation?",a:["Intent-based rules applied automatically","A network with no policies","A firewall that only uses physical addresses","A system that ignores workload changes"],c:0},
+        {q:"What is North-South traffic?",a:["Traffic between external and internal systems","Traffic between two internal workloads","Traffic between two containers only","Traffic within a single process"],c:0},
+        {q:"What is East-West traffic?",a:["Traffic between internal services or workloads","Traffic from the internet to a data center","Traffic between a user and the internet only","Traffic between two external networks"],c:0},
+        {q:"True or False: Traditional firewalls commonly focus on North-South traffic.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"Fill in the blank: Microsegmentation focuses primarily on ______-West traffic.",a:["East","North","South","External"],c:0},
+        {q:"Which is an example of East-West traffic?",a:["Service to service communication","Internet to data center traffic","Client to application traffic from outside","User to internet traffic"],c:0},
+        {q:"Which is an example of North-South traffic?",a:["Client to application traffic","Service to service traffic","Workload to workload traffic","Internal microservice communication"],c:0},
+        {q:"What is the primary goal of a Software-Defined Perimeter?",a:["Hide resources until identity is proven","Expose all network resources publicly","Remove authentication requirements","Allow unsolicited traffic to every application"],c:0},
+        {q:"True or False: Software-Defined Perimeters can reduce the attack surface by avoiding open ports waiting for unsolicited traffic.",a:["True","False","BLANK","BLANK"],c:0},
 
-    // // 49
-    // {q:"Which container runtimes are mentioned in the Kubernetes node architecture?", a:["containerd and CRI-O","Docker Hub and S3","Lambda and EC2","DNS and WAF"], c:0},
+        {q:"What is workload identity used for?",a:["Identifying applications, services, machines, and workloads","Identifying only human users","Identifying only physical buildings","Identifying only IP addresses"],c:0},
+        {q:"What can machine identities use to identify devices and VMs?",a:["Certificates and keys","Only passwords","Only usernames","Network cables"],c:0},
+        {q:"What are API identities?",a:["Credentials used by APIs and microservices","Physical identities of employees","Firewall rules","Network addresses only"],c:0},
+        {q:"What do workload certificates provide?",a:["Cryptographic proof of workload identity","Physical proof of device ownership","A network subnet","A user password"],c:0},
+        {q:"Fill in the blank: Identity boundaries define who can access ______.",a:["what","where","when only","nothing"],c:0},
+        {q:"What do identity boundaries map?",a:["Identities to allowed workloads and actions","IP addresses to passwords","Users to physical buildings","Ports to operating systems"],c:0},
+        {q:"True or False: Identity boundaries are defined by identity rather than IP ranges.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What is separation of duties intended to prevent?",a:["Over-privileged identities from spanning zones","Users from authenticating","All network communication","Cloud workloads from having identities"],c:0},
+        {q:"What is an over-privileged identity?",a:["An identity with more permissions than necessary","An identity without a username","An identity that has no permissions","An identity used only for logging"],c:0},
+        {q:"What do cross-environment policies provide?",a:["Consistent rules across cloud, hybrid, and on-prem environments","Different authentication requirements for every device","Only local network access","Automatic removal of identity boundaries"],c:0},
 
-    // // 50
-    // {q:"What is the difference between the Kubernetes control plane and workers?", a:["The control plane manages the cluster while workers run application workloads","Workers manage the cluster while the control plane runs every container","Both perform exactly the same function","Neither manages applications"], c:0},
+        {q:"How do identity-aware firewalls differ from traditional IP-based controls?",a:["They can make decisions using authenticated identities","They eliminate all authorization","They only use physical addresses","They do not enforce policies"],c:0},
+        {q:"What can user identity rules control?",a:["Allowing or denying access based on the authenticated user","Changing the user's password automatically","Changing physical device hardware","Creating new cloud regions"],c:0},
+        {q:"What do application identity rules control?",a:["Traffic based on application identity","Only human usernames","Only geographic location","Only network speed"],c:0},
+        {q:"True or False: Identity-aware firewalls can enforce policies between microservices.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"In the slideshow example, which service is the Web Service allowed to communicate with?",a:["Payment Service","Database Service directly","Every service","No service"],c:0},
+        {q:"Fill in the blank: Web Service → allowed to communicate with → ______ Service.",a:["Payment","Database","Identity","Network"],c:0},
+        {q:"What is Zero Trust Network Access designed to replace?",a:["Traditional VPNs","Databases","Operating systems","Container registries"],c:0},
+        {q:"True or False: ZTNA grants access to specific applications rather than entire networks.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What does ZTNA require before connecting?",a:["Strong authentication","A public IP address","An open port","An administrator account"],c:0},
+        {q:"What does continuous verification mean in ZTNA?",a:["Trust is re-evaluated throughout the session","The user is verified only once","The network is permanently trusted","The device is never checked"],c:0},
 
-    // // 51 FILL IN THE BLANK
-    // {q:"Serverless computing is ________-driven compute without managing servers.", a:["event","hardware","database","network"], c:0},
+        {q:"What is an allowlist policy?",a:["Default deny; explicitly permit what is needed","Default allow; deny only known threats","Allow all internal traffic","Allow access based only on location"],c:0},
+        {q:"Fill in the blank: Least privilege gives each identity the ______ rights required.",a:["minimal","maximum","same","unlimited"],c:0},
+        {q:"What does conditional access use to make decisions?",a:["Context and risk signals","Only usernames","Only IP addresses","Only network speed"],c:0},
+        {q:"What is dynamic segmentation?",a:["Policies that adapt as workloads and identities change","A fixed network design that never changes","A system without identity checks","A method of removing all security boundaries"],c:0},
+        {q:"True or False: Security groups can act as instance-level stateful firewalls.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What do Network ACLs provide in the slideshow?",a:["Subnet-level stateless filtering","Instance-level stateful filtering","Application-level authentication","User identity management"],c:0},
+        {q:"Which is an example of a service mesh technology?",a:["Istio","Microsoft Entra ID","Okta","Ping Identity"],c:0},
+        {q:"What does a service mesh provide in relation to Zero Trust?",a:["Application-layer isolation and service-level security controls","Physical network cabling","Only user password storage","Only DNS resolution"],c:0},
+        {q:"What does mTLS provide between services?",a:["Encryption and authentication for every service call","Only IP-based routing","Only user authentication","Only database backups"],c:0},
+        {q:"Fill in the blank: mTLS stands for Mutual ______.",a:["TLS","Trust Layer","Traffic Login Service","Token Login System"],c:0},
 
-    // // 52
-    // {q:"What does serverless allow developers to focus on?", a:["Code","Physical servers","Network cables","Hardware maintenance"], c:0},
+        {q:"What does identity-based routing use instead of IP addresses?",a:["Service identity","Physical location","User passwords","Subnet size"],c:0},
+        {q:"What can policy enforcement at the service mesh layer provide?",a:["Authorization and rate limits","Only file storage","Only DNS records","Only physical security"],c:0},
+        {q:"Why is telemetry and monitoring important in a service mesh?",a:["It can observe East-West traffic for anomalies","It removes all traffic controls","It replaces authentication","It disables microsegmentation"],c:0},
+        {q:"True or False: Service meshes can use mTLS to authenticate service-to-service communication.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"What does pod-level identity provide in Kubernetes?",a:["Each pod gets a unique, verifiable identity","All pods share one identity","Pods have no identity","Only users receive identities"],c:0},
+        {q:"What does namespace segmentation do?",a:["Isolates workloads by Kubernetes namespace","Removes workload boundaries","Allows every pod to communicate freely","Replaces authentication with IP addresses"],c:0},
+        {q:"What are identity-aware sidecars?",a:["Proxies that enforce policy on every call","Physical firewalls","Database servers","Identity providers for employees"],c:0},
+        {q:"Fill in the blank: Policy-driven communication allows only approved ______-to-pod paths.",a:["pod","user","network","device"],c:0},
+        {q:"True or False: Each Kubernetes pod can receive a unique, verifiable identity.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"Which is the first step in the Zero Trust implementation roadmap?",a:["Establish the identity foundation","Segment workloads","Apply identity boundaries","Enable continuous monitoring"],c:0},
 
-    // // 53
-    // {q:"What does automatic scaling in serverless mean?", a:["Functions can scale to zero and up based on demand","Functions always run at maximum capacity","Functions cannot scale","Functions require manual hardware installation"], c:0},
-
-    // // 54 FILL IN THE BLANK
-    // {q:"With serverless pay-per-execution billing, you pay only for actual compute ________ used.", a:["time","storage","servers","users"], c:0},
-
-    // // 55
-    // {q:"What does stateless mean for serverless functions?", a:["There is no persistent local state between invocations","Functions permanently store all state locally","Functions cannot access databases","Functions cannot process events"], c:0},
-
-    // // 56
-    // {q:"Which is an ideal use case for serverless?", a:["Event processing","Long-running operating system tasks","Physical hardware management","Persistent local applications"], c:0},
-
-    // // 57 FILL IN THE BLANK
-    // {q:"AWS ________ is an example of serverless compute.", a:["Lambda","EC2","VPC","IAM"], c:0},
-
-    // // 58
-    // {q:"What does AWS Cognito provide in the serverless architecture?", a:["Authentication and user management","Container orchestration","Database storage","Load balancing"], c:0},
-
-    // // 59
-    // {q:"What can Cognito handle?", a:["User sign-up, sign-in, token generation, and secure identity management","Container scheduling","File storage","Network routing"], c:0},
-
-    // // 60 FILL IN THE BLANK
-    // {q:"API Gateway provides routing, throttling, and security for incoming ________.", a:["requests","containers","VMs","databases"], c:0},
-
-    // // 61
-    // {q:"What is the role of API Gateway in the serverless architecture?", a:["It is the entry point for requests and can route them to Lambda","It stores cluster state","It runs physical servers","It replaces DynamoDB"], c:0},
-
-    // // 62
-    // {q:"What does AWS Lambda do in the serverless architecture?", a:["Runs application code on demand","Stores files","Provides DNS","Manages physical data centers"], c:0},
-
-    // // 63 FILL IN THE BLANK
-    // {q:"DynamoDB is a fully managed ________ database.", a:["NoSQL","SQL","relational-only","file"], c:0},
-
-    // // 64
-    // {q:"What type of storage does Amazon S3 provide?", a:["File/object storage","CPU storage","Kubernetes state storage","DNS storage"], c:0},
-
-    // // 65
-    // {q:"What is one example of an S3 event trigger?", a:["S3 can trigger Lambda","S3 can trigger a physical server","S3 can replace IAM","S3 can replace API Gateway"], c:0},
-
-    // // 66 FILL IN THE BLANK
-    // {q:"A VPC is an isolated virtual ________ in the cloud.", a:["network","machine","database","container"], c:0},
-
-    // // 67
-    // {q:"What are subnets?", a:["Segmented ranges of IP addresses","Cloud databases","Container images","IAM policies"], c:0},
-
-    // // 68
-    // {q:"What do route tables control?", a:["Traffic routing paths","User passwords","Container images","CPU allocation"], c:0},
-
-    // // 69 FILL IN THE BLANK
-    // {q:"An Internet Gateway provides public ________ access for a VPC.", a:["internet","database","container","storage"], c:0},
-
-    // // 70
-    // {q:"What does a NAT Gateway provide?", a:["Outbound internet access for private subnets","Inbound public access to every private resource","Container scheduling","DNS health checks"], c:0},
-
-    // // 71
-    // {q:"What are security groups?", a:["Stateful firewall rules at the instance level","Stateless subnet-level rules","DNS routing policies","Kubernetes pods"], c:0},
-
-    // // 72 FILL IN THE BLANK
-    // {q:"A public subnet is accessible from the ________.", a:["internet","hypervisor","container","control plane"], c:0},
-
-    // // 73
-    // {q:"Which is a typical use of a public subnet?", a:["Load balancers","Databases only","Sensitive data stores","Backend workers only"], c:0},
-
-    // // 74
-    // {q:"What is a private subnet?", a:["A subnet with no direct internet access","A subnet accessible directly from the public internet","A subnet used only for load balancers","A subnet with no IP addresses"], c:0},
-
-    // // 75 FILL IN THE BLANK
-    // {q:"Databases and sensitive data stores are typical workloads for a ________ subnet.", a:["private","public","host","overlay"], c:0},
-
-    // // 76
-    // {q:"What is the purpose of a load balancer?", a:["To distribute traffic across multiple resources","To store cluster state","To authenticate users","To run containers"], c:0},
-
-    // // 77
-    // {q:"What are load balancers designed to improve?", a:["High availability and scalability","Only storage capacity","Only authentication","Only container image size"], c:0},
-
-    // // 78 FILL IN THE BLANK
-    // {q:"An Application Load Balancer operates at Layer ________.", a:["7","2","3","4"], c:0},
-
-    // // 79
-    // {q:"Which protocols are associated with an Application Load Balancer?", a:["HTTP/HTTPS","TCP only","UDP only","DNS only"], c:0},
-
-    // // 80
-    // {q:"At which layer does a Network Load Balancer operate?", a:["Layer 4","Layer 7","Layer 2","Layer 1"], c:0},
-
-    // // 81 FILL IN THE BLANK
-    // {q:"A Network Load Balancer operates using TCP and ________.", a:["UDP","HTTP","HTTPS","DNS"], c:0},
-
-    // // 82
-    // {q:"What does IAM control?", a:["Who can access what","How containers are built","How DNS records are stored","How CPUs are manufactured"], c:0},
-
-    // // 83
-    // {q:"What are IAM roles?", a:["Temporary permissions assumed by users or services","Permanent physical servers","Network segments","Container images"], c:0},
-
-    // // 84 FILL IN THE BLANK
-    // {q:"IAM policies are ________ documents that define permissions.", a:["JSON","HTML","XML","CSV"], c:0},
-
-    // // 85
-    // {q:"What do IAM permissions determine?", a:["Whether specific actions on resources are allowed or denied","How fast a container starts","Which node schedules a pod","How DNS routes traffic"], c:0},
-
-    // // 86 FILL IN THE BLANK
-    // {q:"Least privilege means granting only the ________ required access.", a:["minimum","maximum","shared","temporary"], c:0},
-
-    // // 87
-    // {q:"What is MFA used for?", a:["Stronger security through multi-factor authentication","Container orchestration","Network routing","Load balancing"], c:0},
-
-    // // 88
-    // {q:"What is logging used for in cloud observability?", a:["Capturing detailed events and application output for debugging and audit","Assigning pods to nodes","Encrypting network traffic","Managing containers"], c:0},
-
-    // // 89 FILL IN THE BLANK
-    // {q:"Metrics are quantitative measurements such as CPU usage, latency, and ________ rates.", a:["error","storage","network","billing"], c:0},
-
-    // // 90
-    // {q:"What does tracing do?", a:["Follows requests across distributed services end-to-end","Creates virtual machines","Manages user identities","Routes internet traffic"], c:0},
-
-    // // 91 FILL IN THE BLANK
-    // {q:"In virtualization, assigning more virtual CPUs than physical cores exist is called vCPU ________.", a:["overcommitment","scaling","ballooning","provisioning"], c:0},
-
-    // // 92
-    // {q:"What is memory ballooning?", a:["Dynamically reclaiming unused guest memory","Allocating more CPUs than physical cores","Allocating storage only when needed","Routing network traffic"], c:0},
-
-    // // 93
-    // {q:"What is thin provisioning?", a:["Allocating storage on demand rather than upfront","Allocating all storage immediately","Removing storage virtualization","Creating physical disks for every VM"], c:0},
-
-    // // 94 FILL IN THE BLANK
-    // {q:"NUMA awareness means respecting CPU and memory ________ for performance.", a:["topology","security","routing","billing"], c:0},
-
-    // // 95
-    // {q:"What is overlay networking?", a:["Multi-host networking for clusters","A local-only container network","A physical network cable","An IAM system"], c:0},
-
-    // // 96 FILL IN THE BLANK
-    // {q:"A service mesh uses sidecar proxies to manage traffic, security, and ________ between services.", a:["observability","storage","billing","virtualization"], c:0},
-
-    // // 97
-    // {q:"What is a cold start in serverless computing?", a:["Latency when a function is invoked after being idle","The process of creating a VM","A network failure","A database timeout"], c:0},
-
-    // // 98 FILL IN THE BLANK
-    // {q:"The Zero Trust principle is commonly summarized as 'Never trust, always ________.'", a:["verify","encrypt","scale","route"], c:0},
-
-    // // 99
-    // {q:"At which layer does a Web Application Firewall inspect HTTP/HTTPS traffic?", a:["Layer 7","Layer 3","Layer 4","Layer 1"], c:0},
-
-    // // 100 FILL IN THE BLANK
-    // {q:"The modern cloud application stack includes CI/CD and Infrastructure as ________ in its delivery layer.", a:["Code","Service","Storage","Security"], c:0}
-  ],
+        {q:"What is included in establishing the identity foundation?",a:["Centralizing the IdP, SSO, and directory services","Removing all authentication","Opening all network ports","Disabling workload identities"],c:0},
+        {q:"What is the second step of the Zero Trust implementation roadmap?",a:["Enforce MFA and Conditional Access","Establish identity foundation","Apply identity boundaries","Segment workloads"],c:0},
+        {q:"What is the third step of the Zero Trust implementation roadmap?",a:["Segment workloads","Enforce MFA","Establish the identity foundation","Continuous monitoring"],c:0},
+        {q:"What is the fourth step of the Zero Trust implementation roadmap?",a:["Apply identity boundaries","Enable SSO","Remove network segmentation","Disable conditional access"],c:0},
+        {q:"What is the fifth step of the Zero Trust implementation roadmap?",a:["Continuous monitoring","Establishing an IdP","Creating a VPN","Removing identity controls"],c:0},
+        {q:"True or False: Continuous monitoring is used to detect, analyze, and respond to anomalies.",a:["True","False","BLANK","BLANK"],c:0},
+        {q:"Fill in the blank: The Zero Trust roadmap begins by establishing an identity ______.",a:["foundation","firewall","database","perimeter"],c:0},
+        {q:"Which roadmap step applies microsegmentation and network isolation?",a:["Segment Workloads","Enforce MFA & Conditional Access","Apply Identity Boundaries","Continuous Monitoring"],c:0},
+        {q:"Which roadmap step maps identities to allowed resources and actions?",a:["Apply Identity Boundaries","Segment Workloads","Establish Identity Foundation","Continuous Monitoring"],c:0},
+        {q:"Which statement best summarizes Zero Trust?",a:["Never trust, always verify","Trust everything inside the network","Use only perimeter firewalls","Allow access based only on IP address"],c:0}
+    ]
+  },
 
 
   SocIndi: {
