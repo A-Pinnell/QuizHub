@@ -165,7 +165,7 @@ const courseQuizCatalog={
   ],
   CloudComp:[
     {id:'quiz1', label:'First Slides Practice', detail:'for Sept 24'},
-    {id:'quiz2', label:'Week 3 Slides Practice', detail:'for This week'}
+    {id:'quiz2', label:'Week 4 Slides Practice', detail:'for Oct 8'}
   ],
   SocIndi:[
     {id:'reviewQuiz', label:'Review Quiz', detail:'Based on D2L Review Questions'},
@@ -372,6 +372,15 @@ document.querySelectorAll('[data-close-patchnotes]').forEach(el=>{
   el.addEventListener('click',closePatchnotes);
 });
 
+const textbookLibraryLink=document.getElementById('textbookLibraryLink');
+textbookLibraryLink.addEventListener('click',event=>{
+  if(event.button!==0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  if(document.body.classList.contains('library-leaving')) return;
+  document.body.classList.add('library-leaving');
+  window.setTimeout(()=>window.location.assign(textbookLibraryLink.href),220);
+});
+
 patchnotesContent.textContent=`
 Version 1.6
 - Added Cloud Computing Quiz based on Slide 4
@@ -507,12 +516,12 @@ function pulseStem(){
 }
 
 window.addEventListener('pageshow',event=>{
-  if(!event.persisted && !document.body.classList.contains('leaving'))return;
+  if(!event.persisted && !document.body.classList.contains('leaving') && !document.body.classList.contains('library-leaving'))return;
   leaving=false;
   welcomeVisible=false;
   quizLoaded=false;
   navigationTarget='';
-  document.body.classList.remove('leaving','show-welcome','welcome-out');
+  document.body.classList.remove('leaving','library-leaving','show-welcome','welcome-out');
   document.querySelectorAll('.card').forEach(card=>{card.disabled=false;});
   if(preloadFrame){
     preloadFrame.remove();
