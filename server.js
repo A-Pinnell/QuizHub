@@ -11,6 +11,7 @@ const port = Number.parseInt(process.env.PORT || "8080", 10);
 const roomCodeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 const roomLifetimeMs = 2 * 60 * 60 * 1000;
 const maxRoomPlayers = 50;
+const maxQuizQuestions = 1000;
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -274,14 +275,42 @@ function handleMessage(socket, rawMessage) {
       room.stage = "setup";
       room.category = category;
       room.quiz = quiz;
+      room.quizConfig = null;
       broadcast(room, { type: "launch", category, quiz });
+      break;
+    }
+    case "quiz-config": {
+      if (!player.host || room.stage !== "setup") {
+        return sendError(socket, "Only the host can change quiz settings.");
+      }
+      const config = message.config;
+      const timeLimits = [10, 20, 30, 60, 100, 150];
+      if (!config || !Number.isInteger(config.questionCount) ||
+          config.questionCount < 1 || config.questionCount > maxQuizQuestions ||
+          !["random", "static"].includes(config.orderMode) ||
+          !(config.timeLimitMinutes === null || timeLimits.includes(config.timeLimitMinutes)) ||
+          !(config.perQuestionTimeMinutes === null ||
+            (Number.isInteger(config.perQuestionTimeMinutes) &&
+              config.perQuestionTimeMinutes >= 1 && config.perQuestionTimeMinutes <= 60)) ||
+          !Array.isArray(config.reviewSections) || config.reviewSections.length > 50 ||
+          !config.reviewSections.every((section) => typeof section === "string" && section.length <= 100)) {
+        return sendError(socket, "Invalid quiz settings.");
+      }
+      room.quizConfig = {
+        questionCount: config.questionCount,
+        orderMode: config.orderMode,
+        timeLimitMinutes: config.timeLimitMinutes,
+        perQuestionTimeMinutes: config.perQuestionTimeMinutes,
+        reviewSections: [...new Set(config.reviewSections)]
+      };
+      broadcastRoom(room);
       break;
     }
     case "quiz-start": {
       if (!player.host || room.stage !== "setup") return sendError(socket, "Only the host can start the quiz.");
       const config = message.config;
       if (!config || !Array.isArray(config.questionSequence) ||
-          config.questionSequence.length < 1 || config.questionSequence.length > 500 ||
+          config.questionSequence.length < 1 || config.questionSequence.length > maxQuizQuestions ||
           !config.questionSequence.every((index) => Number.isInteger(index) && index >= 0)) {
         return sendError(socket, "Invalid quiz question sequence.");
       }

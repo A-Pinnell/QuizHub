@@ -245,7 +245,7 @@ window.addEventListener("load", function(){
     numberTrack.appendChild(row);
   }
 
-  Array.from("CONGRATULATIONS!").forEach((character, index) => {
+  Array.from("CONGRATS!").forEach((character, index) => {
     const letter = document.createElement("span");
     letter.className = "rainbow-letter";
     letter.style.setProperty("--letter-index", String(index));

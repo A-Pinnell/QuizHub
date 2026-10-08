@@ -137,13 +137,30 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   });
   await Promise.all([hostLaunch, guestLaunch]);
 
+  const hostSettings = waitForMessage(host, "room-state");
+  const guestSettings = waitForMessage(guest, "room-state");
+  send(host, {
+    type: "quiz-config",
+    code: hosted.room.code,
+    config: {
+      questionCount: 526,
+      orderMode: "static",
+      timeLimitMinutes: 30,
+      perQuestionTimeMinutes: 2,
+      reviewSections: []
+    }
+  });
+  const [hostSettingsMessage, guestSettingsMessage] = await Promise.all([hostSettings, guestSettings]);
+  assert.equal(hostSettingsMessage.room.quizConfig.questionCount, 526);
+  assert.equal(guestSettingsMessage.room.quizConfig.perQuestionTimeMinutes, 2);
+
   const hostStarted = waitForMessage(host, "quiz-start");
   const guestStarted = waitForMessage(guest, "quiz-start");
   send(host, {
     type: "quiz-start",
     code: hosted.room.code,
     config: {
-      questionSequence: [0],
+      questionSequence: Array.from({ length: 526 }, (_, index) => index),
       orderMode: "static",
       timeLimitMinutes: null,
       perQuestionTimeMinutes: null

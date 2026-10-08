@@ -286,8 +286,10 @@ const scoreDisplay = document.getElementById('scoreDisplay');
 const comboDisplay = document.getElementById('comboDisplay');
 const comboPopup = document.getElementById('comboPopup');
 const questionDisplay = document.getElementById('questionDisplay');
-const partyTurnDisplay=document.getElementById("partyTurn");
+
 const partyScoreDisplay=document.getElementById("partyScoreDisplay");
+const partyScoreToggle=document.getElementById("partyScoreToggle");
+const partySettingsSummary=document.getElementById("partySettingsSummary");
 const partyPlayerLeftDialog=document.getElementById("partyPlayerLeftDialog");
 const partyPlayerLeftMessage=document.getElementById("partyPlayerLeftMessage");
 const questionTitle = document.getElementById('questionTitle');
@@ -318,11 +320,16 @@ if(partyModeRequested && !partyModeActive){
 }
 if(networkPartyActive){
   beginButton.disabled=!partyHost;
+  partySettingsSummary.hidden=false;
+  partySettingsSummary.textContent="Waiting for the host to choose quiz settings…";
   if(!partyHost){
     beginButton.textContent="WAITING FOR HOST";
     setup.classList.add("party-network-guest");
     setupTitle.textContent="Waiting for Host";
     setupError.textContent="Waiting for the host to configure and start the quiz…";
+    setup.querySelectorAll("input, select, #reviewSectionTrigger").forEach((control)=>{
+      control.disabled=true;
+    });
     skipButton.hidden=true;
     nextButton.hidden=true;
     quitButton.textContent="LEAVE GAME";
@@ -402,6 +409,7 @@ if(socIndiReviewSections){
       setupCount.textContent=`${totalAvailable} question${totalAvailable===1?"":"s"} available in the selected sections.`;
       reviewSectionTrigger.textContent=`Choose review sections (${selectedReviewSections.length} selected)`;
       setupError.textContent="";
+      publishPartySettings();
     });
   });
   reviewSectionTrigger.textContent=`Choose review sections (${selectedReviewSections.length} selected)`;
@@ -491,6 +499,7 @@ function updateMeta(){
 function updatePartyScoreDisplay(){
   if(!partyScoreDisplay) return;
   partyScoreDisplay.hidden=!partyModeActive;
+  partyScoreToggle.hidden=!partyModeActive;
   if(!partyModeActive) return;
   partyScoreDisplay.replaceChildren(...partyPlayers.map((player)=>{
     const score=document.createElement("span");
@@ -500,6 +509,54 @@ function updatePartyScoreDisplay(){
     score.setAttribute("aria-label",`${player.name}: ${player.score} points`);
     return score;
   }));
+}
+
+function updatePartySettingsSummary(config){
+  if(!networkPartyActive || !partySettingsSummary) return;
+  partySettingsSummary.hidden=false;
+  if(!config){
+    partySettingsSummary.textContent="Waiting for the host to choose quiz settings…";
+    return;
+  }
+  const quizTime=config.timeLimitMinutes===null
+    ? "No quiz time limit"
+    : `${config.timeLimitMinutes} minute quiz limit`;
+  const questionTime=config.perQuestionTimeMinutes===null
+    ? "No per-question timer"
+    : `${config.perQuestionTimeMinutes} minute per-question timer`;
+  const reviewSections=Array.isArray(config.reviewSections) && config.reviewSections.length
+    ? ` · Sections: ${config.reviewSections.join(", ")}`
+    : "";
+  const questionCount=Number.isInteger(config.questionCount)
+    ? config.questionCount
+    : config.questionSequence?.length;
+  if(!Number.isInteger(questionCount)) return;
+  partySettingsSummary.textContent=
+    `Host settings: ${questionCount} questions · ${config.orderMode==="static"?"Static":"Random"} order · ${quizTime} · ${questionTime}${reviewSections}`;
+}
+
+function publishPartySettings(){
+  if(!networkPartyActive || !partyHost || quizStarted) return;
+  const questionCount=Number.parseInt(countInput.value,10);
+  if(!Number.isInteger(questionCount) || questionCount<1 || questionCount>totalAvailable) return;
+  const selectedTime=document.querySelector('input[name="timeLimit"]:checked');
+  const selectedOrder=document.querySelector('input[name="order"]:checked');
+  const questionMinutes=perQuestionTimeLimit.value==="none"
+    ? null
+    : Number.parseInt(perQuestionTimeLimit.value,10);
+  const config={
+    questionCount,
+    orderMode:selectedOrder?.value==="static"?"static":"random",
+    timeLimitMinutes:selectedTime && selectedTime.value!=="none"
+      ? Number(selectedTime.value)
+      : null,
+    perQuestionTimeMinutes:Number.isInteger(questionMinutes)?questionMinutes:null,
+    reviewSections:socIndiReviewSections?selectedReviewSections:[]
+  };
+  partyConnection.send({type:"quiz-config",code:partyRoomCode,config}).catch((error)=>{
+    setupError.textContent=`Could not share quiz settings: ${error.message}`;
+  });
+  updatePartySettingsSummary(config);
 }
 
 function createPartyAvatar(player,className){
@@ -517,15 +574,7 @@ function createPartyAvatar(player,className){
   return avatar;
 }
 
-function showPartyTurn(player,rolling=false){
-  partyTurnDisplay.replaceChildren(
-    createPartyAvatar(player,"party-turn-avatar"),
-    document.createTextNode(rolling ? `Choosing: ${player.name}` : `${player.name}'s turn`)
-  );
-  partyTurnDisplay.hidden=false;
-  partyTurnDisplay.classList.toggle("rolling",rolling);
-  partyTurnDisplay.style.setProperty("--party-player-color",player.color);
-}
+
 
 function setPartyAnswerAvailability(available){
   answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=!available;});
@@ -668,13 +717,11 @@ function startNetworkQuiz(config,roomSnapshot=null){
       skipButton.disabled=true;
       feedback.textContent="Your answer is locked in. Waiting for the other players…";
       feedback.className="motivation visible";
-      partyTurnDisplay.textContent="Answer locked in";
-      partyTurnDisplay.hidden=false;
+
     }
   }else if(partyHost) loadQuestion();
   else{
-    partyTurnDisplay.textContent="Waiting for the host to start the first question…";
-    partyTurnDisplay.hidden=false;
+
   }
 }
 
@@ -698,7 +745,7 @@ function displayNetworkQuestion(message){
   questionNumber=sequencePosition+1;
   renderQuestion(message.answerOrder);
   startQuestionTimer();
-  partyTurnDisplay.hidden=!partyHost;
+
 }
 
 function lockNetworkAnswerUi(selectedIndex){
@@ -721,8 +768,7 @@ function lockNetworkAnswerUi(selectedIndex){
   nextButton.disabled=true;
   feedback.textContent="Answer locked in. Waiting for the other players…";
   feedback.className="motivation visible";
-  partyTurnDisplay.textContent="Answer locked in";
-  partyTurnDisplay.hidden=false;
+
 }
 
 function submitNetworkAnswer(selectedIndex){
@@ -792,10 +838,7 @@ function revealNetworkQuestion(message){
   feedback.className=`motivation visible ${ownAnswer?.correct?"right":"wrong"}`;
   nextButton.disabled=!partyHost;
   skipButton.disabled=true;
-  partyTurnDisplay.textContent=ownAnswer?.correct
-    ? `${ownPlayer?.name||"You"} got it right!`
-    : `${ownPlayer?.name||"You"} did not get it this time.`;
-  partyTurnDisplay.hidden=false;
+
   updateMeta();
   if(partyHost){
     if(questionNumber>=selectedQuestionCount){
@@ -824,8 +867,7 @@ function beginPartyQuestion(){
   partyChoices=[];
   partyTurns=shuffle(partyPlayers.map((player)=>player.id));
   partyCurrentPlayer=null;
-  partyTurnDisplay.hidden=true;
-  partyTurnDisplay.classList.remove("rolling");
+
   setPartyAnswerAvailability(false);
   assignNextPartyPlayer();
 }
@@ -921,9 +963,7 @@ function finishPartyQuestion(timedOut=false){
   feedback.className="motivation visible";
   nextButton.disabled=false;
   skipButton.disabled=true;
-  partyTurnDisplay.replaceChildren(document.createTextNode(timedOut?"Time expired":"Answers revealed"));
-  partyTurnDisplay.classList.remove("rolling");
-  partyTurnDisplay.hidden=false;
+
   updateMeta();
 }
 
@@ -942,7 +982,7 @@ function recordPartySelection(selectedIndex){
     finishPartyQuestion();
     return;
   }
-  partyTurnDisplay.replaceChildren(document.createTextNode(`${player.name} locked in`));
+
   partyTurnTimer=setTimeout(()=>{
     partyTurnTimer=null;
     assignNextPartyPlayer();
@@ -1116,7 +1156,7 @@ function startQuestionTimer(){
         answered=true;
         answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
         skipButton.disabled=true;
-        partyTurnDisplay.textContent="Time is up. Waiting for the host…";
+
       }else if(partyModeActive) finishPartyQuestion(true);
       else revealQuestion("timeout");
     }
@@ -1707,10 +1747,12 @@ exitSetupButton.addEventListener("click",exitSetup);
 if(networkPartyActive){
   partyConnection.on("joined",(message)=>{
     updateNetworkPlayers(message.room.players);
+    updatePartySettingsSummary(message.room.quizConfig);
     partyHideLockedAnswers=false;
     if(message.room.stage==="quiz" && message.room.quizConfig){
       startNetworkQuiz(message.room.quizConfig,message.room);
     }
+    else if(partyHost) publishPartySettings();
   });
   partyConnection.on("quiz-start",(message)=>{
     partyHideLockedAnswers=false;
@@ -1726,24 +1768,21 @@ if(networkPartyActive){
       const selectedButton=answersEl.querySelector(`.answer[data-original-index="${message.answerIndex}"]`);
       if(selectedButton) updatePartyAnswerMarker(selectedButton);
     }
-    if(message.lockedCount>=partyPlayers.length){
-      partyTurnDisplay.textContent="All answers are in. Revealing…";
-    }else{
-      partyTurnDisplay.textContent=`${message.lockedCount} of ${partyPlayers.length} answers locked in`;
-    }
+
   });
   partyConnection.on("reveal",revealNetworkQuestion);
   partyConnection.on("next-question",()=>{
     if(!partyHost){
       nextButton.disabled=true;
       answered=false;
-      partyTurnDisplay.textContent="Waiting for the next question…";
+
     }
   });
   partyConnection.on("game-over",handleNetworkGameOver);
   partyConnection.on("left",()=>location.replace("index.html"));
   partyConnection.on("room-state",(message)=>{
     updateNetworkPlayers(message.room.players);
+    updatePartySettingsSummary(message.room.quizConfig);
   });
   partyConnection.on("error",(message)=>{
     setupError.textContent=message.message;
@@ -1815,6 +1854,18 @@ countInput.addEventListener("input",()=>{
   const value = Number.parseInt(countInput.value,10);
   if(Number.isFinite(value) && value > totalAvailable) countInput.value = totalAvailable;
   if(Number.isFinite(value) && value < 1) countInput.value = 1;
+  publishPartySettings();
+});
+countInput.addEventListener("change",publishPartySettings);
+document.querySelectorAll('input[name="order"], input[name="timeLimit"]').forEach((input)=>{
+  input.addEventListener("change",publishPartySettings);
+});
+perQuestionTimeLimit.addEventListener("change",publishPartySettings);
+partyScoreToggle.addEventListener("click",()=>{
+  const expanded=partyScoreToggle.getAttribute("aria-expanded")==="true";
+  document.body.classList.toggle("party-scores-open",!expanded);
+  partyScoreToggle.setAttribute("aria-expanded",String(!expanded));
+  partyScoreToggle.setAttribute("aria-label",expanded?"View player scores":"Hide player scores");
 });
 
 if (miniQuizMode && customQuestionSequence.length) {
