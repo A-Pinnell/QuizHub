@@ -30,12 +30,14 @@
 
   const music = $("music");
   const resolveAssetUrl = (path) => new URL(path, window.location.href).toString();
+  music.src = window.quizHubPreferences.resolveQuizMusic(music.src);
   const soundFiles = {
     correct: resolveAssetUrl("./sfx/Correct.wav"),
     highlight: resolveAssetUrl("./sfx/highlight.wav"),
     incorrect: resolveAssetUrl("./sfx/Incorrect.wav"),
     begin: resolveAssetUrl("./sfx/QuizBegin.wav"),
-    popup: resolveAssetUrl("./sfx/Popup.wav")
+    popup: resolveAssetUrl("./sfx/Popup.wav"),
+    started: resolveAssetUrl("./secret/Started.ogg")
   };
   const soundCache = {};
   Object.entries(soundFiles).forEach(([name, path]) => {
@@ -63,7 +65,10 @@
   function playSound(name) {
     if (!state.sound) return;
     unlockBinaryAudio();
-    const sound = soundCache[name];
+    const soundName = window.quizHubPreferences.blancMode && ["popup", "begin", "select"].includes(name)
+      ? "started"
+      : name;
+    const sound = soundCache[soundName];
     if (!sound) return;
     try {
       const soundClone = sound.cloneNode();

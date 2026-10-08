@@ -5,11 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Hub</title>
 <link rel="stylesheet" href="css/title.css" >
+<link rel="stylesheet" href="css/preferences.css">
+<script src="./js/preferences.js" defer></script>
 <script src="./js/index.js" defer></script>
 </head>
 <body>
 <button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sounds" aria-pressed="false">🔊</button>
 <button class="music-toggle" id="musicToggle" type="button" aria-label="Mute music" aria-pressed="false">♫</button>
+<button class="options-toggle" id="optionsToggle" type="button" aria-label="Options" aria-haspopup="dialog" aria-controls="settingsModal" aria-expanded="false" title="Options">&#9881;</button>
+<button class="party-mode-toggle" id="partyModeToggle" type="button" aria-label="Party mode" aria-haspopup="dialog" aria-controls="partyModeModal" title="Party mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5.2 0-9 2.7-9 6v2h18v-2c0-3.3-3.8-6-9-6Z"/></svg></button>
 <div class="sky"><div class="cloud-track"><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div><div class="cloud c5"></div><div class="cloud c6"></div><div class="cloud c7"></div><div class="cloud c8"></div><div class="cloud c9"></div></div></div>
 <div class="ground"></div>
 
@@ -25,11 +29,11 @@
     </div>
     <header>
       <div class="title-wrap"><div class="university">
-        Lakehead University - Barrie STEM Hub<span class="diamond"></span>
+        <span id="universityName">Lakehead University - Barrie STEM Hub</span><span class="diamond"></span>
       </div>
         <h1 aria-label="Lakehead STEM Hub">
           <span class="stem-letter">Q</span><span class="stem-letter">U</span><span class="stem-letter">I</span><span class="stem-letter">Z</span><span class="stem-letter">&nbsp;</span><span class="stem-letter">H</span><span class="stem-letter">u</span><span class="stem-letter">b</span><span class="stem-letter">!</span></h1>
-      <div class="tagline">Version 1.6</div>
+      <div class="tagline">Version 2.0</div>
       <a class="textbook-library-link" id="textbookLibraryLink" href="https://a-pinnell.github.io/TextbookLibrary/">Visit the Textbook Library</a></div></header>
     <main class="menu-area">
       <button class="menu-arrow menu-arrow-left" type="button" aria-label="Show previous page">&#8249;</button>
@@ -77,6 +81,99 @@
     <div class="quiz-menu-kicker">VERSION HISTORY</div>
     <h2 id="patchnotesTitle">Patch Notes</h2>
     <pre class="patchnotes-content" id="patchnotesContent">Loading patch notes...</pre>
+  </section>
+</div>
+
+<div class="settings-modal" id="settingsModal" aria-hidden="true">
+  <div class="settings-backdrop" data-close-settings></div>
+  <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <button class="settings-close" type="button" data-close-settings aria-label="Close options">&times;</button>
+    <div class="quiz-menu-kicker">PREFERENCES</div>
+    <h2 id="settingsTitle">Options</h2>
+    <fieldset class="setting-group motion-setting">
+      <legend>Motion</legend>
+      <label class="motion-slider-label" for="motionModeSlider">Animation amount</label>
+      <input class="motion-slider" id="motionModeSlider" type="range" min="0" max="2" step="1" value="0" aria-valuetext="Default">
+      <div class="motion-slider-labels" aria-hidden="true"><span>Full</span><span>Minimal</span><span>Reduced</span></div>
+      <small class="setting-description">Minimal keeps animations quick with fewer visible frames. Reduced turns most motion off.</small>
+    </fieldset>
+    <fieldset class="setting-group">
+      <legend>Answer options position</legend>
+      <label class="setting-radio"><input type="radio" name="answerSide" value="left"><span>Left</span></label>
+      <label class="setting-radio"><input type="radio" name="answerSide" value="right"><span>Right</span></label>
+    </fieldset>
+    <div class="music-choice text-size-choice">
+      <label for="textSizeSetting">Text size</label>
+      <select id="textSizeSetting">
+        <option value="small">Small</option>
+        <option value="default">Default</option>
+        <option value="large">Large</option>
+      </select>
+    </div>
+    <div class="music-choice">
+      <label for="quizMusicSetting">Quiz music</label>
+      <div class="music-choice-control">
+        <select id="quizMusicSetting">
+          <option value="run" id="blancQuizMusicOption" hidden>...</option>
+          <option value="default">Default for each course</option>
+          <option value="CompArch">Computer Architecture</option>
+          <option value="CloudComp">Cloud Computing</option>
+          <option value="DataSci">Data Science</option>
+          <option value="SoftEngi">Software Engineering</option>
+        </select>
+        <button class="music-preview-toggle" id="quizMusicPreview" type="button" aria-label="Preview selected quiz music" aria-pressed="false" title="Preview selected quiz music">▶</button>
+      </div>
+    </div>
+    <label class="setting-choice fullscreen-setting">
+      <input id="fullscreenSetting" type="checkbox">
+      <span><strong>Fullscreen</strong><small>Hide the browser toolbar. Press Escape to exit.</small></span>
+    </label>
+    <label class="setting-choice">
+      <input id="soundMutedSetting" type="checkbox">
+      <span><strong>Mute sounds</strong><small>Turn off sound effects.</small></span>
+    </label>
+    <label class="setting-choice">
+      <input id="musicMutedSetting" type="checkbox">
+      <span><strong>Mute music</strong><small>Turn off background music.</small></span>
+    </label>
+    <label class="setting-choice">
+      <input id="disableLoadingSetting" type="checkbox">
+      <span><strong>Skip loading animation</strong><small>Skip the “Let's Get Started!” transition when opening a quiz.</small></span>
+    </label>
+    <label class="setting-choice">
+      <input id="highContrastSetting" type="checkbox">
+      <span><strong>Higher contrast</strong><small>Use stronger text, borders, and surface contrast.</small></span>
+    </label>
+    <label class="setting-choice" id="blancModeSettingRow" hidden>
+      <input id="blancModeSetting" type="checkbox">
+      <span><strong>Blanc Mode</strong><small>Show Ben Hub, use blanc.png backgrounds, and change quiz start/loading sounds.</small></span>
+    </label>
+    <button class="reset-settings" id="resetSettings" type="button">RESET OPTIONS</button>
+    <p class="settings-error" id="settingsError" role="status" aria-live="polite"></p>
+  </section>
+</div>
+
+<div class="party-mode-modal" id="partyModeModal" aria-hidden="true">
+  <div class="party-mode-backdrop" data-close-party-mode></div>
+  <section class="party-mode-panel" role="dialog" aria-modal="true" aria-labelledby="partyModeTitle">
+    <button class="party-mode-close" type="button" data-close-party-mode aria-label="Close party mode">&times;</button>
+    <div class="quiz-menu-kicker">PLAY TOGETHER</div>
+    <h2 id="partyModeTitle">Party mode</h2>
+    <label class="party-player-count-label" for="partyPlayerCount">Number of players</label>
+    <select id="partyPlayerCount">
+      <option value="1">1 player (Solo mode)</option>
+      <option value="2">2 players</option>
+      <option value="3">3 players</option>
+      <option value="4">4 players</option>
+      <option value="5">5 players</option>
+    </select>
+    <label class="party-hide-answers-choice">
+      <input id="partyHideLockedAnswers" type="checkbox">
+      <span>Hide locked-in answers until everyone has answered</span>
+    </label>
+    <div class="party-player-setup" id="partyPlayerSetup"></div>
+    <p class="party-mode-error" id="partyModeError" role="status" aria-live="polite"></p>
+    <button class="party-mode-start" id="partyModeStart" type="button">CHOOSE A QUIZ</button>
   </section>
 </div>
 

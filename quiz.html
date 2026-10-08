@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Hub - Quiz</title>
 <link rel="stylesheet" href="css/quiz.css" >
+<link rel="stylesheet" href="css/preferences.css">
+<script src="./js/preferences.js" defer></script>
 <script src="./js/questionBank.js" defer></script>
 <script src="./js/quiz.js" defer></script>
 </head>
@@ -21,6 +23,7 @@
     <div class="softengi-sidebar-stats">
       <p class="softengi-sidebar-label">YOUR STATS</p>
       <div class="softengi-stat"><span>Score</span><strong id="softengiScore">0 / 0</strong></div>
+      <div class="softengi-stat"><span>Combo</span><strong id="softengiCombo">0</strong></div>
       <div class="softengi-stat"><span>Accuracy</span><strong id="softengiAccuracy">0%</strong></div>
       <div class="softengi-stat"><span>Progress</span><strong id="softengiProgress">Ready</strong></div>
       <div class="softengi-progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -36,8 +39,12 @@
     </div>
   </section>
     <div class="quiz-hud">
-      <div class="timer" id="timer" hidden>00:00</div>
+        <div class="party-turn" id="partyTurn" hidden></div>
+        <div class="question-timer" id="questionTimer" aria-live="off" hidden></div>
+        <div class="timer" id="timer" hidden>00:00</div>
+      <div class="party-score-display" id="partyScoreDisplay" aria-label="Player scores" hidden></div>
       <div class="score-display" id="scoreDisplay">Score: 0</div>
+      <div class="combo-display" id="comboDisplay">Combo: 0</div>
       <div class="question-display" id="questionDisplay"></div>
     </div>
 
@@ -46,6 +53,10 @@
       <div class="setup-kicker">QUIZ SETUP</div>
       <h1 id="setupTitle">Customize Your Quiz</h1>
       <p class="setup-subtitle" id="setupCount">Loading question count…</p>
+
+      <button class="control review-section-trigger" id="reviewSectionTrigger" type="button" hidden>
+        Choose review sections
+      </button>
 
       <label class="setup-label" for="questionCount">Number of questions</label>
       <div class="count-row">
@@ -67,6 +78,17 @@
         <label class="choice"><input type="radio" name="timeLimit" value="30"><span>30 minutes</span></label>
         <label class="choice"><input type="radio" name="timeLimit" value="60"><span>60 minutes</span></label>
       </fieldset>
+      <fieldset class="setup-group" id="socIndiTimeLimits" hidden>
+        <legend>SocIndi review time limit</legend>
+        <label class="choice"><input type="radio" name="timeLimit" value="100"><span>100 minutes</span></label>
+        <label class="choice"><input type="radio" name="timeLimit" value="150"><span>150 minutes</span></label>
+      </fieldset>
+      <label class="setup-label" for="perQuestionTimeLimit">Time limit per question</label>
+      <div class="count-row">
+        <select id="perQuestionTimeLimit">
+          <option value="none">No per-question limit</option>
+        </select>
+      </div>
 
       <p class="setup-error" id="setupError" aria-live="polite"></p>
       <div class="setup-actions">
@@ -96,6 +118,19 @@
   </main>
 </div>
 
+<dialog class="review-section-dialog" id="reviewSectionDialog" aria-labelledby="reviewSectionTitle">
+  <div class="review-section-dialog-header">
+    <div>
+      <h2 id="reviewSectionTitle">Choose review sections</h2>
+      <p class="review-section-description">Choose one or more sections to include.</p>
+    </div>
+    <button class="review-section-close" id="reviewSectionClose" type="button" aria-label="Close section menu">×</button>
+  </div>
+  <div class="review-section-choices" id="reviewSectionChoices"></div>
+  <button class="control review-section-done" id="reviewSectionDone" type="button">DONE</button>
+</dialog>
+
+<div class="combo-popup" id="comboPopup" aria-live="polite" aria-atomic="true" hidden></div>
 <div class="fade" id="fade"></div>
 </body>
 </html>

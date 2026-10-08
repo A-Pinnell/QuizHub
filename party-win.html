@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiz Hub - Party Results</title>
+<link rel="stylesheet" href="css/party-win.css">
+<script src="./js/party-win.js" defer></script>
+</head>
+<body>
+<main class="party-results">
+  <header class="party-results-header">
+    <span class="party-results-kicker">PARTY MODE</span>
+    <h1 id="partyResultsTitle">Final standings</h1>
+    <p id="partyResultsSummary">Loading the scores…</p>
+  </header>
+  <section class="party-podium" id="partyPodium" aria-label="Player standings"></section>
+  <p class="party-results-error" id="partyResultsError" role="status" aria-live="polite" hidden></p>
+  <footer class="party-results-actions">
+    <button id="partyPlayAgain" type="button">PLAY AGAIN</button>
+    <button id="partyReturnMenu" type="button">RETURN TO MENU</button>
+  </footer>
+</main>
+</body>
+</html>

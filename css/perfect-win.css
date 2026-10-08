@@ -1,0 +1,250 @@
+@font-face{
+  font-family:'Ethnocentric';
+  src:url('../fonts/Ethnocentric-Regular.otf') format('opentype');
+}
+
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden}
+body{
+  color:#f6fff9;
+  background:#09111f;
+  font-family:Arial,sans-serif;
+}
+button{font:inherit}
+.sound-toggle{
+  position:fixed;
+  top:14px;
+  left:14px;
+  z-index:10;
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.86);
+  color:#111;
+  font-size:20px;
+  cursor:pointer;
+  box-shadow:0 3px 12px rgba(0,0,0,.22);
+}
+.sound-toggle:hover{background:#fff;transform:scale(1.06)}
+.celebration{
+  position:relative;
+  display:flex;
+  width:100%;
+  height:100dvh;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  isolation:isolate;
+  padding:24px;
+  background:
+    radial-gradient(ellipse at 50% 48%,rgba(35,133,91,.22),transparent 38%),
+    radial-gradient(ellipse at 50% 105%,rgba(40,107,158,.25),transparent 50%),
+    linear-gradient(145deg,#09111f 0%,#10202b 48%,#11172a 100%);
+}
+.white-intro{
+  position:absolute;
+  inset:0;
+  z-index:8;
+  background:#fff;
+  opacity:0;
+  pointer-events:none;
+}
+.celebration.sequence-started .white-intro{animation:whiteIntroFade 1s ease-out both}
+.aurora{
+  position:absolute;
+  z-index:-1;
+  top:50%;
+  left:50%;
+  width:clamp(960px,204vmin,2940px);
+  height:clamp(960px,204vmin,2940px);
+  border-radius:50%;
+  filter:blur(22px);
+  opacity:.48;
+  pointer-events:none;
+  animation:none;
+}
+.aurora-one{
+  --orbit-offset:0deg;
+  transform:translate(-50%,-50%) rotate(calc(var(--orbit-offset) + var(--spin-angle, 0deg))) translateX(31vmin);
+  background:radial-gradient(circle,rgba(90,255,174,.78) 0%,rgba(53,255,155,.34) 35%,rgba(53,255,155,0) 72%);
+}
+.aurora-two{
+  --orbit-offset:120deg;
+  transform:translate(-50%,-50%) rotate(calc(var(--orbit-offset) + var(--spin-angle, 0deg))) translateX(31vmin);
+  background:radial-gradient(circle,rgba(117,161,255,.82) 0%,rgba(82,139,255,.36) 38%,rgba(82,139,255,0) 72%);
+}
+.aurora-three{
+  --orbit-offset:240deg;
+  transform:translate(-50%,-50%) rotate(calc(var(--orbit-offset) + var(--spin-angle, 0deg))) translateX(31vmin);
+  background:radial-gradient(circle,rgba(255,104,116,.84) 0%,rgba(255,55,76,.38) 38%,rgba(255,55,76,0) 72%);
+}
+.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.countdown{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:min(600px,100%);
+  text-align:center;
+  transition:opacity .55s ease,transform .55s ease,filter .55s ease;
+}
+.countdown.countdown-out{opacity:0;transform:translateY(-26px) scale(.96);filter:blur(8px);pointer-events:none}
+.kicker{
+  margin:0 0 22px;
+  color:#b3ffd0;
+  font-size:clamp(12px,1.5vw,18px);
+  font-weight:900;
+  letter-spacing:.3em;
+  animation:kickerIn .7s both;
+}
+.number-window{
+  width:min(360px,82vw);
+  height:clamp(100px,16vh,140px);
+  overflow:hidden;
+  border:1px solid rgba(163,255,192,.55);
+  border-radius:24px;
+  background:linear-gradient(110deg,rgba(255,255,255,.05),rgba(255,255,255,.13),rgba(255,255,255,.04));
+  box-shadow:0 0 45px rgba(72,255,137,.2),inset 0 0 30px rgba(255,255,255,.06);
+}
+.number-track{
+  display:flex;
+  height:100%;
+  transition:transform var(--number-step-duration, .22s) cubic-bezier(.2,.8,.2,1);
+}
+.number{
+  display:flex;
+  flex:0 0 100%;
+  height:100%;
+  align-items:center;
+  justify-content:center;
+  gap:.24em;
+  color:rgba(255,255,255,.2);
+  font-family:'Ethnocentric',sans-serif;
+  font-size:clamp(55px,10vh,100px);
+  line-height:1;
+  transition:color .16s ease,text-shadow .16s ease;
+}
+.number.checked{color:#39e879;text-shadow:0 0 24px rgba(57,232,121,.75)}
+.number.current{animation:numberBounce .36s cubic-bezier(.2,1.8,.35,1) both}
+.number-check{color:#baffce;font-size:.56em;opacity:0;transform:scale(.2) rotate(-40deg)}
+.number.checked .number-check{animation:checkIn var(--number-check-duration, .16s) cubic-bezier(.2,1.7,.35,1) forwards}
+.progress{
+  min-height:1.5em;
+  margin:18px 0 0;
+  color:#c5d5d0;
+  font-size:clamp(12px,1.4vw,16px);
+  font-weight:800;
+  letter-spacing:.15em;
+  font-variant-numeric:tabular-nums;
+}
+.finale{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  text-align:center;
+  background:radial-gradient(ellipse at center,rgba(11,35,39,.2),rgba(4,14,23,.72) 72%);
+}
+.finale[hidden]{display:none}
+.perfect-label{
+  margin:0 0 16px;
+  color:#adffc4;
+  font-size:clamp(12px,1.8vw,20px);
+  font-weight:900;
+  letter-spacing:.22em;
+  animation:streakIn .75s both;
+}
+.perfect-label span{color:#ffe46f}
+.rainbow-title{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin:0;
+  font-family:'Ethnocentric',sans-serif;
+  font-size:clamp(35px,9vw,100px);
+  line-height:1.2;
+  filter:drop-shadow(0 8px 0 rgba(5,28,20,.5)) drop-shadow(0 0 20px rgba(255,255,255,.28));
+}
+.rainbow-letter{
+  display:inline-block;
+  color:hsl(var(--letter-hue),100%,72%);
+  opacity:0;
+  animation:letterIn .85s var(--letter-delay) cubic-bezier(.2,1.6,.35,1) forwards;
+}
+.subtitle{
+  margin:16px 0 0;
+  color:#e0eee7;
+  font-size:clamp(15px,2vw,22px);
+  font-weight:700;
+  animation:subtitleIn .8s .35s both;
+}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:16px;
+  margin-top:clamp(28px,5vh,50px);
+  opacity:0;
+  transform:translateY(35px) scale(.85);
+  pointer-events:none;
+}
+.actions.actions-visible{animation:actionsIn .7s cubic-bezier(.2,1.4,.35,1) forwards;pointer-events:auto}
+.action-button{
+  min-width:190px;
+  min-height:58px;
+  padding:12px 25px;
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:999px;
+  color:#092018;
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:.12em;
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.action-button:hover{transform:translateY(-4px) scale(1.04);box-shadow:0 12px 35px rgba(69,255,144,.25)}
+.retry{background:linear-gradient(120deg,#a9ffc0,#41df83)}
+.menu{background:linear-gradient(120deg,#fff3b0,#ffc568)}
+.confetti-piece{
+  position:absolute;
+  top:-20px;
+  left:var(--left);
+  width:var(--size);
+  height:calc(var(--size) * 1.65);
+  border-radius:var(--radius);
+  background:var(--color);
+  opacity:0;
+  animation:confettiFall var(--duration) var(--delay) linear forwards;
+}
+
+@keyframes kickerIn{from{opacity:0;transform:translateY(24px);letter-spacing:.8em}to{opacity:1;transform:none;letter-spacing:.3em}}
+@keyframes numberBounce{0%{transform:translateY(30px) scale(.72)}65%{transform:translateY(-8px) scale(1.14)}100%{transform:translateY(0) scale(1)}}
+@keyframes checkIn{to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes streakIn{from{opacity:0;transform:translateY(18px) scale(.8)}to{opacity:1;transform:none}}
+@keyframes letterIn{0%{opacity:0;transform:translateY(70px) rotate(16deg) scale(.35)}65%{opacity:1;transform:translateY(-12px) rotate(-4deg) scale(1.15)}100%{opacity:1;transform:none}}
+@keyframes whiteIntroFade{from{opacity:1}to{opacity:0;visibility:hidden}}
+@keyframes subtitleIn{from{opacity:0;transform:translateY(18px);filter:blur(5px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes actionsIn{from{opacity:0;transform:translateY(35px) scale(.85)}to{opacity:1;transform:none}}
+@keyframes confettiFall{0%{opacity:0;transform:translate3d(0,-4vh,0) rotate(0)}10%{opacity:1}100%{opacity:.9;transform:translate3d(var(--drift),110vh,0) rotate(var(--spin))}}
+@media(max-width:600px){
+  .celebration{padding:16px}
+  .finale{padding:18px}
+  .actions{width:min(420px,100%);flex-direction:column;align-items:stretch}
+  .action-button{width:100%}
+  .sound-toggle{top:auto;left:auto;right:14px;bottom:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .white-intro{animation-duration:1s!important}
+  .rainbow-letter{animation-duration:.01ms!important;animation-delay:0s!important}
+  .countdown{transition-duration:.01ms!important}
+  .number-track{transition-duration:.01ms!important}
+  .confetti-piece{animation-duration:6s!important;animation-delay:0s!important}
+  .aurora{animation:none}
+  .actions.actions-visible{animation-duration:.01ms!important}
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09111f">
+  <title>Perfect Run!</title>
+  <link rel="stylesheet" href="css/perfect-win.css">
+  <link rel="stylesheet" href="css/preferences.css">
+  <script src="js/preferences.js" defer></script>
+  <script src="js/perfect-win.js" defer></script>
+</head>
+<body>
+  <audio id="perfectTrack" src="music/Perfect.mp3" preload="auto"></audio>
+  <main class="celebration" id="celebration">
+    <div class="white-intro" aria-hidden="true"></div>
+    <div class="aurora aurora-one" aria-hidden="true"></div>
+    <div class="aurora aurora-two" aria-hidden="true"></div>
+    <div class="aurora aurora-three" aria-hidden="true"></div>
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+    <section class="countdown" id="countdown" aria-label="Verifying perfect answers">
+      <p class="kicker"></p>
+      <div class="number-window" aria-live="polite" aria-atomic="true">
+        <div class="number-track" id="numberTrack"></div>
+      </div>
+      <p class="progress" id="progress">Checking your answers...</p>
+    </section>
+
+    <section class="finale" id="finale" aria-labelledby="congratulations" hidden>
+      <p class="perfect-label" id="perfectScore"></p>
+      <h1 class="rainbow-title" id="congratulations" aria-label="Congratulations"></h1>
+      <p class="subtitle">You earned this!</p>
+      <nav class="actions" aria-label="Perfect run options">
+        <button class="action-button retry" id="retry" type="button">REDO QUIZ</button>
+        <button class="action-button menu" id="menu" type="button">QUIT TO MENU</button>
+      </nav>
+    </section>
+  </main>
+  <button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sounds" aria-pressed="false">🔊</button>
+</body>
+</html>

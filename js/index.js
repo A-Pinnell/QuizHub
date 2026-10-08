@@ -6,7 +6,9 @@ const soundFiles={
   arrow:resolveAssetUrl('sfx/ArrowButton.wav'),
   select:resolveAssetUrl('sfx/QuizSelect.wav'),
   incorrect:resolveAssetUrl('sfx/Incorrect.wav'),
-  titleEnd:resolveAssetUrl('sfx/TitleEnd.wav')
+  titleEnd:resolveAssetUrl('sfx/TitleEnd.wav'),
+  started:resolveAssetUrl('secret/Started.ogg'),
+  loading:resolveAssetUrl('secret/Loading.mp3')
 };
 
 const soundCache={};
@@ -19,7 +21,9 @@ Object.entries(soundFiles).forEach(([name,path])=>{
 
 function playSound(name){
   if(soundsMuted) return;
-  const sound=soundCache[name].cloneNode();
+  const blancSubstituteSounds=['popup','select','begin'];
+  const soundName=window.quizHubPreferences.blancMode && blancSubstituteSounds.includes(name)?'started':name;
+  const sound=soundCache[soundName].cloneNode();
   sound.currentTime=0;
   sound.play().catch(()=>{});
 }
@@ -41,16 +45,27 @@ function updateSoundToggle(){
   soundToggle.setAttribute('aria-label',soundsMuted?'Unmute sounds':'Mute sounds');
   soundToggle.setAttribute('aria-pressed',String(soundsMuted));
 }
-soundToggle.addEventListener('click',()=>{
-  soundsMuted=!soundsMuted;
-  localStorage.setItem('quizHubMuted',String(soundsMuted));
+function setSoundsMuted(muted){
+  soundsMuted=Boolean(muted);
+  window.quizHubPreferences.setSoundMuted(soundsMuted);
   updateSoundToggle();
+}
+soundToggle.addEventListener('click',()=>{
+  setSoundsMuted(!soundsMuted);
 });
 updateSoundToggle();
 
 let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
 const menuMusic=new Audio(resolveAssetUrl('music/MenuMusic.wav'));
+const normalMenuMusicSource=resolveAssetUrl('music/MenuMusic.wav');
+const blancMenuMusicSource=resolveAssetUrl('secret/BEN.wav');
+const quizMusicPreview=document.getElementById('quizMusicPreview');
+const quizPreviewMusic=new Audio();
+quizPreviewMusic.loop=true;
+quizPreviewMusic.preload='auto';
+quizPreviewMusic.volume=.45;
+let quizPreviewPlaying=false;
 let menuVisible=false;
 let menuMusicFadeFrame=null;
 let menuMusicFadePending=false;
@@ -61,9 +76,57 @@ function updateMusicToggle(){
   musicToggle.setAttribute('aria-label',musicMuted?'Unmute music':'Mute music');
   musicToggle.setAttribute('aria-pressed',String(musicMuted));
 }
+function setMusicMuted(muted){
+  musicMuted=Boolean(muted);
+  window.quizHubPreferences.setMusicMuted(musicMuted);
+  if(musicMuted){
+    menuMusic.pause();
+    quizPreviewMusic.pause();
+  }else if(quizPreviewPlaying){
+    startQuizMusicPreview();
+  }else{
+    startMenuMusic();
+  }
+  updateMusicToggle();
+}
+function updateQuizMusicPreview(){
+  quizMusicPreview.textContent=quizPreviewPlaying?'■':'▶';
+  quizMusicPreview.setAttribute('aria-label',quizPreviewPlaying?'Stop selected quiz music preview':'Preview selected quiz music');
+  quizMusicPreview.setAttribute('aria-pressed',String(quizPreviewPlaying));
+  quizMusicPreview.title=quizPreviewPlaying?'Stop selected quiz music preview':'Preview selected quiz music';
+}
+function startQuizMusicPreview(){
+  if(!menuVisible || musicMuted || !quizPreviewPlaying) return;
+  if(menuMusicFadeFrame!==null){
+    cancelAnimationFrame(menuMusicFadeFrame);
+    menuMusicFadeFrame=null;
+  }
+  menuMusic.pause();
+  quizPreviewMusic.src=window.quizHubPreferences.resolveQuizMusic('music/QuizMusic.wav');
+  quizPreviewMusic.play().catch(error=>{
+    quizPreviewPlaying=false;
+    updateQuizMusicPreview();
+    if(settingsModal.classList.contains('open')){
+      settingsError.textContent=`Could not play quiz music preview: ${error.message}`;
+    }
+  });
+}
+function stopQuizMusicPreview(resumeMenuMusic=true){
+  quizPreviewPlaying=false;
+  quizPreviewMusic.pause();
+  quizPreviewMusic.currentTime=0;
+  updateQuizMusicPreview();
+  if(resumeMenuMusic) startMenuMusic();
+}
 function startMenuMusic(fadeIn=false){
   if(fadeIn) menuMusicFadePending=true;
-  if(!menuVisible || musicMuted) return;
+  if(!menuVisible || musicMuted || quizPreviewPlaying) return;
+
+  const menuMusicSource=window.quizHubPreferences.blancMode?blancMenuMusicSource:normalMenuMusicSource;
+  if(menuMusic.src!==menuMusicSource){
+    menuMusic.src=menuMusicSource;
+    menuMusic.currentTime=0;
+  }
 
   if(menuMusicFadeFrame!==null){
     cancelAnimationFrame(menuMusicFadeFrame);
@@ -96,28 +159,27 @@ function startMenuMusic(fadeIn=false){
   }).catch(()=>{});
 }
 musicToggle.addEventListener('click',()=>{
-  musicMuted=!musicMuted;
-  localStorage.setItem('quizHubMusicMuted',String(musicMuted));
-  if(musicMuted) menuMusic.pause();
-  else startMenuMusic();
-  updateMusicToggle();
+  setMusicMuted(!musicMuted);
+});
+quizMusicPreview.addEventListener('click',()=>{
+  if(quizPreviewPlaying) stopQuizMusicPreview();
+  else{
+    quizPreviewPlaying=true;
+    updateQuizMusicPreview();
+    startQuizMusicPreview();
+  }
 });
 document.addEventListener('pointerdown',()=>startMenuMusic());
 document.addEventListener('touchstart',()=>startMenuMusic(),{passive:true});
 updateMusicToggle();
+updateQuizMusicPreview();
 
 document.addEventListener('keydown',event=>{
   if(event.key.toLowerCase()!=='m' || event.target.tagName==='INPUT') return;
   event.preventDefault();
   const muted=!(soundsMuted && musicMuted);
-  soundsMuted=muted;
-  musicMuted=muted;
-  localStorage.setItem('quizHubMuted',String(muted));
-  localStorage.setItem('quizHubMusicMuted',String(muted));
-  if(muted) menuMusic.pause();
-  else startMenuMusic();
-  updateSoundToggle();
-  updateMusicToggle();
+  setSoundsMuted(muted);
+  setMusicMuted(muted);
 });
 
 const welcomeText="Let's Get Started!";
@@ -145,9 +207,14 @@ let leaving=false;
 let preloadFrame=null;
 let quizLoaded=false;
 let welcomeVisible=false;
+let navigationStarted=false;
+let loadingSoundPlayed=false;
+let loadingCompleteScheduled=false;
 let navigationTarget='';
 let selectedCourse='';
 let quizMenuTrigger=null;
+let partyModeActive=false;
+let partyPlayers=[];
 
 const courseCodes={
   CompArch:'COMP-2453',
@@ -168,7 +235,7 @@ const courseQuizCatalog={
     {id:'quiz2', label:'Week 4 Slides Practice', detail:'for Oct 8'}
   ],
   SocIndi:[
-    {id:'reviewQuiz', label:'Review Quiz', detail:'Based on D2L Review Questions'},
+    {id:'reviewQuiz', label:'Exam 1 Quiz', detail:'Based on expected Exam 1 material'},
     {id:'textbookQuiz', label:'Textbook Quiz', detail:'Based on Textbook contents'},
   ],
   DataSci:[
@@ -183,8 +250,15 @@ function renderQuizOptions(course){
   const container=document.querySelector('.quiz-options');
   if(!container) return;
 
-  const options = courseQuizCatalog[course] || courseQuizCatalog.CompArch;
+  const options = (courseQuizCatalog[course] || courseQuizCatalog.CompArch)
+    .filter((quiz)=>!partyModeActive || !quiz.external);
   container.innerHTML='';
+  document.getElementById('quizMenuTitle').textContent=partyModeActive
+    ? 'Choose a party quiz'
+    : 'Choose an Option';
+  document.querySelector('#quizModal .quiz-menu > p').textContent=partyModeActive
+    ? 'Take turns choosing answers. The best-scoring player wins.'
+    : 'Select which quiz you would like to take.';
 
   options.forEach((quiz)=>{
     const button=document.createElement('button');
@@ -211,7 +285,12 @@ function renderQuizOptions(course){
 function preloadQuiz(category, quiz){
   preloadFrame=document.createElement('iframe');
   preloadFrame.className='preload-frame';
-  navigationTarget='quiz.html?category='+encodeURIComponent(category)+'&quiz='+encodeURIComponent(quiz);
+  const target=new URL('quiz.html',window.location.href);
+  target.searchParams.set('category',category);
+  target.searchParams.set('quiz',quiz);
+  if(partyModeActive) target.searchParams.set('partyMode','true');
+  navigationTarget=target.toString();
+  navigationStarted=false;
   preloadFrame.src=navigationTarget;
   preloadFrame.onload=()=>{
     quizLoaded=true;
@@ -220,12 +299,25 @@ function preloadQuiz(category, quiz){
   document.body.appendChild(preloadFrame);
 }
 
+function startMenuExit(){
+  document.body.classList.remove('leaving','motion-fade-leaving');
+  if(window.quizHubPreferences.motionMode !== 'default'){
+    document.body.classList.add('motion-fade-leaving');
+  }else{
+    document.body.classList.add('leaving');
+  }
+}
+
 function startExternalQuiz(target){
   if(leaving) return;
+  stopQuizMusicPreview(false);
   menuMusic.pause();
   menuMusic.currentTime=0;
   closeQuizMenu();
   leaving=true;
+  navigationStarted=false;
+  loadingSoundPlayed=false;
+  loadingCompleteScheduled=false;
   document.querySelectorAll('.card').forEach(c=>c.disabled=true);
   quizLoaded=false;
   preloadFrame=document.createElement('iframe');
@@ -234,14 +326,21 @@ function startExternalQuiz(target){
   preloadFrame.src=navigationTarget;
   preloadFrame.onload=()=>{
     quizLoaded=true;
-    if(welcomeVisible) showLoadingComplete();
+    if(welcomeVisible){
+      if(window.quizHubPreferences.disableLoadingAnimation && !window.quizHubPreferences.blancMode) navigateToQuiz();
+      else showLoadingComplete();
+    }
   };
   document.body.appendChild(preloadFrame);
-  setTimeout(()=>document.body.classList.add('leaving'),520);
+  setTimeout(startMenuExit,520);
   setTimeout(()=>{
     welcomeVisible=true;
-    document.body.classList.add('show-welcome');
-    if(quizLoaded) showLoadingComplete();
+    if(window.quizHubPreferences.disableLoadingAnimation && !window.quizHubPreferences.blancMode){
+      if(quizLoaded) navigateToQuiz();
+    }else{
+      showLoadingScreen();
+      if(quizLoaded) showLoadingComplete();
+    }
   },1180);
   setTimeout(()=>{
     if(!quizLoaded){
@@ -252,13 +351,40 @@ function startExternalQuiz(target){
 }
 
 function showLoadingComplete(){
+  if(loadingCompleteScheduled) return;
+  loadingCompleteScheduled=true;
+  if(window.quizHubPreferences.disableLoadingAnimation && !window.quizHubPreferences.blancMode){
+    navigateToQuiz();
+    return;
+  }
+  if(window.quizHubPreferences.blancMode){
+    setTimeout(navigateToQuiz,1650);
+    return;
+  }
   const status=document.getElementById('loadingStatus');
   status.textContent='Loading Complete';
   status.classList.remove('complete');
   void status.offsetWidth;
   status.classList.add('complete');
   setTimeout(()=>document.body.classList.add('welcome-out'),900);
-  setTimeout(()=>{ window.location.href=navigationTarget; },1650);
+  setTimeout(navigateToQuiz,1650);
+}
+
+function showLoadingScreen(){
+  if(window.quizHubPreferences.blancMode){
+    document.body.classList.add('blanc-loading');
+    if(!loadingSoundPlayed){
+      playSound('loading');
+      loadingSoundPlayed=true;
+    }
+  }
+  document.body.classList.add('show-welcome');
+}
+
+function navigateToQuiz(){
+  if(navigationStarted) return;
+  navigationStarted=true;
+  window.location.href=navigationTarget;
 }
 
 function closeQuizMenu(){
@@ -285,18 +411,34 @@ function openQuizMenu(course){
 
 function startQuiz(course, quiz){
   if(leaving)return;
+  if(partyModeActive){
+    try{
+      sessionStorage.setItem('quizHubPartyPlayers',JSON.stringify(partyPlayers));
+    }catch(error){
+      document.getElementById('partyModeError').textContent=`Could not save player profiles: ${error.message}`;
+      return;
+    }
+  }
+  stopQuizMusicPreview(false);
   menuMusic.pause();
   menuMusic.currentTime=0;
   closeQuizMenu();
   leaving=true;
+  navigationStarted=false;
+  loadingSoundPlayed=false;
+  loadingCompleteScheduled=false;
   document.querySelectorAll('.card').forEach(c=>c.disabled=true);
   quizLoaded=false;
   preloadQuiz(course, quiz);
-  setTimeout(()=>document.body.classList.add('leaving'),520);
+  setTimeout(startMenuExit,520);
   setTimeout(()=>{
     welcomeVisible=true;
-    document.body.classList.add('show-welcome');
-    if(quizLoaded) showLoadingComplete();
+    if(window.quizHubPreferences.disableLoadingAnimation && !window.quizHubPreferences.blancMode){
+      if(quizLoaded) navigateToQuiz();
+    }else{
+      showLoadingScreen();
+      if(quizLoaded) showLoadingComplete();
+    }
   },1180);
   setTimeout(()=>{
     if(!quizLoaded){
@@ -315,6 +457,245 @@ document.querySelectorAll('.course-card').forEach(card=>{
     }
     openQuizMenu(card.dataset.course);
   });
+});
+
+const partyModeModal=document.getElementById('partyModeModal');
+const partyPlayerCount=document.getElementById('partyPlayerCount');
+const partyPlayerSetup=document.getElementById('partyPlayerSetup');
+const partyModeError=document.getElementById('partyModeError');
+const partyModeToggle=document.getElementById('partyModeToggle');
+const partyHideLockedAnswers=document.getElementById('partyHideLockedAnswers');
+const partySetupStorageKey='quizHubPartySetup';
+const defaultPartyColors=['#e8505b','#3686e8','#22a06b','#9254de','#e39426'];
+let partyProfileDrafts=defaultPartyColors.map((color,index)=>({name:`Player ${index+1}`,color,photo:''}));
+let selectedPartyPlayerCount=2;
+let hidePartyLockedAnswers=false;
+let partyModeTrigger=null;
+
+function updatePartyModeToggle(){
+  partyModeToggle.classList.toggle('party-rainbow',selectedPartyPlayerCount===2 || selectedPartyPlayerCount===5);
+}
+
+function persistPartySetup(){
+  try{
+    sessionStorage.setItem(partySetupStorageKey,JSON.stringify({
+      count:selectedPartyPlayerCount,
+      players:partyProfileDrafts,
+      hideLockedAnswers:hidePartyLockedAnswers
+    }));
+    return true;
+  }catch(error){
+    partyModeError.textContent=`Could not remember player setup for this session: ${error.message}`;
+    return false;
+  }
+}
+
+function restorePartySetup(){
+  try{
+    const saved=JSON.parse(sessionStorage.getItem(partySetupStorageKey) || 'null');
+    if(!saved || !Array.isArray(saved.players)) return;
+    if(Number.isInteger(saved.count) && saved.count>=1 && saved.count<=5){
+      selectedPartyPlayerCount=saved.count;
+    }
+    hidePartyLockedAnswers=saved.hideLockedAnswers===true;
+    partyHideLockedAnswers.checked=hidePartyLockedAnswers;
+    partyProfileDrafts=defaultPartyColors.map((color,index)=>{
+      const player=saved.players[index];
+      return {
+        name:typeof player?.name==='string' ? player.name.slice(0,24) : `Player ${index+1}`,
+        color:typeof player?.color==='string' && /^#[0-9a-f]{6}$/i.test(player.color) ? player.color : color,
+        photo:typeof player?.photo==='string' && player.photo.startsWith('data:image/') ? player.photo : ''
+      };
+    });
+  }catch(error){
+    console.error('Could not restore party setup:',error);
+    partyModeError.textContent=`Could not restore the saved player setup: ${error.message}`;
+  }
+  updatePartyModeToggle();
+}
+
+restorePartySetup();
+updatePartyModeToggle();
+
+function createPartyProfile(index,profile={}){
+    const card=document.createElement('fieldset');
+    card.className='party-player-card';
+    card.dataset.playerIndex=String(index);
+    const legend=document.createElement('legend');
+    legend.textContent=`Player ${index+1}`;
+    const row=document.createElement('div');
+    row.className='party-player-fields';
+
+    const avatar=document.createElement('div');
+    avatar.className='party-player-avatar';
+    avatar.style.setProperty('--party-player-color',profile.color || '#e8505b');
+    if(profile.photo){
+      const image=document.createElement('img');
+      image.src=profile.photo;
+      image.alt='';
+      avatar.appendChild(image);
+    }else{
+      avatar.textContent=(profile.name || `Player ${index+1}`).trim().charAt(0).toUpperCase();
+    }
+
+    const nameLabel=document.createElement('label');
+    nameLabel.className='party-player-name';
+    nameLabel.textContent='Name';
+    const nameInput=document.createElement('input');
+    nameInput.type='text';
+    nameInput.maxLength=24;
+    nameInput.required=true;
+    nameInput.value=profile.name || `Player ${index+1}`;
+    nameInput.setAttribute('aria-label',`Player ${index+1} name`);
+    nameLabel.appendChild(nameInput);
+
+    const colorLabel=document.createElement('label');
+    colorLabel.className='party-player-color';
+    colorLabel.textContent='Color';
+    const colorInput=document.createElement('input');
+    colorInput.type='color';
+    colorInput.value=profile.color || ['#e8505b','#3686e8','#22a06b','#9254de','#e39426'][index];
+    colorInput.setAttribute('aria-label',`Player ${index+1} color`);
+    colorLabel.appendChild(colorInput);
+
+    const photoLabel=document.createElement('label');
+    photoLabel.className='party-player-photo';
+    photoLabel.textContent='Upload picture';
+    const photoInput=document.createElement('input');
+    photoInput.type='file';
+    photoInput.accept='image/*';
+    photoInput.setAttribute('aria-label',`Upload a picture for player ${index+1}`);
+    photoLabel.appendChild(photoInput);
+    row.append(nameLabel,colorLabel,photoLabel);
+    card.append(legend,avatar,row);
+
+    nameInput.addEventListener('input',()=>{
+      const image=avatar.querySelector('img');
+      if(image) avatar.replaceChildren(image);
+      else avatar.textContent=nameInput.value.trim().charAt(0).toUpperCase();
+    });
+    colorInput.addEventListener('input',()=>avatar.style.setProperty('--party-player-color',colorInput.value));
+    photoInput.addEventListener('change',()=>{
+      const file=photoInput.files && photoInput.files[0];
+      if(!file) return;
+      if(!file.type.startsWith('image/')){
+        partyModeError.textContent='Choose an image file for the player picture.';
+        photoInput.value='';
+        return;
+      }
+      if(file.size>10*1024*1024){
+        partyModeError.textContent='Choose an image smaller than 10 MB.';
+        photoInput.value='';
+        return;
+      }
+      card.dataset.photoPending='true';
+      partyModeError.textContent='';
+      const reader=new FileReader();
+      reader.onload=()=>{
+        const image=new Image();
+        image.onload=()=>{
+          const canvas=document.createElement('canvas');
+          const scale=Math.min(1,256/Math.max(image.naturalWidth,image.naturalHeight));
+          canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+          canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+          const context=canvas.getContext('2d');
+          if(!context){
+            partyModeError.textContent='Could not process that player picture.';
+          }else{
+            context.drawImage(image,0,0,canvas.width,canvas.height);
+            const photo=canvas.toDataURL('image/jpeg',.82);
+            avatar.replaceChildren(Object.assign(document.createElement('img'),{src:photo,alt:''}));
+            card.dataset.photo=photo;
+            capturePartyDrafts();
+          }
+          delete card.dataset.photoPending;
+        };
+        image.onerror=()=>{
+          delete card.dataset.photoPending;
+          partyModeError.textContent='Could not load that player picture.';
+        };
+        image.src=String(reader.result);
+      };
+      reader.onerror=()=>{
+        delete card.dataset.photoPending;
+        partyModeError.textContent='Could not read that player picture.';
+      };
+      reader.readAsDataURL(file);
+    });
+    return card;
+}
+
+function renderPartyProfiles(){
+    const count=Number.parseInt(partyPlayerCount.value,10);
+    if(!Number.isInteger(count) || count<1 || count>5) return;
+    selectedPartyPlayerCount=count;
+    partyPlayerSetup.replaceChildren(...partyProfileDrafts.slice(0,count).map((profile,index)=>createPartyProfile(index,profile)));
+    updatePartyModeToggle();
+    persistPartySetup();
+}
+
+function capturePartyDrafts(){
+    [...partyPlayerSetup.querySelectorAll('.party-player-card')].forEach((card)=>{
+      const index=Number.parseInt(card.dataset.playerIndex,10);
+      if(!Number.isInteger(index) || index<0 || index>=5) return;
+      partyProfileDrafts[index]={
+        name:card.querySelector('.party-player-name input').value,
+        color:card.querySelector('.party-player-color input').value,
+        photo:card.dataset.photo || partyProfileDrafts[index]?.photo || ''
+      };
+    });
+    persistPartySetup();
+}
+
+partyModeToggle.addEventListener('click',()=>{
+    partyModeTrigger=document.activeElement;
+    partyModeError.textContent='';
+    partyPlayerCount.value=String(selectedPartyPlayerCount);
+    renderPartyProfiles();
+    partyModeModal.classList.add('open');
+    partyModeModal.setAttribute('aria-hidden','false');
+    partyPlayerCount.focus();
+});
+partyPlayerCount.addEventListener('change',renderPartyProfiles);
+partyHideLockedAnswers.addEventListener('change',()=>{
+  hidePartyLockedAnswers=partyHideLockedAnswers.checked;
+  persistPartySetup();
+});
+partyPlayerSetup.addEventListener('input',capturePartyDrafts);
+partyPlayerSetup.addEventListener('change',capturePartyDrafts);
+document.querySelectorAll('[data-close-party-mode]').forEach((element)=>element.addEventListener('click',()=>{
+    partyModeModal.classList.remove('open');
+    partyModeModal.setAttribute('aria-hidden','true');
+    partyModeActive=false;
+    partyPlayers=[];
+    if(partyModeTrigger?.isConnected) partyModeTrigger.focus();
+}));
+document.getElementById('partyModeStart').addEventListener('click',()=>{
+    if(partyPlayerSetup.querySelector('[data-photo-pending="true"]')){
+      partyModeError.textContent='Wait for player pictures to finish processing.';
+      return;
+    }
+    capturePartyDrafts();
+    const cards=[...partyPlayerSetup.querySelectorAll('.party-player-card')];
+    const selectedPlayers=cards.map((card,index)=>({
+      id:`player-${index+1}`,
+      name:card.querySelector('.party-player-name input').value.trim() || `Player ${index+1}`,
+      color:card.querySelector('.party-player-color input').value,
+      photo:card.dataset.photo || ''
+    }));
+    partyProfileDrafts.forEach((profile,index)=>{
+      if(selectedPlayers[index]) profile.name=selectedPlayers[index].name;
+    });
+    if(!persistPartySetup()) return;
+    partyPlayers=selectedPartyPlayerCount===1 ? [] : selectedPlayers;
+    partyModeActive=selectedPartyPlayerCount>1;
+    partyModeError.textContent='';
+    partyModeModal.classList.remove('open');
+    partyModeModal.setAttribute('aria-hidden','true');
+    if(partyModeTrigger?.isConnected) partyModeTrigger.focus();
+    playSound('select');
+    showMenuPage(0);
+    document.querySelector('.menu .course-card:not(.coming-soon)')?.focus();
 });
 
 const menuTrack=document.getElementById('menuTrack');
@@ -372,6 +753,181 @@ document.querySelectorAll('[data-close-patchnotes]').forEach(el=>{
   el.addEventListener('click',closePatchnotes);
 });
 
+const settingsModal=document.getElementById('settingsModal');
+const optionsToggle=document.getElementById('optionsToggle');
+const motionModeSlider=document.getElementById('motionModeSlider');
+const fullscreenSetting=document.getElementById('fullscreenSetting');
+const quizMusicSetting=document.getElementById('quizMusicSetting');
+const textSizeSetting=document.getElementById('textSizeSetting');
+const blancQuizMusicOption=document.getElementById('blancQuizMusicOption');
+const soundMutedSetting=document.getElementById('soundMutedSetting');
+const musicMutedSetting=document.getElementById('musicMutedSetting');
+const disableLoadingSetting=document.getElementById('disableLoadingSetting');
+const highContrastSetting=document.getElementById('highContrastSetting');
+const blancModeSetting=document.getElementById('blancModeSetting');
+const blancModeSettingRow=document.getElementById('blancModeSettingRow');
+const universityName=document.getElementById('universityName');
+const resetSettingsButton=document.getElementById('resetSettings');
+const settingsError=document.getElementById('settingsError');
+const motionModeNames=['default','minimal','reduced'];
+const motionModeLabels=['Default','Minimal','Reduced'];
+let settingsTrigger=null;
+let blancUnlockProgress=0;
+let blancUnlockSoundPlayed=false;
+let blancModeUnlocked=false;
+
+function syncSettings(){
+  const motionIndex=motionModeNames.indexOf(window.quizHubPreferences.motionMode);
+  motionModeSlider.value=String(motionIndex);
+  motionModeSlider.setAttribute('aria-valuetext',motionModeLabels[motionIndex]);
+  document.querySelectorAll('input[name="answerSide"]').forEach(input=>{
+    input.checked=input.value===window.quizHubPreferences.answerSide;
+  });
+  fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
+  fullscreenSetting.disabled=!document.fullscreenElement &&
+    typeof document.documentElement.requestFullscreen!=='function';
+  blancQuizMusicOption.hidden=!window.quizHubPreferences.blancMode;
+  quizMusicSetting.value=window.quizHubPreferences.quizMusic;
+  textSizeSetting.value=window.quizHubPreferences.textSize;
+  soundMutedSetting.checked=window.quizHubPreferences.soundMuted;
+  musicMutedSetting.checked=window.quizHubPreferences.musicMuted;
+  disableLoadingSetting.checked=window.quizHubPreferences.disableLoadingAnimation;
+  highContrastSetting.checked=window.quizHubPreferences.highContrast;
+  blancModeSetting.checked=window.quizHubPreferences.blancMode;
+  blancModeSettingRow.hidden=!window.quizHubPreferences.blancMode && !blancModeUnlocked;
+}
+
+function closeSettings(){
+  blancUnlockProgress=0;
+  const returnFocus=settingsTrigger;
+  document.activeElement?.blur();
+  settingsModal.classList.remove('open');
+  settingsModal.setAttribute('aria-hidden','true');
+  optionsToggle.setAttribute('aria-expanded','false');
+  settingsTrigger=null;
+  if(returnFocus?.isConnected) returnFocus.focus();
+}
+
+function openSettings(){
+  blancUnlockProgress=0;
+  settingsTrigger=optionsToggle;
+  syncSettings();
+  settingsModal.classList.add('open');
+  settingsModal.setAttribute('aria-hidden','false');
+  optionsToggle.setAttribute('aria-expanded','true');
+  motionModeSlider.focus();
+}
+
+document.addEventListener('keydown',event=>{
+  if(!settingsModal.classList.contains('open')) return;
+  const code='ben';
+  const key=event.key;
+  if(key===code[blancUnlockProgress]){
+    event.preventDefault();
+    blancUnlockProgress++;
+  }else{
+    blancUnlockProgress=key==='b'?1:0;
+  }
+  if(blancUnlockProgress===code.length){
+    blancUnlockProgress=0;
+    blancModeUnlocked=true;
+    blancModeSettingRow.hidden=false;
+    if(!blancUnlockSoundPlayed){
+      playSound('loading');
+      blancUnlockSoundPlayed=true;
+    }
+  }
+});
+
+optionsToggle.addEventListener('click',()=>{
+  playSound('popup');
+  settingsError.textContent='';
+  openSettings();
+});
+motionModeSlider.addEventListener('input',()=>{
+  const motionIndex=Number(motionModeSlider.value);
+  const motionMode=motionModeNames[motionIndex];
+  motionModeSlider.setAttribute('aria-valuetext',motionModeLabels[motionIndex]);
+  window.quizHubPreferences.setMotionMode(motionMode);
+});
+quizMusicSetting.addEventListener('change',()=>{
+  window.quizHubPreferences.setQuizMusic(quizMusicSetting.value);
+  if(quizPreviewPlaying) startQuizMusicPreview();
+});
+textSizeSetting.addEventListener('change',()=>{
+  window.quizHubPreferences.setTextSize(textSizeSetting.value);
+});
+soundMutedSetting.addEventListener('change',()=>{
+  setSoundsMuted(soundMutedSetting.checked);
+});
+musicMutedSetting.addEventListener('change',()=>{
+  setMusicMuted(musicMutedSetting.checked);
+});
+disableLoadingSetting.addEventListener('change',()=>{
+  window.quizHubPreferences.setDisableLoadingAnimation(disableLoadingSetting.checked);
+});
+highContrastSetting.addEventListener('change',()=>{
+  window.quizHubPreferences.setHighContrast(highContrastSetting.checked);
+});
+blancModeSetting.addEventListener('change',()=>{
+  window.quizHubPreferences.setBlancMode(blancModeSetting.checked);
+  blancQuizMusicOption.hidden=!blancModeSetting.checked;
+  quizMusicSetting.value=window.quizHubPreferences.quizMusic;
+  if(blancModeSetting.checked){
+    playSound('started');
+  }
+  if(quizPreviewPlaying) startQuizMusicPreview();
+  updateBlancTitle(blancModeSetting.checked);
+  if(!quizPreviewPlaying) startMenuMusic(true);
+});
+resetSettingsButton.addEventListener('click',()=>{
+  window.quizHubPreferences.reset();
+  setSoundsMuted(false);
+  setMusicMuted(false);
+  updateBlancTitle(false);
+  blancModeUnlocked=false;
+  blancModeSettingRow.hidden=true;
+  if(quizPreviewPlaying) startQuizMusicPreview();
+  syncSettings();
+  settingsError.textContent='';
+  if(document.fullscreenElement){
+    document.exitFullscreen().catch(error=>{
+      settingsError.textContent=`Could not exit fullscreen: ${error.message}`;
+    });
+  }
+});
+document.querySelectorAll('input[name="answerSide"]').forEach(input=>{
+  input.addEventListener('change',()=>{
+    if(input.checked) window.quizHubPreferences.setAnswerSide(input.value);
+  });
+});
+fullscreenSetting.addEventListener('change',()=>{
+  settingsError.textContent='';
+  if(fullscreenSetting.checked){
+    if(typeof document.documentElement.requestFullscreen!=='function'){
+      fullscreenSetting.checked=false;
+      settingsError.textContent='Fullscreen is not available in this browser.';
+      return;
+    }
+    document.documentElement.requestFullscreen().catch(error=>{
+      fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
+      settingsError.textContent=`Could not enter fullscreen: ${error.message}`;
+    });
+  }else{
+    if(!document.fullscreenElement) return;
+    document.exitFullscreen().catch(error=>{
+      fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
+      settingsError.textContent=`Could not exit fullscreen: ${error.message}`;
+    });
+  }
+});
+document.addEventListener('fullscreenchange',()=>{
+  fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
+});
+document.querySelectorAll('[data-close-settings]').forEach(el=>{
+  el.addEventListener('click',closeSettings);
+});
+
 const textbookLibraryLink=document.getElementById('textbookLibraryLink');
 textbookLibraryLink.addEventListener('click',event=>{
   if(event.button!==0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -382,6 +938,18 @@ textbookLibraryLink.addEventListener('click',event=>{
 });
 
 patchnotesContent.textContent=`
+Version 2.0
+- Improved Cloud Computing Quiz 2
+- Fixed music loop for Cloud Computing
+- Party mode has been added! Play with up to 5 people and see who can get the most points!
+- A new option has been added to all quizzes, allow you to set a timer per-question alongside a general quiz timer. How fast can you be?
+- New combo system! The more correct anwsers you get, the more your combo increases. Can you keep a perfect combo?
+- The win screen has been updated with various adjustments
+- A scrollbar has been added to the quiz sidetab, for larger options on smaller screens
+- A new options menu has been added, with options for reduced motion, text size, quiz view, fullscreen, music select and other toggles!
+- A sociology exam 1 quiz has been added, with the new feature to select which section you would like to take. This quiz also allows for 100 and 150 minute time limit.
+- A mysterious secret toggle has been hidden in the options menu... somehow, you have to get it started... if you dare
+
 Version 1.6
 - Added Cloud Computing Quiz based on Slide 4
 - Cloud Computing now has unique music
@@ -443,10 +1011,12 @@ document.addEventListener('keydown',event=>{
     const modal=document.getElementById('quizModal');
     if(modal.classList.contains('open')) closeQuizMenu();
     if(patchnotesModal.classList.contains('open')) closePatchnotes();
+    if(settingsModal.classList.contains('open')) closeSettings();
     return;
   }
 
-  if(event.target.tagName==='INPUT' || document.getElementById('quizModal').classList.contains('open')) return;
+  if(event.target.tagName==='INPUT' || document.getElementById('quizModal').classList.contains('open') ||
+    patchnotesModal.classList.contains('open') || settingsModal.classList.contains('open')) return;
 
   const pageCards=[...menuPages[menuPage].querySelectorAll('.course-card')];
   const activeIndex=pageCards.indexOf(document.activeElement);
@@ -494,6 +1064,18 @@ document.addEventListener('keydown',event=>{
 
 const stemTitle=document.querySelector('h1');
 const stemLetters=[...stemTitle.querySelectorAll('.stem-letter')];
+const originalStemText=stemLetters.map(letter=>letter.textContent);
+function updateBlancTitle(enabled){
+  const blancTitle=['B','e','n',' ','H','u','b'];
+  universityName.textContent=enabled?"Ben's Domain":'Lakehead University - Barrie STEM Hub';
+  stemLetters.forEach((letter,index)=>{
+    letter.textContent=enabled?blancTitle[index] || '':originalStemText[index];
+    letter.hidden=enabled && index>=blancTitle.length;
+  });
+  stemTitle.setAttribute('aria-label',enabled?'Ben Hub':'Lakehead STEM Hub');
+  document.title=enabled?'Ben Hub':'Quiz Hub';
+}
+updateBlancTitle(window.quizHubPreferences.blancMode);
 const titleEndSound=new Audio(soundFiles.titleEnd);
 let titleEndPending=false;
 function tryPlayTitleEnd(){
@@ -501,12 +1083,13 @@ function tryPlayTitleEnd(){
   titleEndSound.currentTime=0;
   titleEndSound.play().then(()=>{titleEndPending=false;}).catch(()=>{});
 }
-stemLetters.at(-1).addEventListener('animationstart',event=>{
-  if(event.animationName==='titleEntrance'){
+stemLetters.forEach(letter=>letter.addEventListener('animationstart',event=>{
+  const lastVisibleLetter=stemLetters.filter(item=>!item.hidden).at(-1);
+  if(event.animationName==='titleEntrance' && event.currentTarget===lastVisibleLetter){
     titleEndPending=true;
     tryPlayTitleEnd();
   }
-});
+}));
 document.addEventListener('pointerdown',tryPlayTitleEnd);
 function pulseStem(){
   if(leaving)return;
@@ -516,12 +1099,14 @@ function pulseStem(){
 }
 
 window.addEventListener('pageshow',event=>{
-  if(!event.persisted && !document.body.classList.contains('leaving') && !document.body.classList.contains('library-leaving'))return;
+  if(!event.persisted && !document.body.classList.contains('leaving') &&
+    !document.body.classList.contains('motion-fade-leaving') &&
+    !document.body.classList.contains('library-leaving'))return;
   leaving=false;
   welcomeVisible=false;
   quizLoaded=false;
   navigationTarget='';
-  document.body.classList.remove('leaving','library-leaving','show-welcome','welcome-out');
+  document.body.classList.remove('leaving','motion-fade-leaving','library-leaving','show-welcome','welcome-out');
   document.querySelectorAll('.card').forEach(card=>{card.disabled=false;});
   if(preloadFrame){
     preloadFrame.remove();

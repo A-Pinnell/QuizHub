@@ -1,9 +1,21 @@
+
+
+const winUrlParams=new URLSearchParams(window.location.search);
+const shouldShowBlancIntro=window.quizHubPreferences.blancMode && winUrlParams.get("blancIntro")!=="1";
+if(shouldShowBlancIntro){
+  const returnTarget=new URL(window.location.href);
+  returnTarget.searchParams.set("blancIntro","1");
+  const introTarget=new URL("blanc-message.html",window.location.href);
+  introTarget.searchParams.set("returnTo",returnTarget.toString());
+  window.location.replace(introTarget.toString());
+}
+
 window.addEventListener("load", function(){
   "use strict";
+  if(shouldShowBlancIntro) return;
 
   let soundsMuted=localStorage.getItem("quizHubMuted")==="true";
   const winSound=new Audio("sfx/Win.wav");
-  if(!soundsMuted) winSound.play().catch(()=>{});
 
   const soundToggle=document.getElementById("soundToggle");
   function updateSoundToggle(){
@@ -55,6 +67,7 @@ window.addEventListener("load", function(){
   }
 
   const scoreEl = document.getElementById("score");
+  const longestComboEl = document.getElementById("longestCombo");
   const summaryEl = document.getElementById("summary");
   const reviewEl = document.getElementById("review");
   const errorEl = document.getElementById("error");
@@ -89,11 +102,39 @@ window.addEventListener("load", function(){
   const score = Number.isFinite(Number(data.score))
     ? Number(data.score)
     : 0;
+  const longestCombo = Number.isFinite(Number(data.longestCombo))
+    ? Math.max(0, Number(data.longestCombo))
+    : 0;
+
+  const perfectCompletion=data.completed===true &&
+    data.isRetake!==true &&
+    data.partyMode!==true &&
+    total>0 &&
+    data.history.length===total &&
+    data.history.every((item)=>item && item.correct===true);
+  if(perfectCompletion){
+    const target = new URL("perfect-win.html", window.location.href);
+    if(raw){
+      target.searchParams.set("results", raw);
+    }else{
+      try{
+        sessionStorage.setItem("lakeheadQuizResults", JSON.stringify(data));
+      }catch(error){
+        console.error("Could not save perfect-run results:",error);
+        target.searchParams.set("results", JSON.stringify(data));
+      }
+    }
+    window.location.replace(target.toString());
+    return;
+  }
+
+  if(!soundsMuted) winSound.play().catch(()=>{});
 
   const correctCount = data.history.filter((item) => item && item.correct === true).length;
   const incorrectCount = data.history.filter((item) => item && item.correct !== true).length;
 
   scoreEl.textContent = score + " / " + total;
+  longestComboEl.textContent = `Longest combo: ${longestCombo}`;
 
   // Passing = at least 50%.
   const passed = total > 0 && score / total >= 0.5;
@@ -121,6 +162,12 @@ window.addEventListener("load", function(){
     }
 
     if (quizType === "reviewQuiz") {
+      if (course === "SocIndi" && source.review && !Array.isArray(source.review)) {
+        const sections = Array.isArray(data.reviewSections)
+          ? data.reviewSections
+          : Object.keys(source.review);
+        return sections.flatMap((section) => Array.isArray(source.review[section]) ? source.review[section] : []);
+      }
       return Array.isArray(source.review)
         ? source.review
         : Array.isArray(source.reviewQuestions)
@@ -176,6 +223,7 @@ window.addEventListener("load", function(){
 
   function renderReview(){
     reviewEl.innerHTML = "";
+    reviewEl.scrollTop = 0;
     const items = data.history.filter((item) => {
       if (activeFilter === "correct") return item && item.correct === true;
       if (activeFilter === "incorrect") return item && item.correct !== true;
@@ -245,6 +293,16 @@ window.addEventListener("load", function(){
   });
 
   const incorrectQuestionIndexes = getIncorrectQuestionIndexes();
+  function preserveTimingSettings(target){
+    if(Number.isFinite(Number(data.timeLimitMinutes)) && Number(data.timeLimitMinutes)>0){
+      target.searchParams.set("timeLimit",String(Number(data.timeLimitMinutes)));
+    }
+    if(Number.isInteger(Number(data.perQuestionTimeMinutes)) &&
+      Number(data.perQuestionTimeMinutes)>=1 && Number(data.perQuestionTimeMinutes)<=60){
+      target.searchParams.set("questionTimeLimit",String(Number(data.perQuestionTimeMinutes)));
+    }
+  }
+
   retakeIncorrectBtn.disabled = incorrectQuestionIndexes.length === 0;
   retakeIncorrectBtn.textContent = incorrectQuestionIndexes.length > 0
     ? `RETAKE ${incorrectQuestionIndexes.length} MISSED`
@@ -255,6 +313,11 @@ window.addEventListener("load", function(){
 
     const target = new URL("quiz.html", window.location.href);
     target.searchParams.set("category", category);
+    target.searchParams.set("quiz", data.quizType || "reviewQuiz");
+    preserveTimingSettings(target);
+    if (Array.isArray(data.reviewSections)) {
+      target.searchParams.set("reviewSections", data.reviewSections.join(","));
+    }
     target.searchParams.set("miniQuiz", "true");
     target.searchParams.set("miniQuestions", incorrectQuestionIndexes.join(","));
     window.location.href = target.toString();
@@ -266,6 +329,10 @@ window.addEventListener("load", function(){
     const target = new URL("quiz.html", window.location.href);
     target.searchParams.set("category", category);
     target.searchParams.set("quiz", data.quizType || "reviewQuiz");
+    preserveTimingSettings(target);
+    if (Array.isArray(data.reviewSections)) {
+      target.searchParams.set("reviewSections", data.reviewSections.join(","));
+    }
     window.location.href = target.toString();
   });
 
@@ -417,8 +484,8 @@ window.addEventListener("load", function(){
   }
 
   function startFireworks(){
-    const reduced = window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.quizHubPreferences.reduceMotion ||
+      (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
     if(reduced) return;
 

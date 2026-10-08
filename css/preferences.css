@@ -1,0 +1,165 @@
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after{
+  animation-duration:.01ms!important;
+  animation-delay:0ms!important;
+  animation-iteration-count:1!important;
+  transition-duration:.01ms!important;
+  scroll-behavior:auto!important;
+}
+html.reduce-motion .confetti-piece{
+  animation:none!important;
+}
+
+html.motion-minimal *,
+html.motion-minimal *::before,
+html.motion-minimal *::after{
+  animation-timing-function:steps(7,end)!important;
+  transition-timing-function:steps(4,end)!important;
+}
+
+html.motion-minimal .confetti-piece{
+  animation-timing-function:steps(12,end)!important;
+}
+
+html.motion-minimal .visual::before,
+html.motion-minimal .visual::after,
+html.motion-minimal .course-code,
+html.motion-minimal .question-title,
+html.motion-minimal .question-title.typing::after,
+html.motion-minimal .feedback.softengi-typing::after{
+  animation:none!important;
+}
+
+html.reduce-motion .cloud-track{
+  animation-name:cloudScroll,reducedCloudFade!important;
+  animation-duration:150s,22s!important;
+  animation-timing-function:linear,ease-in-out!important;
+  animation-iteration-count:infinite,infinite!important;
+}
+
+@keyframes reducedCloudFade{
+  0%,38%,62%,100%{opacity:.88}
+  48%,52%{opacity:0}
+}
+
+html.reduce-motion .visual::before,
+html.reduce-motion .visual::after,
+html.reduce-motion .course-code,
+html.reduce-motion .question-title,
+html.reduce-motion .question-title.typing::after,
+html.reduce-motion .feedback.softengi-typing::after{
+  animation:none!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.01ms!important;
+    animation-delay:0ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+  .confetti-piece{animation:none!important}
+}
+
+body.motion-fade-leaving .transition-black{
+  animation:fadeToBlack .45s ease forwards!important;
+}
+body.motion-fade-leaving .building,
+body.motion-fade-leaving .ground{
+  animation:reducedSceneFade .45s ease forwards!important;
+}
+@keyframes reducedSceneFade{
+  from{opacity:1;transform:translateY(0)}
+  to{opacity:0;transform:translateY(0)}
+}
+
+html.high-contrast body{
+  color:#fff!important;
+  background:#000!important;
+}
+html.high-contrast :is(.quiz-menu,.settings-panel,.patchnotes-panel,.setup-panel,.results-panel,.softengi-composer,.number-window){
+  background:#000!important;
+  color:#fff!important;
+  border:2px solid #fff!important;
+  box-shadow:none!important;
+}
+html.high-contrast :is(.menu-area,.visual,.panel,.screen,.celebration){
+  background:#000!important;
+  color:#fff!important;
+}
+html.high-contrast .sky{
+  background:#000!important;
+}
+html.high-contrast .ground,
+html.high-contrast .pillar{
+  background:#111!important;
+  border-color:#fff!important;
+}
+html.high-contrast h1,
+html.high-contrast :is(.course-code,.question-title,.tagline,.university,.progress,.kicker,.perfect-label,.subtitle){
+  color:#fff!important;
+  text-shadow:none!important;
+}
+html.high-contrast .menu .card,
+html.high-contrast :is(.answer,.control,.quiz-option,.action-button,.menu-arrow,.reset-settings){
+  border:2px solid #fff!important;
+  background:#fff!important;
+  color:#000!important;
+  box-shadow:none!important;
+}
+html.high-contrast .menu .card p{
+  color:#111!important;
+}
+html.high-contrast .answer.correct{
+  background:#007a00!important;
+  color:#fff!important;
+}
+html.high-contrast .answer.wrong{
+  background:#a00000!important;
+  color:#fff!important;
+}
+html.high-contrast :is(.sound-toggle,.music-toggle,.music-preview-toggle,.options-toggle,.win-close){
+  border:2px solid #000!important;
+  background:#fff!important;
+  color:#000!important;
+}
+html.high-contrast :is(.quiz-option small,.setting-description,.setting-choice small,.menu-datetime){
+  color:#fff!important;
+  opacity:1!important;
+}
+html.high-contrast :is(input,button,a,[tabindex]):focus-visible{
+  outline:3px solid #ffeb00!important;
+  outline-offset:3px!important;
+}
+html.high-contrast :is(.quiz-modal-backdrop,.patchnotes-backdrop,.settings-backdrop){
+  background:rgba(0,0,0,.92)!important;
+  backdrop-filter:none!important;
+}
+
+html.blanc-mode body{
+  background-image:url("../secret/blanc.png")!important;
+  background-position:center!important;
+  background-size:100% 100%!important;
+  background-repeat:no-repeat!important;
+  background-attachment:fixed!important;
+}
+html.blanc-mode :is(.quiz-page,.visual,.panel,#app,.screen,.page,.celebration,.quiz-menu,.patchnotes-panel,.settings-panel,.menu .card,.setup-panel,.results-panel,.game-shell,.game-content,.problem-panel,.side-panel){
+  background-image:url("../secret/blanc.png")!important;
+  background-position:center!important;
+  background-size:100% 100%!important;
+}
+html.blanc-mode .visual::before,
+html.blanc-mode .visual::after,
+html.blanc-mode :is(.stars,.sun,.sunset-haze,.horizon,.shore){
+  display:none!important;
+}
+html.blanc-mode .celebration{
+  background-repeat:no-repeat!important;
+}
+html.blanc-mode .music-preview-toggle{
+  border:2px solid #111;
+}
