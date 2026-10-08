@@ -36,6 +36,7 @@ function unlockQuizAudio(){
   if(!musicMuted && quizMusic && quizMusic.paused){
     startQuizMusic();
   }
+  updateMeta();
 }
 
 function playSound(name){
@@ -126,6 +127,10 @@ document.addEventListener('visibilitychange',()=>{
 const params = new URLSearchParams(location.search);
 const requestedCategory = params.get("category");
 const requestedQuiz = params.get("quiz");
+const partyRoomCode=(params.get("partyRoom")||"").toUpperCase();
+const partyPlayerId=params.get("partyPlayer")||"";
+const partyHost=params.get("partyHost")==="true";
+const networkPartyActive=/^[A-Z]{4}$/.test(partyRoomCode) && Boolean(partyPlayerId);
 const defaultCategory = Object.keys(questionBank)[0] || "CompArch";
 const category = requestedCategory && (questionBank[requestedCategory] || codes[requestedCategory]) ? requestedCategory : defaultCategory;
 const socIndiReviewSections=category==="SocIndi" && requestedQuiz==="reviewQuiz" &&
@@ -187,7 +192,7 @@ const customQuestionSequence = rawMiniQuestions
   ? rawMiniQuestions.split(",").map((value) => Number.parseInt(value, 10)).filter((value) => Number.isInteger(value) && value >= 0)
   : [];
 const miniQuizMode = params.get("miniQuiz") === "true" || customQuestionSequence.length > 0;
-const partyModeRequested=params.get("partyMode")==="true";
+const partyModeRequested=params.get("partyMode")==="true" || networkPartyActive;
 let partyPlayers=[];
 let partyConfigError="";
 let partyHideLockedAnswers=false;
@@ -210,7 +215,10 @@ if(partyModeRequested){
     partyConfigError=error.message;
   }
 }
-const partyModeActive=partyModeRequested && partyPlayers.length>=2;
+const partyModeActive=partyModeRequested && (partyPlayers.length>=2 || networkPartyActive);
+if(networkPartyActive && partyPlayers.length<2){
+  partyConfigError="The shared player list could not be loaded.";
+}
 let partyTurns=[];
 let partyChoices=[];
 let partyHistory=[];
@@ -219,6 +227,9 @@ let partyTurnAnimating=false;
 let partyTurnAnimation=null;
 let partyTurnTimer=null;
 let partyTurnToken=0;
+const partyConnection=networkPartyActive?new window.QuizHubPartyClient():null;
+let partyConnectionReady=false;
+let partyStartPending=false;
 
 const theme = themes[category] || themes.CompArch || {
   pageBg: "#6f7d86",
@@ -267,6 +278,7 @@ const reviewSectionClose=document.getElementById("reviewSectionClose");
 const reviewSectionDone=document.getElementById("reviewSectionDone");
 const reviewSectionChoices=document.getElementById("reviewSectionChoices");
 const beginButton = document.getElementById("beginQuiz");
+const setupTitle=document.getElementById("setupTitle");
 const exitSetupButton = document.getElementById("exitSetup");
 const timer = document.getElementById("timer");
 const questionTimer=document.getElementById("questionTimer");
@@ -301,6 +313,19 @@ if(partyModeActive) document.body.classList.add("party-mode");
 if(partyModeRequested && !partyModeActive){
   setupError.textContent=`Party mode could not start: ${partyConfigError}`;
   beginButton.disabled=true;
+}
+if(networkPartyActive){
+  beginButton.disabled=!partyHost;
+  if(!partyHost){
+    beginButton.textContent="WAITING FOR HOST";
+    setup.classList.add("party-network-guest");
+    setupTitle.textContent="Waiting for Host";
+    setupError.textContent="Waiting for the host to configure and start the quiz…";
+    skipButton.hidden=true;
+    nextButton.hidden=true;
+    quitButton.textContent="LEAVE GAME";
+    quitButton.setAttribute("aria-label","Leave game");
+  }
 }
 
 courseCode.textContent = `${codes[category] || category} - QUIZ`;
@@ -525,7 +550,248 @@ function updatePartyAnswerMarker(button){
   markers.hidden=markers.childElementCount===0;
 }
 
+function buildNetworkAnswerOrder(question,questionNumberIndex,questionIndex){
+  const indexes=question.a.map((answer,index)=>answer==="BLANK"?null:index).filter((index)=>index!==null);
+  if(indexes.length<2 || indexes.length>4) throw new Error("Online party questions must have between two and four answer choices.");
+  let seed=Array.from(`${partyRoomCode}:${questionNumberIndex}:${questionIndex}`)
+    .reduce((value,character)=>Math.imul(value^character.charCodeAt(0),16777619)>>>0,2166136261);
+  for(let index=indexes.length-1;index>0;index--){
+    seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+    const swap=seed%(index+1);
+    [indexes[index],indexes[swap]]=[indexes[swap],indexes[index]];
+  }
+  return indexes;
+}
+
+function getNetworkQuestion(question,questionIndex){
+  const answerEntries=question.a
+    .map((answer,index)=>({answer,index}))
+    .filter((entry)=>entry.answer!=="BLANK");
+  const correctPosition=answerEntries.findIndex((entry)=>entry.index===question.c);
+  if(correctPosition<0) throw new Error("Could not locate the correct answer for an online party question.");
+  const answers=answerEntries.map((entry)=>entry.answer);
+  if(answers.length>4) throw new Error("Online party questions cannot have more than four answer choices.");
+  if(answers.length===4) return {...question,a:answers,c:correctPosition};
+  const seen=new Set(answers.map((answer)=>String(answer).trim().toLowerCase()));
+  const candidates=[];
+  bank.forEach((entry)=>{
+    if(!entry || !Array.isArray(entry.a)) return;
+    entry.a.forEach((answer)=>{
+      if(typeof answer!=="string" || answer==="BLANK") return;
+      const key=answer.trim().toLowerCase();
+      if(key && !seen.has(key)){
+        seen.add(key);
+        candidates.push(answer);
+      }
+    });
+  });
+  if(candidates.length<4-answers.length){
+    throw new Error("Could not find enough answer choices to build an A–D question.");
+  }
+  let seed=Array.from(`${partyRoomCode}:${questionIndex}`)
+    .reduce((value,character)=>Math.imul(value^character.charCodeAt(0),16777619)>>>0,2166136261);
+  for(let index=candidates.length-1;index>0;index--){
+    seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+    const swap=seed%(index+1);
+    [candidates[index],candidates[swap]]=[candidates[swap],candidates[index]];
+  }
+  return {...question,a:[...answers,...candidates.slice(0,4-answers.length)],c:correctPosition};
+}
+
+function updateNetworkPlayers(players){
+  if(!Array.isArray(players)) return;
+  players.forEach((updated)=>{
+    const player=partyPlayers.find((candidate)=>candidate.id===updated.id);
+    if(player && Number.isFinite(Number(updated.score))) player.score=Number(updated.score);
+  });
+  updatePartyScoreDisplay();
+}
+
+function startNetworkQuiz(config,roomSnapshot=null){
+  if(!config || !Array.isArray(config.questionSequence) || config.questionSequence.length<1){
+    setupError.textContent="The host sent an invalid quiz setup.";
+    return;
+  }
+  partyStartPending=false;
+  beginButton.disabled=!partyHost;
+  questionSequence=config.questionSequence.slice();
+  selectedQuestionCount=questionSequence.length;
+  countInput.value=String(selectedQuestionCount);
+  orderMode=config.orderMode==="static"?"static":"random";
+  timeLimitMinutes=Number.isFinite(config.timeLimitMinutes)?config.timeLimitMinutes:null;
+  perQuestionTimeMinutes=Number.isFinite(config.perQuestionTimeMinutes)?config.perQuestionTimeMinutes:null;
+  if(Array.isArray(config.reviewSections) && socIndiReviewSections){
+    selectedReviewSections=config.reviewSections.filter((section)=>availableReviewSections.includes(section));
+    bank=getSelectedQuestionBank();
+  }
+  score=0;
+  combo=0;
+  longestCombo=0;
+  history=[];
+  partyHistory=[];
+  sequencePosition=0;
+  quizStarted=true;
+  setup.classList.remove("party-network-guest");
+  if(isSoftEngi) document.body.classList.add("softengi-active");
+  playSound("begin");
+  startQuizMusic();
+  setup.hidden=true;
+  content.hidden=false;
+  startTimer();
+  updateMeta();
+  if(roomSnapshot?.question){
+    const question=roomSnapshot.question;
+    displayNetworkQuestion(question);
+    if(roomSnapshot.reveal) revealNetworkQuestion(roomSnapshot.reveal);
+    else if(roomSnapshot.answersLocked?.includes(partyPlayerId)){
+      answered=true;
+      stopQuestionTimer();
+      answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
+      skipButton.disabled=true;
+      feedback.textContent="Your answer is locked in. Waiting for the other players…";
+      feedback.className="motivation visible";
+      partyTurnDisplay.textContent="Answer locked in";
+      partyTurnDisplay.hidden=false;
+    }
+  }else if(partyHost) loadQuestion();
+  else{
+    partyTurnDisplay.textContent="Waiting for the host to start the first question…";
+    partyTurnDisplay.hidden=false;
+  }
+}
+
+function displayNetworkQuestion(message){
+  if(!Array.isArray(message.answerOrder) || message.answerOrder.length!==4) return;
+  if(message.questionNumber<0 || message.questionNumber>=questionSequence.length ||
+      questionSequence[message.questionNumber]!==message.questionIndex || !bank[message.questionIndex]){
+    setupError.textContent="The host sent a question that does not match this quiz.";
+    return;
+  }
+  if(partyHost && currentQuestionIndex===message.questionIndex && questionNumber===message.questionNumber+1) return;
+  sequencePosition=message.questionNumber;
+  currentQuestionIndex=message.questionIndex;
+  partyChoices=[];
+  try{
+    current=getNetworkQuestion(bank[currentQuestionIndex],currentQuestionIndex);
+  }catch(error){
+    setupError.textContent=error.message;
+    return;
+  }
+  questionNumber=sequencePosition+1;
+  renderQuestion(message.answerOrder);
+  startQuestionTimer();
+  partyTurnDisplay.hidden=!partyHost;
+}
+
+function lockNetworkAnswerUi(selectedIndex){
+  answered=true;
+  stopQuestionTimer();
+  if(selectedIndex!==null){
+    const ownChoice=partyChoices.find((choice)=>choice.playerId===partyPlayerId);
+    if(ownChoice) ownChoice.selectedIndex=selectedIndex;
+    else partyChoices.push({playerId:partyPlayerId,selectedIndex});
+    const selectedButton=answersEl.querySelector(`.answer[data-original-index="${selectedIndex}"]`);
+    if(selectedButton) updatePartyAnswerMarker(selectedButton);
+  }
+  answersEl.querySelectorAll(".answer").forEach((button)=>{
+    button.disabled=true;
+    if(selectedIndex!==null && Number(button.dataset.originalIndex)===selectedIndex){
+      button.classList.add("party-answer-locked");
+    }
+  });
+  skipButton.disabled=true;
+  nextButton.disabled=true;
+  feedback.textContent="Answer locked in. Waiting for the other players…";
+  feedback.className="motivation visible";
+  partyTurnDisplay.textContent="Answer locked in";
+  partyTurnDisplay.hidden=false;
+}
+
+function submitNetworkAnswer(selectedIndex){
+  if(!quizStarted || quizEnded || answered) return;
+  lockNetworkAnswerUi(selectedIndex);
+  partyConnection.send({
+    type:"answer",
+    code:partyRoomCode,
+    questionNumber:questionNumber-1,
+    answerIndex:selectedIndex
+  }).catch((error)=>{
+    setupError.textContent=`Could not submit answer: ${error.message}`;
+  });
+}
+
+function revealNetworkQuestion(message){
+  if(!current || !Array.isArray(message.answers)) return;
+  stopQuestionTimer();
+  answered=true;
+  partyChoices=message.answers.map((entry)=>({
+    playerId:entry.playerId,
+    selectedIndex:entry.selectedIndex
+  }));
+  message.answers.forEach((entry)=>{
+    const player=partyPlayers.find((candidate)=>candidate.id===entry.playerId);
+    if(player && Number.isFinite(Number(entry.score))) player.score=Number(entry.score);
+  });
+  const buttons=[...answersEl.querySelectorAll(".answer")];
+  buttons.forEach((button)=>{
+    const index=Number(button.dataset.originalIndex);
+    button.disabled=true;
+    if(index===message.correctIndex) button.classList.add("correct");
+    if(message.answers.some((entry)=>entry.selectedIndex===index && index!==message.correctIndex)){
+      button.classList.add("wrong");
+    }
+    updatePartyAnswerMarker(button);
+  });
+  const ownAnswer=message.answers.find((entry)=>entry.playerId===partyPlayerId);
+  const ownPlayer=partyPlayers.find((player)=>player.id===partyPlayerId);
+  const correctAnswer=current.a[message.correctIndex];
+  const correctCount=message.answers.filter((entry)=>entry.correct).length;
+  history.push({
+    question:current.q,
+    questionIndex:currentQuestionIndex,
+    selected:!ownAnswer || ownAnswer.selectedIndex===null?"":current.a[ownAnswer.selectedIndex],
+    correctAnswer,
+    correct:ownAnswer?.correct===true,
+    skipped:ownAnswer?.selectedIndex===null,
+    timedOut:false
+  });
+  partyHistory.push({
+    question:current.q,
+    correctAnswer,
+    selections:message.answers.map((entry)=>{
+      const player=partyPlayers.find((candidate)=>candidate.id===entry.playerId);
+      return {
+        playerId:entry.playerId,
+        playerName:player?.name||"",
+        selected:entry.selectedIndex===null?"":current.a[entry.selectedIndex],
+        correct:entry.correct===true
+      };
+    }),
+    timedOut:false
+  });
+  score=partyPlayers.reduce((total,player)=>total+player.score,0);
+  feedback.textContent=`${correctCount} of ${partyPlayers.length} players answered correctly. Correct answer: ${formatPowerText(correctAnswer)}`;
+  feedback.className=`motivation visible ${ownAnswer?.correct?"right":"wrong"}`;
+  nextButton.disabled=!partyHost;
+  skipButton.disabled=true;
+  partyTurnDisplay.textContent=ownAnswer?.correct
+    ? `${ownPlayer?.name||"You"} got it right!`
+    : `${ownPlayer?.name||"You"} did not get it this time.`;
+  partyTurnDisplay.hidden=false;
+  updateMeta();
+  if(partyHost){
+    if(questionNumber>=selectedQuestionCount){
+      nextButton.textContent="FINISH QUIZ";
+      nextButton.setAttribute("aria-label","Finish quiz");
+    }else{
+      nextButton.textContent="NEXT";
+      nextButton.setAttribute("aria-label","Next question");
+    }
+  }
+}
+
 function beginPartyQuestion(){
+  if(networkPartyActive) return;
   if(!partyModeActive) return;
   if(partyTurnTimer!==null){
     clearTimeout(partyTurnTimer);
@@ -825,7 +1091,15 @@ function startQuestionTimer(){
     if(remainingQuestionSeconds<=0){
       stopQuestionTimer();
       playSound("popup");
-      if(partyModeActive) finishPartyQuestion(true);
+      if(networkPartyActive && partyHost){
+        partyConnection.send({type:"question-timeout",code:partyRoomCode})
+          .catch((error)=>{setupError.textContent=`Could not time out the shared question: ${error.message}`;});
+      }else if(networkPartyActive){
+        answered=true;
+        answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
+        skipButton.disabled=true;
+        partyTurnDisplay.textContent="Time is up. Waiting for the host…";
+      }else if(partyModeActive) finishPartyQuestion(true);
       else revealQuestion("timeout");
     }
   },1000);
@@ -845,7 +1119,13 @@ function startTimer(){
     updateTimer();
     if(remainingSeconds <= 0){
       stopTimer();
-      endQuiz("time");
+      if(networkPartyActive){
+        if(partyHost) partyConnection.send({type:"end-game",code:partyRoomCode,reason:"time"})
+          .catch((error)=>{setupError.textContent=`Could not end the shared quiz: ${error.message}`;});
+        else if(timer) timer.textContent="00:00";
+      }else{
+        endQuiz("time");
+      }
     }
   },1000);
 }
@@ -904,7 +1184,7 @@ comboPopup.addEventListener('animationend', (event) => {
   }
 });
 
-function renderQuestion(){
+function renderQuestion(forcedAnswerOrder=null){
   if (!current) return;
   if (feedbackTypingTimer !== null) {
     clearInterval(feedbackTypingTimer);
@@ -923,7 +1203,7 @@ function renderQuestion(){
   const answerIndices = current.a
     .map((_, index) => index)
     .filter(index => current.a[index] !== 'BLANK');
-  const randomizedAnswerOrder = shuffleWithoutConsecutiveDuplicates(answerIndices);
+  const randomizedAnswerOrder = forcedAnswerOrder || shuffleWithoutConsecutiveDuplicates(answerIndices);
 
   answersEl.innerHTML = '';
   const answerLabels = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
@@ -975,9 +1255,38 @@ function loadQuestion(){
   }
 
   currentQuestionIndex = questionIndex;
-  current = bank[questionIndex];
+  try{
+    current = networkPartyActive
+      ? getNetworkQuestion(bank[questionIndex],questionIndex)
+      : bank[questionIndex];
+  }catch(error){
+    setupError.textContent=error.message;
+    return;
+  }
   questionNumber = sequencePosition + 1;
-  renderQuestion();
+  if(networkPartyActive && partyHost){
+    partyChoices=[];
+    let answerOrder;
+    try{
+      answerOrder=buildNetworkAnswerOrder(current,sequencePosition,currentQuestionIndex);
+    }catch(error){
+      setupError.textContent=error.message;
+      return;
+    }
+    renderQuestion(answerOrder);
+    partyConnection.send({
+      type:"question",
+      code:partyRoomCode,
+      questionNumber:sequencePosition,
+      questionIndex:currentQuestionIndex,
+      answerOrder,
+      correctIndex:current.c
+    }).catch((error)=>{
+      setupError.textContent=`Could not send question to the room: ${error.message}`;
+    });
+  }else{
+    renderQuestion();
+  }
   startQuestionTimer();
   beginPartyQuestion();
 }
@@ -1116,6 +1425,10 @@ function revealQuestion(resultType, selectedIndex=null){
 
 function chooseAnswer(index){
   if (!quizStarted || quizEnded || answered) return;
+  if(networkPartyActive){
+    submitNetworkAnswer(Number(index));
+    return;
+  }
   if(partyModeActive){
     recordPartySelection(Number(index));
     return;
@@ -1125,10 +1438,34 @@ function chooseAnswer(index){
 
 function goNext(){
   if (!quizStarted || quizEnded) return;
+  if(networkPartyActive && !partyHost) return;
 
   if (!answered){
     feedback.textContent = 'Choose an answer or skip the question first.';
     feedback.className = 'feedback error';
+    return;
+  }
+
+  if(networkPartyActive){
+    if(!partyHost) return;
+    nextButton.disabled=true;
+    if(questionNumber>=selectedQuestionCount){
+      partyConnection.send({type:"next-question",code:partyRoomCode})
+        .catch((error)=>{
+          nextButton.disabled=false;
+          setupError.textContent=`Could not finish the shared quiz: ${error.message}`;
+        });
+      return;
+    }
+    partyConnection.send({type:"next-question",code:partyRoomCode})
+      .then(()=>{
+        sequencePosition++;
+        loadQuestion();
+      })
+      .catch((error)=>{
+        nextButton.disabled=false;
+        setupError.textContent=`Could not advance the shared quiz: ${error.message}`;
+      });
     return;
   }
 
@@ -1139,6 +1476,11 @@ function goNext(){
 
 function skip(){
   if (!quizStarted || quizEnded || answered) return;
+  if(networkPartyActive && !partyHost) return;
+  if(networkPartyActive){
+    submitNetworkAnswer(null);
+    return;
+  }
   playSound('popup');
   if(partyModeActive){
     recordPartySelection(null);
@@ -1157,7 +1499,72 @@ function exitSetup(){
 function quit(){
   // END QUIZ intentionally goes straight to the result screen and preserves
   // only the questions that have been displayed and recorded in history.
+  if(networkPartyActive){
+    if(partyHost){
+      partyConnection.send({type:"end-game",code:partyRoomCode,reason:"ended"})
+        .catch((error)=>{setupError.textContent=`Could not end the shared quiz: ${error.message}`;});
+    }else{
+      quitButton.disabled=true;
+      quitButton.textContent="LEAVING…";
+      partyConnection.send({type:"leave",code:partyRoomCode})
+        .catch((error)=>{
+          quitButton.disabled=false;
+          quitButton.textContent="LEAVE GAME";
+          setupError.textContent=`Could not leave the shared game: ${error.message}`;
+        });
+    }
+    return;
+  }
   endQuiz("ended");
+}
+
+function handleNetworkGameOver(message){
+  if(message.departedPlayerId===partyPlayerId){
+    location.replace("index.html");
+    return;
+  }
+  if(!quizEnded){
+    if(!quizStarted){
+      setup.hidden=true;
+      content.hidden=false;
+      quizStarted=true;
+    }
+    if(message.players){
+      message.players.forEach((updated)=>{
+        const player=partyPlayers.find((candidate)=>candidate.id===updated.id);
+        if(player && Number.isFinite(Number(updated.score))) player.score=Number(updated.score);
+      });
+    }
+    quizEnded=true;
+    stopTimer();
+    stopQuestionTimer();
+    const result={
+      category,
+      quizType:requestedQuiz||"reviewQuiz",
+      score:partyPlayers.find((player)=>player.id===partyPlayerId)?.score||0,
+      longestCombo:0,
+      total:selectedQuestionCount,
+      timeLimitMinutes,
+      perQuestionTimeMinutes,
+      isRetake:false,
+      partyMode:true,
+      onlineParty:true,
+      partyPlayers,
+      partyHistory,
+      history,
+      seen:history.length,
+      completed:message.reason!=="ended",
+      endReason:message.reason||"complete",
+      reviewSections:socIndiReviewSections?selectedReviewSections:[]
+    };
+    try{
+      sessionStorage.setItem("lakeheadQuizResults",JSON.stringify(result));
+      location.href="party-win.html";
+    }catch(error){
+      quizEnded=false;
+      setupError.textContent=`Could not save the party results: ${error.message}`;
+    }
+  }
 }
 
 function readTimingSettings(){
@@ -1203,6 +1610,8 @@ function validateSetup(){
 
 function beginQuiz(){
   if(quizStarted) return;
+  if(networkPartyActive && !partyHost) return;
+  if(partyStartPending) return;
   readTimingSettings();
 
   if (miniQuizMode && customQuestionSequence.length) {
@@ -1218,6 +1627,28 @@ function beginQuiz(){
     return;
   } else {
     buildQuestionSequence();
+  }
+
+  if(networkPartyActive){
+    partyStartPending=true;
+    beginButton.disabled=true;
+    setupError.textContent="Starting the shared quiz…";
+    partyConnection.send({
+      type:"quiz-start",
+      code:partyRoomCode,
+      config:{
+        questionSequence,
+        orderMode,
+        timeLimitMinutes,
+        perQuestionTimeMinutes,
+        reviewSections:socIndiReviewSections?selectedReviewSections:[]
+      }
+    }).catch((error)=>{
+      partyStartPending=false;
+      beginButton.disabled=false;
+      setupError.textContent=`Could not start the shared quiz: ${error.message}`;
+    });
+    return;
   }
 
   playSound('begin');
@@ -1236,6 +1667,73 @@ skipButton.addEventListener("click",skip);
 quitButton.addEventListener("click",quit);
 beginButton.addEventListener("click",beginQuiz);
 exitSetupButton.addEventListener("click",exitSetup);
+
+if(networkPartyActive){
+  partyConnection.on("joined",(message)=>{
+    updateNetworkPlayers(message.room.players);
+    partyHideLockedAnswers=false;
+    if(message.room.stage==="quiz" && message.room.quizConfig){
+      startNetworkQuiz(message.room.quizConfig,message.room);
+    }
+  });
+  partyConnection.on("quiz-start",(message)=>{
+    partyHideLockedAnswers=false;
+    updateNetworkPlayers(message.players);
+    startNetworkQuiz(message.config);
+  });
+  partyConnection.on("question",displayNetworkQuestion);
+  partyConnection.on("answer-locked",(message)=>{
+    if(Number.isInteger(message.answerIndex)){
+      const choice=partyChoices.find((entry)=>entry.playerId===message.playerId);
+      if(choice) choice.selectedIndex=message.answerIndex;
+      else partyChoices.push({playerId:message.playerId,selectedIndex:message.answerIndex});
+      const selectedButton=answersEl.querySelector(`.answer[data-original-index="${message.answerIndex}"]`);
+      if(selectedButton) updatePartyAnswerMarker(selectedButton);
+    }
+    if(message.lockedCount>=partyPlayers.length){
+      partyTurnDisplay.textContent="All answers are in. Revealing…";
+    }else{
+      partyTurnDisplay.textContent=`${message.lockedCount} of ${partyPlayers.length} answers locked in`;
+    }
+  });
+  partyConnection.on("reveal",revealNetworkQuestion);
+  partyConnection.on("next-question",()=>{
+    if(!partyHost){
+      nextButton.disabled=true;
+      answered=false;
+      partyTurnDisplay.textContent="Waiting for the next question…";
+    }
+  });
+  partyConnection.on("game-over",handleNetworkGameOver);
+  partyConnection.on("left",()=>location.replace("index.html"));
+  partyConnection.on("room-state",(message)=>{
+    updateNetworkPlayers(message.room.players);
+  });
+  partyConnection.on("error",(message)=>{
+    setupError.textContent=message.message;
+    if(!quizStarted && partyHost){
+      partyStartPending=false;
+      beginButton.disabled=false;
+    }
+  });
+  partyConnection.on("close",()=>{
+    if(!quizEnded){
+      setupError.textContent="Connection to the shared game was lost. Reconnect before continuing.";
+      answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
+      nextButton.disabled=true;
+      skipButton.disabled=true;
+    }
+  });
+  partyConnection.send({
+    type:"join",
+    code:partyRoomCode,
+    playerId:partyPlayerId,
+    player:partyPlayers.find((player)=>player.id===partyPlayerId)
+  }).then(()=>{partyConnectionReady=true;}).catch((error)=>{
+    setupError.textContent=`Could not reconnect to the party room: ${error.message}`;
+    beginButton.disabled=true;
+  });
+}
 
 document.addEventListener("keydown",event=>{
   if(event.key.toLowerCase()==="m" && event.target.tagName !== "INPUT"){

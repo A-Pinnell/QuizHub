@@ -22,6 +22,9 @@
     document.getElementById("partyPlayAgain").hidden=true;
     return;
   }
+  if(results.onlineParty===true){
+    document.getElementById("partyPlayAgain").hidden=true;
+  }
 
   const standings=results.partyPlayers
     .map((player,index)=>({
@@ -71,6 +74,10 @@
   });
 
   document.getElementById("partyPlayAgain").addEventListener("click",()=>{
+    if(results.onlineParty===true){
+      window.location.href="index.html?fromWin=1";
+      return;
+    }
     try{
       sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(results.partyPlayers.map(({id,name,color,photo})=>({id,name,color,photo}))));
       const target=new URL("quiz.html",window.location.href);

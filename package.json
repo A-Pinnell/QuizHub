@@ -1,0 +1,16 @@
+{
+  "name": "quizhub-party-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "QuizHub static site and real-time party game server",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
+}

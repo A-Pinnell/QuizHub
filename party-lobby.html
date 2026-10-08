@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QuizHub Party Lobby</title>
+<link rel="stylesheet" href="css/party-lobby.css">
+<script src="js/party-config.js" defer></script>
+<script src="js/party-client.js" defer></script>
+<script src="js/party-lobby.js" defer></script>
+</head>
+<body>
+<main class="party-shell party-lobby-shell">
+  <p class="party-kicker">PARTY LOBBY</p>
+  <div class="party-room-heading">
+    <div><h1>Room <span id="partyRoomCode">----</span></h1><p id="partyRoomStatus">Connecting to the lobby…</p></div>
+    <button type="button" class="party-secondary" id="partyCopyCode">COPY CODE</button>
+  </div>
+  <section class="party-player-list" id="partyPlayerList" aria-label="Players in this lobby"></section>
+  <div class="party-lobby-controls">
+    <button class="party-secondary" id="partyLeaveButton" type="button" disabled>LEAVE LOBBY</button>
+    <p class="party-error" id="partyLobbyError" role="status" aria-live="polite"></p>
+  </div>
+  <section class="party-host-controls" id="partyHostControls" hidden>
+    <h2>Choose the quiz</h2>
+    <label for="partyCategory">Course</label>
+    <select id="partyCategory">
+      <option value="CompArch">Computer Architecture</option>
+      <option value="CloudComp">Cloud Computing</option>
+      <option value="SocIndi">Society, Individuals and Technology</option>
+      <option value="DataSci">Data Science</option>
+      <option value="SoftEngi">Software Engineering</option>
+    </select>
+    <label for="partyQuiz">Quiz</label>
+    <select id="partyQuiz"></select>
+    <button class="party-primary" id="partyLaunchButton" type="button" disabled>CHOOSE QUIZ SETTINGS</button>
+  </section>
+</main>
+</body>
+</html>

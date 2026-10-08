@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Join a QuizHub Party</title>
+<link rel="stylesheet" href="css/party-lobby.css">
+<script src="js/party-config.js" defer></script>
+<script src="js/party-client.js" defer></script>
+<script src="js/party-join.js" defer></script>
+</head>
+<body>
+<main class="party-shell party-join-shell">
+  <a class="party-back" href="index.html">← Back to QuizHub</a>
+  <p class="party-kicker">JOIN A GAME</p>
+  <h1>Enter room code</h1>
+  <form id="partyJoinForm">
+    <label for="partyRoomCode">Four-letter room code</label>
+    <input id="partyRoomCode" name="roomCode" type="text" minlength="4" maxlength="4" autocomplete="off" autocapitalize="characters" pattern="[A-Za-z]{4}" required>
+    <button class="party-primary" id="partyCheckRoom" type="button">CHECK ROOM</button>
+    <div id="partyProfileFields" hidden>
+    <p id="partyRoomAvailability" class="party-room-availability"></p>
+    <label for="partyPlayerName">Your name</label>
+    <input id="partyPlayerName" name="playerName" type="text" maxlength="24" autocomplete="nickname" required>
+    <div class="party-profile-row">
+      <label for="partyPlayerColor">Player color</label>
+      <input id="partyPlayerColor" type="color" value="#3686e8">
+    </div>
+    <label for="partyPlayerPhoto">Player picture (optional)</label>
+    <input id="partyPlayerPhoto" type="file" accept="image/*">
+    <div class="party-photo-preview" id="partyPhotoPreview" aria-hidden="true">?</div>
+    <button class="party-primary" id="partyJoinButton" type="submit">JOIN LOBBY</button>
+    </div>
+    <p class="party-error" id="partyJoinError" role="status" aria-live="polite"></p>
+  </form>
+</main>
+</body>
+</html>

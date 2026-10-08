@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="css/title.css" >
 <link rel="stylesheet" href="css/preferences.css">
 <script src="./js/preferences.js" defer></script>
+<script src="./js/party-config.js" defer></script>
+<script src="./js/party-client.js" defer></script>
 <script src="./js/index.js" defer></script>
 </head>
 <body>
@@ -159,9 +161,13 @@
     <button class="party-mode-close" type="button" data-close-party-mode aria-label="Close party mode">&times;</button>
     <div class="quiz-menu-kicker">PLAY TOGETHER</div>
     <h2 id="partyModeTitle">Party mode</h2>
+    <div class="party-mode-choice" id="partyModeChoice">
+      <button class="party-mode-start" id="partyHostChoice" type="button">HOST A GAME</button>
+      <button class="party-mode-join" id="partyJoinChoice" type="button">JOIN A GAME</button>
+    </div>
+    <div id="partyHostSetup" hidden>
     <label class="party-player-count-label" for="partyPlayerCount">Number of players</label>
     <select id="partyPlayerCount">
-      <option value="1">1 player (Solo mode)</option>
       <option value="2">2 players</option>
       <option value="3">3 players</option>
       <option value="4">4 players</option>
@@ -173,7 +179,8 @@
     </label>
     <div class="party-player-setup" id="partyPlayerSetup"></div>
     <p class="party-mode-error" id="partyModeError" role="status" aria-live="polite"></p>
-    <button class="party-mode-start" id="partyModeStart" type="button">CHOOSE A QUIZ</button>
+    <button class="party-mode-start" id="partyModeStart" type="button">CREATE ROOM</button>
+    </div>
   </section>
 </div>
 

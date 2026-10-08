@@ -464,6 +464,9 @@ const partyPlayerCount=document.getElementById('partyPlayerCount');
 const partyPlayerSetup=document.getElementById('partyPlayerSetup');
 const partyModeError=document.getElementById('partyModeError');
 const partyModeToggle=document.getElementById('partyModeToggle');
+const partyModeChoice=document.getElementById('partyModeChoice');
+const partyHostSetup=document.getElementById('partyHostSetup');
+const partyHostChoice=document.getElementById('partyHostChoice');
 const partyHideLockedAnswers=document.getElementById('partyHideLockedAnswers');
 const partySetupStorageKey='quizHubPartySetup';
 const defaultPartyColors=['#e8505b','#3686e8','#22a06b','#9254de','#e39426'];
@@ -629,7 +632,7 @@ function renderPartyProfiles(){
     const count=Number.parseInt(partyPlayerCount.value,10);
     if(!Number.isInteger(count) || count<1 || count>5) return;
     selectedPartyPlayerCount=count;
-    partyPlayerSetup.replaceChildren(...partyProfileDrafts.slice(0,count).map((profile,index)=>createPartyProfile(index,profile)));
+    partyPlayerSetup.replaceChildren(createPartyProfile(0,partyProfileDrafts[0]));
     updatePartyModeToggle();
     persistPartySetup();
 }
@@ -650,11 +653,21 @@ function capturePartyDrafts(){
 partyModeToggle.addEventListener('click',()=>{
     partyModeTrigger=document.activeElement;
     partyModeError.textContent='';
-    partyPlayerCount.value=String(selectedPartyPlayerCount);
-    renderPartyProfiles();
+    partyModeChoice.hidden=false;
+    partyHostSetup.hidden=true;
     partyModeModal.classList.add('open');
     partyModeModal.setAttribute('aria-hidden','false');
+    partyHostChoice.focus();
+});
+partyHostChoice.addEventListener('click',()=>{
+    partyModeChoice.hidden=true;
+    partyHostSetup.hidden=false;
+    partyPlayerCount.value=String(selectedPartyPlayerCount);
+    renderPartyProfiles();
     partyPlayerCount.focus();
+});
+document.getElementById('partyJoinChoice').addEventListener('click',()=>{
+  location.href='party-join.html';
 });
 partyPlayerCount.addEventListener('change',renderPartyProfiles);
 partyHideLockedAnswers.addEventListener('change',()=>{
@@ -676,26 +689,61 @@ document.getElementById('partyModeStart').addEventListener('click',()=>{
       return;
     }
     capturePartyDrafts();
-    const cards=[...partyPlayerSetup.querySelectorAll('.party-player-card')];
-    const selectedPlayers=cards.map((card,index)=>({
-      id:`player-${index+1}`,
-      name:card.querySelector('.party-player-name input').value.trim() || `Player ${index+1}`,
-      color:card.querySelector('.party-player-color input').value,
-      photo:card.dataset.photo || ''
-    }));
-    partyProfileDrafts.forEach((profile,index)=>{
-      if(selectedPlayers[index]) profile.name=selectedPlayers[index].name;
-    });
+    const hostCard=partyPlayerSetup.querySelector('.party-player-card');
+    const hostProfile={
+      name:hostCard.querySelector('.party-player-name input').value.trim(),
+      color:hostCard.querySelector('.party-player-color input').value,
+      photo:hostCard.dataset.photo || ''
+    };
+    if(!hostProfile.name){
+      partyModeError.textContent='Enter your player name.';
+      return;
+    }
+    partyProfileDrafts[0]=hostProfile;
     if(!persistPartySetup()) return;
-    partyPlayers=selectedPartyPlayerCount===1 ? [] : selectedPlayers;
-    partyModeActive=selectedPartyPlayerCount>1;
-    partyModeError.textContent='';
-    partyModeModal.classList.remove('open');
-    partyModeModal.setAttribute('aria-hidden','true');
-    if(partyModeTrigger?.isConnected) partyModeTrigger.focus();
-    playSound('select');
-    showMenuPage(0);
-    document.querySelector('.menu .course-card:not(.coming-soon)')?.focus();
+    const button=document.getElementById('partyModeStart');
+    button.disabled=true;
+    partyModeError.textContent='Creating room…';
+    const client=new window.QuizHubPartyClient();
+    let completed=false;
+    const onHosted=(message)=>{
+      if(completed) return;
+      completed=true;
+      sessionStorage.setItem('quizHubPartyProfile',JSON.stringify(hostProfile));
+      sessionStorage.setItem('quizHubPartyReconnect',JSON.stringify({
+        code:message.room.code,playerId:message.playerId
+      }));
+      location.href=`party-lobby.html?code=${encodeURIComponent(message.room.code)}&playerId=${encodeURIComponent(message.playerId)}&host=1`;
+    };
+    const onError=(message)=>{
+      if(completed) return;
+      completed=true;
+      partyModeError.textContent=message.message;
+      button.disabled=false;
+      client.close();
+    };
+    client.on('hosted',onHosted);
+    client.on('error',onError);
+    client.on('close',()=>{
+      if(!completed){
+        completed=true;
+        partyModeError.textContent='Connection to the party server was lost.';
+        button.disabled=false;
+      }
+    });
+    client.send({
+      type:'host',
+      capacity:selectedPartyPlayerCount,
+      player:hostProfile,
+      hideLockedAnswers:hidePartyLockedAnswers
+    })
+      .catch((error)=>{
+        if(completed) return;
+        completed=true;
+        partyModeError.textContent=error.message;
+        button.disabled=false;
+        client.close();
+      });
 });
 
 const menuTrack=document.getElementById('menuTrack');

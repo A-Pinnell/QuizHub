@@ -629,6 +629,9 @@ body.softengi-mode .music-toggle{right:64px}
 }
 
 .quiz-setup{max-width:560px;margin:0 auto;padding:18px 0 8px}
+.quiz-setup.party-network-guest{display:flex;min-height:70vh;flex-direction:column;justify-content:center}
+.quiz-setup.party-network-guest>:not(.setup-kicker):not(h1):not(.setup-error){display:none!important}
+.quiz-setup[hidden],.controls button[hidden]{display:none!important}
 .quiz-setup h1{margin:4px 0 5px}
 .setup-kicker{font-size:.75rem;letter-spacing:.16em;font-weight:800;opacity:.65}
 .setup-subtitle{margin:0 0 22px;opacity:.7}
