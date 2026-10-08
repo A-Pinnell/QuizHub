@@ -10,6 +10,7 @@
 <script src="js/party-lobby.js" defer></script>
 </head>
 <body>
+<audio id="partyLobbyMusic" src="music/Party.mp3" autoplay loop preload="auto"></audio>
 <main class="party-shell party-lobby-shell">
   <p class="party-kicker">PARTY LOBBY</p>
   <div class="party-room-heading">
@@ -22,6 +23,7 @@
     <p class="party-error" id="partyLobbyError" role="status" aria-live="polite"></p>
   </div>
   <section class="party-host-controls" id="partyHostControls" hidden>
+    <p class="party-room-limit">Up to 50 players can join this room. At least two players are needed to start.</p>
     <h2>Choose the quiz</h2>
     <label for="partyCategory">Course</label>
     <select id="partyCategory">

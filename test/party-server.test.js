@@ -73,12 +73,22 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   const hostedPromise = waitForMessage(host, "hosted");
   send(host, {
     type: "host",
-    capacity: 2,
-    player: { name: "Host", color: "#ff0000", photo: "" },
-    hideLockedAnswers: true
+    capacity: 50,
+    player: { name: "Host", color: "#ff0000", photo: "" }
   });
   const hosted = await hostedPromise;
   assert.match(hosted.room.code, /^[A-Z]{4}$/);
+  assert.equal(hosted.room.capacity, 50);
+
+  const invalidHost = await connect();
+  const invalidCapacity = waitForMessage(invalidHost, "error");
+  send(invalidHost, {
+    type: "host",
+    capacity: 51,
+    player: { name: "Invalid", color: "#00ff00", photo: "" }
+  });
+  assert.match((await invalidCapacity).message, /between 2 and 50/);
+  invalidHost.close();
 
   let guest = await connect();
   const joinedPromise = waitForMessage(guest, "joined");
@@ -140,8 +150,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     }
   });
   const [hostStartMessage, guestStartMessage] = await Promise.all([hostStarted, guestStarted]);
-  assert.equal(hostStartMessage.hideLockedAnswers, true);
-  assert.equal(guestStartMessage.hideLockedAnswers, true);
+  assert.equal(hostStartMessage.hideLockedAnswers, undefined);
+  assert.equal(guestStartMessage.hideLockedAnswers, undefined);
 
   const hostQuestion = waitForMessage(host, "question");
   const guestQuestion = waitForMessage(guest, "question");

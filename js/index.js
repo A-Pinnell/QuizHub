@@ -460,31 +460,21 @@ document.querySelectorAll('.course-card').forEach(card=>{
 });
 
 const partyModeModal=document.getElementById('partyModeModal');
-const partyPlayerCount=document.getElementById('partyPlayerCount');
 const partyPlayerSetup=document.getElementById('partyPlayerSetup');
 const partyModeError=document.getElementById('partyModeError');
 const partyModeToggle=document.getElementById('partyModeToggle');
 const partyModeChoice=document.getElementById('partyModeChoice');
 const partyHostSetup=document.getElementById('partyHostSetup');
 const partyHostChoice=document.getElementById('partyHostChoice');
-const partyHideLockedAnswers=document.getElementById('partyHideLockedAnswers');
 const partySetupStorageKey='quizHubPartySetup';
 const defaultPartyColors=['#e8505b','#3686e8','#22a06b','#9254de','#e39426'];
 let partyProfileDrafts=defaultPartyColors.map((color,index)=>({name:`Player ${index+1}`,color,photo:''}));
-let selectedPartyPlayerCount=2;
-let hidePartyLockedAnswers=false;
 let partyModeTrigger=null;
-
-function updatePartyModeToggle(){
-  partyModeToggle.classList.toggle('party-rainbow',selectedPartyPlayerCount===2 || selectedPartyPlayerCount===5);
-}
 
 function persistPartySetup(){
   try{
     sessionStorage.setItem(partySetupStorageKey,JSON.stringify({
-      count:selectedPartyPlayerCount,
-      players:partyProfileDrafts,
-      hideLockedAnswers:hidePartyLockedAnswers
+      players:partyProfileDrafts
     }));
     return true;
   }catch(error){
@@ -497,11 +487,6 @@ function restorePartySetup(){
   try{
     const saved=JSON.parse(sessionStorage.getItem(partySetupStorageKey) || 'null');
     if(!saved || !Array.isArray(saved.players)) return;
-    if(Number.isInteger(saved.count) && saved.count>=1 && saved.count<=5){
-      selectedPartyPlayerCount=saved.count;
-    }
-    hidePartyLockedAnswers=saved.hideLockedAnswers===true;
-    partyHideLockedAnswers.checked=hidePartyLockedAnswers;
     partyProfileDrafts=defaultPartyColors.map((color,index)=>{
       const player=saved.players[index];
       return {
@@ -514,11 +499,9 @@ function restorePartySetup(){
     console.error('Could not restore party setup:',error);
     partyModeError.textContent=`Could not restore the saved player setup: ${error.message}`;
   }
-  updatePartyModeToggle();
 }
 
 restorePartySetup();
-updatePartyModeToggle();
 
 function createPartyProfile(index,profile={}){
     const card=document.createElement('fieldset');
@@ -629,11 +612,7 @@ function createPartyProfile(index,profile={}){
 }
 
 function renderPartyProfiles(){
-    const count=Number.parseInt(partyPlayerCount.value,10);
-    if(!Number.isInteger(count) || count<1 || count>5) return;
-    selectedPartyPlayerCount=count;
     partyPlayerSetup.replaceChildren(createPartyProfile(0,partyProfileDrafts[0]));
-    updatePartyModeToggle();
     persistPartySetup();
 }
 
@@ -662,17 +641,10 @@ partyModeToggle.addEventListener('click',()=>{
 partyHostChoice.addEventListener('click',()=>{
     partyModeChoice.hidden=true;
     partyHostSetup.hidden=false;
-    partyPlayerCount.value=String(selectedPartyPlayerCount);
     renderPartyProfiles();
-    partyPlayerCount.focus();
 });
 document.getElementById('partyJoinChoice').addEventListener('click',()=>{
   location.href='party-join.html';
-});
-partyPlayerCount.addEventListener('change',renderPartyProfiles);
-partyHideLockedAnswers.addEventListener('change',()=>{
-  hidePartyLockedAnswers=partyHideLockedAnswers.checked;
-  persistPartySetup();
 });
 partyPlayerSetup.addEventListener('input',capturePartyDrafts);
 partyPlayerSetup.addEventListener('change',capturePartyDrafts);
@@ -718,7 +690,9 @@ document.getElementById('partyModeStart').addEventListener('click',()=>{
     const onError=(message)=>{
       if(completed) return;
       completed=true;
-      partyModeError.textContent=message.message;
+      partyModeError.textContent=/between 2 and 5 total players/i.test(message.message)
+        ? 'The party server is out of date and still limits rooms to five players. Redeploy the latest server.js from this repository, then try again.'
+        : message.message;
       button.disabled=false;
       client.close();
     };
@@ -733,14 +707,15 @@ document.getElementById('partyModeStart').addEventListener('click',()=>{
     });
     client.send({
       type:'host',
-      capacity:selectedPartyPlayerCount,
-      player:hostProfile,
-      hideLockedAnswers:hidePartyLockedAnswers
+      capacity:50,
+      player:hostProfile
     })
       .catch((error)=>{
         if(completed) return;
         completed=true;
-        partyModeError.textContent=error.message;
+        partyModeError.textContent=/between 2 and 5 total players/i.test(error.message)
+          ? 'The party server is out of date and still limits rooms to five players. Redeploy the latest server.js from this repository, then try again.'
+          : error.message;
         button.disabled=false;
         client.close();
       });

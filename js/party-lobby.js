@@ -13,6 +13,7 @@
   const launchButton=document.getElementById("partyLaunchButton");
   const categorySelect=document.getElementById("partyCategory");
   const quizSelect=document.getElementById("partyQuiz");
+  const lobbyMusic=document.getElementById("partyLobbyMusic");
   const quizCatalog={
     CompArch:[["quiz1","First Slides Practice"]],
     CloudComp:[["quiz1","First Slides Practice"],["quiz2","Week 4 Slides Practice"]],
@@ -26,6 +27,17 @@
   }
   codeLabel.textContent=code;
   hostControls.hidden=!isHost;
+  const startLobbyMusic=()=>{
+    lobbyMusic.play().catch((playError)=>{
+      if(playError.name!=="NotAllowedError"){
+        console.error("Could not play party lobby music:",playError);
+      }
+    });
+  };
+  startLobbyMusic();
+  ["pointerdown","keydown","touchstart"].forEach((eventName)=>{
+    document.addEventListener(eventName,startLobbyMusic,{once:true});
+  });
   let room=null;
   const client=new window.QuizHubPartyClient();
   const savedProfile=(()=>{
@@ -60,10 +72,12 @@
     }));
     const ownPlayer=room.players.find((player)=>player.id===playerId);
     leaveButton.disabled=!ownPlayer;
-    const allReady=room.players.length===room.capacity &&
+    const allReady=room.players.length>=2 && room.players.length<=room.capacity &&
       room.players.every((player)=>player.ready && player.connected);
     status.textContent=room.stage==="lobby"
-      ? `${room.players.length} of ${room.capacity} players · players are ready when they join`
+      ? room.players.length<2
+        ? `${room.players.length} of ${room.capacity} players · waiting for at least one more player`
+        : `${room.players.length} of ${room.capacity} players · the host can start when ready`
       : room.stage==="setup"?"Quiz selected. Waiting for the host to start…"
       : room.stage==="results"?"Game over. Return to the menu to start another room."
       :"Game in progress.";

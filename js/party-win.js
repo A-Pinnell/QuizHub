@@ -36,6 +36,23 @@
     }))
     .sort((first,second)=>second.score-first.score);
   const winners=standings.filter((player)=>player.score===standings[0].score);
+  const currentPlayer=standings.find((player)=>player.id===results.partyCurrentPlayerId);
+  if(currentPlayer){
+    const currentPlayerWon=winners.some((player)=>player.id===currentPlayer.id);
+    const resultMusic=new Audio(currentPlayerWon?"music/PartyWin.mp3":"music/PartyLose.mp3");
+    resultMusic.play().catch((playError)=>{
+      if(playError.name!=="NotAllowedError"){
+        console.error("Could not play party result music:",playError);
+      }
+    });
+    ["pointerdown","keydown","touchstart"].forEach((eventName)=>{
+      document.addEventListener(eventName,()=>{
+        resultMusic.play().catch((retryError)=>{
+          console.error("Could not play party result music:",retryError);
+        });
+      },{once:true});
+    });
+  }
   title.textContent=winners.length===1?`${winners[0].name} wins!`:"It's a tie!";
   const quizName=typeof results.quizType==="string" && results.quizType.trim()
     ? results.quizType.replace(/([a-z])([A-Z])/g,"$1 $2").replace(/Quiz$/,"")

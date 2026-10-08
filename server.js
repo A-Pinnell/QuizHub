@@ -10,6 +10,7 @@ const root = __dirname;
 const port = Number.parseInt(process.env.PORT || "8080", 10);
 const roomCodeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 const roomLifetimeMs = 2 * 60 * 60 * 1000;
+const maxRoomPlayers = 50;
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -36,7 +37,6 @@ function publicRoom(room) {
     category: room.category,
     quiz: room.quiz,
     quizConfig: room.quizConfig,
-    hideLockedAnswers: room.hideLockedAnswers,
     question: room.question && {
       questionNumber: room.question.questionNumber,
       questionIndex: room.question.questionIndex,
@@ -71,7 +71,7 @@ function broadcastRoom(room) {
 }
 
 function allReady(room) {
-  return room.players.size === room.capacity &&
+  return room.players.size >= 2 && room.players.size <= room.capacity &&
     [...room.players.values()].every((player) => player.ready && player.socket?.readyState === WebSocket.OPEN);
 }
 
@@ -160,8 +160,8 @@ function handleMessage(socket, rawMessage) {
       return;
     }
     const capacity = Number(message.capacity);
-    if (!Number.isInteger(capacity) || capacity < 2 || capacity > 5) {
-      sendError(socket, "Choose between 2 and 5 total players.");
+    if (!Number.isInteger(capacity) || capacity < 2 || capacity > maxRoomPlayers) {
+      sendError(socket, `Choose a room size between 2 and ${maxRoomPlayers} players.`);
       return;
     }
     try {
@@ -169,8 +169,7 @@ function handleMessage(socket, rawMessage) {
       const player = { ...profile, id: randomUUID(), ready: true, host: true, score: 0, socket, expireTimer: null };
       const room = {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
-        question: null, answersLocked: [], reveal: null, quizConfig: null,
-        hideLockedAnswers: message.hideLockedAnswers === true
+        question: null, answersLocked: [], reveal: null, quizConfig: null
       };
       room.expiration = setTimeout(() => {
         broadcast(room, { type: "error", message: "This room expired." });
@@ -293,7 +292,6 @@ function handleMessage(socket, rawMessage) {
       broadcast(room, {
         type: "quiz-start",
         config,
-        hideLockedAnswers: room.hideLockedAnswers,
         players: publicRoom(room).players
       });
       break;

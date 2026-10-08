@@ -199,11 +199,11 @@ let partyHideLockedAnswers=false;
 if(partyModeRequested){
   try{
     const savedPartyPlayers=JSON.parse(sessionStorage.getItem("quizHubPartyPlayers") || "null");
-    if(!Array.isArray(savedPartyPlayers) || savedPartyPlayers.length<2 || savedPartyPlayers.length>5){
-      throw new Error("Party mode needs between two and five player profiles.");
+    if(!Array.isArray(savedPartyPlayers) || savedPartyPlayers.length<2 || savedPartyPlayers.length>50){
+      throw new Error("Party mode needs between two and fifty player profiles.");
     }
     partyPlayers=savedPartyPlayers.map((player,index)=>({
-      id:`player-${index+1}`,
+      id:typeof player.id==="string" && player.id ? player.id : `player-${index+1}`,
       name:typeof player.name==="string" && player.name.trim() ? player.name.trim().slice(0,24) : `Player ${index+1}`,
       color:typeof player.color==="string" && /^#[0-9a-f]{6}$/i.test(player.color) ? player.color : "#4688e8",
       photo:typeof player.photo==="string" && player.photo.startsWith("data:image/") ? player.photo : "",
@@ -288,6 +288,8 @@ const comboPopup = document.getElementById('comboPopup');
 const questionDisplay = document.getElementById('questionDisplay');
 const partyTurnDisplay=document.getElementById("partyTurn");
 const partyScoreDisplay=document.getElementById("partyScoreDisplay");
+const partyPlayerLeftDialog=document.getElementById("partyPlayerLeftDialog");
+const partyPlayerLeftMessage=document.getElementById("partyPlayerLeftMessage");
 const questionTitle = document.getElementById('questionTitle');
 const isSoftEngi = category === "SoftEngi";
 const softengiSidebar = document.getElementById('softengiSidebar');
@@ -545,7 +547,23 @@ function updatePartyAnswerMarker(button){
   partyChoices.filter((choice)=>choice.selectedIndex===Number(button.dataset.originalIndex))
     .forEach((choice)=>{
       const player=partyPlayers.find((entry)=>entry.id===choice.playerId);
-      if(player) markers.appendChild(createPartyAvatar(player,"party-answer-avatar"));
+      if(player){
+        const voter=document.createElement("span");
+        voter.className="party-answer-voter";
+        voter.setAttribute("role","img");
+        voter.title=`${player.name} locked in this answer`;
+        voter.setAttribute("aria-label",`${player.name} locked in this answer`);
+        const avatar=createPartyAvatar(player,"party-answer-avatar");
+        avatar.setAttribute("aria-hidden","true");
+        voter.append(
+          avatar,
+          Object.assign(document.createElement("span"),{
+            className:"party-answer-voter-name",
+            textContent:player.name
+          })
+        );
+        markers.appendChild(voter);
+      }
     });
   markers.hidden=markers.childElementCount===0;
 }
@@ -1321,6 +1339,7 @@ function finishQuiz(reason="complete"){
     isRetake: miniQuizMode,
     partyMode: partyModeActive,
     ...(partyModeActive ? {partyPlayers,partyHistory} : {}),
+    ...(partyModeActive ? {partyCurrentPlayerId:networkPartyActive?partyPlayerId:partyPlayers[0]?.id} : {}),
     seen: history.length,
     completed: reason === "complete",
     endReason: reason,
@@ -1523,6 +1542,22 @@ function handleNetworkGameOver(message){
     location.replace("index.html");
     return;
   }
+  if(message.reason==="player-left"){
+    if(quizEnded) return;
+    quizEnded=true;
+    stopTimer();
+    stopQuestionTimer();
+    answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
+    nextButton.disabled=true;
+    skipButton.disabled=true;
+    quitButton.disabled=true;
+    const departedPlayer=partyPlayers.find((player)=>player.id===message.departedPlayerId);
+    partyPlayerLeftMessage.textContent=departedPlayer
+      ? `${departedPlayer.name} left the game. You can return to the menu.`
+      : "A player left the game. You can return to the menu.";
+    if(!partyPlayerLeftDialog.open) partyPlayerLeftDialog.showModal();
+    return;
+  }
   if(!quizEnded){
     if(!quizStarted){
       setup.hidden=true;
@@ -1549,6 +1584,7 @@ function handleNetworkGameOver(message){
       isRetake:false,
       partyMode:true,
       onlineParty:true,
+      partyCurrentPlayerId:partyPlayerId,
       partyPlayers,
       partyHistory,
       history,
@@ -1723,6 +1759,9 @@ if(networkPartyActive){
       nextButton.disabled=true;
       skipButton.disabled=true;
     }
+  });
+  document.getElementById("partyPlayerLeftReturn").addEventListener("click",()=>{
+    location.replace("index.html");
   });
   partyConnection.send({
     type:"join",

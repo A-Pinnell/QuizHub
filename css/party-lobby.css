@@ -1,7 +1,7 @@
 *{box-sizing:border-box}
 html,body{min-height:100%;margin:0}
-body{display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 0,#48638f,#1c2441 55%,#11162b);color:#fff;font-family:Arial,Helvetica,sans-serif}
-.party-shell{width:min(680px,100%);padding:clamp(22px,5vw,42px);border:1px solid rgba(255,255,255,.2);border-radius:24px;background:rgba(15,20,39,.92);box-shadow:0 28px 90px rgba(0,0,0,.5)}
+body{display:grid;place-items:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at 50% 0,#48638f,#1c2441 55%,#11162b);color:#fff;font-family:Arial,Helvetica,sans-serif}
+.party-shell{width:min(680px,100%);margin-inline:auto;padding:clamp(22px,5vw,42px);border:1px solid rgba(255,255,255,.2);border-radius:24px;background:rgba(15,20,39,.92);box-shadow:0 28px 90px rgba(0,0,0,.5)}
 .party-kicker{margin:0 0 8px;color:#ffda77;font-size:.78rem;font-weight:900;letter-spacing:.2em}
 h1{margin:0 0 8px;font-size:clamp(30px,7vw,48px)}
 h2{margin:26px 0 14px;font-size:1.35rem}
@@ -24,7 +24,11 @@ h2{margin:26px 0 14px;font-size:1.35rem}
 .party-host-controls label,.party-join-shell form>label{display:block;margin:12px 0 6px;font-weight:800}
 .party-host-controls select,.party-join-shell input:not([type=color]):not([type=file]){width:100%;min-height:44px;padding:8px 12px;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:#142544;color:#fff;font:inherit}
 .party-host-controls .party-primary{margin-top:16px}
-.party-back{display:inline-block;margin-top:20px;color:#d4d8e7}
+.party-back{display:inline-flex;align-items:center;gap:8px;margin:0 0 24px;padding:10px 15px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.06));box-shadow:0 5px 16px rgba(0,0,0,.2);color:#fff;font-size:.9rem;font-weight:800;text-decoration:none;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.party-back::before{content:"←";color:#ffda77;font-size:1.1rem}
+.party-back:hover,.party-back:focus-visible{transform:translateY(-2px);border-color:rgba(255,218,119,.65);background:linear-gradient(135deg,rgba(255,218,119,.2),rgba(255,255,255,.08));outline:2px solid #ffda77;outline-offset:3px}
+.party-room-limit{margin:8px 0 14px;color:#cbd4e9;font-size:.9rem}
+.party-live-answers{margin:10px 0 14px;padding:11px 13px;border-left:3px solid #8ce7ad;border-radius:0 9px 9px 0;background:rgba(140,231,173,.09);color:#d9f6e2;line-height:1.4}
 .party-join-shell h1{margin-bottom:24px}
 .party-join-shell form>label{margin-top:16px}
 .party-profile-row{display:flex;align-items:center;justify-content:space-between;margin-top:15px;font-weight:800}
