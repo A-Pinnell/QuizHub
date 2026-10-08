@@ -965,6 +965,7 @@ Version 2.1
 - Various enhancements to Online Party mode
 - Online Party mode can now have a lobby of up to 50 people
 - Combo system now works correctly in party mode
+- New music has been added to party mode
 - General tweaks
 
 Version 2.0
