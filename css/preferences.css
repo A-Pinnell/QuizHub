@@ -163,3 +163,9 @@ html.blanc-mode .celebration{
 html.blanc-mode .music-preview-toggle{
   border:2px solid #111;
 }
+html.blanc-mode .card{
+  background:url("../secret/blanc.png") center/cover no-repeat!important;
+}
+html.blanc-mode :is(.party-avatar img,.party-answer-avatar img,.party-turn-avatar img,.party-player-photo img){
+  filter:invert(1);
+}

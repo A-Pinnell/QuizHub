@@ -7,7 +7,7 @@ const soundFiles={
   select:resolveAssetUrl('sfx/QuizSelect.wav'),
   incorrect:resolveAssetUrl('sfx/Incorrect.wav'),
   titleEnd:resolveAssetUrl('sfx/TitleEnd.wav'),
-  started:resolveAssetUrl('secret/Started.ogg'),
+  started:resolveAssetUrl('secret/Started.mp3'),
   loading:resolveAssetUrl('secret/Loading.mp3')
 };
 
@@ -961,6 +961,12 @@ textbookLibraryLink.addEventListener('click',event=>{
 });
 
 patchnotesContent.textContent=`
+Version 2.1
+- Various enhancements to Online Party mode
+- Online Party mode can now have a lobby of up to 50 people
+- Combo system now works correctly in party mode
+- General tweaks
+
 Version 2.0
 - Improved Cloud Computing Quiz 2
 - Fixed music loop for Cloud Computing

@@ -1,6 +1,16 @@
 (function(){
   "use strict";
 
+  const params=new URLSearchParams(window.location.search);
+  if(window.quizHubPreferences.blancMode && params.get("blancIntro")!=="1"){
+    const returnTarget=new URL(window.location.href);
+    returnTarget.searchParams.set("blancIntro","1");
+    const introTarget=new URL("blanc-message.html",window.location.href);
+    introTarget.searchParams.set("returnTo",returnTarget.toString());
+    window.location.replace(introTarget.toString());
+    return;
+  }
+
   const podium=document.getElementById("partyPodium");
   const title=document.getElementById("partyResultsTitle");
   const summary=document.getElementById("partyResultsSummary");
@@ -32,7 +42,8 @@
       name:typeof player.name==="string" && player.name.trim()?player.name.trim():`Player ${index+1}`,
       color:typeof player.color==="string" && /^#[0-9a-f]{6}$/i.test(player.color)?player.color:"#526b9a",
       photo:typeof player.photo==="string" && player.photo.startsWith("data:image/")?player.photo:"",
-      score:Number.isFinite(Number(player.score))?Math.max(0,Number(player.score)):0
+      score:Number.isFinite(Number(player.score))?Math.max(0,Number(player.score)):0,
+      longestCombo:Number.isFinite(Number(player.longestCombo))?Math.max(0,Number(player.longestCombo)):0
     }))
     .sort((first,second)=>second.score-first.score);
   const winners=standings.filter((player)=>player.score===standings[0].score);
@@ -72,9 +83,9 @@
     placeLabel.textContent=place===1?"1st place":place===2?"2nd place":place===3?"3rd place":`${place}th place`;
     const avatar=document.createElement("div");
     avatar.className="party-player-photo";
-    if(player.photo){
+    if(window.quizHubPreferences.blancMode || player.photo){
       const image=document.createElement("img");
-      image.src=player.photo;
+      image.src=window.quizHubPreferences.blancMode?"secret/blanc.png":player.photo;
       image.alt="";
       avatar.appendChild(image);
     }else{
@@ -86,7 +97,10 @@
     const points=document.createElement("div");
     points.className="party-player-score";
     points.textContent=`${player.score} point${player.score===1?"":"s"}`;
-    card.append(placeLabel,avatar,name,points);
+    const comboLabel=document.createElement("div");
+    comboLabel.className="party-player-combo";
+    comboLabel.textContent=`Best combo: ${player.longestCombo}`;
+    card.append(placeLabel,avatar,name,points,comboLabel);
     podium.appendChild(card);
   });
 

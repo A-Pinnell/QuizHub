@@ -37,7 +37,7 @@
     incorrect: resolveAssetUrl("./sfx/Incorrect.wav"),
     begin: resolveAssetUrl("./sfx/QuizBegin.wav"),
     popup: resolveAssetUrl("./sfx/Popup.wav"),
-    started: resolveAssetUrl("./secret/Started.ogg")
+    started: resolveAssetUrl("./secret/Started.mp3")
   };
   const soundCache = {};
   Object.entries(soundFiles).forEach(([name, path]) => {

@@ -9,7 +9,7 @@ const soundFiles={
   incorrect:resolveAssetUrl('./sfx/Incorrect.wav'),
   begin:resolveAssetUrl('./sfx/QuizBegin.wav'),
   popup:resolveAssetUrl('./sfx/Popup.wav'),
-  started:resolveAssetUrl('./secret/Started.ogg'),
+  started:resolveAssetUrl('./secret/Started.mp3'),
   comboUp:resolveAssetUrl('./sfx/ComboUp.wav')
 };
 
@@ -356,6 +356,8 @@ let questionNumber = 0;
 let score = 0;
 let combo = 0;
 let longestCombo = 0;
+const partyComboStreaks=new Map();
+const partyLongestComboStreaks=new Map();
 let answered = false;
 let history = [];
 let quizStarted = false;
@@ -496,6 +498,35 @@ function updateMeta(){
   updatePartyScoreDisplay();
 }
 
+function resetPartyComboStreaks(){
+  partyComboStreaks.clear();
+  partyLongestComboStreaks.clear();
+  partyPlayers.forEach((player)=>partyComboStreaks.set(player.id,0));
+  partyPlayers.forEach((player)=>partyLongestComboStreaks.set(player.id,0));
+  combo=0;
+  longestCombo=0;
+}
+
+function updatePartyComboStreaks(correctPlayerIds){
+  const correctPlayers=new Set(correctPlayerIds);
+  let anyStreakIncreased=false;
+  partyPlayers.forEach((player)=>{
+    const previousStreak=partyComboStreaks.get(player.id)||0;
+    const streak=correctPlayers.has(player.id)?previousStreak+1:0;
+    partyComboStreaks.set(player.id,streak);
+    partyLongestComboStreaks.set(
+      player.id,
+      Math.max(partyLongestComboStreaks.get(player.id)||0,streak)
+    );
+    if(streak>previousStreak) anyStreakIncreased=true;
+  });
+  combo=networkPartyActive
+    ? partyComboStreaks.get(partyPlayerId)||0
+    : Math.max(0,...partyComboStreaks.values());
+  longestCombo=Math.max(longestCombo,combo);
+  if(anyStreakIncreased && combo>1) showComboPopup();
+}
+
 function updatePartyScoreDisplay(){
   if(!partyScoreDisplay) return;
   partyScoreDisplay.hidden=!partyModeActive;
@@ -563,9 +594,9 @@ function createPartyAvatar(player,className){
   const avatar=document.createElement("span");
   avatar.className=className;
   avatar.style.setProperty("--party-player-color",player.color);
-  if(player.photo){
+  if(window.quizHubPreferences.blancMode || player.photo){
     const image=document.createElement("img");
-    image.src=player.photo;
+    image.src=window.quizHubPreferences.blancMode?"secret/blanc.png":player.photo;
     image.alt="";
     avatar.appendChild(image);
   }else{
@@ -692,8 +723,7 @@ function startNetworkQuiz(config,roomSnapshot=null){
     bank=getSelectedQuestionBank();
   }
   score=0;
-  combo=0;
-  longestCombo=0;
+  resetPartyComboStreaks();
   history=[];
   partyHistory=[];
   sequencePosition=0;
@@ -810,6 +840,9 @@ function revealNetworkQuestion(message){
   const ownPlayer=partyPlayers.find((player)=>player.id===partyPlayerId);
   const correctAnswer=current.a[message.correctIndex];
   const correctCount=message.answers.filter((entry)=>entry.correct).length;
+  updatePartyComboStreaks(
+    message.answers.filter((entry)=>entry.correct).map((entry)=>entry.playerId)
+  );
   history.push({
     question:current.q,
     questionIndex:currentQuestionIndex,
@@ -935,6 +968,11 @@ function finishPartyQuestion(timedOut=false){
     }
   });
   if(correctThisQuestion>0) score+=correctThisQuestion;
+  updatePartyComboStreaks(
+    partyChoices
+      .filter((choice)=>choice.selectedIndex===current.c)
+      .map((choice)=>choice.playerId)
+  );
   partyHistory.push({
     question:current.q,
     correctAnswer:current.a[current.c],
@@ -1378,7 +1416,13 @@ function finishQuiz(reason="complete"){
     perQuestionTimeMinutes,
     isRetake: miniQuizMode,
     partyMode: partyModeActive,
-    ...(partyModeActive ? {partyPlayers,partyHistory} : {}),
+    ...(partyModeActive ? {
+      partyPlayers:partyPlayers.map((player)=>({
+        ...player,
+        longestCombo:partyLongestComboStreaks.get(player.id)||0
+      })),
+      partyHistory
+    } : {}),
     ...(partyModeActive ? {partyCurrentPlayerId:networkPartyActive?partyPlayerId:partyPlayers[0]?.id} : {}),
     seen: history.length,
     completed: reason === "complete",
@@ -1617,7 +1661,7 @@ function handleNetworkGameOver(message){
       category,
       quizType:requestedQuiz||"reviewQuiz",
       score:partyPlayers.find((player)=>player.id===partyPlayerId)?.score||0,
-      longestCombo:0,
+      longestCombo,
       total:selectedQuestionCount,
       timeLimitMinutes,
       perQuestionTimeMinutes,
@@ -1625,7 +1669,10 @@ function handleNetworkGameOver(message){
       partyMode:true,
       onlineParty:true,
       partyCurrentPlayerId:partyPlayerId,
-      partyPlayers,
+      partyPlayers:partyPlayers.map((player)=>({
+        ...player,
+        longestCombo:partyLongestComboStreaks.get(player.id)||0
+      })),
       partyHistory,
       history,
       seen:history.length,
@@ -1728,6 +1775,7 @@ function beginQuiz(){
   }
 
   playSound('begin');
+  if(partyModeActive) resetPartyComboStreaks();
   quizStarted = true;
   if (isSoftEngi) document.body.classList.add('softengi-active');
   startQuizMusic();

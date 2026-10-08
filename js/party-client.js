@@ -11,23 +11,51 @@
       serverUrl.pathname="/party";
       serverUrl.search="";
       serverUrl.hash="";
-      this.socket=new WebSocket(serverUrl);
       this.listeners=new Map();
-      this.opened=new Promise((resolve,reject)=>{
-        this.socket.addEventListener("open",resolve,{once:true});
-        this.socket.addEventListener("error",()=>reject(new Error("Could not connect to the party server.")),{once:true});
-      });
-      this.socket.addEventListener("message",(event)=>{
-        let message;
-        try{ message=JSON.parse(event.data); }
-        catch(error){
-          console.error("Invalid party server response:",error);
-          return;
+      this.socket=null;
+      this.opened=this.wakeServer(serverUrl).then(()=>this.connect(serverUrl));
+    }
+    async wakeServer(serverUrl){
+      const healthUrl=new URL(serverUrl);
+      healthUrl.protocol=healthUrl.protocol==="wss:"?"https:":"http:";
+      healthUrl.pathname="/healthz";
+      const deadline=Date.now()+90000;
+      let lastError=null;
+      while(Date.now()<deadline){
+        const controller=new AbortController();
+        const timeout=window.setTimeout(()=>controller.abort(),10000);
+        try{
+          const response=await fetch(healthUrl,{cache:"no-store",signal:controller.signal});
+          if(response.ok) return;
+          lastError=new Error(`Party server health check returned ${response.status}.`);
+        }catch(error){
+          lastError=error;
+        }finally{
+          window.clearTimeout(timeout);
         }
-        (this.listeners.get(message.type)||[]).forEach((listener)=>listener(message));
-      });
-      this.socket.addEventListener("close",(event)=>{
-        (this.listeners.get("close")||[]).forEach((listener)=>listener(event));
+        await new Promise((resolve)=>window.setTimeout(resolve,2000));
+      }
+      console.error("Could not wake the party server:",lastError);
+      throw new Error("The party server did not start. Please try again in a moment.");
+    }
+    connect(serverUrl){
+      return new Promise((resolve,reject)=>{
+        const socket=new WebSocket(serverUrl);
+        this.socket=socket;
+        socket.addEventListener("open",resolve,{once:true});
+        socket.addEventListener("error",()=>reject(new Error("Could not connect to the party server.")),{once:true});
+        socket.addEventListener("message",(event)=>{
+          let message;
+          try{ message=JSON.parse(event.data); }
+          catch(error){
+            console.error("Invalid party server response:",error);
+            return;
+          }
+          (this.listeners.get(message.type)||[]).forEach((listener)=>listener(message));
+        });
+        socket.addEventListener("close",(event)=>{
+          (this.listeners.get("close")||[]).forEach((listener)=>listener(event));
+        });
       });
     }
     on(type,listener){
@@ -42,7 +70,7 @@
       this.socket.send(JSON.stringify(message));
     }
     close(){
-      if(this.socket.readyState===WebSocket.OPEN || this.socket.readyState===WebSocket.CONNECTING){
+      if(this.socket && (this.socket.readyState===WebSocket.OPEN || this.socket.readyState===WebSocket.CONNECTING)){
         this.socket.close();
       }
     }

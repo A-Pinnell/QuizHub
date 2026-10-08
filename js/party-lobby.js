@@ -53,9 +53,9 @@
       card.style.setProperty("--player-color",player.color);
       const avatar=document.createElement("div");
       avatar.className="party-avatar";
-      if(player.photo){
+      if(window.quizHubPreferences.blancMode || player.photo){
         const image=document.createElement("img");
-        image.src=player.photo;
+        image.src=window.quizHubPreferences.blancMode?"secret/blanc.png":player.photo;
         image.alt="";
         avatar.appendChild(image);
       }else{

@@ -12,11 +12,23 @@
     return;
   }
 
-  if (target.origin !== window.location.origin || !["win.html", "perfect-win.html"].includes(target.pathname.split("/").pop())) {
+  if (target.origin !== window.location.origin || !["win.html", "perfect-win.html", "party-win.html"].includes(target.pathname.split("/").pop())) {
     console.error("Rejected invalid Blanc Mode return URL:", target.href);
     document.querySelector(".message").textContent = "Unable to continue to the quiz results.";
     return;
   }
+
+  const messages = [
+    "Java is still warm in the kitchen. The animals in their cages are counting the tables in the dining room. The pantry door is open. You were told when to get started.",
+    "Someone left the lights on in the lecture hall. There is nobody inside, but every seat is facing you.",
+    "The quiz is over. The room is not. Please wait until the footsteps stop before you turn around.",
+    "Something else is getting started, the faint sounds of snake echo around you.",
+    "The screen went dark for a moment. In that moment, somebody moved closer and whispered about animals in cages."
+  ];
+  const message = messages[Math.floor(Math.random() * messages.length)];
+  const messageElement = document.querySelector(".message");
+  messageElement.textContent = message;
+  messageElement.dataset.message = message;
 
   if (localStorage.getItem("quizHubMuted") !== "true") {
     const AudioContextType = window.AudioContext || window.webkitAudioContext;
