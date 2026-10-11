@@ -1,7 +1,7 @@
 "use strict";
 
 (() => {
-  const plugin = window.Capacitor?.Plugins?.AudioFocus;
+  const plugin = window.Capacitor?.registerPlugin?.("AudioFocus");
   if (!plugin) return;
 
   const tracks = new Set();

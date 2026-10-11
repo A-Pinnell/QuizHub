@@ -4,8 +4,8 @@
   if (!window.quizHubNativeApp) return;
 
   const desktop = window.QuizHubDesktop;
-  const capacitor = window.Capacitor?.Plugins;
-  const offline = desktop || capacitor?.OfflineContent;
+  const capacitor = window.Capacitor;
+  const offline = desktop || capacitor?.registerPlugin?.("OfflineContent");
   if (!offline) return;
 
   const releaseTag = (value) => String(value || "").replace(/^v/i, "");
