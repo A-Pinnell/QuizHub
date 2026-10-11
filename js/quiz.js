@@ -19,6 +19,7 @@ const soundFiles={
 
 const soundCache={};
 let soundsMuted=localStorage.getItem('quizHubMuted')==='true';
+let activeHighlightSound=null;
 Object.entries(soundFiles).forEach(([name,path])=>{
   const sound=new Audio(path);
   sound.preload='auto';
@@ -45,16 +46,22 @@ function unlockQuizAudio(){
 
 function playSound(name){
   if(soundsMuted) return;
+  if(name==='highlight' && activeHighlightSound &&
+    !activeHighlightSound.paused && !activeHighlightSound.ended) return;
   unlockQuizAudio();
   const soundName=window.quizHubPreferences.blancMode && ['popup','begin','select'].includes(name)
     ? 'started'
     : name;
-  const sound=soundCache[soundName];
-  if(!sound) return;
+  const defaultSource=soundFiles[soundName];
+  if(!defaultSource) return;
+  const soundSource=window.quizHubPreferences.resolveSfx(soundName,defaultSource,category);
+  const sound=soundSource===defaultSource
+    ? soundCache[soundName].cloneNode()
+    : new Audio(soundSource);
+  if(name==='highlight') activeHighlightSound=sound;
   try {
-    const soundClone=sound.cloneNode();
-    soundClone.currentTime=0;
-    soundClone.play().catch(()=>{});
+    sound.currentTime=0;
+    sound.play().catch(()=>{});
   } catch (error) {
     console.warn('Could not play sound:', error);
   }
@@ -442,6 +449,7 @@ function transitionCompGFXIntoQuiz(){
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion){
     document.body.classList.add('gfx-quiz-started');
+    requestAnimationFrame(fitCompGFXQuestionTitle);
     return;
   }
 
@@ -454,10 +462,11 @@ function transitionCompGFXIntoQuiz(){
   compGfxCube.style.transform = startTransform;
   compGfxCube.style.setProperty('--gfx-cube-angle', `${targetAngle}deg`);
   document.body.classList.add('gfx-quiz-started');
+  requestAnimationFrame(fitCompGFXQuestionTitle);
 
   const spinAnimation = compGfxCube.animate([
     {transform:startTransform,offset:0},
-    {transform:`rotateX(0deg) rotateY(${targetAngle}deg)`,offset:1}
+    {transform:`rotateX(-20deg) rotateY(${targetAngle}deg)`,offset:1}
   ],{duration:1300,easing:'cubic-bezier(.3,.7,.25,1)',fill:'forwards'});
 
   spinAnimation.onfinish = () => {
@@ -472,12 +481,12 @@ function animateCompGFXCube(){
   const motionMode = window.quizHubPreferences.motionMode;
   const reduceMotion = motionMode === 'reduced' ||
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const turnDuration = motionMode === 'minimal' ? 250 : 350;
+  const turnDuration = motionMode === 'minimal' ? 450 : 650;
   compGfxCube.style.setProperty('--gfx-turn-duration', `${turnDuration / 1000}s`);
   if(compGfxQuestionLoaded){
     const nextRotation = compGfxRotation + 90;
-    compGfxCube.style.setProperty('--gfx-cube-from', `rotateY(${compGfxRotation}deg)`);
-    compGfxCube.style.setProperty('--gfx-cube-to', `rotateY(${nextRotation}deg)`);
+    compGfxCube.style.setProperty('--gfx-cube-from', `rotateX(-20deg) rotateY(${compGfxRotation}deg)`);
+    compGfxCube.style.setProperty('--gfx-cube-to', `rotateX(-20deg) rotateY(${nextRotation}deg)`);
     compGfxRotation = nextRotation;
     compGfxCube.classList.remove('turning');
     return reduceMotion ? 0 : turnDuration;
@@ -1179,6 +1188,42 @@ function formatPowerText(value){
   });
 }
 
+function fitCompGFXQuestionTitle(){
+  if(!isCompGFX || !questionTitle) return;
+
+  questionTitle.style.removeProperty('font-size');
+
+  const heading = questionTitle.closest('.quiz-heading');
+  if(!heading || !heading.clientWidth || !heading.clientHeight) return;
+
+  const headingStyle = getComputedStyle(heading);
+  const availableWidth = heading.clientWidth -
+    parseFloat(headingStyle.paddingLeft) - parseFloat(headingStyle.paddingRight);
+  const availableHeight = heading.clientHeight -
+    parseFloat(headingStyle.paddingTop) - parseFloat(headingStyle.paddingBottom) - 2;
+  const maxFontSize = parseFloat(getComputedStyle(questionTitle).fontSize);
+  const fits = () => questionTitle.clientWidth <= availableWidth + 1 &&
+    questionTitle.scrollWidth <= questionTitle.clientWidth &&
+    questionTitle.scrollHeight <= availableHeight;
+
+  if(fits()) return;
+
+  let low = 1;
+  let high = maxFontSize;
+  let bestFit = low;
+  for(let attempt = 0; attempt < 16; attempt++){
+    const fontSize = (low + high) / 2;
+    questionTitle.style.fontSize = `${fontSize}px`;
+    if(fits()){
+      bestFit = fontSize;
+      low = fontSize;
+    }else{
+      high = fontSize;
+    }
+  }
+  questionTitle.style.fontSize = `${bestFit}px`;
+}
+
 function showQuestionTitle(){
   if (!questionTitle || !current) return;
   if (questionTypingTimer !== null) {
@@ -1193,6 +1238,7 @@ function showQuestionTitle(){
       questionTitle.classList.toggle('gfx-question-very-long', titleLength > 150);
     }
     questionTitle.textContent = formatPowerText(current.q);
+    if(isCompGFX) requestAnimationFrame(fitCompGFXQuestionTitle);
     return;
   }
 
@@ -1232,6 +1278,8 @@ function showQuestionTitle(){
     : defaultTypingSpeed;
   questionTypingTimer = setInterval(typeNextCharacter, typingSpeed);
 }
+
+window.addEventListener('resize', fitCompGFXQuestionTitle);
 
 function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
   if(!shouldFade || !compGfxQuestion){
@@ -1279,6 +1327,8 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
       compGfxCube.style.setProperty('--gfx-cube-angle', `${compGfxRotation}deg`);
       compGfxCube.classList.add('turning');
       await wait(turnDuration);
+      compGfxCube.classList.remove('turning');
+      compGfxCube.style.setProperty('--gfx-cube-angle', `${compGfxRotation}deg`);
     }
 
     const selectedFace = placeCompGFXQuestionOnFace(compGfxRotation,false);
@@ -2117,6 +2167,15 @@ if(networkPartyActive){
   });
 }
 
+answersEl.addEventListener("pointerover",event=>{
+  if(event.pointerType !== "mouse") return;
+  const answer=event.target.closest(".answer:not(:disabled)");
+  if(!answer || answer.contains(event.relatedTarget)) return;
+  answersEl.querySelectorAll(".keyboard-highlight").forEach((highlighted)=>{
+    highlighted.classList.remove("keyboard-highlight");
+  });
+});
+
 document.addEventListener("keydown",event=>{
   if(event.key.toLowerCase()==="m" && event.target.tagName !== "INPUT"){
     event.preventDefault();
@@ -2132,24 +2191,55 @@ document.addEventListener("keydown",event=>{
     return;
   }
 
-  if(!quizStarted || quizEnded || event.target.tagName === "INPUT") return;
+  if(event.key==="Escape" && !quizStarted && !quizEnded){
+    event.preventDefault();
+    exitSetup();
+    return;
+  }
+
+  if(!quizStarted || quizEnded ||
+    event.target.closest("input, textarea, select, [contenteditable='true']")) return;
+
+  if(event.key==="Escape"){
+    if(document.querySelector("dialog[open]")) return;
+    event.preventDefault();
+    quit();
+    return;
+  }
+
+  if(event.key==="Enter" && answered){
+    event.preventDefault();
+    goNext();
+    return;
+  }
 
   const answerButtons=[...answersEl.querySelectorAll('.answer:not(:disabled)')];
   if(!answerButtons.length) return;
 
   const activeIndex=answerButtons.indexOf(document.activeElement);
+  const focusAnswer=(button)=>{
+    if(!button) return;
+    button.focus();
+    answersEl.querySelectorAll(".keyboard-highlight").forEach((highlighted)=>{
+      highlighted.classList.remove("keyboard-highlight");
+    });
+    button.classList.remove("keyboard-highlight");
+    void button.offsetWidth;
+    button.classList.add("keyboard-highlight");
+    playSound("highlight");
+  };
   if(event.key === "ArrowDown" || event.key === "ArrowRight"){
     event.preventDefault();
-    answerButtons[(activeIndex + 1 + answerButtons.length) % answerButtons.length].focus();
+    focusAnswer(answerButtons[(activeIndex + 1 + answerButtons.length) % answerButtons.length]);
   }else if(event.key === "ArrowUp" || event.key === "ArrowLeft"){
     event.preventDefault();
-    answerButtons[(activeIndex - 1 + answerButtons.length) % answerButtons.length].focus();
+    focusAnswer(answerButtons[(activeIndex - 1 + answerButtons.length) % answerButtons.length]);
   }else if(/^[1-4]$/.test(event.key)){
     event.preventDefault();
-    answerButtons[Number(event.key)-1]?.focus();
+    focusAnswer(answerButtons[Number(event.key)-1]);
   }else if(/^[a-d]$/i.test(event.key)){
     event.preventDefault();
-    answerButtons[event.key.toLowerCase().charCodeAt(0)-97]?.focus();
+    focusAnswer(answerButtons[event.key.toLowerCase().charCodeAt(0)-97]);
   }
 });
 

@@ -139,7 +139,6 @@ html.high-contrast :is(.quiz-modal-backdrop,.patchnotes-backdrop,.settings-backd
   background:rgba(0,0,0,.92)!important;
   backdrop-filter:none!important;
 }
-
 html.blanc-mode body{
   background-image:url("../secret/blanc.png")!important;
   background-position:center!important;

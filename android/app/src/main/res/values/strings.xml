@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">QuizHub</string>
+    <string name="title_activity_main">QuizHub</string>
+    <string name="package_name">com.apinnell.quizhub</string>
+    <string name="custom_url_scheme">com.apinnell.quizhub</string>
+</resources>

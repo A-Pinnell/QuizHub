@@ -17,6 +17,17 @@ GitHub Pages hosts the static QuizHub site. Online party games additionally conn
 
 Render will automatically redeploy the Blueprint service when changes are pushed to its connected branch. The free Render service may sleep when idle and take a short time to wake. Room membership and scores are held in memory, so active rooms end if the service restarts or sleeps long enough to restart.
 
+### Build standalone apps
+
+The Windows and Linux desktop apps and the Android app load the hosted GitHub Pages site, so they require an internet connection and always use the currently published site. Online party games continue to use the hosted Render service.
+
+1. Install dependencies with `npm install`.
+2. Build a Windows installer with `npm run package:win` or a Linux AppImage with `npm run package:linux`.
+3. Find desktop builds in the `desktop-dist` directory.
+4. Build an Android APK with `npm run android:sync`, then run `.\gradlew.bat assembleDebug` from the `android` directory. The APK is written under `android\app\build\outputs\apk\debug`.
+
+For Windows desktop development, run `npm run desktop`. Pushing a version tag such as `v2.2.1` builds all three apps and publishes them as GitHub Release assets. Android builds are debug-signed for direct installation; installing a later release may require removing an earlier build first.
+
 ### Run locally
 
 For local development, run `npm install` and `npm start`, then open `http://localhost:8080`. Local browser hosts automatically use their own origin instead of Render.

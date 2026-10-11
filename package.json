@@ -3,14 +3,50 @@
   "version": "1.0.0",
   "private": true,
   "description": "QuizHub static site and real-time party game server",
+  "main": "electron-main.cjs",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "start": "node server.js",
+    "desktop": "electron .",
+    "package:win": "electron-builder --win nsis",
+    "package:linux": "electron-builder --linux AppImage",
+    "android:sync": "cap sync android",
     "test": "node --test"
   },
   "dependencies": {
     "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.quizhub.desktop",
+    "productName": "QuizHub",
+    "artifactName": "QuizHub-Setup.${ext}",
+    "directories": {
+      "output": "desktop-dist"
+    },
+    "files": [
+      "electron-main.cjs",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage",
+      "artifactName": "QuizHub-Linux-x64.${ext}",
+      "category": "Education"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false
+    }
   }
 }

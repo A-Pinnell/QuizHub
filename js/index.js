@@ -13,28 +13,44 @@ const soundFiles={
 
 const soundCache={};
 let soundsMuted=localStorage.getItem('quizHubMuted')==='true';
+let activeHighlightSound=null;
 Object.entries(soundFiles).forEach(([name,path])=>{
   const sound=new Audio(path);
   sound.preload='auto';
   soundCache[name]=sound;
 });
 
-function playSound(name){
+function playSound(name,course=null,restart=false){
   if(soundsMuted) return;
+  if(name==='highlight' && activeHighlightSound &&
+    !activeHighlightSound.paused && !activeHighlightSound.ended && !restart) return;
+  if(name==='highlight' && activeHighlightSound && restart){
+    activeHighlightSound.pause();
+    activeHighlightSound.currentTime=0;
+  }
   const blancSubstituteSounds=['popup','select','begin'];
   const soundName=window.quizHubPreferences.blancMode && blancSubstituteSounds.includes(name)?'started':name;
-  const sound=soundCache[soundName].cloneNode();
+  const defaultSource=soundFiles[soundName];
+  if(!defaultSource) return;
+  const soundSource=window.quizHubPreferences.resolveSfx(soundName,defaultSource,course);
+  const sound=soundSource===soundFiles[soundName]
+    ? soundCache[soundName].cloneNode()
+    : new Audio(soundSource);
+  if(name==='highlight') activeHighlightSound=sound;
   sound.currentTime=0;
   sound.play().catch(()=>{});
 }
 
 document.addEventListener('pointerover',event=>{
-  const button=event.target.closest('button');
-  if(button && !button.contains(event.relatedTarget)) playSound('highlight');
+  const control=event.target.closest('button, input, select, .setting-radio');
+  if(control && !control.contains(event.relatedTarget) &&
+    !control.classList.contains('sound-toggle') && !control.classList.contains('music-toggle')){
+    playSound('highlight');
+  }
 });
 document.addEventListener('pointerdown',event=>{
-  const button=event.target.closest('button');
-  if(button && !button.classList.contains('sound-toggle') && !button.classList.contains('music-toggle')){
+  const control=event.target.closest('button, input, select, .setting-radio');
+  if(control && !control.classList.contains('sound-toggle') && !control.classList.contains('music-toggle')){
     playSound('highlight');
   }
 });
@@ -50,6 +66,10 @@ function setSoundsMuted(muted){
   window.quizHubPreferences.setSoundMuted(soundsMuted);
   updateSoundToggle();
 }
+window.addEventListener('quizhub:preferenceschange',event=>{
+  soundsMuted=event.detail.soundMuted;
+  updateSoundToggle();
+});
 soundToggle.addEventListener('click',()=>{
   setSoundsMuted(!soundsMuted);
 });
@@ -316,6 +336,7 @@ function startMenuExit(){
 
 function startExternalQuiz(target){
   if(leaving) return;
+  document.body.classList.remove('compgfx-loading');
   stopQuizMusicPreview(false);
   menuMusic.pause();
   menuMusic.currentTime=0;
@@ -413,10 +434,12 @@ function openQuizMenu(course){
   renderQuizOptions(course);
   modal.classList.add('open');
   modal.setAttribute('aria-hidden','false');
+  requestAnimationFrame(()=>modal.querySelector('.quiz-option')?.focus());
 }
 
 function startQuiz(course, quiz){
   if(leaving)return;
+  document.body.classList.toggle('compgfx-loading',course==='CompGFX');
   if(partyModeActive){
     try{
       sessionStorage.setItem('quizHubPartyPlayers',JSON.stringify(partyPlayers));
@@ -642,7 +665,7 @@ partyModeToggle.addEventListener('click',()=>{
     partyHostSetup.hidden=true;
     partyModeModal.classList.add('open');
     partyModeModal.setAttribute('aria-hidden','false');
-    partyHostChoice.focus();
+    requestAnimationFrame(()=>partyHostChoice.focus());
 });
 partyHostChoice.addEventListener('click',()=>{
     partyModeChoice.hidden=true;
@@ -748,9 +771,23 @@ document.addEventListener('pointerdown',()=>{keyboardNavigation=false;});
 document.addEventListener('focusin',event=>{
   const button=event.target.closest('.course-card, .menu-arrow, .quiz-option');
   if(button && keyboardNavigation){
+    if(button.classList.contains('course-card')){
+      document.querySelectorAll('.course-card.keyboard-selected').forEach(card=>{
+        card.classList.remove('keyboard-selected');
+      });
+      button.classList.add('keyboard-selected');
+    }
     playSound('highlight');
     keyboardNavigation=false;
   }
+});
+document.addEventListener('pointerover',event=>{
+  const card=event.target.closest('.course-card');
+  if(!card || card.contains(event.relatedTarget)) return;
+  document.querySelectorAll('.course-card.keyboard-selected').forEach(selected=>{
+    selected.classList.remove('keyboard-selected');
+  });
+  keyboardNavigation=false;
 });
 
 document.querySelectorAll('[data-close-quiz-menu]').forEach(el=>{
@@ -760,6 +797,16 @@ document.querySelectorAll('[data-close-quiz-menu]').forEach(el=>{
 const patchnotesModal=document.getElementById('patchnotesModal');
 const patchnotesContent=document.getElementById('patchnotesContent');
 let patchnotesTrigger=null;
+const downloadAppModal=document.getElementById('downloadAppModal');
+const downloadIntroStep=document.getElementById('downloadIntroStep');
+const downloadPlatformStep=document.getElementById('downloadPlatformStep');
+const downloadAppButton=document.getElementById('downloadAppButton');
+const appDownloadUrls={
+  windows:'https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Setup.exe',
+  linux:'https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Linux-x64.AppImage',
+  android:'https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Android.apk'
+};
+let downloadAppTrigger=null;
 function closePatchnotes(){
   const returnFocus=patchnotesTrigger;
   document.activeElement?.blur();
@@ -772,7 +819,7 @@ function openPatchnotes(){
   patchnotesTrigger=document.getElementById('patchnotesButton');
   patchnotesModal.classList.add('open');
   patchnotesModal.setAttribute('aria-hidden','false');
-  document.querySelector('.patchnotes-close').focus();
+  requestAnimationFrame(()=>document.querySelector('.patchnotes-close').focus());
 }
 document.getElementById('patchnotesButton').addEventListener('click',()=>{
   playSound('popup');
@@ -780,6 +827,60 @@ document.getElementById('patchnotesButton').addEventListener('click',()=>{
 });
 document.querySelectorAll('[data-close-patchnotes]').forEach(el=>{
   el.addEventListener('click',closePatchnotes);
+});
+
+function closeDownloadAppModal(){
+  const returnFocus=downloadAppTrigger;
+  document.activeElement?.blur();
+  downloadAppModal.classList.remove('open');
+  downloadAppModal.setAttribute('aria-hidden','true');
+  downloadAppButton.setAttribute('aria-expanded','false');
+  downloadIntroStep.hidden=false;
+  downloadPlatformStep.hidden=true;
+  downloadAppTrigger=null;
+  if(returnFocus?.isConnected) returnFocus.focus();
+}
+
+function openDownloadAppModal(){
+  downloadAppTrigger=downloadAppButton;
+  downloadIntroStep.hidden=false;
+  downloadPlatformStep.hidden=true;
+  downloadAppModal.classList.add('open');
+  downloadAppModal.setAttribute('aria-hidden','false');
+  downloadAppButton.setAttribute('aria-expanded','true');
+  requestAnimationFrame(()=>document.getElementById('downloadAppContinue').focus());
+}
+
+downloadAppButton.addEventListener('click',()=>{
+  playSound('popup');
+  openDownloadAppModal();
+});
+
+document.getElementById('downloadAppContinue').addEventListener('click',()=>{
+  playSound('popup');
+  downloadIntroStep.hidden=true;
+  downloadPlatformStep.hidden=false;
+  requestAnimationFrame(()=>downloadPlatformStep.querySelector('[data-download-platform]').focus());
+});
+
+document.getElementById('downloadAppBack').addEventListener('click',()=>{
+  playSound('popup');
+  downloadPlatformStep.hidden=true;
+  downloadIntroStep.hidden=false;
+  requestAnimationFrame(()=>document.getElementById('downloadAppContinue').focus());
+});
+
+document.querySelectorAll('[data-close-download-app]').forEach(element=>{
+  element.addEventListener('click',closeDownloadAppModal);
+});
+
+document.querySelectorAll('[data-download-platform]').forEach(button=>{
+  button.addEventListener('click',()=>{
+    const downloadUrl=appDownloadUrls[button.dataset.downloadPlatform];
+    if(!downloadUrl) return;
+    playSound('popup');
+    window.location.assign(downloadUrl);
+  });
 });
 
 const settingsModal=document.getElementById('settingsModal');
@@ -809,6 +910,7 @@ const quizThemeDetails={
 };
 const quizThemePreviewImage=document.getElementById('quizThemePreviewImage');
 const quizThemePreviewCaption=document.getElementById('quizThemePreviewCaption');
+const sfxStyleRadios=document.querySelectorAll('input[name="sfxStyle"]');
 let settingsTrigger=null;
 let blancUnlockProgress=0;
 let blancUnlockSoundPlayed=false;
@@ -843,7 +945,7 @@ function syncSettings(){
   document.querySelectorAll('input[name="answerSide"]').forEach(input=>{
     input.checked=input.value===window.quizHubPreferences.answerSide;
   });
-  fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
+  fullscreenSetting.checked=window.quizHubPreferences.fullscreen;
   fullscreenSetting.disabled=!document.fullscreenElement &&
     typeof document.documentElement.requestFullscreen!=='function';
   blancQuizMusicOption.hidden=!window.quizHubPreferences.blancMode;
@@ -852,6 +954,9 @@ function syncSettings(){
   textSizeSetting.value=window.quizHubPreferences.textSize;
   document.querySelectorAll('input[name="quizTheme"]').forEach(input=>{
     input.checked=input.value===window.quizHubPreferences.quizTheme;
+  });
+  sfxStyleRadios.forEach(input=>{
+    input.checked=input.value===window.quizHubPreferences.sfxStyle;
   });
   updateQuizThemePreview(window.quizHubPreferences.quizTheme);
   soundMutedSetting.checked=window.quizHubPreferences.soundMuted;
@@ -887,7 +992,7 @@ function openSettings(){
   settingsModal.classList.add('open');
   settingsModal.setAttribute('aria-hidden','false');
   optionsToggle.setAttribute('aria-expanded','true');
-  motionModeSlider.focus();
+  requestAnimationFrame(()=>settingsModal.querySelector('.settings-close').focus());
 }
 
 document.addEventListener('keydown',event=>{
@@ -937,6 +1042,13 @@ document.querySelectorAll('input[name="quizTheme"]').forEach(input=>{
     updateQuizThemePreview(input.value);
   });
 });
+sfxStyleRadios.forEach(input=>{
+  input.addEventListener('change',()=>{
+    if(!input.checked) return;
+    window.quizHubPreferences.setSfxStyle(input.value);
+    playSound('highlight','CompGFX',true);
+  });
+});
 soundMutedSetting.addEventListener('change',()=>{
   setSoundsMuted(soundMutedSetting.checked);
 });
@@ -976,6 +1088,7 @@ resetSettingsButton.addEventListener('click',()=>{
       settingsError.textContent=`Could not exit fullscreen: ${error.message}`;
     });
   }
+  window.quizHubPreferences.setFullscreen(false);
 });
 document.querySelectorAll('input[name="answerSide"]').forEach(input=>{
   input.addEventListener('change',()=>{
@@ -985,16 +1098,20 @@ document.querySelectorAll('input[name="answerSide"]').forEach(input=>{
 fullscreenSetting.addEventListener('change',()=>{
   settingsError.textContent='';
   if(fullscreenSetting.checked){
+    window.quizHubPreferences.setFullscreen(true);
     if(typeof document.documentElement.requestFullscreen!=='function'){
       fullscreenSetting.checked=false;
+      window.quizHubPreferences.setFullscreen(false);
       settingsError.textContent='Fullscreen is not available in this browser.';
       return;
     }
     document.documentElement.requestFullscreen().catch(error=>{
       fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
+      window.quizHubPreferences.setFullscreen(false);
       settingsError.textContent=`Could not enter fullscreen: ${error.message}`;
     });
   }else{
+    window.quizHubPreferences.setFullscreen(false);
     if(!document.fullscreenElement) return;
     document.exitFullscreen().catch(error=>{
       fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
@@ -1003,7 +1120,7 @@ fullscreenSetting.addEventListener('change',()=>{
   }
 });
 document.addEventListener('fullscreenchange',()=>{
-  fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
+  fullscreenSetting.checked=window.quizHubPreferences.fullscreen;
 });
 document.querySelectorAll('[data-close-settings]').forEach(el=>{
   el.addEventListener('click',closeSettings);
@@ -1019,6 +1136,13 @@ textbookLibraryLink.addEventListener('click',event=>{
 });
 
 patchnotesContent.textContent=`
+Version 2.3
+- Computer Graphics quiz style has been improved
+- Computer Graphics now has a new default SFX Style, which can also be configued in the options
+- Computer Graphics has a unique loading screen now
+- Various Improvements
+- EXPERIMENTAL: You can now download compiled versions for Windows, Linux and Android. These pull from the site and require an internet connection
+
 Version 2.2
 - Various enhancements to Online Party mode
   - You can now redo a quiz or choose a new quiz with the same party
@@ -1107,6 +1231,70 @@ Beta v0.1
 `;
 
 document.addEventListener('keydown',event=>{
+  document.documentElement.classList.add('keyboard-controls');
+  if(event.key==='Tab') keyboardNavigation=true;
+  const openModal=[
+    document.getElementById('quizModal'),
+    patchnotesModal,
+    settingsModal,
+    partyModeModal,
+    downloadAppModal
+  ].find(modal=>modal.classList.contains('open'));
+
+  if(event.key.toLowerCase()==='o' &&
+    !event.target.matches('input,textarea,select,[contenteditable="true"]')){
+    if(settingsModal.classList.contains('open')){
+      event.preventDefault();
+      closeSettings();
+      return;
+    }
+    if(!openModal){
+      event.preventDefault();
+      optionsToggle.click();
+      return;
+    }
+  }
+
+  if(event.key==='Escape' && openModal){
+    event.preventDefault();
+    if(openModal.id==='quizModal') closeQuizMenu();
+    else if(openModal===patchnotesModal) closePatchnotes();
+    else if(openModal===settingsModal) closeSettings();
+    else if(openModal===downloadAppModal) closeDownloadAppModal();
+    else openModal.querySelector('.party-mode-close')?.click();
+    return;
+  }
+
+  if(event.key==='Tab' && openModal){
+    const dialog=openModal.querySelector('[role="dialog"]');
+    const focusable=[...dialog.querySelectorAll(
+      'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+    )].filter(element=>
+      !element.closest('[hidden]') &&
+      element.getAttribute('aria-hidden')!=='true' &&
+      element.getClientRects().length>0
+    );
+    if(focusable.length){
+      const first=focusable[0];
+      const last=focusable[focusable.length-1];
+      if(event.shiftKey && (document.activeElement===first || !dialog.contains(document.activeElement))){
+        event.preventDefault();
+        last.focus();
+      }else if(!event.shiftKey && (document.activeElement===last || !dialog.contains(document.activeElement))){
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    return;
+  }
+
+  if(!openModal && event.key.toLowerCase()==='p' &&
+    !event.target.matches('input,textarea,select,[contenteditable="true"]')){
+    event.preventDefault();
+    partyModeToggle.click();
+    return;
+  }
+
   if(event.key==='Escape'){
     const modal=document.getElementById('quizModal');
     if(modal.classList.contains('open')) closeQuizMenu();
@@ -1116,7 +1304,8 @@ document.addEventListener('keydown',event=>{
   }
 
   if(event.target.tagName==='INPUT' || document.getElementById('quizModal').classList.contains('open') ||
-    patchnotesModal.classList.contains('open') || settingsModal.classList.contains('open')) return;
+    patchnotesModal.classList.contains('open') || settingsModal.classList.contains('open') ||
+    partyModeModal.classList.contains('open') || downloadAppModal.classList.contains('open')) return;
 
   const pageCards=[...menuPages[menuPage].querySelectorAll('.course-card')];
   const activeIndex=pageCards.indexOf(document.activeElement);
@@ -1160,6 +1349,9 @@ document.addEventListener('keydown',event=>{
     nextIndex=activeIndex+1;
   }
   pageCards[nextIndex]?.focus();
+});
+document.addEventListener('pointerdown',()=>{
+  document.documentElement.classList.remove('keyboard-controls');
 });
 
 const stemTitle=document.querySelector('h1');

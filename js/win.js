@@ -40,11 +40,16 @@ window.addEventListener("load", function(){
   });
 
   const highlightSoundPath="sfx/highlight.wav";
+  let activeHighlightSound=null;
   document.addEventListener("pointerover",function(event){
     const button=event.target.closest("button");
     if(!soundsMuted && button && !button.contains(event.relatedTarget)){
-      const highlightSound=new Audio(highlightSoundPath);
-      highlightSound.play().catch(()=>{});
+      if(activeHighlightSound && !activeHighlightSound.paused && !activeHighlightSound.ended) return;
+      activeHighlightSound=new Audio(window.quizHubPreferences.resolveSfx(
+        "highlight",
+        new URL(highlightSoundPath,window.location.href).toString()
+      ));
+      activeHighlightSound.play().catch(()=>{});
     }
   });
 

@@ -25,6 +25,14 @@
   const textSizes = ["small", "default", "large"];
   const textSizeScales = { small: 0.8, default: 1, large: 1.25 };
   const quizThemes = ["default", "quizhub", "ai-model", "blended"];
+  const sfxStyles = ["default", "quizhub", "ps2"];
+  const ps2SfxSources = {
+    correct: "./sfx/ps2/correct_ps2.wav",
+    incorrect: "./sfx/ps2/incorrect_ps2.wav",
+    highlight: "./sfx/ps2/highlight_ps2.wav",
+    comboUp: "./sfx/ps2/comboup_ps2.wav",
+    begin: "./sfx/ps2/quizbegin_ps2.wav"
+  };
   const preferences = {
     motionMode: ["default", "minimal", "reduced"].includes(savedMotionMode)
       ? savedMotionMode
@@ -41,7 +49,11 @@
       : "default",
     quizTheme: quizThemes.includes(storage.getItem("quizHubQuizTheme"))
       ? storage.getItem("quizHubQuizTheme")
-      : "default"
+      : "default",
+    sfxStyle: sfxStyles.includes(storage.getItem("quizHubSfxStyle"))
+      ? storage.getItem("quizHubSfxStyle")
+      : "default",
+    fullscreen: storage.getItem("quizHubFullscreen") === "true"
   };
 
   function apply(){
@@ -89,6 +101,13 @@
     }else if(name === "quizTheme" && quizThemes.includes(value)){
       preferences.quizTheme = value;
       storage.setItem("quizHubQuizTheme", value);
+    }else if(name === "sfxStyle" && sfxStyles.includes(value)){
+      preferences.sfxStyle = value;
+      storage.setItem("quizHubSfxStyle", value);
+    }else if(name === "fullscreen" && typeof value === "boolean"){
+      preferences.fullscreen = value;
+      storage.setItem("quizHubFullscreen", String(value));
+      if(!value) removeFullscreenRetry();
     }else{
       throw new TypeError(`Invalid QuizHub preference: ${name}`);
     }
@@ -114,8 +133,10 @@
       "quizHubQuizMusic",
       "quizHubTextSize",
       "quizHubQuizTheme",
+      "quizHubSfxStyle",
       "quizHubMuted",
-      "quizHubMusicMuted"
+      "quizHubMusicMuted",
+      "quizHubFullscreen"
     ].forEach((key)=>storage.removeItem(key));
     preferences.motionMode = "default";
     preferences.answerSide = "right";
@@ -125,6 +146,9 @@
     preferences.quizMusic = "default";
     preferences.textSize = "default";
     preferences.quizTheme = "default";
+    preferences.sfxStyle = "default";
+    preferences.fullscreen = false;
+    removeFullscreenRetry();
     apply();
     window.dispatchEvent(new CustomEvent("quizhub:preferenceschange", {
       detail: {
@@ -136,6 +160,32 @@
   }
 
   apply();
+  let fullscreenRetryPending=false;
+  let fullscreenRequestPending=false;
+  function removeFullscreenRetry(){
+    document.removeEventListener("pointerdown", retryFullscreen, true);
+    document.removeEventListener("keydown", retryFullscreen, true);
+    fullscreenRetryPending=false;
+  }
+  function retryFullscreen(){
+    if(!preferences.fullscreen || fullscreenRequestPending ||
+      typeof document.documentElement.requestFullscreen !== "function") return;
+    fullscreenRequestPending=true;
+    document.documentElement.requestFullscreen().then(()=>{
+      fullscreenRequestPending=false;
+      removeFullscreenRetry();
+    }).catch((error)=>{
+      fullscreenRequestPending=false;
+      console.warn("Could not restore site fullscreen:", error);
+    });
+  }
+  function scheduleFullscreenRetry(){
+    if(fullscreenRetryPending) return;
+    fullscreenRetryPending=true;
+    document.addEventListener("pointerdown", retryFullscreen, true);
+    document.addEventListener("keydown", retryFullscreen, true);
+  }
+
   window.quizHubPreferences = {
     get motionMode(){ return preferences.motionMode; },
     get reduceMotion(){ return preferences.motionMode === "reduced"; },
@@ -146,6 +196,8 @@
     get quizMusic(){ return preferences.quizMusic; },
     get textSize(){ return preferences.textSize; },
     get quizTheme(){ return preferences.quizTheme; },
+    get sfxStyle(){ return preferences.sfxStyle; },
+    get fullscreen(){ return preferences.fullscreen; },
     get soundMuted(){ return storage.getItem(storageKey("soundMuted")) === "true"; },
     get musicMuted(){ return storage.getItem(storageKey("musicMuted")) === "true"; },
     setMotionMode(value){ update("motionMode", value); },
@@ -156,6 +208,14 @@
     setQuizMusic(value){ update("quizMusic", value); },
     setTextSize(value){ update("textSize", value); },
     setQuizTheme(value){ update("quizTheme", value); },
+    setSfxStyle(value){ update("sfxStyle", value); },
+    setFullscreen(value){ update("fullscreen", value); },
+    resolveSfx(name, defaultSource, course = null){
+      const usePs2 = preferences.sfxStyle === "ps2" ||
+        preferences.sfxStyle === "default" && course === "CompGFX";
+      const selectedSource = usePs2 ? ps2SfxSources[name] : null;
+      return new URL(selectedSource || defaultSource, window.location.href).toString();
+    },
     resolveQuizMusic(defaultSource){
       const selectedSource = quizMusicSources[preferences.quizMusic];
       return new URL(selectedSource || defaultSource, window.location.href).toString();
@@ -164,4 +224,13 @@
     setMusicMuted(value){ update("musicMuted", value); },
     reset
   };
+
+  window.addEventListener("pageshow",()=>{
+    if(!preferences.fullscreen || document.fullscreenElement ||
+      typeof document.documentElement.requestFullscreen !== "function") return;
+    document.documentElement.requestFullscreen().catch((error)=>{
+      console.warn("Could not automatically restore site fullscreen:", error);
+      scheduleFullscreenRetry();
+    });
+  });
 })();

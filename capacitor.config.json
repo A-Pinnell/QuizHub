@@ -1,0 +1,10 @@
+{
+  "appId": "com.apinnell.quizhub",
+  "appName": "QuizHub",
+  "webDir": "www",
+  "server": {
+    "url": "https://a-pinnell.github.io/QuizHub/",
+    "cleartext": false,
+    "allowNavigation": ["a-pinnell.github.io"]
+  }
+}

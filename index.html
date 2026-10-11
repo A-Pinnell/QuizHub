@@ -14,8 +14,12 @@
 <body>
 <button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sounds" aria-pressed="false">🔊</button>
 <button class="music-toggle" id="musicToggle" type="button" aria-label="Mute music" aria-pressed="false">♫</button>
-<button class="options-toggle" id="optionsToggle" type="button" aria-label="Options" aria-haspopup="dialog" aria-controls="settingsModal" aria-expanded="false" title="Options">&#9881;</button>
-<button class="party-mode-toggle" id="partyModeToggle" type="button" aria-label="Party mode" aria-haspopup="dialog" aria-controls="partyModeModal" title="Party mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5.2 0-9 2.7-9 6v2h18v-2c0-3.3-3.8-6-9-6Z"/></svg></button>
+<button class="options-toggle" id="optionsToggle" type="button" aria-label="Options" aria-haspopup="dialog" aria-controls="settingsModal" aria-expanded="false" title="Options"><span aria-hidden="true">&#9881;</span><kbd class="keyboard-key-hint" aria-hidden="true">O</kbd></button>
+<button class="party-mode-toggle" id="partyModeToggle" type="button" aria-label="Party mode" aria-haspopup="dialog" aria-controls="partyModeModal" title="Party mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5.2 0-9 2.7-9 6v2h18v-2c0-3.3-3.8-6-9-6Z"/></svg><kbd class="keyboard-key-hint" aria-hidden="true">P</kbd></button>
+<button class="download-app-button" id="downloadAppButton" type="button" aria-haspopup="dialog" aria-controls="downloadAppModal" aria-expanded="false" title="Download the standalone app">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span>Download app</span>
+</button>
 <div class="sky"><div class="cloud-track"><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div><div class="cloud c5"></div><div class="cloud c6"></div><div class="cloud c7"></div><div class="cloud c8"></div><div class="cloud c9"></div></div></div>
 <div class="ground"></div>
 
@@ -35,7 +39,7 @@
       </div>
         <h1 aria-label="Lakehead STEM Hub">
           <span class="stem-letter">Q</span><span class="stem-letter">U</span><span class="stem-letter">I</span><span class="stem-letter">Z</span><span class="stem-letter">&nbsp;</span><span class="stem-letter">H</span><span class="stem-letter">u</span><span class="stem-letter">b</span><span class="stem-letter">!</span></h1>
-      <div class="tagline">Version 2.2</div>
+      <div class="tagline">Version 2.3</div>
       <a class="textbook-library-link" id="textbookLibraryLink" href="https://a-pinnell.github.io/TextbookLibrary/">Visit the Textbook Library</a></div></header>
     <main class="menu-area">
       <button class="menu-arrow menu-arrow-left" type="button" aria-label="Show previous page">&#8249;</button>
@@ -92,6 +96,15 @@
     <button class="settings-close" type="button" data-close-settings aria-label="Close options">&times;</button>
     <div class="quiz-menu-kicker">PREFERENCES</div>
     <h2 id="settingsTitle">Options</h2>
+    <section class="keyboard-guide" aria-labelledby="keyboardGuideTitle">
+      <h3 id="keyboardGuideTitle">Keyboard guide</h3>
+      <dl>
+        <div><dt>Main menu</dt><dd>Arrow keys move between courses; Page Up/Down changes course pages. Enter or Space opens a focused control.</dd></div>
+        <div><dt>Menus and options</dt><dd>O opens or closes Options; P opens Party Mode. Tab and Shift+Tab move between controls in a menu. Arrow keys change radio, select, and slider choices. Escape closes a menu or returns from quiz setup.</dd></div>
+        <div><dt>Quiz</dt><dd>Arrow keys or 1–4 / A–D focus answers. Enter selects an answer, then advances after it is answered. Escape ends the quiz.</dd></div>
+        <div><dt>Sound</dt><dd>M toggles sound effects and music.</dd></div>
+      </dl>
+    </section>
     <fieldset class="setting-group quiz-theme-setting">
       <legend>Global quiz theme</legend>
       <figure class="quiz-theme-preview">
@@ -104,6 +117,15 @@
         <label class="setting-radio"><input type="radio" name="quizTheme" value="ai-model"><span>AI Model Style</span></label>
         <label class="setting-radio"><input type="radio" name="quizTheme" value="blended"><span>Blended Style</span></label>
       </div>
+    </fieldset>
+    <fieldset class="setting-group sfx-style-setting">
+      <legend>Sound effects style</legend>
+      <div class="sfx-style-options">
+        <label class="setting-radio"><input type="radio" name="sfxStyle" value="default"><span>Default</span></label>
+        <label class="setting-radio"><input type="radio" name="sfxStyle" value="quizhub"><span>QuizHub Style</span></label>
+        <label class="setting-radio"><input type="radio" name="sfxStyle" value="ps2"><span>PS2 Style</span></label>
+      </div>
+      <small class="setting-description">Default uses PS2 effects in Computer Graphics and QuizHub effects elsewhere. PS2 Style uses available PS2 effects in every quiz. This setting is separate from quiz themes and the mute toggle.</small>
     </fieldset>
     <fieldset class="setting-group motion-setting">
       <legend>Motion</legend>
@@ -145,7 +167,7 @@
     </div>
     <label class="setting-choice fullscreen-setting">
       <input id="fullscreenSetting" type="checkbox">
-      <span><strong>Fullscreen</strong><small>Hide the browser toolbar. Press Escape to exit.</small></span>
+      <span><strong>Fullscreen</strong><small>Hide the browser toolbar. Press Escape to exit. Fullscreen is restored across pages when allowed by your browser.</small></span>
     </label>
     <label class="setting-choice">
       <input id="soundMutedSetting" type="checkbox">
@@ -189,6 +211,41 @@
     <p class="party-mode-error" id="partyModeError" role="status" aria-live="polite"></p>
     <button class="party-mode-start" id="partyModeStart" type="button">CREATE ROOM</button>
     </div>
+  </section>
+</div>
+
+<div class="download-app-modal" id="downloadAppModal" aria-hidden="true">
+  <div class="download-app-backdrop" data-close-download-app></div>
+  <section class="download-app-panel" role="dialog" aria-modal="true" aria-labelledby="downloadAppTitle">
+    <button class="download-app-close" type="button" data-close-download-app aria-label="Close download dialog">&times;</button>
+    <div class="quiz-menu-kicker">QUIZHUB DESKTOP & MOBILE</div>
+    <h2 id="downloadAppTitle">Download QuizHub</h2>
+    <section id="downloadIntroStep">
+      <p>Get QuizHub as a standalone app. It will load the live website, so an internet connection is required.</p>
+      <div class="download-app-actions">
+        <button class="download-confirm-primary" id="downloadAppContinue" type="button">Yes, continue</button>
+        <button class="download-confirm-secondary" type="button" data-close-download-app>Cancel</button>
+      </div>
+    </section>
+    <section id="downloadPlatformStep" hidden>
+      <p>Choose your device to download the matching app.</p>
+      <div class="download-platform-grid">
+        <button class="download-platform-option" type="button" data-download-platform="windows">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4.8 10.8 3.6v8H2zm10.2-1.4L22 2v9.6h-9.8zM2 13.2h8.8v8L2 20zm10.2 0H22V23l-9.8-1.4z"/></svg>
+          <span><strong>Windows</strong><small>Installer (.exe)</small></span>
+        </button>
+        <button class="download-platform-option" type="button" data-download-platform="linux">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H4zM2 19h20v2H2zm5-11 3 3-3 3m5 0h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>Linux</strong><small>AppImage</small></span>
+        </button>
+        <button class="download-platform-option" type="button" data-download-platform="android">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10a3 3 0 0 1 3 3v7h-2v3h-2v-3h-8v3H6v-3H4v-7a3 3 0 0 1 3-3Zm-1-1L4 4l1-.7 2 3m11 0 2-3 1 .7-2 3M9 12v2m6-2v2M8 2h8a4 4 0 0 1 4 4H4a4 4 0 0 1 4-4Z"/></svg>
+          <span><strong>Android</strong><small>App package (.apk)</small></span>
+        </button>
+      </div>
+      <p class="download-platform-note">The Android app also loads the live QuizHub website and needs internet access.</p>
+      <button class="download-app-back" id="downloadAppBack" type="button">Back</button>
+    </section>
   </section>
 </div>
 

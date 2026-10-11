@@ -40,6 +40,7 @@
     started: resolveAssetUrl("./secret/Started.mp3")
   };
   const soundCache = {};
+  let activeHighlightSound = null;
   Object.entries(soundFiles).forEach(([name, path]) => {
     const sound = new Audio(path);
     sound.preload = "auto";
@@ -64,16 +65,22 @@
 
   function playSound(name) {
     if (!state.sound) return;
+    if (name === "highlight" && activeHighlightSound &&
+      !activeHighlightSound.paused && !activeHighlightSound.ended) return;
     unlockBinaryAudio();
     const soundName = window.quizHubPreferences.blancMode && ["popup", "begin", "select"].includes(name)
       ? "started"
       : name;
-    const sound = soundCache[soundName];
-    if (!sound) return;
+    const defaultSource = soundFiles[soundName];
+    if (!defaultSource) return;
+    const soundSource = window.quizHubPreferences.resolveSfx(soundName, defaultSource);
+    const sound = soundSource === defaultSource
+      ? soundCache[soundName].cloneNode()
+      : new Audio(soundSource);
+    if (name === "highlight") activeHighlightSound = sound;
     try {
-      const soundClone = sound.cloneNode();
-      soundClone.currentTime = 0;
-      soundClone.play().catch(() => {});
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
     } catch (_) {}
   }
 
