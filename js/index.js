@@ -1412,6 +1412,11 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.5.1
+- Mixed Study has been added, which allows you to practice questions from a variety ofcourses in a single quiz. This quiz has a new theme and music, and is available in both the main menu and online party mode.
+- The Downloaded version can now be used offline, without an internet connection. This is still experimental and may not work on all devices and requires the standalone app already installed.
+- Various improvements and bug fixes
+
 Version 2.4.5
 - There is now an option to download an offline version of the site, which can be used without an internet connection. This is still experimental and may not work on all devices and required the standalone app already installed.
 
