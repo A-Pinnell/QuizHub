@@ -968,7 +968,7 @@ const appDownloadUrls = {
 	linux:
 		"https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Linux-x64.AppImage",
 	android:
-		"https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Android.apk",
+		"https://github.com/A-Pinnell/QuizHub/releases/latest",
 };
 let downloadAppTrigger = null;
 function closePatchnotes() {
