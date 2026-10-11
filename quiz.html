@@ -4,6 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Hub - Quiz</title>
+<script>
+  let persistedNativeApp = false;
+  try {
+    persistedNativeApp = sessionStorage.getItem("quizhubNativeApp") === "true";
+  } catch (error) {
+    console.warn("Could not restore the native app marker:", error);
+  }
+  window.quizHubNativeApp = Boolean(
+    ["android", "desktop"].includes(new URLSearchParams(location.search).get("quizhubApp")) ||
+    window.Capacitor?.isNativePlatform?.() ||
+    /Electron\//.test(navigator.userAgent) ||
+    persistedNativeApp
+  );
+  if (window.quizHubNativeApp) {
+    try {
+      sessionStorage.setItem("quizhubNativeApp", "true");
+    } catch (error) {
+      console.warn("Could not persist the native app marker:", error);
+    }
+    document.documentElement.classList.add("native-app");
+  }
+</script>
 <link rel="stylesheet" href="css/quiz.css" >
 <link rel="stylesheet" href="css/preferences.css">
 <script src="./js/audio-focus.js" defer></script>

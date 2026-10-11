@@ -100,7 +100,7 @@ html.blanc-mode .menu-area{background:url("../secret/blanc.png") center/100% 100
 body.menu-visible .download-app-button{display:flex}
 .download-app-button:hover,.download-app-button:focus-visible{background:#1c4479;outline:2px solid #f5c542;outline-offset:3px}
 @media(max-width:720px){.download-app-button{left:12px;bottom:12px;width:40px;height:40px}}
-html.native-app .download-app-button,html.native-app .fullscreen-setting{display:none!important}
+html.native-app :is(.download-app-button,.fullscreen-setting){display:none!important}
 .menu-viewport{width:min(1120px,calc(100% - 110px));height:100%;max-height:470px;overflow:hidden}
 .menu-track{display:flex;width:200%;height:100%;transition:transform .55s cubic-bezier(.22,.8,.25,1);will-change:transform}
 .menu{flex:0 0 50%;width:50%;height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:clamp(18px,2.4vw,38px)}
