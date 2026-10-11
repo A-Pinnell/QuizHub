@@ -1,29 +1,171 @@
-.offline-app-setting {
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-  margin-top: 1.25rem;
-  padding-top: 1rem;
+.offline-app-button {
+  position: fixed;
+  left: 16px;
+  bottom: 14px;
+  z-index: 31;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  background: #102a52;
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+  transition: background 0.18s ease;
 }
 
-.offline-app-setting h3 {
-  margin: 0 0 0.5rem;
+.offline-app-button svg {
+  width: 21px;
+  height: 21px;
 }
 
-.offline-app-setting p {
+html.native-app body.menu-visible .offline-app-button {
+  display: flex;
+}
+
+.offline-app-button:hover,
+.offline-app-button:focus-visible {
+  background: #1c4479;
+  outline: 2px solid #f5c542;
+  outline-offset: 3px;
+}
+
+html.native-app .download-app-button {
+  display: none !important;
+}
+
+.offline-app-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1201;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.22s ease,
+    visibility 0.22s ease;
+}
+
+.offline-app-modal.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.offline-app-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 12, 28, 0.78);
+  backdrop-filter: blur(6px);
+}
+
+.offline-app-panel {
+  position: relative;
+  width: min(92vw, 520px);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 34px 30px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 22px;
+  background: linear-gradient(
+    145deg,
+    rgba(24, 42, 75, 0.98),
+    rgba(8, 18, 38, 0.99)
+  );
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  color: #fff;
+  transform: translateY(12px) scale(0.97);
+  transition: transform 0.22s ease;
+}
+
+.offline-app-modal.open .offline-app-panel {
+  transform: translateY(0) scale(1);
+}
+
+.offline-app-panel h2 {
+  margin: 7px 0 12px;
+  font-size: 2rem;
+}
+
+.offline-app-panel p {
+  margin: 0 0 14px;
   line-height: 1.5;
+  opacity: 0.85;
 }
 
-.offline-app-setting button {
+.offline-app-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
   border: 0;
-  border-radius: 0.5rem;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.offline-app-close:hover,
+.offline-app-close:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.offline-app-download {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 10px;
   background: #ffca05;
   color: #161616;
   cursor: pointer;
   font: inherit;
-  font-weight: 700;
-  padding: 0.75rem 1rem;
+  font-weight: 800;
 }
 
-.offline-app-setting button:disabled {
+.offline-app-download:disabled {
   cursor: wait;
   opacity: 0.65;
+}
+
+.offline-app-status {
+  min-height: 1.5em;
+  margin: 12px 0 0 !important;
+  font-size: 0.9rem;
+}
+
+body.compgfx-loading.show-welcome .offline-app-button {
+  visibility: hidden;
+}
+
+@media (max-width: 720px) {
+  .offline-app-button {
+    left: 12px;
+    bottom: 12px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 520px) {
+  .offline-app-panel {
+    width: 100%;
+    padding: 30px 20px 22px;
+  }
+
+  .offline-app-panel h2 {
+    font-size: 1.65rem;
+  }
 }
