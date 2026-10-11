@@ -94,9 +94,11 @@
     statusMessage.textContent = "Preparing offline download...";
     try {
       const result = await offline.downloadOffline();
-      statusMessage.textContent = "Offline version installed. Reloading QuizHub...";
       if (result?.url) location.href = result.url;
-      else if (!result?.reloading) location.reload();
+      else {
+        statusMessage.textContent =
+          "Offline version installed. It will be used the next time QuizHub launches without an internet connection.";
+      }
     } catch (error) {
       statusMessage.textContent = `Download failed: ${error.message || error}`;
     } finally {

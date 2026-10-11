@@ -6,12 +6,20 @@
 		<title>Quiz Hub</title>
 		<script>
 			let persistedNativeApp = false;
+			let persistedAndroidApp = false;
 			try {
 				persistedNativeApp =
 					sessionStorage.getItem("quizhubNativeApp") === "true";
+				persistedAndroidApp =
+					sessionStorage.getItem("quizhubAndroidApp") === "true";
 			} catch (error) {
 				console.warn("Could not restore the native app marker:", error);
 			}
+			const isQuizHubAndroidApp = Boolean(
+				new URLSearchParams(location.search).get("quizhubApp") === "android" ||
+				window.Capacitor?.getPlatform?.() === "android" ||
+				persistedAndroidApp,
+			);
 			const isQuizHubNativeApp = Boolean(
 				["android", "desktop"].includes(
 					new URLSearchParams(location.search).get("quizhubApp"),
@@ -21,6 +29,14 @@
 				persistedNativeApp,
 			);
 			window.quizHubNativeApp = isQuizHubNativeApp;
+			if (isQuizHubAndroidApp) {
+				try {
+					sessionStorage.setItem("quizhubAndroidApp", "true");
+				} catch (error) {
+					console.warn("Could not persist the Android app marker:", error);
+				}
+				document.documentElement.classList.add("android-app");
+			}
 			if (isQuizHubNativeApp) {
 				try {
 					sessionStorage.setItem("quizhubNativeApp", "true");
@@ -164,7 +180,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 2.4.7</div>
+						<div class="tagline">Version 2.5</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -614,6 +630,32 @@ Loading patch notes...</pre
 						CREATE ROOM
 					</button>
 				</div>
+			</section>
+		</div>
+
+		<div class="no-connection-modal" id="partyNoConnectionModal" aria-hidden="true">
+			<div class="party-mode-backdrop" data-close-party-connection></div>
+			<section
+				class="party-mode-panel"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="partyNoConnectionTitle">
+				<button
+					class="party-mode-close"
+					type="button"
+					data-close-party-connection
+					aria-label="Close no connection message">
+					&times;
+				</button>
+				<div class="quiz-menu-kicker">CONNECTION REQUIRED</div>
+				<h2 id="partyNoConnectionTitle">No internet connection</h2>
+				<p>Party Mode requires an internet connection. Reconnect and try again.</p>
+				<button
+					class="party-mode-start"
+					type="button"
+					data-close-party-connection>
+					CLOSE
+				</button>
 			</section>
 		</div>
 

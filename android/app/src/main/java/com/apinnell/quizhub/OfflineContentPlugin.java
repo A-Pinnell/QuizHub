@@ -1,6 +1,5 @@
 package com.apinnell.quizhub;
 
-import android.content.SharedPreferences;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -79,18 +78,7 @@ public class OfflineContentPlugin extends Plugin {
                     throw new IOException("Offline package is missing index.html.");
                 }
                 replaceOfflineDirectory(pending, target, previous);
-                getActivity().runOnUiThread(() -> {
-                    String basePath = target.getAbsolutePath();
-                    getBridge().setServerBasePath(basePath);
-                    SharedPreferences preferences =
-                        getContext().getSharedPreferences(
-                            com.getcapacitor.plugin.WebView.WEBVIEW_PREFS_NAME,
-                            android.content.Context.MODE_PRIVATE);
-                    preferences.edit()
-                        .putString(com.getcapacitor.plugin.WebView.CAP_SERVER_PATH, basePath)
-                        .apply();
-                    call.resolve(new JSObject().put("reloading", true));
-                });
+                call.resolve(new JSObject().put("installed", true));
             } catch (Exception error) {
                 deleteTree(pending);
                 call.reject("Unable to install the offline version.", error);

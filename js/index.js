@@ -579,6 +579,7 @@ document.querySelectorAll(".course-card").forEach((card) => {
 });
 
 const partyModeModal = document.getElementById("partyModeModal");
+const partyNoConnectionModal = document.getElementById("partyNoConnectionModal");
 const partyPlayerSetup = document.getElementById("partyPlayerSetup");
 const partyModeError = document.getElementById("partyModeError");
 const partyModeToggle = document.getElementById("partyModeToggle");
@@ -798,6 +799,14 @@ function capturePartyDrafts() {
 }
 
 partyModeToggle.addEventListener("click", () => {
+	if (!navigator.onLine) {
+		partyNoConnectionModal.classList.add("open");
+		partyNoConnectionModal.setAttribute("aria-hidden", "false");
+		partyNoConnectionModal
+			.querySelector("[data-close-party-connection].party-mode-close")
+			.focus();
+		return;
+	}
 	partyModeTrigger = document.activeElement;
 	partyModeError.textContent = "";
 	partyModeChoice.hidden = false;
@@ -806,6 +815,13 @@ partyModeToggle.addEventListener("click", () => {
 	partyModeModal.setAttribute("aria-hidden", "false");
 	requestAnimationFrame(() => partyHostChoice.focus());
 });
+document.querySelectorAll("[data-close-party-connection]").forEach((element) =>
+	element.addEventListener("click", () => {
+		partyNoConnectionModal.classList.remove("open");
+		partyNoConnectionModal.setAttribute("aria-hidden", "true");
+		if (partyModeToggle?.isConnected) partyModeToggle.focus();
+	}),
+);
 partyHostChoice.addEventListener("click", () => {
 	partyModeChoice.hidden = true;
 	partyHostSetup.hidden = false;
@@ -1464,6 +1480,7 @@ document.addEventListener("keydown", (event) => {
 		patchnotesModal,
 		settingsModal,
 		partyModeModal,
+		partyNoConnectionModal,
 		downloadAppModal,
 	].find((modal) => modal.classList.contains("open"));
 

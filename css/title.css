@@ -101,6 +101,7 @@ body.menu-visible .download-app-button{display:flex}
 .download-app-button:hover,.download-app-button:focus-visible{background:#1c4479;outline:2px solid #f5c542;outline-offset:3px}
 @media(max-width:720px){.download-app-button{left:12px;bottom:12px;width:40px;height:40px}}
 html.native-app :is(.download-app-button,.fullscreen-setting){display:none!important}
+html.android-app .keyboard-guide{display:none!important}
 .menu-viewport{width:min(1120px,calc(100% - 110px));height:100%;max-height:470px;overflow:hidden}
 .menu-track{display:flex;width:200%;height:100%;transition:transform .55s cubic-bezier(.22,.8,.25,1);will-change:transform}
 .menu{flex:0 0 50%;width:50%;height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:clamp(18px,2.4vw,38px)}
@@ -414,8 +415,8 @@ html.motion-minimal .party-mode-toggle.party-rainbow{animation:none;color:#bf5af
 .reset-settings{width:100%;min-height:42px;margin-top:18px;border:1px solid rgba(255,255,255,.35);border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-weight:800;cursor:pointer}
 .reset-settings:hover,.reset-settings:focus-visible{background:rgba(255,255,255,.18);outline:2px solid #ffe16b;outline-offset:2px}
 @media(max-width:720px){.menu-datetime{right:66px}.options-toggle{width:38px;height:38px;font-size:24px}.settings-modal{padding:12px}.settings-panel{width:100%;padding:28px 20px 22px}.quiz-theme-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.quiz-theme-options .setting-radio{font-size:.72rem}}
-.party-mode-modal{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility .22s ease}
-.party-mode-modal.open{opacity:1;visibility:visible;pointer-events:auto}
+.party-mode-modal,.no-connection-modal{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility .22s ease}
+.party-mode-modal.open,.no-connection-modal.open{opacity:1;visibility:visible;pointer-events:auto}
 .party-mode-backdrop{position:absolute;inset:0;background:rgba(5,12,28,.78);backdrop-filter:blur(6px)}
 .party-mode-panel{position:relative;width:min(92vw,680px);max-height:calc(100dvh - 32px);overflow:auto;padding:30px;border:1px solid rgba(255,255,255,.25);border-radius:22px;background:linear-gradient(145deg,rgba(24,42,75,.98),rgba(8,18,38,.99));box-shadow:0 24px 70px rgba(0,0,0,.55);color:#fff}
 .party-mode-panel [hidden]{display:none!important}

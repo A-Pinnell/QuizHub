@@ -4,7 +4,7 @@ const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
 const fs = require("node:fs/promises");
 const fsSync = require("node:fs");
 const path = require("node:path");
-const { fileURLToPath, pathToFileURL } = require("node:url");
+const { fileURLToPath } = require("node:url");
 const { execFile } = require("node:child_process");
 const { promisify } = require("node:util");
 const { Readable } = require("node:stream");
@@ -109,7 +109,7 @@ async function downloadOffline(event) {
     await fs.rename(pendingDirectory, offlineDirectory);
     installedNewVersion = true;
     await fs.rm(oldDirectory, { recursive: true, force: true });
-    return { url: pathToFileURL(path.join(offlineDirectory, "index.html")).href };
+    return { installed: true };
   } catch (error) {
     if (backedUpPrevious && !installedNewVersion) {
       try {
@@ -189,15 +189,42 @@ function createWindow() {
     }
   });
 
-  fs.access(installedIndex).then(() => window.loadFile(installedIndex)).catch(() => {
-    window.loadURL(siteUrl.href).catch((error) => {
-      console.error("Unable to load the hosted QuizHub site:", error);
+  (async () => {
+    let hostedSiteAvailable = false;
+    try {
+      const response = await fetch(siteUrl, {
+        method: "HEAD",
+        cache: "no-store",
+        signal: AbortSignal.timeout(5000)
+      });
+      hostedSiteAvailable = response.ok;
+    } catch (error) {
+      console.info("Hosted QuizHub is unavailable at startup:", error.message);
+    }
+
+    if (hostedSiteAvailable) {
+      await window.loadURL(siteUrl.href);
+      return;
+    }
+
+    try {
+      await fs.access(installedIndex);
+      await window.loadFile(installedIndex);
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
       dialog.showErrorBox(
         "Unable to load QuizHub",
         "QuizHub needs an internet connection for its first launch. Check your connection and try again."
       );
       app.quit();
-    });
+    }
+  })().catch((error) => {
+    console.error("Unable to start QuizHub:", error);
+    dialog.showErrorBox(
+      "Unable to load QuizHub",
+      "QuizHub could not open. Please check your connection and try again."
+    );
+    app.quit();
   });
 }
 

@@ -1,6 +1,10 @@
 package com.apinnell.quizhub;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.webkit.WebViewCompat;
@@ -22,8 +26,41 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(OfflineContentPlugin.class);
         registerPlugin(AudioFocusPlugin.class);
+        selectStartupContent();
         super.onCreate(savedInstanceState);
         injectBridgeIntoHostedApp();
+    }
+
+    private void selectStartupContent() {
+        File offlineDirectory = new File(getFilesDir(), "offline-content");
+        boolean offlineVersionInstalled =
+            new File(offlineDirectory, "index.html").isFile()
+                && new File(offlineDirectory, "version.json").isFile();
+        SharedPreferences preferences = getSharedPreferences(
+            WebView.WEBVIEW_PREFS_NAME, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        if (offlineVersionInstalled && !hasValidatedInternetConnection()) {
+            editor.putString(WebView.CAP_SERVER_PATH, offlineDirectory.getAbsolutePath());
+        } else {
+            editor.remove(WebView.CAP_SERVER_PATH);
+        }
+        editor.apply();
+    }
+
+    private boolean hasValidatedInternetConnection() {
+        ConnectivityManager connectivityManager =
+            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return false;
+
+        Network activeNetwork = connectivityManager.getActiveNetwork();
+        if (activeNetwork == null) return false;
+
+        NetworkCapabilities capabilities =
+            connectivityManager.getNetworkCapabilities(activeNetwork);
+        return capabilities != null
+            && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
     }
 
     private void injectBridgeIntoHostedApp() {
@@ -52,26 +89,6 @@ public class MainActivity extends BridgeActivity {
             );
         } catch (JSExportException error) {
             Log.e(TAG, "Could not inject the native bridge into hosted QuizHub pages.", error);
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (getBridge() == null) return;
-
-        File offlineDirectory = new File(getFilesDir(), "offline-content");
-        if (!new File(offlineDirectory, "index.html").isFile()
-            || !new File(offlineDirectory, "version.json").isFile()) {
-            return;
-        }
-
-        String offlinePath = offlineDirectory.getAbsolutePath();
-        if (!offlinePath.equals(getBridge().getServerBasePath())) {
-            getBridge().setServerBasePath(offlinePath);
-            SharedPreferences preferences = getSharedPreferences(
-                WebView.WEBVIEW_PREFS_NAME, MODE_PRIVATE);
-            preferences.edit().putString(WebView.CAP_SERVER_PATH, offlinePath).apply();
         }
     }
 }
