@@ -1136,7 +1136,7 @@ textbookLibraryLink.addEventListener('click',event=>{
 });
 
 patchnotesContent.textContent=`
-Version 2.3
+Version 2.3.
 - Computer Graphics quiz style has been improved
 - Computer Graphics now has a new default SFX Style, which can also be configued in the options
 - Computer Graphics has a unique loading screen now
