@@ -19,7 +19,7 @@
 
   const isMusic = (media) => {
     const source = media.currentSrc || media.src;
-    return /(?:^|\/)music\//i.test(source);
+    return /(?:^|\/)(?:music\/|secret\/BEN\.wav(?:[?#]|$))/i.test(source);
   };
 
   const pauseQuizHubMusic = () => {

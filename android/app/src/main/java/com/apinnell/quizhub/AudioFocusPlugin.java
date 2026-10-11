@@ -69,6 +69,12 @@ public class AudioFocusPlugin extends Plugin {
         call.resolve();
     }
 
+    @Override
+    protected void handleOnPause() {
+        notifyListeners("audioFocusLost", new com.getcapacitor.JSObject());
+        abandonFocus();
+    }
+
     private void abandonFocus() {
         if (audioManager == null || !hasFocus) return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && focusRequest != null) {
