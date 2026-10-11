@@ -116,8 +116,27 @@ jobs:
           path: android/app/build/outputs/apk/debug/QuizHub-Android.apk
           if-no-files-found: error
 
+  offline:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Build offline site package
+        run: |
+          mkdir -p release-assets
+          node scripts/create-offline-package.js "$GITHUB_REF_NAME"
+
+      - name: Save offline site package
+        uses: actions/upload-artifact@v7
+        with:
+          name: offline-site
+          path: release-assets/offline-site.zip
+          if-no-files-found: error
+          compression-level: 0
+
   release:
-    needs: [windows, linux, android]
+    needs: [windows, linux, android, offline]
     runs-on: ubuntu-24.04
     steps:
       - name: Download app builds

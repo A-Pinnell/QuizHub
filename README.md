@@ -19,14 +19,14 @@ Render will automatically redeploy the Blueprint service when changes are pushed
 
 ### Build standalone apps
 
-The Windows and Linux desktop apps and the Android app load the hosted GitHub Pages site, so they require an internet connection and always use the currently published site. Online party games continue to use the hosted Render service.
+The Windows and Linux desktop apps and the Android app load the hosted GitHub Pages site initially. In **Options**, select **Download offline version** to save the complete game (about 300 MB to download and 330 MB installed, plus temporary install space) for offline play. The app then opens the saved version and checks GitHub Releases at startup; when a newer offline package is available, it offers to update it. An internet connection is needed to download or update the package. Live party games still require an internet connection.
 
 1. Install dependencies with `npm install`.
 2. Build a Windows installer with `npm run package:win` or a Linux AppImage with `npm run package:linux`.
 3. Find desktop builds in the `desktop-dist` directory.
 4. Build an Android APK with `npm run android:sync`, then run `.\gradlew.bat assembleDebug` from the `android` directory. The APK is written under `android\app\build\outputs\apk\debug`.
 
-For Windows desktop development, run `npm run desktop`. Pushing a version tag such as `v2.2.1` builds all three apps and publishes them as GitHub Release assets. Android builds are debug-signed for direct installation; installing a later release may require removing an earlier build first.
+For Windows desktop development, run `npm run desktop`. Pushing a version tag such as `v2.4.0` builds the apps and a versioned offline-site ZIP, then publishes them as GitHub Release assets. Android builds are debug-signed for direct installation; installing a later release may require removing an earlier build first.
 
 ### Run locally
 

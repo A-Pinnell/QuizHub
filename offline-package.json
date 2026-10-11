@@ -1,0 +1,22 @@
+{
+  "files": [
+    "index.html",
+    "binary-quiz.html",
+    "blanc-message.html",
+    "hexadecimal-quiz.html",
+    "party-join.html",
+    "party-lobby.html",
+    "party-win.html",
+    "perfect-win.html",
+    "quiz.html",
+    "win.html",
+    "binary-quiz.css",
+    "assets",
+    "css",
+    "fonts",
+    "js",
+    "music",
+    "secret",
+    "sfx"
+  ]
+}

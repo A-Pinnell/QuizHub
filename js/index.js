@@ -1355,6 +1355,9 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.4.5
+- There is now an option to download an offline version of the site, which can be used without an internet connection. This is still experimental and may not work on all devices and required the standalone app already installed.
+
 Version 2.4
 - Downloadable versions should be functioning now
 - New icon for the site, which is also used in the downloadable versions

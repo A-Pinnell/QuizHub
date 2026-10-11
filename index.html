@@ -17,6 +17,9 @@
 		</script>
 		<link rel="stylesheet" href="css/title.css" />
 		<link rel="stylesheet" href="css/preferences.css" />
+		<link rel="stylesheet" href="css/offline-app.css" />
+		<script src="./js/audio-focus.js" defer></script>
+		<script src="./js/offline-app.js" defer></script>
 		<script src="./js/preferences.js" defer></script>
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
@@ -127,7 +130,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 2.4</div>
+						<div class="tagline">Version 2.4.5</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -659,11 +662,11 @@ Loading patch notes...</pre
 							>
 						</button>
 					</div>
-					<p class="download-platform-note">
-						The Android app also loads the live QuizHub website and needs
-						internet access.
-					</p>
-					<button class="download-app-back" id="downloadAppBack" type="button">
+					<button
+						class="download-app-back"
+						id="downloadAppBack"
+						type="button"
+						hidden>
 						Back
 					</button>
 				</section>
