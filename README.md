@@ -21,6 +21,8 @@ Render will automatically redeploy the Blueprint service when changes are pushed
 
 The Windows and Linux desktop apps and the Android app load the hosted GitHub Pages site initially. Tap the download icon in the bottom-left corner and select **Download offline version** to save the complete game (about 275 MB to download and 330 MB installed, plus temporary install space) for offline play. The app then opens the saved version and checks GitHub Releases at startup; when a newer offline package is available, it offers to update it. An internet connection is needed to download or update the package. Live party games still require an internet connection.
 
+The Android app injects its native plugin bridge into the hosted QuizHub pages so download and audio-focus features remain available after the app redirects to GitHub Pages. Changes to this native bridge require rebuilding and reinstalling the Android APK; publishing website files alone cannot add native plugin support to an already-installed APK.
+
 1. Install dependencies with `npm install`.
 2. Build a Windows installer with `npm run package:win` or a Linux AppImage with `npm run package:linux`.
 3. Find desktop builds in the `desktop-dist` directory.

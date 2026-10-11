@@ -2,6 +2,11 @@
 
 (() => {
   const capacitor = window.Capacitor;
+  const nativePluginAvailable =
+    capacitor?.isPluginAvailable?.("AudioFocus") ??
+    Boolean(capacitor?.Plugins?.AudioFocus);
+  if (!nativePluginAvailable) return;
+
   const plugin =
     typeof capacitor?.registerPlugin === "function"
       ? capacitor.registerPlugin("AudioFocus")

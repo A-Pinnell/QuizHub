@@ -5,9 +5,12 @@
 
   const desktop = window.QuizHubDesktop;
   const capacitor = window.Capacitor;
+  const nativePluginAvailable =
+    capacitor?.isPluginAvailable?.("OfflineContent") ??
+    Boolean(capacitor?.Plugins?.OfflineContent);
   const offline =
     desktop ||
-    (typeof capacitor?.registerPlugin === "function"
+    (nativePluginAvailable && typeof capacitor?.registerPlugin === "function"
       ? capacitor.registerPlugin("OfflineContent")
       : capacitor?.Plugins?.OfflineContent);
   const modal = document.getElementById("offlineAppModal");
