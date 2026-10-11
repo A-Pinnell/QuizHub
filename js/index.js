@@ -221,22 +221,28 @@ const courseCodes={
   CloudComp:'COMP-4312',
   SocIndi: "SOCI-2755",
   DataSci: 'COMP-4112',
-  SoftEngi: 'COMP-3415'
+  SoftEngi: 'COMP-3415',
+  CompGFX: 'COMP-4471'
 };
 
 const courseQuizCatalog={
   CompArch:[
     {id:'quiz1', label:'First Slides Practice', detail:'for Sept 23'},
+    {id:'test1', label:'Midterm Practice', detail:'for Oct 21'},
     {id:'binary-quiz', label:'Binary Practice', detail:'Standalone binary practice', external:'binary-quiz.html'},
     {id:'hexadecimal-quiz', label:'Hexadecimal Practice', detail:'Standalone hexadecimal practice', external:'hexadecimal-quiz.html'}
   ],
   CloudComp:[
     {id:'quiz1', label:'First Slides Practice', detail:'for Sept 24'},
-    {id:'quiz2', label:'Week 4 Slides Practice', detail:'for Oct 8'}
+    {id:'quiz2', label:'Week 4 Slides Practice', detail:'for Oct 8'},
+    {id:'test1', label:'Midterm Practice', detail:'for Oct 22'}
   ],
   SocIndi:[
     {id:'reviewQuiz', label:'Exam 1 Quiz', detail:'Based on expected Exam 1 material'},
-    {id:'textbookQuiz', label:'Textbook Quiz', detail:'Based on Textbook contents'},
+    {id:'textbookQuiz', label:'Textbook Quiz', detail:'Based on Textbook contents'}
+  ],
+  CompGFX:[
+    {id:'test1', label:'Midterm Practice', detail:'for Oct 21'}
   ],
   DataSci:[
     {id:'test1', label:'Test 1 Practice', detail:'for Oct 22'}
@@ -781,6 +787,7 @@ const optionsToggle=document.getElementById('optionsToggle');
 const motionModeSlider=document.getElementById('motionModeSlider');
 const fullscreenSetting=document.getElementById('fullscreenSetting');
 const quizMusicSetting=document.getElementById('quizMusicSetting');
+const quizMusicTrackName=document.getElementById('quizMusicTrackName');
 const textSizeSetting=document.getElementById('textSizeSetting');
 const blancQuizMusicOption=document.getElementById('blancQuizMusicOption');
 const soundMutedSetting=document.getElementById('soundMutedSetting');
@@ -794,11 +801,41 @@ const resetSettingsButton=document.getElementById('resetSettings');
 const settingsError=document.getElementById('settingsError');
 const motionModeNames=['default','minimal','reduced'];
 const motionModeLabels=['Default','Minimal','Reduced'];
+const quizThemeDetails={
+  default:{caption:'Default course themes',image:'./assets/quiz-theme-default.png',alt:"Preview of a course's default quiz style"},
+  quizhub:{caption:'QuizHub Style · the standard look for other courses',image:'./assets/quiz-theme-quizhub.png',alt:'Preview of the standard QuizHub quiz style'},
+  'ai-model':{caption:'AI Model Style · Software Engineering',image:'./assets/quiz-theme-ai-model.png',alt:'Preview of the AI Model quiz style'},
+  blended:{caption:'Blended Style · Computer Graphics',image:'./assets/quiz-theme-blended.png',alt:'Preview of the Blended quiz style'}
+};
+const quizThemePreviewImage=document.getElementById('quizThemePreviewImage');
+const quizThemePreviewCaption=document.getElementById('quizThemePreviewCaption');
 let settingsTrigger=null;
 let blancUnlockProgress=0;
 let blancUnlockSoundPlayed=false;
 let blancModeUnlocked=false;
 
+function updateQuizMusicTrackName() {
+  const musicSetting = window.quizHubPreferences.quizMusic;
+
+  const courseMusicNames = {
+    default: 'Track selected automatically for each course',
+    run: 'Closer by Nine Inch Nails [Instrumental]',
+    CompArch: 'What Would Sonic Do? ... from The Murder of Sonic The Hedgehog',
+    Practice1: 'Blue Spheres ... from Sonic Mania [QuizHub Mix]',
+    Practice2: 'Special Stage ... from Sonic 3D Blast (Genesis) [QuizHub Mix]',
+    CompGFX: 'Craterscape ... from Wild 9',
+    CloudComp: 'A Lone Prayer ... from Persona [QuizHub Mix]',
+    DataSci: 'Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]',
+    SoftEngi: 'Brainrot Hub Mix [Ratatung x Verity x Looping the Rooms]'
+  };
+
+  if (courseMusicNames[musicSetting]) {
+    quizMusicTrackName.textContent = courseMusicNames[musicSetting];
+    return;
+  }
+
+  quizMusicTrackName.textContent = 'No music track selected';
+}
 function syncSettings(){
   const motionIndex=motionModeNames.indexOf(window.quizHubPreferences.motionMode);
   motionModeSlider.value=String(motionIndex);
@@ -811,13 +848,25 @@ function syncSettings(){
     typeof document.documentElement.requestFullscreen!=='function';
   blancQuizMusicOption.hidden=!window.quizHubPreferences.blancMode;
   quizMusicSetting.value=window.quizHubPreferences.quizMusic;
+  updateQuizMusicTrackName();
   textSizeSetting.value=window.quizHubPreferences.textSize;
+  document.querySelectorAll('input[name="quizTheme"]').forEach(input=>{
+    input.checked=input.value===window.quizHubPreferences.quizTheme;
+  });
+  updateQuizThemePreview(window.quizHubPreferences.quizTheme);
   soundMutedSetting.checked=window.quizHubPreferences.soundMuted;
   musicMutedSetting.checked=window.quizHubPreferences.musicMuted;
   disableLoadingSetting.checked=window.quizHubPreferences.disableLoadingAnimation;
   highContrastSetting.checked=window.quizHubPreferences.highContrast;
   blancModeSetting.checked=window.quizHubPreferences.blancMode;
   blancModeSettingRow.hidden=!window.quizHubPreferences.blancMode && !blancModeUnlocked;
+}
+
+function updateQuizThemePreview(theme){
+  const details=quizThemeDetails[theme] || quizThemeDetails.default;
+  quizThemePreviewImage.src=details.image;
+  quizThemePreviewImage.alt=details.alt;
+  quizThemePreviewCaption.textContent=details.caption;
 }
 
 function closeSettings(){
@@ -875,10 +924,18 @@ motionModeSlider.addEventListener('input',()=>{
 });
 quizMusicSetting.addEventListener('change',()=>{
   window.quizHubPreferences.setQuizMusic(quizMusicSetting.value);
+  updateQuizMusicTrackName();
   if(quizPreviewPlaying) startQuizMusicPreview();
 });
 textSizeSetting.addEventListener('change',()=>{
   window.quizHubPreferences.setTextSize(textSizeSetting.value);
+});
+document.querySelectorAll('input[name="quizTheme"]').forEach(input=>{
+  input.addEventListener('change',()=>{
+    if(!input.checked) return;
+    window.quizHubPreferences.setQuizTheme(input.value);
+    updateQuizThemePreview(input.value);
+  });
 });
 soundMutedSetting.addEventListener('change',()=>{
   setSoundsMuted(soundMutedSetting.checked);
@@ -896,6 +953,7 @@ blancModeSetting.addEventListener('change',()=>{
   window.quizHubPreferences.setBlancMode(blancModeSetting.checked);
   blancQuizMusicOption.hidden=!blancModeSetting.checked;
   quizMusicSetting.value=window.quizHubPreferences.quizMusic;
+  updateQuizMusicTrackName();
   if(blancModeSetting.checked){
     playSound('started');
   }
@@ -961,6 +1019,18 @@ textbookLibraryLink.addEventListener('click',event=>{
 });
 
 patchnotesContent.textContent=`
+Version 2.2
+- Various enhancements to Online Party mode
+  - You can now redo a quiz or choose a new quiz with the same party
+  - Options have been added to disable seeing other's scores and locked in answers
+  - There is now an "Early Bird" bonus, which gives 3 points for getting the right answer first. This can be disabled
+- Computer Graphics midterm practice has been added, along with a new quiz theme and music
+- Cloud Computing midterm practice has been added
+- Intro to Computer Arch Midterm practice has been added
+- Data Science midterm practice has been finished, along with a new quiz theme and music. This quiz features content from both the slideshow and general Blender how-to
+- You can now choose what quiz theme you would like for all quizzes.
+- The quiz music selector in the options menu now lists the sourced track
+
 Version 2.1
 - Various enhancements to Online Party mode
 - Online Party mode can now have a lobby of up to 50 people

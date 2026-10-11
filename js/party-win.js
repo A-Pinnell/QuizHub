@@ -15,6 +15,9 @@
   const title=document.getElementById("partyResultsTitle");
   const summary=document.getElementById("partyResultsSummary");
   const error=document.getElementById("partyResultsError");
+  const status=document.getElementById("partyResultsStatus");
+  const playAgainButton=document.getElementById("partyPlayAgain");
+  const chooseQuizButton=document.getElementById("partyChooseNewQuiz");
   const results=(()=>{
     try{
       return JSON.parse(sessionStorage.getItem("lakeheadQuizResults") || "null");
@@ -29,11 +32,9 @@
     summary.textContent="";
     error.hidden=false;
     error.textContent="Could not load the player scores. Return to the menu and start another party quiz.";
-    document.getElementById("partyPlayAgain").hidden=true;
+    playAgainButton.hidden=true;
+    chooseQuizButton.hidden=true;
     return;
-  }
-  if(results.onlineParty===true){
-    document.getElementById("partyPlayAgain").hidden=true;
   }
 
   const standings=results.partyPlayers
@@ -104,13 +105,119 @@
     podium.appendChild(card);
   });
 
-  document.getElementById("partyPlayAgain").addEventListener("click",()=>{
-    if(results.onlineParty===true){
-      window.location.href="index.html?fromWin=1";
-      return;
-    }
+  function savePartyPlayers(){
     try{
       sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(results.partyPlayers.map(({id,name,color,photo})=>({id,name,color,photo}))));
+      return true;
+    }catch(storageError){
+      error.hidden=false;
+      error.textContent=`Could not prepare the party players: ${storageError.message}`;
+      return false;
+    }
+  }
+
+  function openQuiz(category,quiz,playerId,isHost){
+    if(!savePartyPlayers()) return;
+    const target=new URL("quiz.html",window.location.href);
+    target.searchParams.set("category",category);
+    target.searchParams.set("quiz",quiz);
+    target.searchParams.set("partyMode","true");
+    target.searchParams.set("partyRoom",results.partyRoomCode);
+    target.searchParams.set("partyPlayer",playerId);
+    if(isHost) target.searchParams.set("partyHost","true");
+    window.location.href=target.toString();
+  }
+
+  function openLobby(playerId,isHost){
+    if(!savePartyPlayers()) return;
+    const target=new URL("party-lobby.html",window.location.href);
+    target.searchParams.set("code",results.partyRoomCode);
+    target.searchParams.set("playerId",playerId);
+    if(isHost) target.searchParams.set("host","1");
+    window.location.href=target.toString();
+  }
+
+  let partyClient=null;
+  if(results.onlineParty===true && /^[A-Z]{4}$/.test(results.partyRoomCode||"") &&
+      typeof results.partyCurrentPlayerId==="string"){
+    playAgainButton.disabled=true;
+    chooseQuizButton.disabled=true;
+    status.textContent="Reconnecting to the party…";
+    const client=new window.QuizHubPartyClient();
+    partyClient=client;
+    let room=null;
+    function syncControls(){
+      const current=room?.players.find((player)=>player.id===results.partyCurrentPlayerId);
+      const canHost=Boolean(current?.host);
+      playAgainButton.disabled=!canHost;
+      chooseQuizButton.disabled=!canHost;
+      status.textContent=canHost
+        ?"Replay this quiz or choose another one for the same party."
+        :"Only the host can start another party quiz.";
+    }
+    client.on("joined",(message)=>{
+      room=message.room;
+      syncControls();
+      if(room.stage==="lobby"){
+        openLobby(results.partyCurrentPlayerId,room.players.some((player)=>player.id===results.partyCurrentPlayerId && player.host));
+      }else if((room.stage==="setup" || room.stage==="quiz") && room.category && room.quiz){
+        openQuiz(room.category,room.quiz,results.partyCurrentPlayerId,
+          room.players.some((player)=>player.id===results.partyCurrentPlayerId && player.host));
+      }
+    });
+    client.on("replay",(message)=>{
+      const current=room?.players.find((player)=>player.id===results.partyCurrentPlayerId);
+      openQuiz(message.category,message.quiz,results.partyCurrentPlayerId,Boolean(current?.host));
+    });
+    client.on("choose-new-quiz",()=>{
+      const current=room?.players.find((player)=>player.id===results.partyCurrentPlayerId);
+      openLobby(results.partyCurrentPlayerId,Boolean(current?.host));
+    });
+    client.on("room-state",(message)=>{
+      room=message.room;
+      syncControls();
+    });
+    client.on("error",(message)=>{
+      status.textContent=message.message;
+      syncControls();
+    });
+    client.on("left",()=>{window.location.href="index.html?fromWin=1";});
+    client.send({
+      type:"join",
+      code:results.partyRoomCode,
+      playerId:results.partyCurrentPlayerId
+    }).catch((connectionError)=>{
+      status.textContent=`Could not reconnect to the party: ${connectionError.message}`;
+      playAgainButton.disabled=true;
+      chooseQuizButton.disabled=true;
+    });
+    playAgainButton.addEventListener("click",async()=>{
+      playAgainButton.disabled=true;
+      try{
+        await client.send({type:"replay",code:results.partyRoomCode});
+      }catch(sendError){
+        status.textContent=`Could not replay the quiz: ${sendError.message}`;
+        syncControls();
+      }
+    });
+    chooseQuizButton.addEventListener("click",async()=>{
+      chooseQuizButton.disabled=true;
+      try{
+        await client.send({type:"choose-new-quiz",code:results.partyRoomCode});
+      }catch(sendError){
+        status.textContent=`Could not return to the lobby: ${sendError.message}`;
+        syncControls();
+      }
+    });
+  }else{
+    chooseQuizButton.hidden=true;
+    playAgainButton.addEventListener("click",()=>{
+      if(results.onlineParty===true){
+        window.location.href="index.html?fromWin=1";
+        return;
+      }
+      try{
+        sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(results.partyPlayers.map(({id,name,color,photo})=>({id,name,color,photo}))));
       const target=new URL("quiz.html",window.location.href);
       target.searchParams.set("category",results.category);
       target.searchParams.set("quiz",results.quizType);
@@ -125,12 +232,20 @@
         target.searchParams.set("reviewSections",results.reviewSections.join(","));
       }
       window.location.href=target.toString();
-    }catch(storageError){
-      error.hidden=false;
-      error.textContent=`Could not restart party mode: ${storageError.message}`;
-    }
-  });
+      }catch(storageError){
+        error.hidden=false;
+        error.textContent=`Could not restart party mode: ${storageError.message}`;
+      }
+    });
+  }
   document.getElementById("partyReturnMenu").addEventListener("click",()=>{
+    if(results.onlineParty===true && partyClient){
+      partyClient.send({type:"leave",code:results.partyRoomCode}).catch((leaveError)=>{
+        error.hidden=false;
+        error.textContent=`Could not leave the party: ${leaveError.message}`;
+      });
+      return;
+    }
     window.location.href="index.html?fromWin=1";
   });
 })();

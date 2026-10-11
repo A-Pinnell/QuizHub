@@ -22,4 +22,5 @@ html.blanc-mode .party-results{background:linear-gradient(rgba(0,0,0,.5),rgba(0,
 .party-results-actions button{min-height:46px;padding:10px 20px;border:1px solid rgba(255,255,255,.35);border-radius:12px;background:#fff;color:#18213a;font-weight:900;cursor:pointer}
 .party-results-actions button:hover{transform:translateY(-2px);background:#ffdf82}
 .party-results-error{color:#ffb3ad}
+.party-results-status{min-height:1.2em;color:#d4d8e7}
 @media(max-width:520px){body{padding:12px}.party-results{max-height:calc(100dvh - 24px);padding:22px 16px}.party-podium{grid-template-columns:1fr}.party-standing,.party-standing[data-place]{min-height:unset}.party-results-actions{display:grid}.party-results-actions button{width:100%}}

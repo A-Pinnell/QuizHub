@@ -17,8 +17,32 @@
   <p class="party-kicker">PARTY LOBBY</p>
   <div class="party-room-heading">
     <div><h1>Room <span id="partyRoomCode">----</span></h1><p id="partyRoomStatus">Connecting to the lobby…</p></div>
-    <button type="button" class="party-secondary" id="partyCopyCode">COPY CODE</button>
+    <div class="party-room-actions">
+      <button type="button" class="party-secondary" id="partyOptionsButton"
+        aria-haspopup="dialog" aria-controls="partyOptionsDialog" aria-expanded="false">OPTIONS</button>
+      <button type="button" class="party-secondary" id="partyCopyCode">COPY CODE</button>
+    </div>
   </div>
+  <section class="party-options-overlay" id="partyOptionsDialog" role="dialog"
+    aria-labelledby="partyOptionsTitle" aria-modal="true" hidden>
+    <div class="party-options-panel">
+      <h2 id="partyOptionsTitle">Party options</h2>
+      <p id="partyOptionsHint">The host controls these settings for everyone.</p>
+      <label class="party-option">
+        <input type="checkbox" id="partyShowScores" checked>
+        <span>Show other players’ scores</span>
+      </label>
+      <label class="party-option">
+        <input type="checkbox" id="partyShowLockedAnswers" checked>
+        <span>Show other players’ locked-in answers</span>
+      </label>
+      <label class="party-option">
+        <input type="checkbox" id="partyEarlyBonus" checked>
+        <span>Early point bonus: first correct answer earns 3 points</span>
+      </label>
+      <button type="button" class="party-primary" id="partyOptionsClose">DONE</button>
+    </div>
+  </section>
   <section class="party-player-list" id="partyPlayerList" aria-label="Players in this lobby"></section>
   <div class="party-lobby-controls">
     <button class="party-secondary" id="partyLeaveButton" type="button" disabled>LEAVE LOBBY</button>

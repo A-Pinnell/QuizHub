@@ -14,6 +14,12 @@
   const categorySelect=document.getElementById("partyCategory");
   const quizSelect=document.getElementById("partyQuiz");
   const lobbyMusic=document.getElementById("partyLobbyMusic");
+  const optionsButton=document.getElementById("partyOptionsButton");
+  const optionsDialog=document.getElementById("partyOptionsDialog");
+  const showScoresInput=document.getElementById("partyShowScores");
+  const showLockedAnswersInput=document.getElementById("partyShowLockedAnswers");
+  const earlyBonusInput=document.getElementById("partyEarlyBonus");
+  const optionsHint=document.getElementById("partyOptionsHint");
   const quizCatalog={
     CompArch:[["quiz1","First Slides Practice"]],
     CloudComp:[["quiz1","First Slides Practice"],["quiz2","Week 4 Slides Practice"]],
@@ -47,6 +53,7 @@
 
   function renderPlayers(){
     if(!room) return;
+    renderPartyOptions();
     playerList.replaceChildren(...room.players.map((player,index)=>{
       const card=document.createElement("article");
       card.className="party-player-card";
@@ -82,6 +89,23 @@
       : room.stage==="results"?"Game over. Return to the menu to start another room."
       :"Game in progress.";
     launchButton.disabled=!allReady;
+  }
+
+  function renderPartyOptions(){
+    if(!room) return;
+    const options=room.partyOptions||{
+      showPlayerScores:true,showLockedAnswers:true,earlyPointBonus:true
+    };
+    showScoresInput.checked=options.showPlayerScores;
+    showLockedAnswersInput.checked=options.showLockedAnswers!==false;
+    earlyBonusInput.checked=options.earlyPointBonus;
+    const canEdit=isHost && room.stage==="lobby";
+    showScoresInput.disabled=!canEdit;
+    showLockedAnswersInput.disabled=!canEdit;
+    earlyBonusInput.disabled=!canEdit;
+    optionsHint.textContent=canEdit
+      ?"The host controls these settings for everyone."
+      :"Only the host can change these settings.";
   }
 
   function enterQuiz(category,quiz){
@@ -129,6 +153,45 @@
       });
     }catch(sendError){error.textContent=sendError.message;}
   });
+  optionsButton.addEventListener("click",()=>{
+    optionsDialog.hidden=false;
+    optionsButton.setAttribute("aria-expanded","true");
+    (showScoresInput.disabled?document.getElementById("partyOptionsClose"):showScoresInput).focus();
+  });
+  document.getElementById("partyOptionsClose").addEventListener("click",()=>{
+    optionsDialog.hidden=true;
+    optionsButton.setAttribute("aria-expanded","false");
+    optionsButton.focus();
+  });
+  optionsDialog.addEventListener("click",(event)=>{
+    if(event.target!==optionsDialog) return;
+    optionsDialog.hidden=true;
+    optionsButton.setAttribute("aria-expanded","false");
+    optionsButton.focus();
+  });
+  optionsDialog.addEventListener("keydown",(event)=>{
+    if(event.key!=="Escape") return;
+    optionsDialog.hidden=true;
+    optionsButton.setAttribute("aria-expanded","false");
+    optionsButton.focus();
+  });
+  [showScoresInput,showLockedAnswersInput,earlyBonusInput].forEach((input)=>input.addEventListener("change",async()=>{
+    if(!room || !isHost || room.stage!=="lobby") return;
+    try{
+      await client.send({
+        type:"party-options",
+        code,
+        options:{
+          showPlayerScores:showScoresInput.checked,
+          showLockedAnswers:showLockedAnswersInput.checked,
+          earlyPointBonus:earlyBonusInput.checked
+        }
+      });
+    }catch(sendError){
+      error.textContent=sendError.message;
+      renderPartyOptions();
+    }
+  }));
   document.getElementById("partyCopyCode").addEventListener("click",async()=>{
     try{
       await navigator.clipboard.writeText(code);

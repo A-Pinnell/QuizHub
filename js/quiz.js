@@ -2,6 +2,10 @@ const questionBank = window.questionBank || {};
 const codes = window.questionCodes || {};
 const themes = window.quizThemes || {};
 const resolveAssetUrl=(path)=>new URL(path, window.location.href).toString();
+const canonicalCategory=value=>{
+  const category=Object.keys(questionBank).find(key=>key.toLowerCase()===value?.toLowerCase());
+  return category || value;
+};
 
 const soundFiles={
   correct:resolveAssetUrl('./sfx/Correct.wav'),
@@ -83,11 +87,15 @@ updateSoundToggle();
 
 let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
-const requestedMusicCategory=new URLSearchParams(location.search).get('category');
+const requestedMusicCategory=canonicalCategory(new URLSearchParams(location.search).get('category'));
 const quizMusicFile=
 requestedMusicCategory==='DataSci' ? resolveAssetUrl('./music/DataSciMusic.wav') 
+: requestedMusicCategory==='Practice1' ? resolveAssetUrl('./music/BinaryTrack.wav') 
+: requestedMusicCategory==='Practice2' ? resolveAssetUrl('./music/HexadecimalTrack.wav') 
 : requestedMusicCategory==='CloudComp' ? resolveAssetUrl('./music/CloudCompMusic.wav') 
 : requestedMusicCategory==='SoftEngi' ? resolveAssetUrl('./music/SoftEngiMusic.wav') 
+: requestedMusicCategory==='CompGFX' ? resolveAssetUrl('./music/CompGFXMusic.wav')
+: requestedMusicCategory==='SocIndi' ? resolveAssetUrl('./music/SocIndiMusic.wav')
 : resolveAssetUrl('./music/QuizMusic.wav');
 const quizMusic=new Audio(window.quizHubPreferences.resolveQuizMusic(quizMusicFile));
 const isPreloadedQuiz=window.self!==window.top;
@@ -125,7 +133,7 @@ document.addEventListener('visibilitychange',()=>{
 });
 
 const params = new URLSearchParams(location.search);
-const requestedCategory = params.get("category");
+const requestedCategory = canonicalCategory(params.get("category"));
 const requestedQuiz = params.get("quiz");
 const partyRoomCode=(params.get("partyRoom")||"").toUpperCase();
 const partyPlayerId=params.get("partyPlayer")||"";
@@ -133,6 +141,10 @@ const partyHost=params.get("partyHost")==="true";
 const networkPartyActive=/^[A-Z]{4}$/.test(partyRoomCode) && Boolean(partyPlayerId);
 const defaultCategory = Object.keys(questionBank)[0] || "CompArch";
 const category = requestedCategory && (questionBank[requestedCategory] || codes[requestedCategory]) ? requestedCategory : defaultCategory;
+const selectedQuizTheme=window.quizHubPreferences.quizTheme;
+const activeQuizTheme=selectedQuizTheme==="default"
+  ? category==="SoftEngi" ? "ai-model" : category==="CompGFX" ? "blended" : "quizhub"
+  : selectedQuizTheme;
 const socIndiReviewSections=category==="SocIndi" && requestedQuiz==="reviewQuiz" &&
   questionBank.SocIndi && questionBank.SocIndi.review && !Array.isArray(questionBank.SocIndi.review)
   ? questionBank.SocIndi.review
@@ -196,6 +208,7 @@ const partyModeRequested=params.get("partyMode")==="true" || networkPartyActive;
 let partyPlayers=[];
 let partyConfigError="";
 let partyHideLockedAnswers=false;
+let partyShowPlayerScores=true;
 if(partyModeRequested){
   try{
     const savedPartyPlayers=JSON.parse(sessionStorage.getItem("quizHubPartyPlayers") || "null");
@@ -293,7 +306,8 @@ const partySettingsSummary=document.getElementById("partySettingsSummary");
 const partyPlayerLeftDialog=document.getElementById("partyPlayerLeftDialog");
 const partyPlayerLeftMessage=document.getElementById("partyPlayerLeftMessage");
 const questionTitle = document.getElementById('questionTitle');
-const isSoftEngi = category === "SoftEngi";
+const isSoftEngi = activeQuizTheme === "ai-model";
+const isCompGFX = activeQuizTheme === "blended";
 const softengiSidebar = document.getElementById('softengiSidebar');
 const softengiScore = document.getElementById('softengiScore');
 const softengiCombo = document.getElementById('softengiCombo');
@@ -311,6 +325,22 @@ if (isSoftEngi) {
   if (softengiComposer && questionHeading) {
     softengiComposer.parentElement.insertBefore(questionHeading, softengiComposer);
     softengiComposer.after(feedback);
+  }
+}
+if (isCompGFX) {
+  document.body.classList.add('compgfx-mode');
+  document.body.append(feedback);
+  setupTitle.textContent = 'New Quiz';
+  setup.querySelector('.setup-kicker').textContent = 'QUIZ WORKSPACE';
+  beginButton.textContent = 'START QUIZ';
+  const gfxStage = document.querySelector('.gfx-cube-stage');
+  const gfxFrontFace = document.querySelector('.gfx-cube-front');
+  const questionHeading = questionTitle.closest('.quiz-heading');
+  const selectionCursor = document.getElementById('gfxSelectionCursor');
+  if(gfxStage && gfxFrontFace && questionHeading){
+    gfxFrontFace.removeAttribute('aria-hidden');
+    gfxFrontFace.appendChild(questionHeading);
+    if(selectionCursor) gfxFrontFace.appendChild(selectionCursor);
   }
 }
 if(partyModeActive) document.body.classList.add("party-mode");
@@ -368,6 +398,97 @@ let questionTimerInterval = null;
 let quizEnded = false;
 let questionTypingTimer = null;
 let feedbackTypingTimer = null;
+let compGfxQuestionLoaded = false;
+let compGfxRotation = -45;
+let compGFXAnswerPanelAnimation = null;
+const compGfxCube = document.getElementById('gfxCube');
+const compGfxQuestion = document.querySelector('.gfx-cube-face > .quiz-heading');
+const compGfxCursor = document.getElementById('gfxSelectionCursor');
+let compGfxQuestionAnimation = null;
+const compGfxFaceOrder = ['front','left','back','right'];
+
+function placeCompGFXQuestionOnFace(rotation, selectFace=true){
+  if(!compGfxCube || !compGfxQuestion) return;
+  const faceIndex = ((Math.round(rotation / 90) % compGfxFaceOrder.length) + compGfxFaceOrder.length) % compGfxFaceOrder.length;
+  const targetFace = compGfxCube.querySelector(`.gfx-cube-${compGfxFaceOrder[faceIndex]}`);
+  if(!targetFace) return;
+
+  compGfxCube.querySelectorAll('.gfx-cube-face').forEach((face)=>{
+    const isTargetFace = face === targetFace;
+    face.classList.toggle('active-question-face', isTargetFace && selectFace);
+    if(isTargetFace){
+      face.removeAttribute('aria-hidden');
+    }else{
+      face.setAttribute('aria-hidden','true');
+    }
+  });
+  targetFace.append(compGfxQuestion);
+  if(compGfxCursor) targetFace.append(compGfxCursor);
+  return targetFace;
+}
+
+function animateCompGFXCursor(reduceMotion){
+  if(!compGfxCursor || reduceMotion) return;
+  compGfxCursor.classList.remove('selecting');
+  void compGfxCursor.offsetWidth;
+  compGfxCursor.classList.add('selecting');
+}
+
+function transitionCompGFXIntoQuiz(){
+  if(!isCompGFX || !compGfxCube) return;
+
+  const motionMode = window.quizHubPreferences.motionMode;
+  const reduceMotion = motionMode === 'reduced' ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion){
+    document.body.classList.add('gfx-quiz-started');
+    return;
+  }
+
+  const currentTransform = new DOMMatrixReadOnly(getComputedStyle(compGfxCube).transform);
+  const currentAngle = Math.atan2(currentTransform.m31, currentTransform.m11) * 180 / Math.PI;
+  const targetAngle = compGfxRotation +
+    360 * Math.floor((currentAngle - compGfxRotation) / 360) - 360;
+  const startTransform = `rotateX(-12deg) rotateY(${currentAngle}deg)`;
+
+  compGfxCube.style.transform = startTransform;
+  compGfxCube.style.setProperty('--gfx-cube-angle', `${targetAngle}deg`);
+  document.body.classList.add('gfx-quiz-started');
+
+  const spinAnimation = compGfxCube.animate([
+    {transform:startTransform,offset:0},
+    {transform:`rotateX(0deg) rotateY(${targetAngle}deg)`,offset:1}
+  ],{duration:1300,easing:'cubic-bezier(.3,.7,.25,1)',fill:'forwards'});
+
+  spinAnimation.onfinish = () => {
+    compGfxCube.style.removeProperty('transform');
+    spinAnimation.cancel();
+  };
+}
+
+function animateCompGFXCube(){
+  if(!isCompGFX || !compGfxCube) return;
+
+  const motionMode = window.quizHubPreferences.motionMode;
+  const reduceMotion = motionMode === 'reduced' ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const turnDuration = motionMode === 'minimal' ? 250 : 350;
+  compGfxCube.style.setProperty('--gfx-turn-duration', `${turnDuration / 1000}s`);
+  if(compGfxQuestionLoaded){
+    const nextRotation = compGfxRotation + 90;
+    compGfxCube.style.setProperty('--gfx-cube-from', `rotateY(${compGfxRotation}deg)`);
+    compGfxCube.style.setProperty('--gfx-cube-to', `rotateY(${nextRotation}deg)`);
+    compGfxRotation = nextRotation;
+    compGfxCube.classList.remove('turning');
+    return reduceMotion ? 0 : turnDuration;
+  }else{
+    compGfxQuestionLoaded = true;
+    compGfxCube.style.setProperty('--gfx-cube-angle', `${compGfxRotation}deg`);
+    placeCompGFXQuestionOnFace(compGfxRotation);
+    animateCompGFXCursor(reduceMotion);
+    return 0;
+  }
+}
 
 socIndiTimeLimits.hidden=!socIndiReviewSections;
 for(let minutes=1;minutes<=60;minutes++){
@@ -532,12 +653,15 @@ function updatePartyScoreDisplay(){
   partyScoreDisplay.hidden=!partyModeActive;
   partyScoreToggle.hidden=!partyModeActive;
   if(!partyModeActive) return;
-  partyScoreDisplay.replaceChildren(...partyPlayers.map((player)=>{
+  const visiblePlayers=networkPartyActive && !partyShowPlayerScores
+    ? partyPlayers.filter((player)=>player.id===partyPlayerId)
+    : partyPlayers;
+  partyScoreDisplay.replaceChildren(...visiblePlayers.map((player)=>{
     const score=document.createElement("span");
     score.className="party-player-score-item";
     score.style.setProperty("--party-player-color",player.color);
-    score.textContent=`${player.name}: ${player.score}`;
-    score.setAttribute("aria-label",`${player.name}: ${player.score} points`);
+    score.textContent=`${networkPartyActive && !partyShowPlayerScores?"Your score":player.name}: ${player.score}`;
+    score.setAttribute("aria-label",`${networkPartyActive && !partyShowPlayerScores?"Your score":player.name}: ${player.score} points`);
     return score;
   }));
 }
@@ -718,6 +842,9 @@ function startNetworkQuiz(config,roomSnapshot=null){
   orderMode=config.orderMode==="static"?"static":"random";
   timeLimitMinutes=Number.isFinite(config.timeLimitMinutes)?config.timeLimitMinutes:null;
   perQuestionTimeMinutes=Number.isFinite(config.perQuestionTimeMinutes)?config.perQuestionTimeMinutes:null;
+  partyShowPlayerScores=config.partyOptions?.showPlayerScores!==false;
+  partyHideLockedAnswers=config.partyOptions?.showLockedAnswers===false;
+  updatePartyScoreDisplay();
   if(Array.isArray(config.reviewSections) && socIndiReviewSections){
     selectedReviewSections=config.reviewSections.filter((section)=>availableReviewSections.includes(section));
     bank=getSelectedQuestionBank();
@@ -730,6 +857,7 @@ function startNetworkQuiz(config,roomSnapshot=null){
   quizStarted=true;
   setup.classList.remove("party-network-guest");
   if(isSoftEngi) document.body.classList.add("softengi-active");
+  if(isCompGFX) transitionCompGFXIntoQuiz();
   playSound("begin");
   startQuizMusic();
   setup.hidden=true;
@@ -866,8 +994,12 @@ function revealNetworkQuestion(message){
     }),
     timedOut:false
   });
-  score=partyPlayers.reduce((total,player)=>total+player.score,0);
-  feedback.textContent=`${correctCount} of ${partyPlayers.length} players answered correctly. Correct answer: ${formatPowerText(correctAnswer)}`;
+  score=partyShowPlayerScores
+    ? partyPlayers.reduce((total,player)=>total+player.score,0)
+    : partyPlayers.find((player)=>player.id===partyPlayerId)?.score||0;
+  const ownPoints=ownAnswer?.pointsEarned||0;
+  const pointsMessage=ownPoints>0?` You earned ${ownPoints} point${ownPoints===1?"":"s"}.`:"";
+  feedback.textContent=`${correctCount} of ${partyPlayers.length} players answered correctly. Correct answer: ${formatPowerText(correctAnswer)}.${pointsMessage}`;
   feedback.className=`motivation visible ${ownAnswer?.correct?"right":"wrong"}`;
   nextButton.disabled=!partyHost;
   skipButton.disabled=true;
@@ -1055,11 +1187,16 @@ function showQuestionTitle(){
   }
 
   if (!isSoftEngi) {
+    if(isCompGFX){
+      const titleLength = Array.from(current.q).length;
+      questionTitle.classList.toggle('gfx-question-long', titleLength > 90);
+      questionTitle.classList.toggle('gfx-question-very-long', titleLength > 150);
+    }
     questionTitle.textContent = formatPowerText(current.q);
     return;
   }
 
-  const emojis = ['✨','💡','🧠','🚀','🔍','🎯'];
+  const emojis = ['✨','💡','🧠','🚀','🎯'];
   const emoji = emojis[Math.floor(Math.random() * emojis.length)];
   const title = `${formatPowerText(current.q)} ${emoji}`;
   const titleLength = Array.from(title).length;
@@ -1094,6 +1231,79 @@ function showQuestionTitle(){
     ? Math.max(1, Math.round(defaultTypingSpeed * 0.75))
     : defaultTypingSpeed;
   questionTypingTimer = setInterval(typeNextCharacter, typingSpeed);
+}
+
+function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
+  if(!shouldFade || !compGfxQuestion){
+    showQuestionTitle();
+    return;
+  }
+
+  const motionMode = window.quizHubPreferences.motionMode;
+  const reduceMotion = motionMode === 'reduced' ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion){
+    compGfxCube.classList.remove('turning');
+    compGfxCube.style.setProperty('--gfx-cube-angle', `${compGfxRotation}deg`);
+    placeCompGFXQuestionOnFace(compGfxRotation);
+    showQuestionTitle();
+    return;
+  }
+
+  const wait = (duration) => new Promise((resolve) => setTimeout(resolve, duration));
+  const clickDuration = 110;
+  const answerPanelExitTransform = window.matchMedia('(max-width: 760px)').matches
+    ? 'translateY(calc(100dvh + 40px))'
+    : 'translateX(calc(100vw + 40px))';
+  compGFXAnswerPanelAnimation?.cancel();
+  compGFXAnswerPanelAnimation = content.animate(
+    [
+      {transform:'translateX(0)',opacity:1},
+      {transform:answerPanelExitTransform,opacity:0}
+    ],
+    {duration:220,easing:'cubic-bezier(.55,0,1,.45)',fill:'forwards'}
+  );
+  compGfxQuestionAnimation?.cancel();
+  compGfxQuestionAnimation = compGfxQuestion.animate(
+    [{opacity:1},{opacity:0}],
+    {duration:80,easing:'ease-in',fill:'forwards'}
+  );
+  animateCompGFXCursor(false);
+  void (async()=>{
+    await Promise.all([compGfxQuestionAnimation.finished.catch(()=>{}),wait(clickDuration)]);
+    compGfxCube.querySelector('.active-question-face')?.classList.remove('active-question-face');
+
+    if(turnDuration > 0){
+      compGfxCube.classList.remove('turning');
+      void compGfxCube.offsetWidth;
+      compGfxCube.style.setProperty('--gfx-cube-angle', `${compGfxRotation}deg`);
+      compGfxCube.classList.add('turning');
+      await wait(turnDuration);
+    }
+
+    const selectedFace = placeCompGFXQuestionOnFace(compGfxRotation,false);
+    showQuestionTitle();
+    animateCompGFXCursor(false);
+    await wait(clickDuration);
+    selectedFace?.classList.add('active-question-face');
+    compGfxQuestionAnimation?.cancel();
+    compGfxQuestionAnimation = compGfxQuestion.animate(
+      [{opacity:0},{opacity:1}],
+      {duration:150,easing:'ease-out',fill:'forwards'}
+    );
+    await compGfxQuestionAnimation.finished.catch(()=>{});
+    compGfxQuestionAnimation = null;
+    compGFXAnswerPanelAnimation?.cancel();
+    compGFXAnswerPanelAnimation = content.animate(
+      [
+        {transform:answerPanelExitTransform,opacity:0},
+        {transform:'translateX(0)',opacity:1}
+      ],
+      {duration:260,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'}
+    );
+    await compGFXAnswerPanelAnimation.finished.catch(()=>{});
+    compGFXAnswerPanelAnimation = null;
+  })();
 }
 
 function typeSoftEngiFeedback(){
@@ -1237,15 +1447,52 @@ function showComboPopup(){
   const message = `COMBO UP! ×${combo}`;
   comboPopup.replaceChildren();
   comboPopup.setAttribute('aria-label', message);
-  const letterDelayStep = Math.min(0.025, 0.28 / Math.max(1, message.length - 1));
-  Array.from(message).forEach((character, index) => {
-    const letter = document.createElement('span');
-    letter.className = 'combo-popup-letter';
-    letter.setAttribute('aria-hidden', 'true');
-    letter.textContent = character === ' ' ? '\u00a0' : character;
-    letter.style.setProperty('--letter-delay', `${0.32 + index * letterDelayStep}s`);
-    comboPopup.appendChild(letter);
-  });
+  if(isCompGFX){
+    const dialog = document.createElement('div');
+    dialog.className = 'gfx-combo-dialog';
+    const titleBar = document.createElement('div');
+    titleBar.className = 'gfx-combo-titlebar';
+    const title = document.createElement('span');
+    title.textContent = 'QuizHub';
+    const closeButton = document.createElement('button');
+    closeButton.className = 'gfx-combo-close';
+    closeButton.type = 'button';
+    closeButton.setAttribute('aria-label', 'Close combo notification');
+    closeButton.textContent = '×';
+    closeButton.addEventListener('click', hideComboPopup);
+    titleBar.append(title, closeButton);
+
+    const messageRow = document.createElement('div');
+    messageRow.className = 'gfx-combo-message';
+    const successIcon = document.createElement('span');
+    successIcon.className = 'gfx-combo-success-icon';
+    successIcon.setAttribute('aria-hidden', 'true');
+    successIcon.textContent = '✓';
+    const messageText = document.createElement('p');
+    messageText.textContent = message;
+    messageRow.append(successIcon, messageText);
+
+    const footer = document.createElement('div');
+    footer.className = 'gfx-combo-footer';
+    const okButton = document.createElement('button');
+    okButton.className = 'gfx-combo-ok';
+    okButton.type = 'button';
+    okButton.textContent = 'OK';
+    okButton.addEventListener('click', hideComboPopup);
+    footer.append(okButton);
+    dialog.append(titleBar, messageRow, footer);
+    comboPopup.append(dialog);
+  }else{
+    const letterDelayStep = Math.min(0.025, 0.28 / Math.max(1, message.length - 1));
+    Array.from(message).forEach((character, index) => {
+      const letter = document.createElement('span');
+      letter.className = 'combo-popup-letter';
+      letter.setAttribute('aria-hidden', 'true');
+      letter.textContent = character === ' ' ? '\u00a0' : character;
+      letter.style.setProperty('--letter-delay', `${0.32 + index * letterDelayStep}s`);
+      comboPopup.appendChild(letter);
+    });
+  }
   comboPopup.hidden = false;
   comboPopup.classList.remove('combo-popup-active');
   void comboPopup.offsetWidth;
@@ -1275,19 +1522,26 @@ function slideComboPopupOut(){
 }
 
 comboPopup.addEventListener('animationend', (event) => {
-  if (event.target === comboPopup && event.animationName === 'comboShoot') {
+  if (event.target === comboPopup &&
+      (event.animationName === 'comboShoot' || event.animationName === 'gfxComboDialog')) {
     hideComboPopup();
   }
 });
 
 function renderQuestion(forcedAnswerOrder=null){
   if (!current) return;
+  const fadeCompGFXQuestion = isCompGFX && compGfxQuestionLoaded;
+  const compGfxTurnDuration = animateCompGFXCube();
   if (feedbackTypingTimer !== null) {
     clearInterval(feedbackTypingTimer);
     feedbackTypingTimer = null;
   }
 
-  showQuestionTitle();
+  if(isCompGFX){
+    transitionCompGFXQuestionTitle(fadeCompGFXQuestion, compGfxTurnDuration);
+  }else{
+    showQuestionTitle();
+  }
   nextButton.disabled = true;
   skipButton.disabled = false;
   skipButton.classList.remove('skip-hidden', 'animate-hide');
@@ -1668,6 +1922,8 @@ function handleNetworkGameOver(message){
       isRetake:false,
       partyMode:true,
       onlineParty:true,
+      partyRoomCode,
+      partyHost,
       partyCurrentPlayerId:partyPlayerId,
       partyPlayers:partyPlayers.map((player)=>({
         ...player,
@@ -1778,6 +2034,7 @@ function beginQuiz(){
   if(partyModeActive) resetPartyComboStreaks();
   quizStarted = true;
   if (isSoftEngi) document.body.classList.add('softengi-active');
+  if (isCompGFX) transitionCompGFXIntoQuiz();
   startQuizMusic();
   setup.hidden = true;
   content.hidden = false;
@@ -1796,14 +2053,13 @@ if(networkPartyActive){
   partyConnection.on("joined",(message)=>{
     updateNetworkPlayers(message.room.players);
     updatePartySettingsSummary(message.room.quizConfig);
-    partyHideLockedAnswers=false;
+    partyHideLockedAnswers=message.room.partyOptions?.showLockedAnswers===false;
     if(message.room.stage==="quiz" && message.room.quizConfig){
       startNetworkQuiz(message.room.quizConfig,message.room);
     }
     else if(partyHost) publishPartySettings();
   });
   partyConnection.on("quiz-start",(message)=>{
-    partyHideLockedAnswers=false;
     updateNetworkPlayers(message.players);
     startNetworkQuiz(message.config);
   });

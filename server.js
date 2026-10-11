@@ -10,6 +10,7 @@ const root = __dirname;
 const port = Number.parseInt(process.env.PORT || "8080", 10);
 const roomCodeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 const roomLifetimeMs = 2 * 60 * 60 * 1000;
+const playerHandoffGraceMs = 60 * 1000;
 const maxRoomPlayers = 50;
 const maxQuizQuestions = 1000;
 const mimeTypes = {
@@ -35,6 +36,7 @@ function publicRoom(room) {
     code: room.code,
     capacity: room.capacity,
     stage: room.stage,
+    partyOptions: room.partyOptions,
     category: room.category,
     quiz: room.quiz,
     quizConfig: room.quizConfig,
@@ -112,11 +114,15 @@ function sendError(socket, message) {
 function revealRoomAnswers(room) {
   if (!room.question || room.reveal || room.answers.size !== room.players.size) return;
   const correctIndex = room.question.correctIndex;
+  const firstCorrectPlayerId = room.firstCorrectPlayerId;
   const answerDetails = [...room.players.values()].map((member) => {
     const selected = room.answers.get(member.id);
     const correct = selected === correctIndex;
-    if (correct) member.score++;
-    return { playerId: member.id, selectedIndex: selected, correct, score: member.score };
+    const pointsEarned = correct
+      ? room.partyOptions.earlyPointBonus && member.id === firstCorrectPlayerId ? 3 : 1
+      : 0;
+    member.score += pointsEarned;
+    return { playerId: member.id, selectedIndex: selected, correct, pointsEarned, score: member.score };
   });
   room.reveal = { correctIndex, answers: answerDetails };
   broadcast(room, { type: "reveal", ...room.reveal });
@@ -125,6 +131,7 @@ function revealRoomAnswers(room) {
 function removePlayer(room, player) {
   if (!player) return;
   if (room.players.get(player.id) !== player) return;
+  if (player.expireTimer) clearTimeout(player.expireTimer);
   room.players.delete(player.id);
   if (room.players.size === 0) {
     clearTimeout(room.expiration);
@@ -170,7 +177,8 @@ function handleMessage(socket, rawMessage) {
       const player = { ...profile, id: randomUUID(), ready: true, host: true, score: 0, socket, expireTimer: null };
       const room = {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
-        question: null, answersLocked: [], reveal: null, quizConfig: null
+        question: null, answersLocked: [], reveal: null, quizConfig: null,
+        partyOptions: { showPlayerScores: true, showLockedAnswers: true, earlyPointBonus: true }
       };
       room.expiration = setTimeout(() => {
         broadcast(room, { type: "error", message: "This room expired." });
@@ -214,6 +222,7 @@ function handleMessage(socket, rawMessage) {
       }
       if (reconnectingPlayer.expireTimer) clearTimeout(reconnectingPlayer.expireTimer);
       reconnectingPlayer.expireTimer = null;
+      reconnectingPlayer.handoff = false;
       reconnectingPlayer.socket = socket;
       socket.roomCode = code;
       socket.playerId = reconnectingPlayer.id;
@@ -279,6 +288,76 @@ function handleMessage(socket, rawMessage) {
       broadcast(room, { type: "launch", category, quiz });
       break;
     }
+    case "party-options": {
+      if (!player.host || room.stage !== "lobby") {
+        return sendError(socket, "Only the host can change party options in the lobby.");
+      }
+      const options = message.options;
+      if (!options || typeof options.showPlayerScores !== "boolean" ||
+          typeof options.showLockedAnswers !== "boolean" ||
+          typeof options.earlyPointBonus !== "boolean") {
+        return sendError(socket, "Invalid party options.");
+      }
+      room.partyOptions = {
+        showPlayerScores: options.showPlayerScores,
+        showLockedAnswers: options.showLockedAnswers,
+        earlyPointBonus: options.earlyPointBonus
+      };
+      broadcastRoom(room);
+      break;
+    }
+    case "replay": {
+      if (!player.host || room.stage !== "results") {
+        return sendError(socket, "Only the host can replay the party quiz.");
+      }
+      if (room.players.size < 2) {
+        return sendError(socket, "At least two players must remain in the party to replay.");
+      }
+      if (!allReady(room)) {
+        return sendError(socket, "Wait until every player has reconnected before replaying.");
+      }
+      room.stage = "setup";
+      room.quizConfig = null;
+      room.question = null;
+      room.answers = new Map();
+      room.answersLocked = [];
+      room.reveal = null;
+      room.firstCorrectPlayerId = null;
+      room.players.forEach((member) => {
+        if (member.expireTimer) clearTimeout(member.expireTimer);
+        member.expireTimer = null;
+        member.score = 0;
+        member.handoff = true;
+      });
+      broadcast(room, { type: "replay", category: room.category, quiz: room.quiz });
+      break;
+    }
+    case "choose-new-quiz": {
+      if (!player.host || room.stage !== "results") {
+        return sendError(socket, "Only the host can choose another party quiz.");
+      }
+      if (!allReady(room)) {
+        return sendError(socket, "Wait until every player has reconnected before returning to the lobby.");
+      }
+      room.stage = "lobby";
+      room.category = null;
+      room.quiz = null;
+      room.quizConfig = null;
+      room.question = null;
+      room.answers = new Map();
+      room.answersLocked = [];
+      room.reveal = null;
+      room.firstCorrectPlayerId = null;
+      room.players.forEach((member) => {
+        if (member.expireTimer) clearTimeout(member.expireTimer);
+        member.expireTimer = null;
+        member.score = 0;
+        member.handoff = true;
+      });
+      broadcast(room, { type: "choose-new-quiz" });
+      broadcastRoom(room);
+      break;
+    }
     case "quiz-config": {
       if (!player.host || room.stage !== "setup") {
         return sendError(socket, "Only the host can change quiz settings.");
@@ -314,13 +393,13 @@ function handleMessage(socket, rawMessage) {
           !config.questionSequence.every((index) => Number.isInteger(index) && index >= 0)) {
         return sendError(socket, "Invalid quiz question sequence.");
       }
-      room.quizConfig = config;
+      room.quizConfig = { ...config, partyOptions: room.partyOptions };
       room.stage = "quiz";
       room.questionNumber = -1;
       room.players.forEach((member) => { member.score = 0; });
       broadcast(room, {
         type: "quiz-start",
-        config,
+        config: room.quizConfig,
         players: publicRoom(room).players
       });
       break;
@@ -344,6 +423,7 @@ function handleMessage(socket, rawMessage) {
       room.question = { questionNumber, questionIndex, answerOrder, correctIndex };
       room.answersLocked = [];
       room.answers = new Map();
+      room.firstCorrectPlayerId = null;
       room.reveal = null;
       broadcast(room, {
         type: "question",
@@ -362,13 +442,16 @@ function handleMessage(socket, rawMessage) {
         return sendError(socket, "Choose one of the available answers.");
       }
       room.answers.set(player.id, message.answerIndex);
+      if (message.answerIndex === room.question.correctIndex && room.firstCorrectPlayerId === null) {
+        room.firstCorrectPlayerId = player.id;
+      }
       room.answersLocked = [...room.answers.keys()];
       if (room.answers.size < room.players.size) {
         broadcast(room, {
           type: "answer-locked",
           playerId: player.id,
           lockedCount: room.answers.size,
-          answerIndex: message.answerIndex
+          ...(room.partyOptions.showLockedAnswers ? { answerIndex: message.answerIndex } : {})
         });
         return;
       }
@@ -496,6 +579,23 @@ webSocketServer.on("connection", (socket) => {
     const player = room && findPlayer(room, socket.playerId);
     if (!player || player.socket !== socket) return;
     player.socket = null;
+    if (room.stage === "results" || player.handoff) {
+      player.expireTimer = setTimeout(() => {
+        if (player.socket || room.players.get(player.id) !== player) return;
+        if (room.stage === "quiz" || room.stage === "setup") {
+          room.stage = "results";
+          broadcastExcept(room, {
+            type: "game-over",
+            players: publicRoom(room).players,
+            reason: "player-left",
+            departedPlayerId: player.id
+          }, player.id);
+        }
+        removePlayer(room, player);
+      }, playerHandoffGraceMs);
+      player.expireTimer.unref();
+      return;
+    }
     if (room.stage === "lobby") {
       removePlayer(room, player);
       return;

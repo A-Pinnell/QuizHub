@@ -35,7 +35,7 @@
       </div>
         <h1 aria-label="Lakehead STEM Hub">
           <span class="stem-letter">Q</span><span class="stem-letter">U</span><span class="stem-letter">I</span><span class="stem-letter">Z</span><span class="stem-letter">&nbsp;</span><span class="stem-letter">H</span><span class="stem-letter">u</span><span class="stem-letter">b</span><span class="stem-letter">!</span></h1>
-      <div class="tagline">Version 2.1</div>
+      <div class="tagline">Version 2.2</div>
       <a class="textbook-library-link" id="textbookLibraryLink" href="https://a-pinnell.github.io/TextbookLibrary/">Visit the Textbook Library</a></div></header>
     <main class="menu-area">
       <button class="menu-arrow menu-arrow-left" type="button" aria-label="Show previous page">&#8249;</button>
@@ -43,7 +43,7 @@
         <div class="menu-track" id="menuTrack">
           <section class="menu" aria-label="Quiz courses page 1">
             <button class="card course-card" data-course="CompArch"><div class="card-content"><h2>COMP-2453</h2><p>Intro Comp Arch</p></div></button>
-            <button class="card course-card coming-soon" data-coming-soon="true"><div class="card-content"><h2>COMING SOON</h2><p>Computer Graphics</p></div></button>
+            <button class="card course-card" data-course="CompGFX"><div class="card-content"><h2>COMP-4471</h2><p>Computer Graphics</p></div></button>
             <button class="card course-card" data-course="SocIndi"><div class="card-content"><h2>SOCI-2755</h2><p>Tech Soc Indi People Can</p></div></button>
             <button class="card course-card" data-course="CloudComp"><div class="card-content"><h2>COMP-4312</h2><p>Cloud Computing</p></div></button>
             <button class="card course-card" data-course="DataSci"><div class="card-content"><h2>COMP-4112</h2><p>Intro Data Science</p></div></button>
@@ -92,6 +92,19 @@
     <button class="settings-close" type="button" data-close-settings aria-label="Close options">&times;</button>
     <div class="quiz-menu-kicker">PREFERENCES</div>
     <h2 id="settingsTitle">Options</h2>
+    <fieldset class="setting-group quiz-theme-setting">
+      <legend>Global quiz theme</legend>
+      <figure class="quiz-theme-preview">
+        <img id="quizThemePreviewImage" src="./assets/quiz-theme-default.png" alt="Preview of the course's default quiz style">
+        <figcaption id="quizThemePreviewCaption">Default course themes</figcaption>
+      </figure>
+      <div class="quiz-theme-options">
+        <label class="setting-radio"><input type="radio" name="quizTheme" value="default"><span>Default</span></label>
+        <label class="setting-radio"><input type="radio" name="quizTheme" value="quizhub"><span>QuizHub Style</span></label>
+        <label class="setting-radio"><input type="radio" name="quizTheme" value="ai-model"><span>AI Model Style</span></label>
+        <label class="setting-radio"><input type="radio" name="quizTheme" value="blended"><span>Blended Style</span></label>
+      </div>
+    </fieldset>
     <fieldset class="setting-group motion-setting">
       <legend>Motion</legend>
       <label class="motion-slider-label" for="motionModeSlider">Animation amount</label>
@@ -119,12 +132,16 @@
           <option value="run" id="blancQuizMusicOption" hidden>...</option>
           <option value="default">Default for each course</option>
           <option value="CompArch">Computer Architecture</option>
+          <option value="Practice1">Binary Practice</option>
+          <option value="Practice2">Hexadecimal Practice</option>
+          <option value="CompGFX">Computer Graphics</option>
           <option value="CloudComp">Cloud Computing</option>
           <option value="DataSci">Data Science</option>
           <option value="SoftEngi">Software Engineering</option>
         </select>
         <button class="music-preview-toggle" id="quizMusicPreview" type="button" aria-label="Preview selected quiz music" aria-pressed="false" title="Preview selected quiz music">▶</button>
       </div>
+      <small class="music-track-name" id="quizMusicTrackName" aria-live="polite"></small>
     </div>
     <label class="setting-choice fullscreen-setting">
       <input id="fullscreenSetting" type="checkbox">
@@ -159,8 +176,9 @@
   <div class="party-mode-backdrop" data-close-party-mode></div>
   <section class="party-mode-panel" role="dialog" aria-modal="true" aria-labelledby="partyModeTitle">
     <button class="party-mode-close" type="button" data-close-party-mode aria-label="Close party mode">&times;</button>
-    <div class="quiz-menu-kicker">PLAY TOGETHER</div>
-    <h2 id="partyModeTitle">Party mode</h2>
+    <div class="quiz-menu-kicker">GET STARTED... TOGETHER!</div>
+    <h2 id="partyModeTitle">PARTY HUB</h2>
+    <small class="setting-description">Practice with friends online, and see who can get the top score</small>
     <div class="party-mode-choice" id="partyModeChoice">
       <button class="party-mode-start" id="partyHostChoice" type="button">HOST A GAME</button>
       <button class="party-mode-join" id="partyJoinChoice" type="button">JOIN A GAME</button>

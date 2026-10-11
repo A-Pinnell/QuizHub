@@ -9,10 +9,14 @@
     : `quizHub${name[0].toUpperCase()}${name.slice(1)}`;
   const quizMusicSources = {
     run: "./secret/RUN.mp3",
+    Practice1: "./music/BinaryTrack.wav",
+    Practice2: "./music/HexadecimalTrack.wav",
     CompArch: "./music/QuizMusic.wav",
     CloudComp: "./music/CloudCompMusic.wav",
     DataSci: "./music/DataSciMusic.wav",
-    SoftEngi: "./music/SoftEngiMusic.wav"
+    SoftEngi: "./music/SoftEngiMusic.wav",
+    CompGFX: "./music/CompGFXMusic.wav",
+    SocIndi: "./music/SocIndiMusic.wav"
   };
   const regularQuizMusicOptions = ["default", ...Object.keys(quizMusicSources).filter((source) => source !== "run")];
   const blancQuizMusicOptions = ["run", ...regularQuizMusicOptions];
@@ -20,6 +24,7 @@
   const savedQuizMusic = storage.getItem("quizHubQuizMusic");
   const textSizes = ["small", "default", "large"];
   const textSizeScales = { small: 0.8, default: 1, large: 1.25 };
+  const quizThemes = ["default", "quizhub", "ai-model", "blended"];
   const preferences = {
     motionMode: ["default", "minimal", "reduced"].includes(savedMotionMode)
       ? savedMotionMode
@@ -33,6 +38,9 @@
       : blancMode ? "run" : "default",
     textSize: textSizes.includes(storage.getItem("quizHubTextSize"))
       ? storage.getItem("quizHubTextSize")
+      : "default",
+    quizTheme: quizThemes.includes(storage.getItem("quizHubQuizTheme"))
+      ? storage.getItem("quizHubQuizTheme")
       : "default"
   };
 
@@ -78,6 +86,9 @@
     }else if(name === "textSize" && textSizes.includes(value)){
       preferences.textSize = value;
       storage.setItem("quizHubTextSize", value);
+    }else if(name === "quizTheme" && quizThemes.includes(value)){
+      preferences.quizTheme = value;
+      storage.setItem("quizHubQuizTheme", value);
     }else{
       throw new TypeError(`Invalid QuizHub preference: ${name}`);
     }
@@ -102,6 +113,7 @@
       "quizHubBlancMode",
       "quizHubQuizMusic",
       "quizHubTextSize",
+      "quizHubQuizTheme",
       "quizHubMuted",
       "quizHubMusicMuted"
     ].forEach((key)=>storage.removeItem(key));
@@ -112,6 +124,7 @@
     preferences.blancMode = false;
     preferences.quizMusic = "default";
     preferences.textSize = "default";
+    preferences.quizTheme = "default";
     apply();
     window.dispatchEvent(new CustomEvent("quizhub:preferenceschange", {
       detail: {
@@ -132,6 +145,7 @@
     get blancMode(){ return preferences.blancMode; },
     get quizMusic(){ return preferences.quizMusic; },
     get textSize(){ return preferences.textSize; },
+    get quizTheme(){ return preferences.quizTheme; },
     get soundMuted(){ return storage.getItem(storageKey("soundMuted")) === "true"; },
     get musicMuted(){ return storage.getItem(storageKey("musicMuted")) === "true"; },
     setMotionMode(value){ update("motionMode", value); },
@@ -141,6 +155,7 @@
     setBlancMode(value){ update("blancMode", value); },
     setQuizMusic(value){ update("quizMusic", value); },
     setTextSize(value){ update("textSize", value); },
+    setQuizTheme(value){ update("quizTheme", value); },
     resolveQuizMusic(defaultSource){
       const selectedSource = quizMusicSources[preferences.quizMusic];
       return new URL(selectedSource || defaultSource, window.location.href).toString();

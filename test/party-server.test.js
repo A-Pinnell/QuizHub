@@ -6,7 +6,7 @@ const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const WebSocket = require("ws");
 
-function waitForMessage(socket, type) {
+function waitForMessage(socket, type, predicate = () => true) {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       socket.off("message", onMessage);
@@ -14,7 +14,7 @@ function waitForMessage(socket, type) {
     }, 3000);
     function onMessage(data) {
       const message = JSON.parse(data.toString());
-      if (message.type !== type) return;
+      if (message.type !== type || !predicate(message)) return;
       clearTimeout(timeout);
       socket.off("message", onMessage);
       resolve(message);
@@ -79,6 +79,11 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   const hosted = await hostedPromise;
   assert.match(hosted.room.code, /^[A-Z]{4}$/);
   assert.equal(hosted.room.capacity, 50);
+  assert.deepEqual(hosted.room.partyOptions, {
+    showPlayerScores: true,
+    showLockedAnswers: true,
+    earlyPointBonus: true
+  });
 
   const invalidHost = await connect();
   const invalidCapacity = waitForMessage(invalidHost, "error");
@@ -102,6 +107,21 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   await lobbyUpdatePromise;
   assert.equal(joined.room.players.length, 2);
   assert.equal(joined.room.players.every((player) => player.ready), true);
+
+  const hostPartyOptions = waitForMessage(host, "room-state", (message) => !message.room.partyOptions.showPlayerScores);
+  const guestPartyOptions = waitForMessage(guest, "room-state", (message) => !message.room.partyOptions.showPlayerScores);
+  send(host, {
+    type: "party-options",
+    code: hosted.room.code,
+    options: { showPlayerScores: false, showLockedAnswers: false, earlyPointBonus: true }
+  });
+  const [hostPartyOptionsMessage, guestPartyOptionsMessage] = await Promise.all([hostPartyOptions, guestPartyOptions]);
+  assert.deepEqual(hostPartyOptionsMessage.room.partyOptions, {
+    showPlayerScores: false,
+    showLockedAnswers: false,
+    earlyPointBonus: true
+  });
+  assert.deepEqual(guestPartyOptionsMessage.room.partyOptions, hostPartyOptionsMessage.room.partyOptions);
 
   const lobbyLeaveUpdate = waitForMessage(host, "room-state");
   const lobbyLeft = waitForMessage(guest, "left");
@@ -169,6 +189,12 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   const [hostStartMessage, guestStartMessage] = await Promise.all([hostStarted, guestStarted]);
   assert.equal(hostStartMessage.hideLockedAnswers, undefined);
   assert.equal(guestStartMessage.hideLockedAnswers, undefined);
+  assert.deepEqual(hostStartMessage.config.partyOptions, {
+    showPlayerScores: false,
+    showLockedAnswers: false,
+    earlyPointBonus: true
+  });
+  assert.deepEqual(guestStartMessage.config.partyOptions, hostStartMessage.config.partyOptions);
 
   const hostQuestion = waitForMessage(host, "question");
   const guestQuestion = waitForMessage(guest, "question");
@@ -187,9 +213,11 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     type: "answer",
     code: hosted.room.code,
     questionNumber: 0,
-    answerIndex: 0
+    answerIndex: 1
   });
-  assert.equal((await lockedPromise).answerIndex, 0);
+  const lockedMessage = await lockedPromise;
+  assert.equal(lockedMessage.playerId, joined.playerId);
+  assert.equal(lockedMessage.answerIndex, undefined);
 
   const hostReveal = waitForMessage(host, "reveal");
   const guestReveal = waitForMessage(guest, "reveal");
@@ -202,7 +230,63 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   const [hostResult, guestResult] = await Promise.all([hostReveal, guestReveal]);
   assert.equal(hostResult.correctIndex, 1);
   assert.equal(guestResult.answers.find((answer) => answer.playerId === hosted.playerId).score, 1);
-  assert.equal(guestResult.answers.find((answer) => answer.playerId === joined.playerId).score, 0);
+  assert.equal(guestResult.answers.find((answer) => answer.playerId === hosted.playerId).pointsEarned, 1);
+  assert.equal(guestResult.answers.find((answer) => answer.playerId === joined.playerId).score, 3);
+  assert.equal(guestResult.answers.find((answer) => answer.playerId === joined.playerId).pointsEarned, 3);
+
+  const hostEnded = waitForMessage(host, "game-over", (message) => message.reason === "ended");
+  const guestEnded = waitForMessage(guest, "game-over", (message) => message.reason === "ended");
+  send(host, { type: "end-game", code: hosted.room.code, reason: "ended" });
+  await Promise.all([hostEnded, guestEnded]);
+
+  const guestClosed = once(guest, "close");
+  guest.close();
+  await guestClosed;
+  guest = await connect();
+  const resultRejoined = waitForMessage(guest, "joined");
+  const hostRejoinUpdate = waitForMessage(host, "room-state");
+  send(guest, { type: "join", code: hosted.room.code, playerId: joined.playerId });
+  const resultRoom = (await resultRejoined).room;
+  await hostRejoinUpdate;
+  assert.equal(resultRoom.stage, "results");
+  assert.equal(resultRoom.players.length, 2);
+
+  const hostReplay = waitForMessage(host, "replay");
+  const guestReplay = waitForMessage(guest, "replay");
+  send(host, { type: "replay", code: hosted.room.code });
+  const [hostReplayMessage, guestReplayMessage] = await Promise.all([hostReplay, guestReplay]);
+  assert.equal(hostReplayMessage.category, "CloudComp");
+  assert.equal(hostReplayMessage.quiz, "quiz2");
+  assert.deepEqual(guestReplayMessage, hostReplayMessage);
+
+  const hostReplayStart = waitForMessage(host, "quiz-start");
+  const guestReplayStart = waitForMessage(guest, "quiz-start");
+  send(host, {
+    type: "quiz-start",
+    code: hosted.room.code,
+    config: { questionSequence: [0], orderMode: "static", timeLimitMinutes: null, perQuestionTimeMinutes: null }
+  });
+  await Promise.all([hostReplayStart, guestReplayStart]);
+  const hostReplayEnded = waitForMessage(host, "game-over", (message) => message.reason === "ended");
+  const guestReplayEnded = waitForMessage(guest, "game-over", (message) => message.reason === "ended");
+  send(host, { type: "end-game", code: hosted.room.code, reason: "ended" });
+  await Promise.all([hostReplayEnded, guestReplayEnded]);
+
+  const hostLobby = waitForMessage(host, "choose-new-quiz");
+  const guestLobby = waitForMessage(guest, "choose-new-quiz");
+  const hostLobbyState = waitForMessage(host, "room-state", (message) => message.room.stage === "lobby");
+  send(host, { type: "choose-new-quiz", code: hosted.room.code });
+  await Promise.all([hostLobby, guestLobby, hostLobbyState]);
+
+  const hostLaunchAgain = waitForMessage(host, "launch");
+  const guestLaunchAgain = waitForMessage(guest, "launch");
+  send(host, {
+    type: "launch",
+    code: hosted.room.code,
+    category: "CloudComp",
+    quiz: "quiz1"
+  });
+  await Promise.all([hostLaunchAgain, guestLaunchAgain]);
 
   const hostOver = waitForMessage(host, "game-over");
   const hostRoomState = waitForMessage(host, "room-state");

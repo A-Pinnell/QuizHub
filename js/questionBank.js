@@ -1,587 +1,798 @@
 window.questionBank = {
 
-  CompArch: [
+  CompArch: {
+    quiz1: [
+      // =========================
+      // BINARY NUMBERS
+      // =========================
 
-    // =========================
-    // BINARY NUMBERS
-    // =========================
+      {q:"What digits are used in the binary number system?", a:["1 and 2","0 and 1","0 through 9","A through F"], c:1},
+      {q:"In binary, what value represents TRUE?", a:["0","1","2","10"], c:1},
+      {q:"In binary, what value represents FALSE?", a:["0","1","2","-1"], c:0},
+      {q:"What does MSB stand for?", a:["Maximum Storage Bit","Most Significant Bit","Memory System Byte","Main Significant Byte"], c:1},
+      {q:"What does LSB stand for?", a:["Least Significant Bit","Last Storage Byte","Logical System Bit","Lowest Storage Block"], c:0},
+      {q:"What does each binary digit represent?", a:["A power of 2","A power of 10","A power of 16","A power of 8"], c:0},
+      {q:"A binary number is the sum of what?", a:["Powers of 10","Powers of 8","Powers of 2","Powers of 16"], c:2},
+      {q:"What is 2^0 equal to?", a:["0","1","2","10"], c:1},
+      {q:"What is 2^1 equal to?", a:["1","2","4","8"], c:1},
+      {q:"What is 2^2 equal to?", a:["2","4","8","16"], c:1},
+      {q:"What is 2^3 equal to?", a:["4","8","16","32"], c:1},
+      {q:"What is 2^4 equal to?", a:["8","16","32","64"], c:1},
+      {q:"What is 2^5 equal to?", a:["16","32","64","128"], c:1},
+      {q:"What is 2^6 equal to?", a:["32","64","128","256"], c:1},
+      {q:"What is 2^7 equal to?", a:["64","128","256","512"], c:1},
+      {q:"What is 2^8 equal to?", a:["128","256","512","1024"], c:1},
+      {q:"What is 2^9 equal to?", a:["256","512","1024","2048"], c:1},
+      {q:"What is 2^10 equal to?", a:["512","1024","2048","4096"], c:1},
+      {q:"What is 2^11 equal to?", a:["1024","2048","4096","8192"], c:1},
+      {q:"What is 2^12 equal to?", a:["2048","4096","8192","16384"], c:1},
+      {q:"What is 2^13 equal to?", a:["4096","8192","16384","32768"], c:1},
+      {q:"What is 2^14 equal to?", a:["8192","16384","32768","65536"], c:1},
+      {q:"What is 2^15 equal to?", a:["16384","32768","65536","131072"], c:1},
+      {q:"What is the decimal value of binary 00001001?", a:["7","8","9","10"], c:2},
+      {q:"Which binary digit is located at the 2^0 position?", a:["MSB","LSB","Middle bit","Sign bit"], c:1},
+      {q:"In weighted position notation, what is multiplied by a power of 2?", a:["The binary digit","The decimal point","The hexadecimal digit","The carry"], c:0},
+      {q:"What is the first step when converting an unsigned decimal integer to binary?", a:["Multiply by 2","Divide by 2","Divide by 16","Add 1"], c:1},
+      {q:"When repeatedly dividing a decimal number by 2, what becomes a binary digit?", a:["The quotient","The remainder","The divisor","The product"], c:1},
+      {q:"How do you read the remainders when converting decimal to binary?", a:["Left to right from first remainder","Right to left","Only the final remainder","In alphabetical order"], c:1},
+      {q:"What is decimal 37 in binary?", a:["100101","101001","110001","100111"], c:0},
+      {q:"What is the binary representation of decimal 1?", a:["0","1","10","11"], c:1},
+      {q:"What is the binary representation of decimal 2?", a:["1","10","11","100"], c:1},
+      {q:"What is the binary representation of decimal 4?", a:["10","100","101","110"], c:1},
+      {q:"What is the binary representation of decimal 8?", a:["100","1000","1010","1111"], c:1},
+      {q:"When performing binary addition, which bit is processed first?", a:["MSB","Middle bit","LSB","Sign bit"], c:2},
+      {q:"What must be included when adding binary digits?", a:["Only the digits","The carry if present","Only the MSB","The decimal equivalent"], c:1},
 
-    {q:"What digits are used in the binary number system?", a:["1 and 2","0 and 1","0 through 9","A through F"], c:1},
-    {q:"In binary, what value represents TRUE?", a:["0","1","2","10"], c:1},
-    {q:"In binary, what value represents FALSE?", a:["0","1","2","-1"], c:0},
-    {q:"What does MSB stand for?", a:["Maximum Storage Bit","Most Significant Bit","Memory System Byte","Main Significant Byte"], c:1},
-    {q:"What does LSB stand for?", a:["Least Significant Bit","Last Storage Byte","Logical System Bit","Lowest Storage Block"], c:0},
-    {q:"What does each binary digit represent?", a:["A power of 2","A power of 10","A power of 16","A power of 8"], c:0},
-    {q:"A binary number is the sum of what?", a:["Powers of 10","Powers of 8","Powers of 2","Powers of 16"], c:2},
-    {q:"What is 2^0 equal to?", a:["0","1","2","10"], c:1},
-    {q:"What is 2^1 equal to?", a:["1","2","4","8"], c:1},
-    {q:"What is 2^2 equal to?", a:["2","4","8","16"], c:1},
-    {q:"What is 2^3 equal to?", a:["4","8","16","32"], c:1},
-    {q:"What is 2^4 equal to?", a:["8","16","32","64"], c:1},
-    {q:"What is 2^5 equal to?", a:["16","32","64","128"], c:1},
-    {q:"What is 2^6 equal to?", a:["32","64","128","256"], c:1},
-    {q:"What is 2^7 equal to?", a:["64","128","256","512"], c:1},
-    {q:"What is 2^8 equal to?", a:["128","256","512","1024"], c:1},
-    {q:"What is 2^9 equal to?", a:["256","512","1024","2048"], c:1},
-    {q:"What is 2^10 equal to?", a:["512","1024","2048","4096"], c:1},
-    {q:"What is 2^11 equal to?", a:["1024","2048","4096","8192"], c:1},
-    {q:"What is 2^12 equal to?", a:["2048","4096","8192","16384"], c:1},
-    {q:"What is 2^13 equal to?", a:["4096","8192","16384","32768"], c:1},
-    {q:"What is 2^14 equal to?", a:["8192","16384","32768","65536"], c:1},
-    {q:"What is 2^15 equal to?", a:["16384","32768","65536","131072"], c:1},
-    {q:"What is the decimal value of binary 00001001?", a:["7","8","9","10"], c:2},
-    {q:"Which binary digit is located at the 2^0 position?", a:["MSB","LSB","Middle bit","Sign bit"], c:1},
-    {q:"In weighted position notation, what is multiplied by a power of 2?", a:["The binary digit","The decimal point","The hexadecimal digit","The carry"], c:0},
-    {q:"What is the first step when converting an unsigned decimal integer to binary?", a:["Multiply by 2","Divide by 2","Divide by 16","Add 1"], c:1},
-    {q:"When repeatedly dividing a decimal number by 2, what becomes a binary digit?", a:["The quotient","The remainder","The divisor","The product"], c:1},
-    {q:"How do you read the remainders when converting decimal to binary?", a:["Left to right from first remainder","Right to left","Only the final remainder","In alphabetical order"], c:1},
-    {q:"What is decimal 37 in binary?", a:["100101","101001","110001","100111"], c:0},
-    {q:"What is the binary representation of decimal 1?", a:["0","1","10","11"], c:1},
-    {q:"What is the binary representation of decimal 2?", a:["1","10","11","100"], c:1},
-    {q:"What is the binary representation of decimal 4?", a:["10","100","101","110"], c:1},
-    {q:"What is the binary representation of decimal 8?", a:["100","1000","1010","1111"], c:1},
-    {q:"When performing binary addition, which bit is processed first?", a:["MSB","Middle bit","LSB","Sign bit"], c:2},
-    {q:"What must be included when adding binary digits?", a:["Only the digits","The carry if present","Only the MSB","The decimal equivalent"], c:1},
+      // =========================
+      // INTEGER STORAGE
+      // =========================
 
-    // =========================
-    // INTEGER STORAGE
-    // =========================
+      {q:"What is the range of an unsigned byte?", a:["0 to 127","-128 to 127","0 to 255","0 to 65,535"], c:2},
+      {q:"How many bits are in an unsigned byte?", a:["4","8","16","32"], c:1},
+      {q:"What is the maximum value of an unsigned byte?", a:["127","128","255","256"], c:2},
+      {q:"What is the range of an unsigned word?", a:["0 to 255","0 to 65,535","-32768 to 32767","0 to 4,294,967,295"], c:1},
+      {q:"How many bits are in an unsigned word?", a:["8","16","32","64"], c:1},
+      {q:"What is the maximum value of an unsigned word?", a:["255","32,767","65,535","65,536"], c:2},
+      {q:"What is the range of an unsigned doubleword?", a:["0 to 65,535","0 to 4,294,967,295","-2^31 to 2^31-1","0 to 18,466,744,073,709,551,615"], c:1},
+      {q:"How many bits are in an unsigned doubleword?", a:["8","16","32","64"], c:2},
+      {q:"How many bits are in an unsigned quadword?", a:["16","32","64","128"], c:2},
+      {q:"What is the maximum value of an unsigned quadword?", a:["2^32 - 1","2^48 - 1","2^64 - 1","2^128 - 1"], c:2},
 
-    {q:"What is the range of an unsigned byte?", a:["0 to 127","-128 to 127","0 to 255","0 to 65,535"], c:2},
-    {q:"How many bits are in an unsigned byte?", a:["4","8","16","32"], c:1},
-    {q:"What is the maximum value of an unsigned byte?", a:["127","128","255","256"], c:2},
-    {q:"What is the range of an unsigned word?", a:["0 to 255","0 to 65,535","-32768 to 32767","0 to 4,294,967,295"], c:1},
-    {q:"How many bits are in an unsigned word?", a:["8","16","32","64"], c:1},
-    {q:"What is the maximum value of an unsigned word?", a:["255","32,767","65,535","65,536"], c:2},
-    {q:"What is the range of an unsigned doubleword?", a:["0 to 65,535","0 to 4,294,967,295","-2^31 to 2^31-1","0 to 18,466,744,073,709,551,615"], c:1},
-    {q:"How many bits are in an unsigned doubleword?", a:["8","16","32","64"], c:2},
-    {q:"How many bits are in an unsigned quadword?", a:["16","32","64","128"], c:2},
-    {q:"What is the maximum value of an unsigned quadword?", a:["2^32 - 1","2^48 - 1","2^64 - 1","2^128 - 1"], c:2},
+      // =========================
+      // HEXADECIMAL
+      // =========================
 
-    // =========================
-    // HEXADECIMAL
-    // =========================
+      {q:"What number system uses digits 0-9 and letters A-F?", a:["Binary","Decimal","Hexadecimal","Octal"], c:2},
+      {q:"What is hexadecimal A equal to in decimal?", a:["8","9","10","11"], c:2},
+      {q:"What is hexadecimal B equal to in decimal?", a:["9","10","11","12"], c:2},
+      {q:"What is hexadecimal C equal to in decimal?", a:["10","11","12","13"], c:2},
+      {q:"What is hexadecimal D equal to in decimal?", a:["11","12","13","14"], c:2},
+      {q:"What is hexadecimal E equal to in decimal?", a:["12","13","14","15"], c:2},
+      {q:"What is hexadecimal F equal to in decimal?", a:["13","14","15","16"], c:2},
+      {q:"How many binary bits correspond to one hexadecimal digit?", a:["2","4","8","16"], c:1},
+      {q:"What is binary 0000 in hexadecimal?", a:["0","1","8","F"], c:0},
+      {q:"What is binary 0001 in hexadecimal?", a:["0","1","2","A"], c:1},
+      {q:"What is binary 0010 in hexadecimal?", a:["1","2","3","B"], c:1},
+      {q:"What is binary 0011 in hexadecimal?", a:["2","3","4","C"], c:1},
+      {q:"What is binary 0100 in hexadecimal?", a:["3","4","5","D"], c:1},
+      {q:"What is binary 0101 in hexadecimal?", a:["4","5","6","E"], c:1},
+      {q:"What is binary 0110 in hexadecimal?", a:["5","6","7","F"], c:1},
+      {q:"What is binary 0111 in hexadecimal?", a:["6","7","8","9"], c:1},
+      {q:"What is binary 1000 in hexadecimal?", a:["7","8","9","A"], c:1},
+      {q:"What is binary 1001 in hexadecimal?", a:["8","9","A","B"], c:1},
+      {q:"What is binary 1010 in hexadecimal?", a:["9","A","B","C"], c:1},
+      {q:"What is binary 1011 in hexadecimal?", a:["A","B","C","D"], c:1},
+      {q:"What is binary 1100 in hexadecimal?", a:["B","C","D","E"], c:1},
+      {q:"What is binary 1101 in hexadecimal?", a:["C","D","E","F"], c:1},
+      {q:"What is binary 1110 in hexadecimal?", a:["D","E","F","10"], c:1},
+      {q:"What is binary 1111 in hexadecimal?", a:["E","F","10","11"], c:1},
+      {q:"How do you convert binary to hexadecimal?", a:["Group bits into groups of 2","Group bits into groups of 4","Group bits into groups of 8","Divide by 10"], c:1},
+      {q:"What is binary 0001 0110 1010 0111 1001 0100 in hexadecimal?", a:["16A794","1A6794","1A679F","16A974"], c:0},
+      {q:"When converting hexadecimal to decimal, what base is used for positional powers?", a:["2","8","10","16"], c:3},
+      {q:"What is 16^0 equal to?", a:["0","1","16","256"], c:1},
+      {q:"What is 16^1 equal to?", a:["1","8","16","32"], c:2},
+      {q:"What is 16^2 equal to?", a:["16","128","256","512"], c:2},
+      {q:"What is 16^3 equal to?", a:["256","4096","65,536","1,048,576"], c:1},
+      {q:"What is hexadecimal 1234 in decimal?", a:["1,234","4,660","4,096","5,120"], c:1},
+      {q:"What is hexadecimal 3BA4 in decimal?", a:["15,268","13,824","16,384","12,348"], c:0},
+      {q:"What is decimal 422 in hexadecimal?", a:["1A6","1B6","2A6","1A4"], c:0},
+      {q:"When converting decimal to hexadecimal, what number is repeatedly divided by?", a:["2","8","10","16"], c:3},
+      {q:"In hexadecimal addition, what becomes the carry value?", a:["The remainder","The quotient","The divisor","The original digit"], c:1},
+      {q:"In hexadecimal addition, what becomes the sum digit?", a:["The quotient","The divisor","The remainder","The carry"], c:2},
+      {q:"When a borrow is required during hexadecimal subtraction, what is added to the current digit?", a:["2","8","10","16"], c:3},
 
-    {q:"What number system uses digits 0-9 and letters A-F?", a:["Binary","Decimal","Hexadecimal","Octal"], c:2},
-    {q:"What is hexadecimal A equal to in decimal?", a:["8","9","10","11"], c:2},
-    {q:"What is hexadecimal B equal to in decimal?", a:["9","10","11","12"], c:2},
-    {q:"What is hexadecimal C equal to in decimal?", a:["10","11","12","13"], c:2},
-    {q:"What is hexadecimal D equal to in decimal?", a:["11","12","13","14"], c:2},
-    {q:"What is hexadecimal E equal to in decimal?", a:["12","13","14","15"], c:2},
-    {q:"What is hexadecimal F equal to in decimal?", a:["13","14","15","16"], c:2},
-    {q:"How many binary bits correspond to one hexadecimal digit?", a:["2","4","8","16"], c:1},
-    {q:"What is binary 0000 in hexadecimal?", a:["0","1","8","F"], c:0},
-    {q:"What is binary 0001 in hexadecimal?", a:["0","1","2","A"], c:1},
-    {q:"What is binary 0010 in hexadecimal?", a:["1","2","3","B"], c:1},
-    {q:"What is binary 0011 in hexadecimal?", a:["2","3","4","C"], c:1},
-    {q:"What is binary 0100 in hexadecimal?", a:["3","4","5","D"], c:1},
-    {q:"What is binary 0101 in hexadecimal?", a:["4","5","6","E"], c:1},
-    {q:"What is binary 0110 in hexadecimal?", a:["5","6","7","F"], c:1},
-    {q:"What is binary 0111 in hexadecimal?", a:["6","7","8","9"], c:1},
-    {q:"What is binary 1000 in hexadecimal?", a:["7","8","9","A"], c:1},
-    {q:"What is binary 1001 in hexadecimal?", a:["8","9","A","B"], c:1},
-    {q:"What is binary 1010 in hexadecimal?", a:["9","A","B","C"], c:1},
-    {q:"What is binary 1011 in hexadecimal?", a:["A","B","C","D"], c:1},
-    {q:"What is binary 1100 in hexadecimal?", a:["B","C","D","E"], c:1},
-    {q:"What is binary 1101 in hexadecimal?", a:["C","D","E","F"], c:1},
-    {q:"What is binary 1110 in hexadecimal?", a:["D","E","F","10"], c:1},
-    {q:"What is binary 1111 in hexadecimal?", a:["E","F","10","11"], c:1},
-    {q:"How do you convert binary to hexadecimal?", a:["Group bits into groups of 2","Group bits into groups of 4","Group bits into groups of 8","Divide by 10"], c:1},
-    {q:"What is binary 0001 0110 1010 0111 1001 0100 in hexadecimal?", a:["16A794","1A6794","1A679F","16A974"], c:0},
-    {q:"When converting hexadecimal to decimal, what base is used for positional powers?", a:["2","8","10","16"], c:3},
-    {q:"What is 16^0 equal to?", a:["0","1","16","256"], c:1},
-    {q:"What is 16^1 equal to?", a:["1","8","16","32"], c:2},
-    {q:"What is 16^2 equal to?", a:["16","128","256","512"], c:2},
-    {q:"What is 16^3 equal to?", a:["256","4096","65,536","1,048,576"], c:1},
-    {q:"What is hexadecimal 1234 in decimal?", a:["1,234","4,660","4,096","5,120"], c:1},
-    {q:"What is hexadecimal 3BA4 in decimal?", a:["15,268","13,824","16,384","12,348"], c:0},
-    {q:"What is decimal 422 in hexadecimal?", a:["1A6","1B6","2A6","1A4"], c:0},
-    {q:"When converting decimal to hexadecimal, what number is repeatedly divided by?", a:["2","8","10","16"], c:3},
-    {q:"In hexadecimal addition, what becomes the carry value?", a:["The remainder","The quotient","The divisor","The original digit"], c:1},
-    {q:"In hexadecimal addition, what becomes the sum digit?", a:["The quotient","The divisor","The remainder","The carry"], c:2},
-    {q:"When a borrow is required during hexadecimal subtraction, what is added to the current digit?", a:["2","8","10","16"], c:3},
+      // =========================
+      // SIGNED INTEGERS
+      // =========================
 
-    // =========================
-    // SIGNED INTEGERS
-    // =========================
+      {q:"What does the highest bit indicate for a signed integer?", a:["The magnitude only","The sign","The carry","The base"], c:1},
+      {q:"What does a highest bit of 1 indicate in a signed integer?", a:["Positive","Negative","Zero","Overflow"], c:1},
+      {q:"What does a highest bit of 0 indicate in a signed integer?", a:["Negative","Positive","Hexadecimal","Overflow"], c:1},
+      {q:"For a signed hexadecimal integer, what indicates a negative value?", a:["Highest digit is less than 8","Highest digit is greater than 7","Lowest digit is 0","Lowest digit is F"], c:1},
+      {q:"Which hexadecimal value is negative according to the notes?", a:["2A","4F","7C","8A"], c:3},
+      {q:"Which hexadecimal value is negative according to the notes?", a:["1A","5C","C5","6D"], c:2},
+      {q:"Which hexadecimal value is positive according to the sign rule?", a:["8A","C5","A2","7D"], c:3},
+      {q:"How are negative numbers stored according to the notes?", a:["Sign-magnitude only","Two's complement notation","Hexadecimal only","Unsigned notation"], c:1},
+      {q:"What does two's complement represent?", a:["A multiplication","An additive inverse","A hexadecimal conversion","A logical AND"], c:1},
+      {q:"What is the first step in forming a two's complement value?", a:["Add 1","Reverse the bits","Multiply by 2","Remove the MSB"], c:1},
+      {q:"What is the second step in forming a two's complement value?", a:["Divide by 2","Reverse the bits again","Add 1","Subtract 1"], c:2},
+      {q:"What is the two's complement of 00000001?", a:["11111110","11111111","00000010","10000001"], c:1},
+      {q:"What is the result of 00000001 + 11111111 in an 8-bit calculation?", a:["00000000","00000001","11111110","11111111"], c:0},
+      {q:"How is binary subtraction A - B performed using two's complement?", a:["Multiply A and B","Convert B to two's complement and add it to A","Convert A to hexadecimal","Subtract the MSBs only"], c:1},
+      {q:"What is the two's complement of 00000011?", a:["11111100","11111101","00000010","10000011"], c:1},
+      {q:"What is 00001100 - 00000011?", a:["00000111","00001001","00001111","11111001"], c:1},
+      {q:"What happens to the extra carry in an 8-bit two's complement subtraction?", a:["It becomes the MSB","It is discarded","It is added again","It becomes zero only if negative"], c:1},
+      {q:"What is the signed byte range?", a:["0 to 255","-127 to 127","-128 to +127","-256 to +255"], c:2},
+      {q:"What is the signed word range?", a:["-255 to 255","-32768 to +32767","0 to 65535","-65536 to +65536"], c:1},
+      {q:"What is the signed doubleword range?", a:["-2^16 to 2^16-1","-2^31 to +2^31-1","0 to 2^32-1","-2^64 to 2^64-1"], c:1},
+      {q:"How many bits are available for the magnitude of an 8-bit signed integer?", a:["8","7","6","4"], c:1},
+      {q:"Why is the signed integer range smaller than the unsigned range?", a:["One bit is reserved for the sign","The MSB is removed","Hexadecimal is used","The LSB is ignored"], c:0},
 
-    {q:"What does the highest bit indicate for a signed integer?", a:["The magnitude only","The sign","The carry","The base"], c:1},
-    {q:"What does a highest bit of 1 indicate in a signed integer?", a:["Positive","Negative","Zero","Overflow"], c:1},
-    {q:"What does a highest bit of 0 indicate in a signed integer?", a:["Negative","Positive","Hexadecimal","Overflow"], c:1},
-    {q:"For a signed hexadecimal integer, what indicates a negative value?", a:["Highest digit is less than 8","Highest digit is greater than 7","Lowest digit is 0","Lowest digit is F"], c:1},
-    {q:"Which hexadecimal value is negative according to the notes?", a:["2A","4F","7C","8A"], c:3},
-    {q:"Which hexadecimal value is negative according to the notes?", a:["1A","5C","C5","6D"], c:2},
-    {q:"Which hexadecimal value is positive according to the sign rule?", a:["8A","C5","A2","7D"], c:3},
-    {q:"How are negative numbers stored according to the notes?", a:["Sign-magnitude only","Two's complement notation","Hexadecimal only","Unsigned notation"], c:1},
-    {q:"What does two's complement represent?", a:["A multiplication","An additive inverse","A hexadecimal conversion","A logical AND"], c:1},
-    {q:"What is the first step in forming a two's complement value?", a:["Add 1","Reverse the bits","Multiply by 2","Remove the MSB"], c:1},
-    {q:"What is the second step in forming a two's complement value?", a:["Divide by 2","Reverse the bits again","Add 1","Subtract 1"], c:2},
-    {q:"What is the two's complement of 00000001?", a:["11111110","11111111","00000010","10000001"], c:1},
-    {q:"What is the result of 00000001 + 11111111 in an 8-bit calculation?", a:["00000000","00000001","11111110","11111111"], c:0},
-    {q:"How is binary subtraction A - B performed using two's complement?", a:["Multiply A and B","Convert B to two's complement and add it to A","Convert A to hexadecimal","Subtract the MSBs only"], c:1},
-    {q:"What is the two's complement of 00000011?", a:["11111100","11111101","00000010","10000011"], c:1},
-    {q:"What is 00001100 - 00000011?", a:["00000111","00001001","00001111","11111001"], c:1},
-    {q:"What happens to the extra carry in an 8-bit two's complement subtraction?", a:["It becomes the MSB","It is discarded","It is added again","It becomes zero only if negative"], c:1},
-    {q:"What is the signed byte range?", a:["0 to 255","-127 to 127","-128 to +127","-256 to +255"], c:2},
-    {q:"What is the signed word range?", a:["-255 to 255","-32768 to +32767","0 to 65535","-65536 to +65536"], c:1},
-    {q:"What is the signed doubleword range?", a:["-2^16 to 2^16-1","-2^31 to +2^31-1","0 to 2^32-1","-2^64 to 2^64-1"], c:1},
-    {q:"How many bits are available for the magnitude of an 8-bit signed integer?", a:["8","7","6","4"], c:1},
-    {q:"Why is the signed integer range smaller than the unsigned range?", a:["One bit is reserved for the sign","The MSB is removed","Hexadecimal is used","The LSB is ignored"], c:0},
+      // =========================
+      // BOOLEAN ALGEBRA
+      // =========================
 
-    // =========================
-    // BOOLEAN ALGEBRA
-    // =========================
+      {q:"What mathematical discipline is used to analyze digital circuitry?", a:["Calculus","Boolean algebra","Linear algebra","Statistics"], c:1},
+      {q:"Who is Boolean algebra associated with?", a:["George Boole","Alan Turing","Charles Babbage","John von Neumann"], c:0},
+      {q:"What values can a Boolean variable take?", a:["0 and 1","1 and 2","0 through 9","A through F"], c:0},
+      {q:"In Boolean algebra, what does 1 represent?", a:["FALSE","TRUE","UNKNOWN","ERROR"], c:1},
+      {q:"In Boolean algebra, what does 0 represent?", a:["TRUE","FALSE","HIGH ONLY","ERROR"], c:1},
+      {q:"Which is a basic Boolean operation?", a:["NOT","ADD","MULTIPLY","DIVIDE"], c:0},
+      {q:"Which set contains the three basic Boolean operations?", a:["ADD, SUBTRACT, MULTIPLY","NOT, AND, OR","XOR, ADD, DIVIDE","NAND, NOR, ADD"], c:1},
+      {q:"What does the NOT operation do?", a:["Adds two values","Inverts a Boolean value","Multiplies two values","Stores a value"], c:1},
+      {q:"What is NOT 0?", a:["0","1","2","10"], c:1},
+      {q:"What is NOT 1?", a:["0","1","2","-1"], c:0},
+      {q:"What is the result of 0 AND 0?", a:["0","1","2","TRUE"], c:0},
+      {q:"What is the result of 0 AND 1?", a:["0","1","TRUE","UNDEFINED"], c:0},
+      {q:"What is the result of 1 AND 0?", a:["0","1","TRUE","UNDEFINED"], c:0},
+      {q:"What is the result of 1 AND 1?", a:["0","1","2","FALSE"], c:1},
+      {q:"What is the result of 0 OR 0?", a:["0","1","TRUE","2"], c:0},
+      {q:"What is the result of 0 OR 1?", a:["0","1","FALSE","2"], c:1},
+      {q:"What is the result of 1 OR 0?", a:["0","1","FALSE","2"], c:1},
+      {q:"What is the result of 1 OR 1?", a:["0","1","2","FALSE"], c:1},
+      {q:"What does the expression ¬X represent?", a:["X AND X","NOT X","X OR X","X (X OR X)"], c:1},
+      {q:"What does X ^ Y represent?", a:["X OR Y","X AND Y","NOT X","X (X OR Y)"], c:1},
+      {q:"What does X v Y represent?", a:["X OR Y","X AND Y","NOT Y","X (X OR Y)"], c:0},
+      {q:"In the expression ¬X v Y, which operation occurs first?", a:["OR","NOT","AND","XOR"], c:1},
+      {q:"In the expression X v (Y ^ Z), which operation is performed first?", a:["OR","AND","NOT","None"], c:1},
+      {q:"In the expression ¬(X v Y), which operation is performed first?", a:["NOT","OR","AND","XOR"], c:1},
+      {q:"What is a truth table used to show?", a:["Only outputs","All inputs and outputs of a Boolean function","Only inputs","Memory capacity"], c:1},
+      {q:"A Boolean function has one or more Boolean inputs and returns what?", a:["A single Boolean output","A decimal output","A hexadecimal output","A memory address"], c:0},
 
-    {q:"What mathematical discipline is used to analyze digital circuitry?", a:["Calculus","Boolean algebra","Linear algebra","Statistics"], c:1},
-    {q:"Who is Boolean algebra associated with?", a:["George Boole","Alan Turing","Charles Babbage","John von Neumann"], c:0},
-    {q:"What values can a Boolean variable take?", a:["0 and 1","1 and 2","0 through 9","A through F"], c:0},
-    {q:"In Boolean algebra, what does 1 represent?", a:["FALSE","TRUE","UNKNOWN","ERROR"], c:1},
-    {q:"In Boolean algebra, what does 0 represent?", a:["TRUE","FALSE","HIGH ONLY","ERROR"], c:1},
-    {q:"Which is a basic Boolean operation?", a:["NOT","ADD","MULTIPLY","DIVIDE"], c:0},
-    {q:"Which set contains the three basic Boolean operations?", a:["ADD, SUBTRACT, MULTIPLY","NOT, AND, OR","XOR, ADD, DIVIDE","NAND, NOR, ADD"], c:1},
-    {q:"What does the NOT operation do?", a:["Adds two values","Inverts a Boolean value","Multiplies two values","Stores a value"], c:1},
-    {q:"What is NOT 0?", a:["0","1","2","10"], c:1},
-    {q:"What is NOT 1?", a:["0","1","2","-1"], c:0},
-    {q:"What is the result of 0 AND 0?", a:["0","1","2","TRUE"], c:0},
-    {q:"What is the result of 0 AND 1?", a:["0","1","TRUE","UNDEFINED"], c:0},
-    {q:"What is the result of 1 AND 0?", a:["0","1","TRUE","UNDEFINED"], c:0},
-    {q:"What is the result of 1 AND 1?", a:["0","1","2","FALSE"], c:1},
-    {q:"What is the result of 0 OR 0?", a:["0","1","TRUE","2"], c:0},
-    {q:"What is the result of 0 OR 1?", a:["0","1","FALSE","2"], c:1},
-    {q:"What is the result of 1 OR 0?", a:["0","1","FALSE","2"], c:1},
-    {q:"What is the result of 1 OR 1?", a:["0","1","2","FALSE"], c:1},
-    {q:"What does the expression ¬X represent?", a:["X AND X","NOT X","X OR X","X (X OR X)"], c:1},
-    {q:"What does X ^ Y represent?", a:["X OR Y","X AND Y","NOT X","X (X OR Y)"], c:1},
-    {q:"What does X v Y represent?", a:["X OR Y","X AND Y","NOT Y","X (X OR Y)"], c:0},
-    {q:"In the expression ¬X v Y, which operation occurs first?", a:["OR","NOT","AND","XOR"], c:1},
-    {q:"In the expression X v (Y ^ Z), which operation is performed first?", a:["OR","AND","NOT","None"], c:1},
-    {q:"In the expression ¬(X v Y), which operation is performed first?", a:["NOT","OR","AND","XOR"], c:1},
-    {q:"What is a truth table used to show?", a:["Only outputs","All inputs and outputs of a Boolean function","Only inputs","Memory capacity"], c:1},
-    {q:"A Boolean function has one or more Boolean inputs and returns what?", a:["A single Boolean output","A decimal output","A hexadecimal output","A memory address"], c:0},
+      // =========================
+      // LOGIC GATES
+      // =========================
 
-    // =========================
-    // LOGIC GATES
-    // =========================
+      {q:"What is the fundamental building block of digital logic circuits?", a:["Register","Gate","Counter","Memory chip"], c:1},
+      {q:"What do logic gates implement?", a:["Boolean functions","Decimal division","Memory addresses","File storage"], c:0},
+      {q:"Which is NOT listed as a basic digital logic gate?", a:["AND","OR","NOT","ADD"], c:3},
+      {q:"Which gate inverts its input?", a:["AND","OR","NOT","XOR"], c:2},
+      {q:"Which gate outputs 1 only when both inputs are 1?", a:["OR","AND","NOT","NOR"], c:1},
+      {q:"Which gate outputs 1 when at least one input is 1?", a:["AND","OR","NOT","NAND"], c:1},
+      {q:"Which gate is listed among the basic gates along with AND, OR, and NOT?", a:["NAND","ADD","DIV","SHIFT"], c:0},
+      {q:"Which other gate is listed among the basic digital logic gates?", a:["NOR","SUM","COMPARE","STORE"], c:0},
+      {q:"What is the output of a NOT gate when its input is TRUE?", a:["TRUE","FALSE","Both","Undefined"], c:1},
+      {q:"What is the output of an AND gate when either input is FALSE?", a:["TRUE","FALSE","Depends on the MSB","Undefined"], c:1},
+      {q:"What is the output of an OR gate when either input is TRUE?", a:["TRUE","FALSE","Always 0","Undefined"], c:0},
 
-    {q:"What is the fundamental building block of digital logic circuits?", a:["Register","Gate","Counter","Memory chip"], c:1},
-    {q:"What do logic gates implement?", a:["Boolean functions","Decimal division","Memory addresses","File storage"], c:0},
-    {q:"Which is NOT listed as a basic digital logic gate?", a:["AND","OR","NOT","ADD"], c:3},
-    {q:"Which gate inverts its input?", a:["AND","OR","NOT","XOR"], c:2},
-    {q:"Which gate outputs 1 only when both inputs are 1?", a:["OR","AND","NOT","NOR"], c:1},
-    {q:"Which gate outputs 1 when at least one input is 1?", a:["AND","OR","NOT","NAND"], c:1},
-    {q:"Which gate is listed among the basic gates along with AND, OR, and NOT?", a:["NAND","ADD","DIV","SHIFT"], c:0},
-    {q:"Which other gate is listed among the basic digital logic gates?", a:["NOR","SUM","COMPARE","STORE"], c:0},
-    {q:"What is the output of a NOT gate when its input is TRUE?", a:["TRUE","FALSE","Both","Undefined"], c:1},
-    {q:"What is the output of an AND gate when either input is FALSE?", a:["TRUE","FALSE","Depends on the MSB","Undefined"], c:1},
-    {q:"What is the output of an OR gate when either input is TRUE?", a:["TRUE","FALSE","Always 0","Undefined"], c:0},
+      // =========================
+      // COMBINATIONAL CIRCUITS
+      // =========================
 
-    // =========================
-    // COMBINATIONAL CIRCUITS
-    // =========================
+      {q:"What is a combinational circuit?", a:["A circuit whose output depends only on its current input","A circuit whose output depends only on past inputs","A memory device","A counter"], c:0},
+      {q:"What does a combinational circuit generally have?", a:["n binary inputs and m binary outputs","Only one input","Only one output","No inputs"], c:0},
+      {q:"What happens after an input appears in a combinational circuit?", a:["The output appears after only gate delays","The output waits for stored state","The circuit always resets","The output appears after a full clock cycle"], c:0},
+      {q:"How many possible combinations are there for n binary inputs?", a:["n","2n","2^n","n^2"], c:2},
+      {q:"How can a combinational circuit be defined?", a:["Truth table, graphical symbols, or Boolean equations","Only with source code","Only with hexadecimal","Only with a register"], c:0},
+      {q:"What does a truth table list for a combinational circuit?", a:["Each possible input combination and outputs","Only the largest input","Only the smallest output","Only clock pulses"], c:0},
+      {q:"What does a graphical representation of a combinational circuit show?", a:["The interconnected layout of gates","Only the truth table","Only memory contents","The CPU temperature"], c:0},
+      {q:"How are outputs represented in Boolean-equation form?", a:["As Boolean functions of input signals","As decimal addresses","As hexadecimal strings","As clock speeds"], c:0},
+      {q:"What is a sum-of-products implementation based on?", a:["Input combinations that cause the function to be 1","Only combinations that produce 0","The number of registers","The number of clock cycles"], c:0},
+      {q:"In a sum-of-products implementation, what happens if any listed input combination occurs?", a:["The result is 1","The result is always 0","The circuit resets","The output becomes hexadecimal"], c:0},
 
-    {q:"What is a combinational circuit?", a:["A circuit whose output depends only on its current input","A circuit whose output depends only on past inputs","A memory device","A counter"], c:0},
-    {q:"What does a combinational circuit generally have?", a:["n binary inputs and m binary outputs","Only one input","Only one output","No inputs"], c:0},
-    {q:"What happens after an input appears in a combinational circuit?", a:["The output appears after only gate delays","The output waits for stored state","The circuit always resets","The output appears after a full clock cycle"], c:0},
-    {q:"How many possible combinations are there for n binary inputs?", a:["n","2n","2^n","n^2"], c:2},
-    {q:"How can a combinational circuit be defined?", a:["Truth table, graphical symbols, or Boolean equations","Only with source code","Only with hexadecimal","Only with a register"], c:0},
-    {q:"What does a truth table list for a combinational circuit?", a:["Each possible input combination and outputs","Only the largest input","Only the smallest output","Only clock pulses"], c:0},
-    {q:"What does a graphical representation of a combinational circuit show?", a:["The interconnected layout of gates","Only the truth table","Only memory contents","The CPU temperature"], c:0},
-    {q:"How are outputs represented in Boolean-equation form?", a:["As Boolean functions of input signals","As decimal addresses","As hexadecimal strings","As clock speeds"], c:0},
-    {q:"What is a sum-of-products implementation based on?", a:["Input combinations that cause the function to be 1","Only combinations that produce 0","The number of registers","The number of clock cycles"], c:0},
-    {q:"In a sum-of-products implementation, what happens if any listed input combination occurs?", a:["The result is 1","The result is always 0","The circuit resets","The output becomes hexadecimal"], c:0},
+      // =========================
+      // MULTIPLEXERS
+      // =========================
 
-    // =========================
-    // MULTIPLEXERS
-    // =========================
+      {q:"What does a multiplexer connect?", a:["Multiple inputs to a single output","One input to multiple CPUs","Multiple outputs to one input only","Registers to clocks"], c:0},
+      {q:"What does a multiplexer select?", a:["One input to pass to the output","Every input simultaneously","Only the highest bit","Only the lowest bit"], c:0},
+      {q:"How many input lines does a 4-to-1 multiplexer have?", a:["1","2","4","8"], c:2},
+      {q:"How many output lines does a 4-to-1 multiplexer have?", a:["1","2","4","8"], c:0},
+      {q:"What are the four inputs of the 4-to-1 multiplexer called?", a:["A, B, C, D","D0, D1, D2, D3","S0, S1, S2, S3","Q0, Q1, Q2, Q3"], c:1},
+      {q:"How many select lines are required to select one of four inputs?", a:["1","2","3","4"], c:1},
+      {q:"What determines which multiplexer input reaches the output?", a:["The select lines","The MSB only","The clock frequency","The carry bit"], c:0},
+      {q:"In the notes, what can be connected to the output line of a multiplexer?", a:["The program counter","Only the ALU","Only RAM","The clock generator"], c:0},
+      {q:"Why are multiple multiplexers used for a multi-bit value?", a:["One is needed per bit","One is needed per input only","One is needed per CPU","One is needed per instruction"], c:0},
+      {q:"The multiplexer example discusses how many bits of addresses?", a:["4","8","16","32"], c:2},
 
-    {q:"What does a multiplexer connect?", a:["Multiple inputs to a single output","One input to multiple CPUs","Multiple outputs to one input only","Registers to clocks"], c:0},
-    {q:"What does a multiplexer select?", a:["One input to pass to the output","Every input simultaneously","Only the highest bit","Only the lowest bit"], c:0},
-    {q:"How many input lines does a 4-to-1 multiplexer have?", a:["1","2","4","8"], c:2},
-    {q:"How many output lines does a 4-to-1 multiplexer have?", a:["1","2","4","8"], c:0},
-    {q:"What are the four inputs of the 4-to-1 multiplexer called?", a:["A, B, C, D","D0, D1, D2, D3","S0, S1, S2, S3","Q0, Q1, Q2, Q3"], c:1},
-    {q:"How many select lines are required to select one of four inputs?", a:["1","2","3","4"], c:1},
-    {q:"What determines which multiplexer input reaches the output?", a:["The select lines","The MSB only","The clock frequency","The carry bit"], c:0},
-    {q:"In the notes, what can be connected to the output line of a multiplexer?", a:["The program counter","Only the ALU","Only RAM","The clock generator"], c:0},
-    {q:"Why are multiple multiplexers used for a multi-bit value?", a:["One is needed per bit","One is needed per input only","One is needed per CPU","One is needed per instruction"], c:0},
-    {q:"The multiplexer example discusses how many bits of addresses?", a:["4","8","16","32"], c:2},
+      // =========================
+      // DECODERS
+      // =========================
 
-    // =========================
-    // DECODERS
-    // =========================
+      {q:"What is a decoder?", a:["A combinational circuit with multiple outputs where one is asserted based on the inputs","A storage device","A type of flip-flop","A counter"], c:0},
+      {q:"How many outputs does a decoder with n inputs have?", a:["n","n^2","2^n","2n"], c:2},
+      {q:"How many outputs does a decoder with 3 inputs have?", a:["3","6","8","9"], c:2},
+      {q:"How many inputs does an 8-output decoder have?", a:["2","3","4","8"], c:1},
+      {q:"How many outputs are normally asserted by a decoder at one time?", a:["All of them","Half of them","Only one","None"], c:2},
+      {q:"What is one use of decoders in digital computers?", a:["Address decoding","Floating-point multiplication","File compression","Graphics rendering"], c:0},
+      {q:"In the memory example, how large is the unified memory space?", a:["1K-byte","4K-byte","8K-byte","16K-byte"], c:0},
+      {q:"How many bits wide are the RAM chips in the example?", a:["2 bits","4 bits","8 bits","16 bits"], c:1},
+      {q:"How many address lines does each RAM chip require in the example?", a:["4","8","10","16"], c:1},
+      {q:"How many bits are in the address used in the example?", a:["4","8","10","16"], c:2},
+      {q:"Which bits supply the address lines to each RAM chip?", a:["The lower-order 8 bits","The higher-order 8 bits","The lower-order 2 bits","All bits equally"], c:0},
+      {q:"What are the higher-order 2 address bits used for?", a:["Selecting one of four RAM chips","Selecting one of eight RAM chips","Storing data","Performing arithmetic"], c:0},
+      {q:"What type of decoder selects one of four RAM chips?", a:["1-to-4","2-to-4","4-to-2","3-to-8"], c:1},
+      {q:"What is the inverse function of a multiplexer?", a:["Decoder","Demultiplexer","Register","Counter"], c:1},
+      {q:"What does a demultiplexer do?", a:["Connects a single input to one of several outputs","Connects many inputs to one output","Stores one bit","Counts clock pulses"], c:0},
+      {q:"How can a decoder be used as a demultiplexer?", a:["By adding an input data line","By removing all outputs","By adding a second clock","By reversing every bit"], c:0},
+      {q:"In a demultiplexer, what acts as an address to select an output?", a:["The n input lines","The data line","The clock","The output"], c:0},
+      {q:"What value is routed to the selected output in a demultiplexer?", a:["The data input value","The clock frequency","The address itself","The carry value"], c:0},
 
-    {q:"What is a decoder?", a:["A combinational circuit with multiple outputs where one is asserted based on the inputs","A storage device","A type of flip-flop","A counter"], c:0},
-    {q:"How many outputs does a decoder with n inputs have?", a:["n","n^2","2^n","2n"], c:2},
-    {q:"How many outputs does a decoder with 3 inputs have?", a:["3","6","8","9"], c:2},
-    {q:"How many inputs does an 8-output decoder have?", a:["2","3","4","8"], c:1},
-    {q:"How many outputs are normally asserted by a decoder at one time?", a:["All of them","Half of them","Only one","None"], c:2},
-    {q:"What is one use of decoders in digital computers?", a:["Address decoding","Floating-point multiplication","File compression","Graphics rendering"], c:0},
-    {q:"In the memory example, how large is the unified memory space?", a:["1K-byte","4K-byte","8K-byte","16K-byte"], c:0},
-    {q:"How many bits wide are the RAM chips in the example?", a:["2 bits","4 bits","8 bits","16 bits"], c:1},
-    {q:"How many address lines does each RAM chip require in the example?", a:["4","8","10","16"], c:1},
-    {q:"How many bits are in the address used in the example?", a:["4","8","10","16"], c:2},
-    {q:"Which bits supply the address lines to each RAM chip?", a:["The lower-order 8 bits","The higher-order 8 bits","The lower-order 2 bits","All bits equally"], c:0},
-    {q:"What are the higher-order 2 address bits used for?", a:["Selecting one of four RAM chips","Selecting one of eight RAM chips","Storing data","Performing arithmetic"], c:0},
-    {q:"What type of decoder selects one of four RAM chips?", a:["1-to-4","2-to-4","4-to-2","3-to-8"], c:1},
-    {q:"What is the inverse function of a multiplexer?", a:["Decoder","Demultiplexer","Register","Counter"], c:1},
-    {q:"What does a demultiplexer do?", a:["Connects a single input to one of several outputs","Connects many inputs to one output","Stores one bit","Counts clock pulses"], c:0},
-    {q:"How can a decoder be used as a demultiplexer?", a:["By adding an input data line","By removing all outputs","By adding a second clock","By reversing every bit"], c:0},
-    {q:"In a demultiplexer, what acts as an address to select an output?", a:["The n input lines","The data line","The clock","The output"], c:0},
-    {q:"What value is routed to the selected output in a demultiplexer?", a:["The data input value","The clock frequency","The address itself","The carry value"], c:0},
+      // =========================
+      // SEQUENTIAL CIRCUITS
+      // =========================
 
-    // =========================
-    // SEQUENTIAL CIRCUITS
-    // =========================
+      {q:"What is a major difference between combinational and sequential circuits?", a:["Sequential circuits can depend on past inputs or current state","Combinational circuits always contain memory","Sequential circuits have no inputs","Combinational circuits require clocks"], c:0},
+      {q:"What does the current output of a sequential circuit depend on?", a:["Current input and current state","Only current input","Only past output","Only the clock"], c:0},
+      {q:"What do sequential circuits provide that most combinational circuits do not?", a:["Memory or state information","Binary numbers","Boolean variables","Hexadecimal conversion"], c:0},
+      {q:"What is the simplest form of sequential circuit?", a:["Flip-flop","Multiplexer","Decoder","Adder"], c:0},
+      {q:"What does bistable mean?", a:["The device exists in one of two states","The device has two inputs only","The device has two clocks","The device stores two bytes"], c:0},
+      {q:"How much information can a flip-flop function as memory for?", a:["1 bit","1 byte","4 bits","16 bits"], c:0},
+      {q:"How many outputs does a flip-flop have according to the notes?", a:["1","2","4","8"], c:1},
+      {q:"What is the relationship between a flip-flop's two outputs?", a:["They are always complements","They are always identical","They are unrelated","They are always zero"], c:0},
+      {q:"What are the two flip-flop outputs generally labeled?", a:["A and B","D and Q","Q and ¬Q","S and R"], c:2},
 
-    {q:"What is a major difference between combinational and sequential circuits?", a:["Sequential circuits can depend on past inputs or current state","Combinational circuits always contain memory","Sequential circuits have no inputs","Combinational circuits require clocks"], c:0},
-    {q:"What does the current output of a sequential circuit depend on?", a:["Current input and current state","Only current input","Only past output","Only the clock"], c:0},
-    {q:"What do sequential circuits provide that most combinational circuits do not?", a:["Memory or state information","Binary numbers","Boolean variables","Hexadecimal conversion"], c:0},
-    {q:"What is the simplest form of sequential circuit?", a:["Flip-flop","Multiplexer","Decoder","Adder"], c:0},
-    {q:"What does bistable mean?", a:["The device exists in one of two states","The device has two inputs only","The device has two clocks","The device stores two bytes"], c:0},
-    {q:"How much information can a flip-flop function as memory for?", a:["1 bit","1 byte","4 bits","16 bits"], c:0},
-    {q:"How many outputs does a flip-flop have according to the notes?", a:["1","2","4","8"], c:1},
-    {q:"What is the relationship between a flip-flop's two outputs?", a:["They are always complements","They are always identical","They are unrelated","They are always zero"], c:0},
-    {q:"What are the two flip-flop outputs generally labeled?", a:["A and B","D and Q","Q and ¬Q","S and R"], c:2},
+      // =========================
+      // S-R FLIP-FLOP
+      // =========================
 
-    // =========================
-    // S-R FLIP-FLOP
-    // =========================
+      {q:"What does S-R stand for in an S-R flip-flop?", a:["Set-Reset","Shift-Read","Store-Register","Signal-Return"], c:0},
+      {q:"How does an S-R latch operate when its input changes?", a:["Its output changes after a brief delay","It waits for a clock pulse","It never changes","It resets automatically"], c:0},
+      {q:"What is asynchronous operation?", a:["Output changes in response to input without requiring a clock pulse","All changes happen simultaneously","Only the clock controls the output","The device has no inputs"], c:0},
+      {q:"What synchronizes events in a digital computer?", a:["Clock pulses","Hexadecimal values","Memory addresses","Boolean equations"], c:0},
+      {q:"What is an S-R flip-flop synchronized to?", a:["A clock pulse","A decimal number","An address line","A multiplexer"], c:0},
+      {q:"When are the R and S inputs passed to the NOR gates in the clocked S-R flip-flop?", a:["Only during the clock pulse","Only after the clock pulse","At all times regardless of the clock","Only when the CPU stops"], c:0},
 
-    {q:"What does S-R stand for in an S-R flip-flop?", a:["Set-Reset","Shift-Read","Store-Register","Signal-Return"], c:0},
-    {q:"How does an S-R latch operate when its input changes?", a:["Its output changes after a brief delay","It waits for a clock pulse","It never changes","It resets automatically"], c:0},
-    {q:"What is asynchronous operation?", a:["Output changes in response to input without requiring a clock pulse","All changes happen simultaneously","Only the clock controls the output","The device has no inputs"], c:0},
-    {q:"What synchronizes events in a digital computer?", a:["Clock pulses","Hexadecimal values","Memory addresses","Boolean equations"], c:0},
-    {q:"What is an S-R flip-flop synchronized to?", a:["A clock pulse","A decimal number","An address line","A multiplexer"], c:0},
-    {q:"When are the R and S inputs passed to the NOR gates in the clocked S-R flip-flop?", a:["Only during the clock pulse","Only after the clock pulse","At all times regardless of the clock","Only when the CPU stops"], c:0},
+      // =========================
+      // D FLIP-FLOP
+      // =========================
 
-    // =========================
-    // D FLIP-FLOP
-    // =========================
+      {q:"What problem with the S-R flip-flop does the D flip-flop address?", a:["The S=1, R=1 condition must be avoided","It cannot store a bit","It has too many outputs","It cannot use a clock"], c:0},
+      {q:"How many inputs does the D flip-flop use for data?", a:["One","Two","Three","Four"], c:0},
+      {q:"What does the D flip-flop use to guarantee its two nonclock inputs are opposite?", a:["An inverter","A decoder","A multiplexer","A counter"], c:0},
+      {q:"What is another name for the D flip-flop?", a:["Data flip-flop","Decimal flip-flop","Decoder flip-flop","Digital counter"], c:0},
+      {q:"What does a D flip-flop effectively store?", a:["One bit of data","One byte","One address","One hexadecimal digit"], c:0},
+      {q:"The output of a D flip-flop is equal to what?", a:["The most recent value applied to its input","The oldest value applied to its input","The inverted clock","The MSB"], c:0},
+      {q:"Why is a D flip-flop also called a delay flip-flop?", a:["It delays an input value for a single clock pulse","It slows the CPU","It delays memory access","It delays hexadecimal conversion"], c:0},
+      {q:"If D=0, what is Q(n+1) according to the table?", a:["0","1","2","Undefined"], c:0},
+      {q:"If D=1, what is Q(n+1) according to the table?", a:["0","1","2","Undefined"], c:1},
 
-    {q:"What problem with the S-R flip-flop does the D flip-flop address?", a:["The S=1, R=1 condition must be avoided","It cannot store a bit","It has too many outputs","It cannot use a clock"], c:0},
-    {q:"How many inputs does the D flip-flop use for data?", a:["One","Two","Three","Four"], c:0},
-    {q:"What does the D flip-flop use to guarantee its two nonclock inputs are opposite?", a:["An inverter","A decoder","A multiplexer","A counter"], c:0},
-    {q:"What is another name for the D flip-flop?", a:["Data flip-flop","Decimal flip-flop","Decoder flip-flop","Digital counter"], c:0},
-    {q:"What does a D flip-flop effectively store?", a:["One bit of data","One byte","One address","One hexadecimal digit"], c:0},
-    {q:"The output of a D flip-flop is equal to what?", a:["The most recent value applied to its input","The oldest value applied to its input","The inverted clock","The MSB"], c:0},
-    {q:"Why is a D flip-flop also called a delay flip-flop?", a:["It delays an input value for a single clock pulse","It slows the CPU","It delays memory access","It delays hexadecimal conversion"], c:0},
-    {q:"If D=0, what is Q(n+1) according to the table?", a:["0","1","2","Undefined"], c:0},
-    {q:"If D=1, what is Q(n+1) according to the table?", a:["0","1","2","Undefined"], c:1},
+      // =========================
+      // REGISTERS
+      // =========================
 
-    // =========================
-    // REGISTERS
-    // =========================
+      {q:"What is a register?", a:["A digital circuit within the CPU used to store one or more bits of data","A type of logic gate","A memory address only","A decoder"], c:0},
+      {q:"Where is a register located according to the notes?", a:["Within the CPU","Only in external storage","Only in RAM","Inside a decoder"], c:0},
+      {q:"What are two basic types of registers?", a:["Parallel and shift registers","Signed and unsigned registers","Binary and hexadecimal registers","Static and dynamic registers"], c:0},
+      {q:"Which type of register stores 8 bits of data simultaneously?", a:["Parallel register","Shift register","Ripple register","Decoder register"], c:0},
+      {q:"What type of flip-flops are used in the 8-bit parallel register example?", a:["D flip-flops","S-R flip-flops only","T flip-flops","NOR gates only"], c:0},
+      {q:"What control signal controls writing into the parallel register?", a:["Load","Reset","ClockOnly","Carry"], c:0},
+      {q:"What do the D11 through D18 lines provide in the register example?", a:["Data to be loaded into the register","Clock pulses","Output addresses","Select codes"], c:0},
+      {q:"What could the signal lines connected to the register be outputs of?", a:["Multiplexers","Counters","Decoders only","ALUs only"], c:0},
+      {q:"Why might multiplexers be used before a register?", a:["To allow data from a variety of sources to be loaded","To convert binary to decimal","To increase the number of clocks","To create hexadecimal digits"], c:0},
 
-    {q:"What is a register?", a:["A digital circuit within the CPU used to store one or more bits of data","A type of logic gate","A memory address only","A decoder"], c:0},
-    {q:"Where is a register located according to the notes?", a:["Within the CPU","Only in external storage","Only in RAM","Inside a decoder"], c:0},
-    {q:"What are two basic types of registers?", a:["Parallel and shift registers","Signed and unsigned registers","Binary and hexadecimal registers","Static and dynamic registers"], c:0},
-    {q:"Which type of register stores 8 bits of data simultaneously?", a:["Parallel register","Shift register","Ripple register","Decoder register"], c:0},
-    {q:"What type of flip-flops are used in the 8-bit parallel register example?", a:["D flip-flops","S-R flip-flops only","T flip-flops","NOR gates only"], c:0},
-    {q:"What control signal controls writing into the parallel register?", a:["Load","Reset","ClockOnly","Carry"], c:0},
-    {q:"What do the D11 through D18 lines provide in the register example?", a:["Data to be loaded into the register","Clock pulses","Output addresses","Select codes"], c:0},
-    {q:"What could the signal lines connected to the register be outputs of?", a:["Multiplexers","Counters","Decoders only","ALUs only"], c:0},
-    {q:"Why might multiplexers be used before a register?", a:["To allow data from a variety of sources to be loaded","To convert binary to decimal","To increase the number of clocks","To create hexadecimal digits"], c:0},
+      // =========================
+      // SHIFT REGISTERS
+      // =========================
 
-    // =========================
-    // SHIFT REGISTERS
-    // =========================
+      {q:"How does a shift register accept or transfer information?", a:["Serially","Only in hexadecimal","Only through the MSB","Only through a decoder"], c:0},
+      {q:"What type of flip-flops are used in the 5-bit shift register example?", a:["Clocked D flip-flops","S-R latches only","NOR gates","Multiplexers"], c:0},
+      {q:"Where is data input into the example shift register?", a:["The leftmost flip-flop","The rightmost flip-flop","All flip-flops simultaneously","The middle flip-flop"], c:0},
+      {q:"What happens to the data with each clock pulse in the shift register?", a:["It shifts one position to the right","It shifts one position to the left","It is erased","It becomes hexadecimal"], c:0},
+      {q:"What happens to the rightmost bit after shifting?", a:["It is transferred out","It becomes the MSB","It is duplicated","It becomes the clock"], c:0},
+      {q:"What can shift registers interface with?", a:["Serial I/O devices","Only RAM","Only GPUs","Only decoders"], c:0},
+      {q:"What functions can shift registers perform within the ALU?", a:["Logical shift and rotate functions","Addition only","Memory decoding","Clock generation"], c:0},
+      {q:"What additional circuitry may be needed when shift registers are used for ALU shift and rotate functions?", a:["Parallel read/write circuitry","Only a decoder","Only a multiplexer","A hexadecimal converter"], c:0},
 
-    {q:"How does a shift register accept or transfer information?", a:["Serially","Only in hexadecimal","Only through the MSB","Only through a decoder"], c:0},
-    {q:"What type of flip-flops are used in the 5-bit shift register example?", a:["Clocked D flip-flops","S-R latches only","NOR gates","Multiplexers"], c:0},
-    {q:"Where is data input into the example shift register?", a:["The leftmost flip-flop","The rightmost flip-flop","All flip-flops simultaneously","The middle flip-flop"], c:0},
-    {q:"What happens to the data with each clock pulse in the shift register?", a:["It shifts one position to the right","It shifts one position to the left","It is erased","It becomes hexadecimal"], c:0},
-    {q:"What happens to the rightmost bit after shifting?", a:["It is transferred out","It becomes the MSB","It is duplicated","It becomes the clock"], c:0},
-    {q:"What can shift registers interface with?", a:["Serial I/O devices","Only RAM","Only GPUs","Only decoders"], c:0},
-    {q:"What functions can shift registers perform within the ALU?", a:["Logical shift and rotate functions","Addition only","Memory decoding","Clock generation"], c:0},
-    {q:"What additional circuitry may be needed when shift registers are used for ALU shift and rotate functions?", a:["Parallel read/write circuitry","Only a decoder","Only a multiplexer","A hexadecimal converter"], c:0},
+      // =========================
+      // COUNTERS
+      // =========================
 
-    // =========================
-    // COUNTERS
-    // =========================
+      {q:"What is a counter?", a:["A register whose value is easily incremented by 1 modulo its capacity","A decoder with memory","A Boolean variable","A type of multiplexer"], c:0},
+      {q:"What happens after a counter reaches its maximum value?", a:["The next increment sets it to 0","It remains at the maximum","It becomes negative","It shuts down"], c:0},
+      {q:"How many values can a counter made from n flip-flops represent?", a:["n","2n","2^n","n^2"], c:2},
+      {q:"What is the maximum count value for a register made from n flip-flops?", a:["n-1","2n-1","2^n-1","2^n"], c:2},
+      {q:"What CPU component is given as an example of a counter?", a:["Program counter","ALU","Control unit","Register file"], c:0},
+      {q:"What are the two types of counters discussed?", a:["Asynchronous and synchronous","Binary and decimal","Signed and unsigned","Parallel and serial"], c:0},
+      {q:"What is another name for an asynchronous counter?", a:["Ripple counter","Data counter","Shift counter","Boolean counter"], c:0},
+      {q:"Why is an asynchronous counter relatively slow?", a:["The output of one flip-flop triggers the next flip-flop","All flip-flops change simultaneously","It uses hexadecimal","It has no clock"], c:0},
+      {q:"How does a synchronous counter operate?", a:["All flip-flops change state at the same time","Each flip-flop waits for the previous one","It has no flip-flops","It uses only one bit"], c:0},
+      {q:"Which type of counter is used in CPUs?", a:["Asynchronous counter","Synchronous counter","Ripple counter","Unclocked counter"], c:1},
+      {q:"Why are synchronous counters faster than ripple counters?", a:["All flip-flops change state at the same time","They use fewer bits","They do not use clocks","They use decimal values"], c:0},
+      {q:"What causes the change to ripple through an asynchronous counter?", a:["The output of one flip-flop triggers the next","The decoder triggers every flip-flop","The MSB triggers the clock","The ALU triggers the register"], c:0},
+      {q:"What disadvantage does a ripple counter have?", a:["Delay in changing value","It cannot store binary values","It cannot use flip-flops","It has no outputs"], c:0},
+      {q:"What is the ripple-counter delay proportional to?", a:["The length of the counter","The decimal value","The number of inputs to a multiplexer","The number of hexadecimal digits"], c:0},
+      {q:"How do synchronous counters overcome ripple-counter delay?", a:["All flip-flops change at the same time","They eliminate all flip-flops","They use only one input","They convert everything to hexadecimal"], c:0},
 
-    {q:"What is a counter?", a:["A register whose value is easily incremented by 1 modulo its capacity","A decoder with memory","A Boolean variable","A type of multiplexer"], c:0},
-    {q:"What happens after a counter reaches its maximum value?", a:["The next increment sets it to 0","It remains at the maximum","It becomes negative","It shuts down"], c:0},
-    {q:"How many values can a counter made from n flip-flops represent?", a:["n","2n","2^n","n^2"], c:2},
-    {q:"What is the maximum count value for a register made from n flip-flops?", a:["n-1","2n-1","2^n-1","2^n"], c:2},
-    {q:"What CPU component is given as an example of a counter?", a:["Program counter","ALU","Control unit","Register file"], c:0},
-    {q:"What are the two types of counters discussed?", a:["Asynchronous and synchronous","Binary and decimal","Signed and unsigned","Parallel and serial"], c:0},
-    {q:"What is another name for an asynchronous counter?", a:["Ripple counter","Data counter","Shift counter","Boolean counter"], c:0},
-    {q:"Why is an asynchronous counter relatively slow?", a:["The output of one flip-flop triggers the next flip-flop","All flip-flops change simultaneously","It uses hexadecimal","It has no clock"], c:0},
-    {q:"How does a synchronous counter operate?", a:["All flip-flops change state at the same time","Each flip-flop waits for the previous one","It has no flip-flops","It uses only one bit"], c:0},
-    {q:"Which type of counter is used in CPUs?", a:["Asynchronous counter","Synchronous counter","Ripple counter","Unclocked counter"], c:1},
-    {q:"Why are synchronous counters faster than ripple counters?", a:["All flip-flops change state at the same time","They use fewer bits","They do not use clocks","They use decimal values"], c:0},
-    {q:"What causes the change to ripple through an asynchronous counter?", a:["The output of one flip-flop triggers the next","The decoder triggers every flip-flop","The MSB triggers the clock","The ALU triggers the register"], c:0},
-    {q:"What disadvantage does a ripple counter have?", a:["Delay in changing value","It cannot store binary values","It cannot use flip-flops","It has no outputs"], c:0},
-    {q:"What is the ripple-counter delay proportional to?", a:["The length of the counter","The decimal value","The number of inputs to a multiplexer","The number of hexadecimal digits"], c:0},
-    {q:"How do synchronous counters overcome ripple-counter delay?", a:["All flip-flops change at the same time","They eliminate all flip-flops","They use only one input","They convert everything to hexadecimal"], c:0},
+      // =========================
+      // MIXED REVIEW
+      // =========================
 
-    // =========================
-    // MIXED REVIEW
-    // =========================
+      {q:"Which component is specifically described as a 1-bit memory device?", a:["Flip-flop","Multiplexer","Decoder","Counter"], c:0},
+      {q:"Which component connects multiple inputs to a single output?", a:["Decoder","Multiplexer","Register","Flip-flop"], c:1},
+      {q:"Which component connects one input to one of several outputs?", a:["Multiplexer","Demultiplexer","Register","Counter"], c:1},
+      {q:"Which circuit's output depends only on the current input?", a:["Combinational circuit","Sequential circuit","Flip-flop","Counter"], c:0},
+      {q:"Which circuit's output can depend on previous inputs?", a:["Combinational circuit","Sequential circuit","Multiplexer","Decoder"], c:1},
+      {q:"Which circuit is commonly used to store multiple bits within a CPU?", a:["Register","OR gate","Decoder","Multiplexer"], c:0},
+      {q:"Which register transfers data one position with each clock pulse?", a:["Parallel register","Shift register","Counter","Decoder"], c:1},
+      {q:"Which circuit is commonly used to count clock-related events in a CPU?", a:["Counter","Multiplexer","OR gate","Decoder"], c:0},
+      {q:"Which number system represents values using powers of 2?", a:["Binary","Decimal","Hexadecimal","None"], c:0},
+      {q:"Which number system represents each digit using four binary bits?", a:["Binary","Decimal","Hexadecimal","Signed decimal"], c:2},
+      {q:"Which technique is used to represent negative numbers in the notes?", a:["Two's complement","Unsigned notation","Hexadecimal only","Repeated division"], c:0},
+      {q:"Which Boolean operation reverses a Boolean value?", a:["AND","OR","NOT","XOR"], c:2},
+      {q:"Which operation requires both inputs to be TRUE to produce TRUE?", a:["OR","AND","NOT","NOR"], c:1},
+      {q:"Which operation produces TRUE when at least one input is TRUE?", a:["AND","OR","NOT","NAND"], c:1},
+      {q:"What is the relationship between Q and ¬Q on a flip-flop?", a:["They are complements","They are identical","They are unrelated","They are always 0"], c:0},
+      {q:"What does the program counter illustrate?", a:["A counter in the CPU","A Boolean gate","A hexadecimal digit","A decoder"], c:0},
+      {q:"What is the key difference between a multiplexer and demultiplexer?", a:["A multiplexer selects one of many inputs; a demultiplexer routes one input to one of many outputs","They are exactly the same","A multiplexer stores data while a demultiplexer counts","A demultiplexer only handles hexadecimal"], c:0},
+      {q:"What is the key advantage of a synchronous counter?", a:["All flip-flops change at the same time","It requires no clock","It stores more bits automatically","It uses no gates"], c:0},
+      {q:"What is the purpose of the select lines in a multiplexer?", a:["To determine which input is passed to the output","To store data","To perform Boolean NOT","To increment a counter"], c:0},
+      {q:"What determines which decoder output is asserted?", a:["The pattern of its input lines","The output of the ALU","The number of registers","The clock frequency"], c:0}
+    ],
+    test1: [
+      {q:"What are the only two values a binary digit (bit) can represent?", a:["0 and 1","1 and 2","0 and 9","True and undefined"], c:0},
+      {q:"What does MSB stand for in computer data representation?", a:["Minimum Storage Byte","Most Significant Bit","Maximum Signed Binary","Multiple System Bit"], c:1},
+      {q:"What does LSB stand for in computer data representation?", a:["Least Significant Bit","Lowest Storage Byte","Logical System Binary","Last Signed Bit"], c:0},
+      {q:"What is the primary purpose of signed integer representation?", a:["To store only positive numbers in memory","To eliminate the need for binary digits","To represent both positive and negative integers","To represent text characters without an encoding system"], c:2},
+      {q:"In the signed integer representation discussed in the lecture, what is the purpose of the highest bit?", a:["It stores the number of bytes in memory","It identifies the processor clock speed","It indicates the sign of the integer","It stores the address of the next instruction"], c:2},
+      {q:"Why does using one bit for the sign limit the range of representable signed integers?", a:["The sign bit cannot be stored in computer memory","One bit is reserved for the sign, leaving fewer bits for the value","Signed integers can only contain zeros","The sign bit requires a separate byte for every digit"], c:1},
+      {q:"What is Boolean algebra primarily used to analyze?", a:["The physical dimensions of computer hardware","The performance of network connections","The behavior of digital logic circuitry","The storage capacity of external drives"], c:2},
+      {q:"Who is associated with the development of Boolean algebra mentioned in the lecture?", a:["Charles Babbage","George Boole","Alan Turing","John von Neumann"], c:1},
+      {q:"What values can a Boolean variable take?", a:["Any positive integer","Any decimal value between 0 and 10","Only negative and positive numbers","0 (FALSE) or 1 (TRUE)"], c:3},
+      {q:"Which three operations form the basic Boolean expressions introduced in the lecture?", a:["AND, OR, NOT","ADD, SUBTRACT, MULTIPLY","NAND, NOR, XOR only","TRUE, FALSE, UNKNOWN"], c:0},
+      {q:"What is the primary function of a NOT operation?", a:["To combine two inputs into one output","To reverse the logical value of an input","To store a logical value until the next clock pulse","To select one input from several possible inputs"], c:1},
+      {q:"When does an AND gate produce an output of 1?", a:["Whenever at least one input is 1","Whenever both inputs have different values","Only when all inputs are 1","Only when all inputs are 0"], c:2},
+      {q:"When does an OR gate produce an output of 0?", a:["When all inputs are 0","When all inputs are 1","Whenever the inputs have different values","Whenever exactly one input is 0"], c:0},
+      {q:"How does a NAND gate relate to an AND gate?", a:["It produces the same output as an OR gate","It reverses the output of an AND gate","It reverses the output of a NOT gate","It produces 1 only when all inputs are 1"], c:1},
+      {q:"How does a NOR gate relate to an OR gate?", a:["It produces the same output as an AND gate","It reverses the output of an XOR gate","It reverses the output of an OR gate","It produces 1 whenever at least one input is 1"], c:2},
+      {q:"What is the defining behavior of an XOR gate with two inputs?", a:["It produces 1 only when both inputs are 1","It always produces the inverse of the first input","It produces 0 whenever the inputs differ","It produces 1 when the inputs have different values"], c:3},
+      {q:"What is a logic gate in digital computer architecture?", a:["An electronic circuit that performs a Boolean operation on its inputs","A storage device that permanently saves files","A component that converts computer programs into source code","A mechanical switch used to control network traffic"], c:0},
+      {q:"What is the purpose of operator precedence in Boolean expressions?", a:["To determine the physical arrangement of logic gates","To establish the order in which logical operations are evaluated","To determine how many bits a register can store","To select which memory address a processor accesses"], c:1},
+      {q:"What information does a truth table provide?", a:["The physical location of every logic gate","The clock speed of a sequential circuit","All possible input combinations and their corresponding outputs","The number of instructions stored in a processor"], c:2},
+      {q:"What is a Boolean function?", a:["A function that converts every input into a hexadecimal value","A function that stores input history indefinitely","A function that requires at least eight input signals","A function that takes one or more Boolean inputs and returns a Boolean output"], c:3},
+      {q:"What defines a combinational circuit?", a:["Its output depends only on its current input values","Its output always depends on the previous clock pulse","It must store every input in a register","Its output changes only when a user presses a button"], c:0},
+      {q:"Why do combinational circuits usually respond shortly after their inputs change?", a:["They wait for every register in the CPU to reset","Their outputs follow the inputs after the delays of the gates","They must retrieve the previous input from permanent storage","They require a complete computer restart before responding"], c:1},
+      {q:"Which three methods can be used to represent a combinational circuit?", a:["Source code, file storage, and memory allocation","Registers, counters, and program instructions","Truth tables, graphical gate symbols, and Boolean equations","Decimal numbers, hexadecimal numbers, and signed integers"], c:2},
+      {q:"What does a sum-of-products implementation of a Boolean function do?", a:["It lists the combinations of inputs that cause the output to be 1 and combines the corresponding product terms","It stores all possible inputs in a sequential register","It converts every Boolean input into a decimal number","It connects every input directly to every output without logic gates"], c:0},
+      {q:"What is the primary function of a multiplexer?", a:["To store several bits until a clock pulse occurs","To select one of several inputs and pass it to a single output","To ensure that every output line is activated simultaneously","To increment a stored value whenever an input changes"], c:1},
+      {q:"In a 4-to-1 multiplexer, how many input lines are available for selection?", a:["2","3","4","8"], c:2},
+      {q:"How many select bits are required to choose one of four inputs in a 4-to-1 multiplexer?", a:["1","3","4","2"], c:3},
+      {q:"In the multiplexer implementation described in the lecture, what determines which value is loaded into the program counter?", a:["The values on the select lines","The number of gates in the processor","The previous value of every register","The amount of free space in main memory"], c:0},
+      {q:"What is the defining behavior of a decoder?", a:["It combines multiple data inputs into one output","It activates one of several output lines according to its input pattern","It stores input values until the computer is switched off","It shifts stored data one position after every clock pulse"], c:1},
+      {q:"How many output lines does a decoder with three input lines have?", a:["3","6","8","16"], c:2},
+      {q:"How are decoders used in memory address decoding?", a:["They convert all stored data into character codes","They cause every RAM chip to respond to every address","They store the contents of memory until the next clock pulse","They select a particular memory chip based on the address bits"], c:3},
+      {q:"How does a demultiplexer differ from a multiplexer?", a:["It routes one input to one of several outputs instead of selecting one of several inputs for a single output","It stores multiple input values in a single flip-flop","It converts a Boolean function into a truth table","It produces the same output regardless of its selection inputs"], c:0},
+      {q:"How does a sequential circuit differ from a combinational circuit?", a:["A sequential circuit cannot have inputs","A sequential circuit depends on current inputs and its current state","A sequential circuit can only produce outputs of zero","A sequential circuit never stores information"], c:1},
+      {q:"What does it mean that a flip-flop is a bistable device?", a:["It can process only two input signals at once","It must change its output continuously","It has two stable states and can retain its state without an input change","It stores two separate bytes in every operating condition"], c:2},
+      {q:"What is a key characteristic of the two outputs of a basic flip-flop described in the lecture?", a:["They always have the same logical value","They alternate independently of each other","They are both permanently set to zero","They are complements of each other"], c:3},
+      {q:"What distinguishes asynchronous operation in an S–R latch from clocked operation?", a:["The latch responds to input changes after a short delay without waiting for a clock pulse","The latch can change state only when a clock pulse occurs","The latch ignores changes to its input signals","The latch must receive a clock pulse before storing any state"], c:0},
+      {q:"Why does a D flip-flop avoid the problematic S=1, R=1 condition of an S–R flip-flop?", a:["It removes the clock signal from the circuit","It uses a single data input and an inverter to provide opposite internal signals","It replaces both inputs with a permanent zero","It activates both S and R inputs whenever data is stored"], c:1},
+      {q:"Why is a D flip-flop sometimes called a delay flip-flop?", a:["It permanently delays every processor instruction","It requires two clock pulses to produce any output","It produces the applied input value after a single clock pulse","It delays all computer operations until memory is full"], c:2},
+      {q:"What is the primary purpose of a parallel register in a CPU?", a:["To select one output from multiple memory addresses","To shift one input bit through several positions","To increment a stored value automatically","To store multiple bits of data, with the bits loaded in parallel"], c:3},
+      {q:"How does a shift register transfer data?", a:["It shifts data between positions with each clock pulse and can transfer information serially","It activates every stored bit as a separate memory address","It permanently stores information without using flip-flops","It sends all input bits to every output simultaneously"], c:0},
+      {q:"Which is a use of shift registers described in the lecture?", a:["Replacing all Boolean operations in a processor","Interfacing with serial I/O devices and performing logical shifts or rotations","Selecting one RAM chip using address decoding","Converting every sequential circuit into a combinational circuit"], c:1},
+      {q:"What happens when a counter reaches its maximum value and is incremented again?", a:["It permanently stops counting","It deletes all the values stored in the CPU","It returns to zero after wrapping around its capacity","It changes into a multiplexer"], c:2},
+      {q:"What is the main difference between asynchronous and synchronous counters?", a:["Asynchronous counters change all flip-flops simultaneously, while synchronous counters change one at a time","Synchronous counters do not use flip-flops","Asynchronous counters are always faster than synchronous counters","Asynchronous counters ripple changes between flip-flops, while synchronous counters change all flip-flops at the same time"], c:3},
+      {q:"Why are synchronous counters used in CPUs instead of ripple counters?", a:["They reduce the delays associated with flip-flops changing one after another","They do not require a clock signal or any stored state","They can represent only one value at a time","They eliminate the need for all registers in the CPU"], c:0},
+      {q:"Which components are identified as programmable logic devices in the lecture?", a:["Multiplexers and program counters","Programmable logic arrays and field-programmable gate arrays","S–R latches and D flip-flops only","RAM chips and character encoding systems"], c:1},
 
-    {q:"Which component is specifically described as a 1-bit memory device?", a:["Flip-flop","Multiplexer","Decoder","Counter"], c:0},
-    {q:"Which component connects multiple inputs to a single output?", a:["Decoder","Multiplexer","Register","Flip-flop"], c:1},
-    {q:"Which component connects one input to one of several outputs?", a:["Multiplexer","Demultiplexer","Register","Counter"], c:1},
-    {q:"Which circuit's output depends only on the current input?", a:["Combinational circuit","Sequential circuit","Flip-flop","Counter"], c:0},
-    {q:"Which circuit's output can depend on previous inputs?", a:["Combinational circuit","Sequential circuit","Multiplexer","Decoder"], c:1},
-    {q:"Which circuit is commonly used to store multiple bits within a CPU?", a:["Register","OR gate","Decoder","Multiplexer"], c:0},
-    {q:"Which register transfers data one position with each clock pulse?", a:["Parallel register","Shift register","Counter","Decoder"], c:1},
-    {q:"Which circuit is commonly used to count clock-related events in a CPU?", a:["Counter","Multiplexer","OR gate","Decoder"], c:0},
-    {q:"Which number system represents values using powers of 2?", a:["Binary","Decimal","Hexadecimal","None"], c:0},
-    {q:"Which number system represents each digit using four binary bits?", a:["Binary","Decimal","Hexadecimal","Signed decimal"], c:2},
-    {q:"Which technique is used to represent negative numbers in the notes?", a:["Two's complement","Unsigned notation","Hexadecimal only","Repeated division"], c:0},
-    {q:"Which Boolean operation reverses a Boolean value?", a:["AND","OR","NOT","XOR"], c:2},
-    {q:"Which operation requires both inputs to be TRUE to produce TRUE?", a:["OR","AND","NOT","NOR"], c:1},
-    {q:"Which operation produces TRUE when at least one input is TRUE?", a:["AND","OR","NOT","NAND"], c:1},
-    {q:"What is the relationship between Q and ¬Q on a flip-flop?", a:["They are complements","They are identical","They are unrelated","They are always 0"], c:0},
-    {q:"What does the program counter illustrate?", a:["A counter in the CPU","A Boolean gate","A hexadecimal digit","A decoder"], c:0},
-    {q:"What is the key difference between a multiplexer and demultiplexer?", a:["A multiplexer selects one of many inputs; a demultiplexer routes one input to one of many outputs","They are exactly the same","A multiplexer stores data while a demultiplexer counts","A demultiplexer only handles hexadecimal"], c:0},
-    {q:"What is the key advantage of a synchronous counter?", a:["All flip-flops change at the same time","It requires no clock","It stores more bits automatically","It uses no gates"], c:0},
-    {q:"What is the purpose of the select lines in a multiplexer?", a:["To determine which input is passed to the output","To store data","To perform Boolean NOT","To increment a counter"], c:0},
-    {q:"What determines which decoder output is asserted?", a:["The pattern of its input lines","The output of the ALU","The number of registers","The clock frequency"], c:0}
-  ],
+      {q:"What is computer architecture primarily concerned with?", a:["The attributes of a computer that are visible to the programmer","The physical appearance of a computer's external case","The manufacturing process used to produce computer chips","The internal wiring of every peripheral device"], c:0},
+      {q:"Which of the following is an example of a computer architecture attribute?", a:["The type of cooling fan installed in the computer","The instruction set supported by the processor","The physical layout of the motherboard","The specific technology used to implement a control signal"], c:1},
+      {q:"What does computer organization describe?", a:["The instructions that programmers write in source code","The number of bits used to represent a particular data value","How the computer's features are implemented internally","The external appearance of the computer system"], c:2},
+      {q:"Which of the following is an example of computer organization?", a:["Whether the instruction set includes multiplication","The addressing techniques visible to programmers","The number of bits used for data representation","Whether multiplication uses dedicated hardware or repeated addition"], c:3},
+      {q:"What is the main difference between computer architecture and computer organization?", a:["Architecture describes programmer-visible features, while organization describes their implementation","Architecture describes only software, while organization describes only external devices","Architecture describes memory capacity, while organization describes programming languages","Architecture describes peripherals, while organization describes user instructions"], c:0},
+      {q:"What does the term structure mean in computer systems?", a:["The sequence in which a program executes its instructions","The way the components of a computer relate to one another","The operations performed by a single computer component","The method used to represent data as binary digits"], c:1},
+      {q:"What does function describe in the context of computer structure?", a:["How computer components are physically manufactured","How many peripherals can connect to a computer","The operation of individual components as part of the structure","The physical dimensions of the processor and memory"], c:2},
+      {q:"Which four functions encompass the basic operations of a computer?", a:["Compilation, debugging, installation, and execution","Input, output, networking, and programming","Reading, writing, printing, and displaying","Data processing, data storage, data movement, and control"], c:3},
+      {q:"What is data processing in a computer system?", a:["Performing operations on data to transform or manipulate it","Moving data between two external devices without changing it","Permanently storing information on an external storage device","Controlling which peripheral is physically connected to the computer"], c:0},
+      {q:"What is the primary purpose of data storage in a computer?", a:["To control the execution order of instructions","To retain data so that it can be accessed or used later","To transfer information between communication lines only","To perform arithmetic operations on every input value"], c:1},
+      {q:"What does data movement involve in a computer system?", a:["Changing the computer's instruction set during execution","Performing calculations on values stored in registers","Transferring data between devices, communication lines, or storage","Converting all information into a programming language"], c:2},
+      {q:"Why is control considered an essential computer function?", a:["It provides permanent storage for all user files","It replaces the need for data processing and storage","It allows peripherals to operate without communication","It coordinates the computer's other functions according to instructions"], c:3},
+      {q:"What is a peripheral in the context of the lecture?", a:["A device directly connected to the computer for input or output","A register located inside the central processing unit","A software instruction that controls the processor","A logic gate used to implement Boolean expressions"], c:0},
+      {q:"What does input-output (I/O) refer to?", a:["The execution of arithmetic instructions inside the ALU","The transfer of data between the computer and its external environment","The storage of control instructions inside CPU registers","The relationship between computer architecture and organization"], c:1},
+      {q:"What is the role of the control unit within a computer?", a:["It permanently stores all programs and user documents","It performs every arithmetic calculation independently","It manages computer resources and coordinates functional components","It connects external peripherals directly to main memory without control"], c:2},
+      {q:"How can a computer function as a data movement device?", a:["By converting all incoming data into executable instructions","By storing every transferred value permanently in main memory","By performing calculations on data before every transfer","By transferring data from one peripheral or communication line to another"], c:3},
+      {q:"In the lecture's description of storage operations, what does reading data mean?", a:["Transferring data from the external environment into computer storage","Transferring data from computer storage to the external environment","Processing data inside the arithmetic and logic unit","Moving data between two registers within the CPU"], c:0},
+      {q:"In the lecture's description of storage operations, what does writing data mean?", a:["Moving information from a peripheral directly to another peripheral","Transferring data from computer storage to the external environment","Executing instructions that control the processor's operations","Moving control signals between the ALU and the control unit"], c:1},
+      {q:"What does processing data from storage involve?", a:["Transferring data between peripherals without processing it","Moving instructions directly from the control unit to a printer","Performing operations on data that is held in computer storage","Connecting multiple processors through a system bus"], c:2},
+      {q:"What does processing data from storage to I/O involve?", a:["Storing all external data without modifying or processing it","Moving data between CPU registers without external interaction","Sending control signals to memory without handling data","Processing data as it travels between storage and the external environment"], c:3},
+      {q:"Which component is primarily responsible for controlling computer operations and performing data processing functions?", a:["The central processing unit","The system bus","The peripheral device","The external communication line"], c:0},
+      {q:"What is the primary purpose of main memory in the top-level computer structure?", a:["To coordinate the timing of every instruction","To store data","To perform all input-output operations independently","To connect the ALU directly to external peripherals"], c:1},
+      {q:"What is the main role of the I/O component in the top-level computer structure?", a:["To store all processor instructions permanently","To execute arithmetic and logical operations","To move data between the computer and its external environment","To coordinate communication between internal CPU registers only"], c:2},
+      {q:"What is the purpose of system interconnection in a computer?", a:["To perform calculations on values stored in main memory","To permanently store the operating system and applications","To control the execution of every instruction independently","To provide communication between the CPU, main memory, and I/O"], c:3},
+      {q:"What is a system bus?", a:["A set of conducting wires that connects computer components for communication","A collection of CPU registers used to store temporary values","A program that controls how peripherals receive instructions","A memory device that stores the computer's address space"], c:0},
+      {q:"Which set contains the major components of the computer's top-level structure?", a:["Compiler, operating system, application, and source code","CPU, main memory, I/O, and system interconnection","Registers, counters, decoders, and multiplexers only","Keyboard, monitor, printer, and external storage only"], c:1},
+      {q:"What are the major structural components of the CPU identified in the lecture?", a:["Main memory, system bus, and external communication lines","Input devices, output devices, and peripheral controllers","Control unit, arithmetic and logic unit, registers, and CPU interconnection","Operating system, compiler, program files, and application software"], c:2},
+      {q:"What is the primary responsibility of the arithmetic and logic unit (ALU)?", a:["To coordinate the physical connections between external peripherals","To store all user data permanently","To control every input-output device independently","To perform the computer's data processing functions"], c:3},
+      {q:"What is the primary purpose of registers within the CPU?", a:["To provide storage internal to the processor","To connect the computer to external communication lines","To replace main memory as the permanent storage location","To control the physical operation of all peripheral devices"], c:0},
+      {q:"What is the purpose of CPU interconnection?", a:["To store program instructions independently of the processor","To enable communication among the control unit, ALU, and registers","To transfer data only between external peripherals","To execute every instruction without involving other components"], c:1},
+      {q:"Which component of the CPU is responsible for controlling the operation of the CPU and the computer?", a:["The arithmetic and logic unit","The system bus","The control unit","The main memory"], c:2},
+      {q:"Which CPU component is responsible for performing arithmetic and logical data processing?", a:["The control unit","The internal CPU interconnection","The register collection","The arithmetic and logic unit"], c:3},
+      {q:"What is the role of the CPU's internal interconnection?", a:["To provide a communication mechanism among internal CPU components","To connect only the computer's external keyboard and monitor","To store data when the main memory is full","To execute instructions without using registers or the ALU"], c:0},
+      {q:"Which statement best describes the relationship between the control unit and the ALU?", a:["The ALU controls all computer resources, while the control unit permanently stores data","The control unit coordinates operations, while the ALU performs data processing","The control unit and ALU both function only as external storage devices","The ALU connects external communication lines, while the control unit stores user files"], c:1},
+      {q:"What is the purpose of control signals within computer organization?", a:["To increase the number of instructions visible to programmers","To provide permanent storage for all data processed by the CPU","To coordinate and direct the operation of computer components","To replace communication between the CPU and main memory"], c:2},
+      {q:"How does the lecture distinguish structure from function?", a:["Structure describes programming languages, while function describes computer manufacturers","Structure describes data representation, while function describes storage capacity","Structure describes the control unit only, while function describes external peripherals only","Structure describes relationships among components, while function describes their operations"], c:3},
+      {q:"Which example best illustrates computer architecture rather than computer organization?", a:["Whether the processor supports a multiply instruction","Whether multiplication is implemented with dedicated hardware","The internal design of the processor's control signals","The particular memory technology used to implement a feature"], c:0},
+      {q:"Which example best illustrates computer organization rather than computer architecture?", a:["The instruction set supported by the processor","The internal implementation of multiplication using hardware or repeated addition","The number of bits used for data representation","The addressing techniques visible to a programmer"], c:1},
+      {q:"Which statement best summarizes how the major computer components work together?", a:["Main memory controls all components while the CPU serves only as storage","The system bus processes data while the ALU manages external peripherals","The CPU processes and controls operations, memory stores data, I/O moves data, and interconnections enable communication","The I/O component executes instructions while registers permanently store every program"], c:2},
+    
+      {q:"What was the primary purpose of the abacus, developed around 3000 B.C. in Babylonia?", a:["To provide an early aid for performing calculations","To store computer programs on punched cards","To control electronic vacuum-tube circuits","To transmit data between distant computers"], c:0},
+      {q:"What was the significance of the Antikythera mechanism in computing history?", a:["It was the first commercial microprocessor","It was an ancient analog astronomical calculator","It was the first general-purpose electronic computer","It introduced the first graphical user interface"], c:1},
+      {q:"What was the main contribution of the Jacquard loom in 1801?", a:["It introduced the first integrated circuit","It replaced vacuum tubes with transistors","It used punched cards to control operations, anticipating programmable input","It introduced the first stored-program electronic computer"], c:2},
+      {q:"What was the significance of Charles Babbage's Analytical Engine concept from 1837?", a:["It was the first commercially successful DRAM chip","It was the first personal computer with a graphical interface","It was the first electronic computer designed for codebreaking","It introduced the concept of a fully programmable computer"], c:3},
+      {q:"Why is Ada Lovelace recognized in the history of computing?", a:["She wrote an early algorithm and is recognized as the world's first programmer","She invented the first commercial microprocessor","She developed the first integrated circuit","She founded Intel and developed its first processor"], c:0},
+      {q:"What was the purpose of Hollerith's tabulating machine in 1890?", a:["To accelerate three-dimensional graphics rendering","To process punched-card data for the U.S. Census","To execute artificial intelligence models using GPUs","To provide a standardized architecture for personal computers"], c:1},
+      {q:"Which statement correctly describes ENIAC according to the lecture?", a:["It was the first practical stored-program computer","It was the first commercial 4-bit microprocessor","It was a general-purpose electronic computer introduced in 1945","It was the first smartphone operating system"], c:2},
+      {q:"What major technological change followed the introduction of transistors?", a:["Computers became dependent on mechanical relays","Computers could no longer use integrated circuits","Computers transitioned immediately to quantum processing","Transistors replaced vacuum tubes, making computers smaller, faster, and more reliable"], c:3},
+      {q:"What did Moore's Law describe when it was introduced in 1965?", a:["The historical trend of exponential growth in transistor counts","The relationship between CPU clock speed and execution time only","The maximum number of instructions stored in main memory","The rate at which computer networks increase their bandwidth"], c:0},
+      {q:"What was the significance of the Intel 4004, introduced in 1971?", a:["It was the first 32-bit x86 processor","It was the first commercial microprocessor","It was the first GPU designed for AI workloads","It was the first general-purpose electronic computer"], c:1},
+      {q:"What was the importance of the Intel 8086 introduced in 1978?", a:["It established the first graphical user interface","It replaced all CPU registers with main memory","It became the foundation of the x86 architecture","It introduced the first commercially successful DRAM chip"], c:2},
+      {q:"What was the main contribution of the IBM PC introduced in 1981?", a:["It introduced the first electronic vacuum-tube computer","It made cloud computing available to consumers","It established the first programmable mechanical calculator","It helped standardize personal computer architecture"], c:3},
+      {q:"What was the main significance of the von Neumann or IAS computer design?", a:["It introduced the stored-program concept, with memory holding both programs and data","It separated all program instructions from data into unrelated systems","It replaced the ALU with a dedicated graphics processing unit","It relied exclusively on punched cards for program execution"], c:0},
+      {q:"According to the lecture, which components formed the core of the IAS computer design?", a:["A GPU, an NPU, an SSD, and a network controller","Main memory, an ALU, a control unit, and input-output equipment","A touchscreen, a graphical interface, and wireless communication","A collection of mechanical calculators connected by punched cards"], c:1},
+      {q:"In the IAS computer, what information did an instruction contain?", a:["A 12-bit opcode and an 8-bit memory address","A 40-bit opcode with no address information","An 8-bit opcode specifying the operation and a 12-bit memory address","A 20-bit address and a 20-bit clock signal"], c:2},
+      {q:"What was the primary purpose of the Memory Address Register (MAR) in the IAS computer?", a:["To hold the result of the latest ALU operation","To temporarily store the right-hand instruction in a memory word","To keep track of the next instruction pair to execute","To specify the memory address associated with a word being read or written"], c:3},
+      {q:"What was the purpose of the Memory Buffer Register (MBR) in the IAS computer?", a:["To hold a word being transferred to or from memory or the I/O unit","To permanently store the processor's instruction set","To predict which branch a program would execute next","To control the clock frequency of the entire computer"], c:0},
+      {q:"What information did the Program Counter (PC) hold in the IAS computer?", a:["The result of the most recent multiplication","The address of the next instruction pair to be fetched from memory","The memory address of the last peripheral accessed","The opcode currently being decoded by the ALU"], c:1},
+      {q:"Which category of IAS instructions allowed a program to change its normal sequential execution and repeat operations?", a:["Data transfer instructions","Address modification instructions","Unconditional branch instructions","Memory buffer instructions"], c:2},
+      {q:"What is instruction-level pipelining designed to accomplish?", a:["It forces one instruction to finish completely before another begins","It eliminates the need for instruction decoding","It increases memory capacity by combining multiple storage devices","It allows different stages of multiple instructions to be processed simultaneously"], c:3},
+      {q:"How does out-of-order execution improve CPU performance?", a:["It executes available instructions when their required data is ready rather than always following the original program order","It forces all instructions to wait for the slowest instruction to finish","It permanently changes the order of instructions stored in a program","It reduces performance by disabling unused execution units"], c:0},
+      {q:"What is the purpose of branch prediction in a modern CPU?", a:["To determine how much storage space a program requires","To predict the likely path of a decision so the CPU can prepare instructions in advance","To ensure every instruction is executed in the same order","To determine which physical CPU core is the largest"], c:1},
+      {q:"What is speculative execution?", a:["Executing only instructions that have already been permanently confirmed","Storing predicted instructions directly in long-term storage","Temporarily executing instructions based on predicted outcomes before knowing whether they are needed","Increasing CPU clock speed by removing the processor's cache"], c:2},
+      {q:"What does a CPU core represent?", a:["A memory chip that stores instructions permanently","A specialized peripheral that transfers files to the CPU","A system bus connecting the processor to external devices","An individual processing unit within a CPU that can execute instructions"], c:3},
+      {q:"Why do multiple CPU cores potentially improve a computer's ability to handle several tasks?", a:["They allow workloads or threads to be processed in parallel across different processing units","They guarantee every individual program will execute faster regardless of its design","They eliminate the need for main memory and cache","They increase performance solely by raising the clock frequency of one core"], c:0},
+      {q:"What is the CPU-memory performance gap, also called the memory wall?", a:["The difference between the number of CPU cores and the number of installed GPUs","The situation in which CPU performance improves faster than main-memory latency","The difference between the capacity of an SSD and an external hard drive","The situation in which memory bandwidth always increases faster than processor performance"], c:1},
+      {q:"What is the primary purpose of CPU cache memory?", a:["To permanently store all user files and applications","To replace the CPU's registers during instruction execution","To keep frequently needed data close to the CPU and reduce slower main-memory accesses","To increase the physical size of the processor without changing its performance"], c:2},
+      {q:"Which statement correctly describes the typical CPU cache hierarchy?", a:["L3 is always the smallest and fastest level, while L1 is the largest","Main memory is smaller and faster than every cache level","L1, L2, and L3 all have identical capacity and access speed","L1 is the smallest and fastest, while L2 and L3 are generally larger and slower"], c:3},
+      {q:"What is temporal locality in memory access?", a:["The tendency for recently accessed data or instructions to be accessed again soon","The tendency for the CPU to access only memory addresses located far apart","The ability to transfer data between several memory devices simultaneously","The process of storing data permanently after every clock cycle"], c:0},
+      {q:"What is spatial locality in memory access?", a:["The tendency for previously accessed data to be deleted immediately","The tendency for memory accesses to occur near recently accessed locations","The process of executing instructions from different CPU cores at once","The ability to store the same data in several different file formats"], c:1},
+      {q:"What is the main difference between a CPU and a GPU?", a:["A CPU is designed exclusively for graphics, while a GPU manages operating systems","A CPU has no processing cores, while a GPU contains only one core","A CPU handles varied general-purpose tasks, while a GPU excels at highly parallel workloads","A CPU is used only for mobile devices, while a GPU is used only for servers"], c:2},
+      {q:"What is the purpose of prefetching in modern memory systems?", a:["To delete old data from cache before it can be reused","To reduce the number of CPU cores needed for parallel processing","To move every stored file permanently into a processor register","To predict which data will be needed next and load it before it is requested"], c:3},
+      {q:"Why has simply increasing CPU clock speed become less effective as a performance strategy?", a:["Power consumption, heat dissipation, leakage power, interconnect delays, and memory latency impose limitations","Higher clock speeds automatically reduce the number of available instructions","Clock speed prevents CPUs from using caches or multiple processing cores","Increasing clock speed eliminates the need for synchronization between processor components"], c:0},
+      {q:"What does CPI measure in CPU performance analysis?", a:["The number of instructions completed per second","The average number of clock cycles required to execute one instruction","The number of processor cores available to an application","The amount of memory transferred during one clock cycle"], c:1},
+      {q:"What does IPC measure?", a:["The number of cache levels available to a processor","The average number of clock cycles required for each instruction","The number of instructions completed per clock cycle","The number of bytes stored in the CPU's registers"], c:2},
+      {q:"Which formula does the lecture provide for calculating CPU execution time?", a:["CPU Time = Clock Rate × Instruction Count × CPI","CPU Time = CPI ÷ (Instruction Count × Clock Rate)","CPU Time = Instruction Count ÷ CPI","CPU Time = (Instruction Count × CPI) ÷ Clock Rate"], c:3},
+      {q:"What is the primary purpose of computer benchmarks?", a:["To test and compare computer performance using representative workloads","To determine whether a computer can run without an operating system","To replace the need for measuring execution time and throughput","To guarantee that every computer performs equally across all applications"], c:0},
+      {q:"What does SPECspeed measure in the benchmark approach described in the lecture?", a:["The total number of tasks completed by many processors over an extended period","How quickly a system completes a single task","The amount of power consumed by an idle processor","The total number of instructions stored in the computer's main memory"], c:1},
+      {q:"What does SPECrate measure in the benchmark approach described in the lecture?", a:["How quickly a single task responds without considering other workloads","The number of transistors integrated into a processor","How much work a system can complete over time, reflecting throughput","The time required for a computer to start its operating system"], c:2},
+      {q:"What is the central idea of Amdahl's Law?", a:["Adding processors always increases performance in direct proportion to their number","Parallel processing eliminates every serial portion of a program","Programs cannot benefit from running on multiple processors","The speedup from parallel processing is limited by the portion of a program that cannot be parallelized"], c:3},
+      {q:"Why can adding more processors produce diminishing returns when improving a program's performance?", a:["Some portions of the program must still execute sequentially and limit overall speedup","Each additional processor automatically increases the program's instruction count","Parallel execution forces every task to use slower storage devices","Additional processors prevent programs from accessing shared memory"], c:0},
+
+      {q:"What are the four basic functions performed by a computer?", a:["Processing, storage, input, and output","Decoding, compiling, networking, and printing","Loading, branching, scheduling, and caching","Addressing, timing, buffering, and transmitting"], c:0},
+      {q:"Why can general-purpose hardware perform different tasks without being physically rewired?", a:["It automatically replaces its physical components","It uses new control signals to direct its operations","It stores every possible result in main memory","It converts all programs into electrical circuits"], c:1},
+      {q:"What is a computer program, according to the lecture?", a:["A collection of physical components connected together","A storage area reserved exclusively for instructions","A sequence of steps involving arithmetic or logical operations","A hardware device responsible for controlling peripherals"], c:2},
+      {q:"What is the primary function of the control unit?", a:["Perform arithmetic calculations on operands","Store program instructions permanently","Transfer every result directly to external devices","Issue control signals based on an operation's code"], c:3},
+      {q:"Which two components together constitute the Central Processing Unit (CPU)?", a:["Control Unit and Arithmetic Logic Unit","Main Memory and Input/Output Module","Program Counter and Instruction Register","Address Bus and Data Bus"], c:0},
+      {q:"What is the main purpose of main memory during program execution?", a:["To coordinate every interrupt from external devices","To temporarily store instructions, data, and results","To perform all arithmetic operations independently","To transmit control signals between peripheral devices"], c:1},
+      {q:"What does the Program Counter (PC) normally contain?", a:["The result of the most recently executed operation","The operation code of the current instruction","The address of the next instruction to fetch","The address of the most recently written data"], c:2},
+      {q:"What happens to an instruction during the fetch cycle?", a:["It is immediately sent to an output peripheral","It is permanently saved to secondary storage","It is converted into a high-level programming statement","It is retrieved from memory and loaded into the IR"], c:3},
+      {q:"What is the usual purpose of incrementing the Program Counter after fetching an instruction?", a:["To identify the next instruction in sequence","To preserve the result of the current calculation","To determine which peripheral receives output","To store the current instruction in main memory"], c:0},
+      {q:"What is the purpose of the Instruction Register (IR)?", a:["To hold the address of the next instruction","To hold the instruction currently being processed","To store all results produced by the ALU","To identify the peripheral requesting an interrupt"], c:1},
+      {q:"What does instruction decoding determine?", a:["Whether main memory requires additional capacity","Which bus should permanently control the processor","Which operation and operands the instruction requires","Whether the computer should shut down after execution"], c:2},
+      {q:"Which activity is an example of the processor-memory category of the execute cycle?", a:["A keyboard sends a notification to the operating system","A timer interrupts a program at regular intervals","A network adapter transmits a packet externally","The CPU transfers data to or from main memory"], c:3},
+      {q:"What does the data operation state of the instruction cycle involve?", a:["Performing the arithmetic or logical operation specified","Determining the physical location of an output device","Sending an interrupt request to every connected module","Synchronizing all peripheral devices with a shared clock"], c:0},
+      {q:"What is the purpose of instruction address calculation?", a:["To determine the amount of data a bus can transfer","To determine the address of the next instruction","To identify which device has the highest interrupt priority","To calculate the final result of an arithmetic operation"], c:1},
+      {q:"What is an interrupt in computer architecture?", a:["A permanent change to the processor's physical hardware","A method for increasing the width of the address bus","A mechanism that interrupts normal processing to handle an event","A technique for storing all instructions outside main memory"], c:2},
+      {q:"Which of the following is an example of an interrupt generated by a timer?", a:["A memory location is selected for a read operation","A processor adds two values held in registers","A program stores a calculation result in memory","A timer event prompts the operating system to schedule work"], c:3},
+      {q:"Why are interrupts useful when handling I/O devices?", a:["Devices can notify the CPU when they need attention","The CPU no longer needs to execute program instructions","All data transfers automatically bypass main memory","Every peripheral can execute the CPU's instruction cycle"], c:0},
+      {q:"What is the typical sequence of interrupt handling?", a:["Decode instruction, clear memory, restart the processor, and halt","Save CPU context, run the handler, restore context, and resume","Disable all devices, erase registers, and restart the operating system","Complete every program, reset the PC, and reload all instructions"], c:1},
+      {q:"What does the processor typically do when an interrupt is pending?", a:["Permanently discards the program that was running","Allows every interrupt handler to execute simultaneously","Suspends the current program and transfers control to a handler","Continues indefinitely without checking for interrupt requests"], c:2},
+      {q:"What is meant by saving CPU context during interrupt handling?", a:["Copying every file from secondary storage into RAM","Recording the physical dimensions of the processor","Saving all peripheral firmware to the instruction register","Preserving processor state so the interrupted program can resume"], c:3},
+      {q:"How can interrupts improve performance during a short I/O wait?", a:["The CPU can execute other instructions while the device works","The CPU must continuously check whether the device is ready","The I/O device executes all instructions from the user program","The operating system prevents the processor from doing other work"], c:0},
+      {q:"What happens when interrupts are disabled while one interrupt is being processed?", a:["Every new interrupt immediately replaces the current handler","Further interrupts are ignored temporarily and checked afterward","All pending interrupts are permanently erased from the system","The processor automatically executes every pending handler at once"], c:1},
+      {q:"What distinguishes nested interrupts from sequential interrupts?", a:["Sequential interrupts always have higher priority than nested ones","Nested interrupts require all devices to share the same clock","A higher-priority interrupt can interrupt a lower-priority handler","Sequential interrupts allow multiple handlers to execute simultaneously"], c:2},
+      {q:"In the lecture's interrupt example, what happens when a higher-priority communications interrupt occurs during a printer handler?", a:["The printer interrupt is permanently deleted from the system","The CPU ignores the communications interrupt until shutdown","Both interrupt handlers execute without saving their processor states","The communications handler runs, and the printer handler can later resume"], c:3},
+      {q:"Which three types of information must computer components exchange?", a:["Data, addresses, and control information","Instructions, passwords, and application settings","Clock speeds, source code, and file permissions","Memory capacity, screen resolution, and power consumption"], c:0},
+      {q:"What information does a memory connection receive from the processor?", a:["Only completed output intended for external peripherals","Data, memory addresses, and control signals such as read or write","Only interrupt requests generated by the internal processor timer","Only clock signals and information about connected network devices"], c:1},
+      {q:"How does an input connection differ from an output connection?", a:["Input sends data to peripherals, while output receives peripheral data","Input and output both send data exclusively into main memory","Input receives peripheral data for the computer, while output sends computer data outward","Input controls the processor clock, while output calculates instruction addresses"], c:2},
+      {q:"What is a bus in computer architecture?", a:["A dedicated storage device for frequently used instructions","A processor component that performs logical comparisons","A program that schedules communication between applications","A communication pathway connecting two or more devices"], c:3},
+      {q:"What is the primary role of the data bus?", a:["To carry data and instructions between computer components","To identify the memory address involved in a transfer","To carry only clock and interrupt signals","To decide which interrupt handler has the highest priority"], c:0},
+      {q:"What determines the maximum memory address space in the lecture's bus example?", a:["The number of instructions stored in the Instruction Register","The width of the address bus","The number of devices connected to the data bus","The frequency of interrupts received by the processor"], c:1},
+      {q:"Which signals are typically carried by the control bus?", a:["Only the data values read from main memory","Only the addresses used to access peripherals","Read, write, interrupt, and timing signals","Only the results produced by arithmetic instructions"], c:2},
+      {q:"What is bus contention?", a:["A situation where memory permanently loses its stored contents","A delay caused exclusively by decoding machine instructions","A condition in which the processor cannot increment its PC","A situation where multiple devices compete to use the same bus"], c:3},
+      {q:"What is one disadvantage of using multiplexed address and data lines?", a:["Control becomes more complex and performance may be affected","The system must use separate physical lines for every signal","The bus can no longer transmit data between memory and the CPU","Every connected peripheral requires its own independent processor"], c:0},
+      {q:"Why is bus arbitration needed in a system with shared resources?", a:["To determine the next instruction that the CPU should decode","To ensure only one module controls the bus at a given time","To increase the number of bits stored in the Instruction Register","To convert asynchronous communication into program instructions"], c:1},
+      {q:"How does centralized bus arbitration work?", a:["Every connected module independently decides when to transmit","The CPU permanently owns the bus regardless of other requests","A single hardware controller manages access to the bus","Each peripheral receives a separate bus that cannot be shared"], c:2},
+      {q:"What is the main difference between synchronous and asynchronous communication?", a:["Synchronous communication uses no timing, while asynchronous requires a clock","Synchronous communication is only for memory, while asynchronous is only for I/O","Both methods require every transfer to occur on the same clock edge","Synchronous communication follows a clock, while asynchronous uses coordination or handshaking"], c:3},
+      {q:"What is PCI Express (PCIe) primarily used for?", a:["Providing high-speed connections to devices such as GPUs and NVMe SSDs","Replacing the CPU's instruction decoder with a peripheral controller","Storing all active programs without using main memory","Handling every interrupt without requiring processor involvement"], c:0},
+      {q:"What is Direct Memory Access (DMA)?", a:["A technique requiring the CPU to copy every data word individually","A method allowing devices to transfer data directly to or from memory","A protocol that allows only the CPU to access the system bus","A process that converts machine instructions into device addresses"], c:1},
+      {q:"Which statement correctly describes DMA transfer modes?", a:["Burst mode transfers only while the CPU is idle","Cycle stealing mode prevents the CPU from executing between transfers","Transparent mode transfers only when the CPU is idle","All DMA modes require the CPU to manage each individual data word"], c:2},
+      {q:"Which statement correctly distinguishes latency, bandwidth, and throughput?", a:["Latency is data capacity, bandwidth is actual speed, and throughput is waiting time","Latency is actual data transferred, bandwidth is delay, and throughput is bus width","Latency is clock frequency, bandwidth is instruction count, and throughput is memory size","Latency is time delay, bandwidth is maximum transfer rate, and throughput is actual transfer rate"], c:3},
+
+      {q:"What are the major topics involved in modern processor architecture?", a:["CPU organization, instruction execution, memory hierarchy, and parallel processing","File management, network routing, database design, and user interfaces","Web development, application testing, software deployment, and data recovery","Input devices, display resolution, file compression, and system installation"], c:0},
+      {q:"What is the typical sequence of stages in an instruction execution cycle?", a:["Decode, execute, fetch operands, fetch, and store output","Fetch, decode, fetch operands, execute, and store output","Execute, store output, decode, fetch, and fetch operands","Fetch operands, execute, store output, decode, and fetch"], c:1},
+      {q:"What happens when the CPU needs data that is not available in its registers or cache?", a:["The CPU immediately terminates the current program","The CPU transfers the entire SSD into main memory","The request continues through the memory hierarchy toward main memory","The CPU disables the memory controller until the next instruction"], c:2},
+      {q:"What is a cache hit?", a:["When a program successfully compiles into executable machine code","When the CPU predicts a branch instruction correctly","When the operating system moves a process into kernel mode","When the requested data is found in the cache hierarchy"], c:3},
+      {q:"Which statement correctly describes the relationship between memory capacity and access speed in the presented hierarchy?", a:["Capacity generally increases while access becomes slower farther from the CPU","Capacity and access speed both increase toward secondary storage","Capacity decreases while access becomes faster toward secondary storage","Every level has approximately the same capacity and access speed"], c:0},
+      {q:"What is the role of a compiler in program execution?", a:["It directly controls the physical movement of data between cache levels","It translates high-level source code into machine-level instructions","It manages the CPU's branch prediction and instruction retirement stages","It converts physical memory addresses into virtual addresses"], c:1},
+      {q:"What does the Instruction Pointer (RIP) identify during instruction fetching?", a:["The memory location containing the most recent calculation result","The current privilege level used by the operating system","The address of the instruction to be fetched next","The location of the highest-priority interrupt handler"], c:2},
+      {q:"What is the primary purpose of CPU user mode?", a:["To permit applications to control all hardware directly","To allow applications to change system memory-management settings","To give ordinary programs unrestricted access to every process","To restrict application access to sensitive hardware and system resources"], c:3},
+      {q:"Which statement describes kernel or supervisor mode?", a:["It provides the operating system with privileged access to hardware and system resources","It restricts the operating system to the same permissions as ordinary applications","It is used exclusively for executing floating-point calculations","It prevents the operating system from managing virtual memory"], c:0},
+      {q:"What are privileged instructions?", a:["Instructions that can only be executed by graphics processing units","Instructions restricted to kernel or supervisor mode","Instructions used exclusively to access the L1 cache","Instructions that applications execute without operating system involvement"], c:1},
+      {q:"What is the purpose of memory protection?", a:["To ensure that every application uses the same physical memory addresses","To increase the number of instructions completed during every clock cycle","To prevent programs from improperly accessing memory belonging to other programs or the OS","To eliminate the need for virtual addresses in modern processors"], c:2},
+      {q:"What does virtual memory provide to each process?", a:["A separate physical processor that cannot be shared with other processes","Permanent storage for every instruction generated by the compiler","Direct access to all physical RAM without address translation","Its own virtual address space that is mapped to physical memory"], c:3},
+      {q:"What is the function of the Memory Management Unit (MMU)?", a:["It translates virtual addresses into physical addresses using page tables","It predicts the results of conditional branch instructions","It manages the CPU's floating-point arithmetic operations","It schedules threads between performance and efficiency cores"], c:0},
+      {q:"What information do page tables maintain?", a:["The order in which the CPU retires completed instructions","Mappings between virtual memory pages and physical memory frames, including permissions","The current contents of every CPU execution unit","The sequence of instructions predicted by the branch predictor"], c:1},
+      {q:"What is the purpose of the Translation Lookaside Buffer (TLB)?", a:["To store program output before it is written to an SSD","To perform vector arithmetic on several data values simultaneously","To cache recent address translations and speed up memory access","To maintain the priority order of pending hardware interrupts"], c:2},
+      {q:"Why do modern x86-64 processors generally implement fewer than 64 address bits?", a:["The processor cannot store addresses in 64-bit registers","Virtual memory eliminates the need for physical memory addresses","The operating system requires all addresses to be 32 bits wide","The full theoretical 64-bit address space is enormous and unnecessary for current systems"], c:3},
+      {q:"What is a general-purpose register?", a:["A small, fast storage location inside the CPU used for data and intermediate values","A device that connects the processor to external network equipment","A section of an SSD reserved for permanently storing machine instructions","A software component that translates high-level code into assembly"], c:0},
+      {q:"Which register is commonly associated with counting loop iterations?", a:["EAX","ECX","ESP","EBP"], c:1},
+      {q:"What is the primary purpose of the stack pointer register?", a:["To identify the next instruction to be fetched from memory","To record whether the last arithmetic result was zero","To track the current position of the stack in memory","To store the physical address of the graphics processing unit"], c:2},
+      {q:"Which statement correctly describes the EFLAGS register?", a:["It contains only the addresses of memory locations used by the CPU","It stores the machine instructions currently waiting to execute","It manages the physical connections between CPU cores","It contains status and control flags, with each flag represented by a bit"], c:3},
+      {q:"What does the carry flag indicate in the lecture's description of status flags?", a:["An unsigned arithmetic operation produced a result outside its representable range","A signed arithmetic operation produced a negative result","The most recent comparison determined that two values were equal","The processor incorrectly predicted the destination of a branch"], c:0},
+      {q:"What does the overflow flag indicate?", a:["The result of the last operation was exactly zero","A signed arithmetic operation produced a result outside its representable range","The processor received an interrupt from an external device","The CPU failed to find requested data in the L1 cache"], c:1},
+      {q:"What is the purpose of XMM registers in the presented processor architecture?", a:["To store the current instruction address for the CPU","To track the current stack frame used by a program","To support 128-bit SIMD operations on multiple data elements","To manage the mapping of virtual pages to physical memory"], c:2},
+      {q:"What does SIMD stand for, and what is its main benefit?", a:["Sequential Instruction, Multiple Devices; it improves device connectivity","Single Instruction, Memory Division; it increases available RAM capacity","Specialized Instruction, Managed Data; it improves program security","Single Instruction, Multiple Data; it processes multiple data values simultaneously"], c:3},
+      {q:"Which type of processor is best suited to highly parallel workloads, according to the lecture?", a:["GPU","CPU","MMU","TLB"], c:0},
+      {q:"What is the primary role of an NPU?", a:["Managing stack operations and general-purpose CPU registers","Accelerating artificial intelligence and machine learning workloads","Translating all virtual memory addresses into physical addresses","Executing operating system instructions in supervisor mode"], c:1},
+      {q:"What is simultaneous multithreading (SMT)?", a:["A technique that increases the capacity of the CPU's L1 cache","A method that assigns every program to a separate physical processor","A technology that allows one physical CPU core to execute instructions from multiple threads","A process that requires each instruction to finish before another begins"], c:2},
+      {q:"What is the purpose of pipelining in a CPU?", a:["To ensure that only one instruction can occupy the processor at a time","To eliminate the need for decoding machine instructions","To prevent memory access from overlapping with other processor activity","To overlap instruction stages so multiple instructions can be in progress"], c:3},
+      {q:"What is instruction-level parallelism (ILP)?", a:["The ability to execute multiple independent instructions simultaneously","The ability to store multiple programs permanently in main memory","The ability to translate several virtual addresses into physical addresses","The ability to run applications without compiling their source code"], c:0},
+      {q:"How does superscalar execution improve processor performance?", a:["It increases the physical size of the SSD without changing CPU operation","It allows the processor to issue and execute multiple instructions in a clock cycle","It prevents the CPU from executing instructions out of their original order","It replaces all general-purpose registers with specialized graphics memory"], c:1},
+      {q:"What is the purpose of out-of-order execution?", a:["To execute every instruction strictly in the order it appears in the program","To permanently remove instructions that depend on other instructions","To let ready instructions proceed while other instructions are waiting","To ensure that every branch instruction always produces the same prediction"], c:2},
+      {q:"What is speculative execution?", a:["Executing instructions only after all memory transfers have finished","Running every possible instruction in the program to completion","Disabling branch prediction to guarantee the shortest execution path","Predicting a branch outcome and executing instructions ahead of confirmation"], c:3},
+      {q:"What happens when a CPU makes an incorrect branch prediction?", a:["It flushes incorrect instructions from the pipeline and resumes on the correct path","It permanently changes the program's branch condition","It deletes the current process and clears all physical memory","It skips instruction decoding and immediately stores the predicted result"], c:0},
+      {q:"What is the difference between P-cores and E-cores in a hybrid processor?", a:["P-cores handle only background tasks, while E-cores handle demanding applications","P-cores prioritize high performance, while E-cores prioritize energy efficiency","P-cores perform only AI calculations, while E-cores perform only graphics operations","P-cores manage virtual memory, while E-cores handle instruction decoding"], c:1},
+      {q:"How does thread scheduling help modern hybrid processors balance performance and power consumption?", a:["It sends all threads to E-cores regardless of their requirements","It assigns every background task to a separate physical processor","It directs demanding tasks toward P-cores and less intensive tasks toward E-cores","It prevents multiple CPU cores from executing tasks at the same time"], c:2},
+      {q:"What is register renaming designed to accomplish in modern CPUs?", a:["Increase the number of physical memory addresses available to programs","Allow privileged instructions to execute in user mode","Replace the instruction pointer with a shared system-wide register","Eliminate false data dependencies and improve instruction-level parallelism"], c:3},
+      {q:"What is the main purpose of a GPU compared with a general-purpose CPU?", a:["A GPU is designed for highly parallel computation, while a CPU handles general-purpose processing","A GPU translates virtual addresses, while a CPU only stores program instructions","A GPU manages operating system privileges, while a CPU handles memory protection","A GPU replaces main memory, while a CPU provides permanent data storage"], c:0},
+      {q:"Which sequence correctly represents abstraction levels in a modern computer, from higher to lower levels?", a:["Transistors, digital logic, microarchitecture, ISA, compiler, application","Application, high-level language, compiler, assembly, ISA, microarchitecture, digital logic, transistors","Application, transistors, assembly, operating system, cache, machine instructions","Digital logic, application, ISA, high-level language, microarchitecture, compiler"], c:1},
+      {q:"How does a program typically interact with hardware when using an operating system?", a:["The application directly rewires the CPU before each instruction executes","The compiler communicates with hardware without generating machine instructions","The application uses machine instructions and operating-system services, such as system calls and drivers, to access hardware","The operating system converts all hardware operations into virtual memory pages before execution"], c:2}
+    ]
+  },
 
   CloudComp: {
     quiz1: [
-    {q:"What is cloud computing?", a:["On-demand delivery of computing resources over the internet with usage-based billing","A method of physically building data centers","A programming language for cloud applications","A type of computer hardware"], c:0},
+      {q:"What is cloud computing?", a:["On-demand delivery of computing resources over the internet with usage-based billing","A method of physically building data centers","A programming language for cloud applications","A type of computer hardware"], c:0},
 
-    {q:"Which of the following is a key component of cloud computing?", a:["Compute","Keyboard manufacturing","Desktop publishing","Physical cabling only"], c:0},
+      {q:"Which of the following is a key component of cloud computing?", a:["Compute","Keyboard manufacturing","Desktop publishing","Physical cabling only"], c:0},
 
-    {q:"Which type of storage is listed as a cloud computing component?", a:["Object storage","Tape-only storage","BIOS storage","CPU storage"], c:0},
+      {q:"Which type of storage is listed as a cloud computing component?", a:["Object storage","Tape-only storage","BIOS storage","CPU storage"], c:0},
 
-    {q:"Which of the following is an example of cloud networking?", a:["VPCs","CPU registers","RAM slots","USB ports"], c:0},
+      {q:"Which of the following is an example of cloud networking?", a:["VPCs","CPU registers","RAM slots","USB ports"], c:0},
 
-    {q:"What does cloud computing abstract?", a:["Physical infrastructure","All software code","User passwords","Programming languages"], c:0},
+      {q:"What does cloud computing abstract?", a:["Physical infrastructure","All software code","User passwords","Programming languages"], c:0},
 
-    {q:"What allows organizations to scale globally without owning hardware?", a:["Cloud abstraction of physical infrastructure","Local-only storage","Manual hardware installation","Single-user operating systems"], c:0},
+      {q:"What allows organizations to scale globally without owning hardware?", a:["Cloud abstraction of physical infrastructure","Local-only storage","Manual hardware installation","Single-user operating systems"], c:0},
 
-    {q:"What type of billing is associated with cloud computing?", a:["Usage-based billing","One-time hardware-only billing","Paper-based billing","No billing"], c:0},
+      {q:"What type of billing is associated with cloud computing?", a:["Usage-based billing","One-time hardware-only billing","Paper-based billing","No billing"], c:0},
 
-    {q:"Which database types are used for cloud computing components?", a:["SQL and NoSQL","Only spreadsheets","Only CSV files","Only graphing databases"], c:0},
+      {q:"Which database types are used for cloud computing components?", a:["SQL and NoSQL","Only spreadsheets","Only CSV files","Only graphing databases"], c:0},
 
-    {q:"What does on-demand self-service mean?", a:["Users can provision resources automatically without human intervention","Users must call a technician for every resource","Resources can only be provisioned once per year","Users cannot provision resources themselves"], c:0},
+      {q:"What does on-demand self-service mean?", a:["Users can provision resources automatically without human intervention","Users must call a technician for every resource","Resources can only be provisioned once per year","Users cannot provision resources themselves"], c:0},
 
-    {q:"What does broad network access mean in cloud computing?", a:["Services are accessible through standard networks and devices","Services can only be accessed from one computer","Services require physical access to a data center","Services are disconnected from networks"], c:0},
+      {q:"What does broad network access mean in cloud computing?", a:["Services are accessible through standard networks and devices","Services can only be accessed from one computer","Services require physical access to a data center","Services are disconnected from networks"], c:0},
 
-    {q:"Which cloud characteristic involves providers pooling resources for multiple customers?", a:["Resource pooling","Measured service","Broad network access","Rapid deployment"], c:0},
+      {q:"Which cloud characteristic involves providers pooling resources for multiple customers?", a:["Resource pooling","Measured service","Broad network access","Rapid deployment"], c:0},
 
-    {q:"What is multi-tenancy associated with?", a:["Resource pooling","Binary storage","Physical isolation of every customer","Manual software installation"], c:0},
+      {q:"What is multi-tenancy associated with?", a:["Resource pooling","Binary storage","Physical isolation of every customer","Manual software installation"], c:0},
 
-    {q:"What does rapid elasticity allow cloud resources to do?", a:["Scale up or down automatically based on demand","Remain permanently fixed","Only increase once","Be manually removed from data centers"], c:0},
+      {q:"What does rapid elasticity allow cloud resources to do?", a:["Scale up or down automatically based on demand","Remain permanently fixed","Only increase once","Be manually removed from data centers"], c:0},
 
-    {q:"What does measured service involve?", a:["Monitoring, controlling, and billing usage based on consumption", "Providing and allocating resources without tracking usage", "Limiting and reserving resources regardless of usage", "Managing and deploying resources without measuring usage"], c:0},
+      {q:"What does measured service involve?", a:["Monitoring, controlling, and billing usage based on consumption", "Providing and allocating resources without tracking usage", "Limiting and reserving resources regardless of usage", "Managing and deploying resources without measuring usage"], c:0},
 
-    {q:"What computing approach was introduced by mainframes and time-sharing in the 1960s?", a:["Shared computing","Serverless computing","Edge computing","Container orchestration"], c:0},
+      {q:"What computing approach was introduced by mainframes and time-sharing in the 1960s?", a:["Shared computing","Serverless computing","Edge computing","Container orchestration"], c:0},
 
-    {q:"What technology enabled hardware abstraction in the 1990s?", a:["Virtualization","Serverless functions","API gateways","Object storage"], c:0},
+      {q:"What technology enabled hardware abstraction in the 1990s?", a:["Virtualization","Serverless functions","API gateways","Object storage"], c:0},
 
-    {q:"Which company is mentioned in connection with virtualization in the 1990s?", a:["VMware","Salesforce","Oracle","Microsoft"], c:0},
+      {q:"Which company is mentioned in connection with virtualization in the 1990s?", a:["VMware","Salesforce","Oracle","Microsoft"], c:0},
 
-    {q:"What matured during the 2000s in Cloud Computing?", a:["Web services and distributed systems","Quantum computing and AI chips","Edge computing only","Mobile app stores"], c:0},
+      {q:"What matured during the 2000s in Cloud Computing?", a:["Web services and distributed systems","Quantum computing and AI chips","Edge computing only","Mobile app stores"], c:0},
 
-    {q:"What happened in 2006 that marked commercial cloud adoption?", a:["AWS launched EC2 and S3","Docker was released","Kubernetes became available","Azure launched"], c:0},
+      {q:"What happened in 2006 that marked commercial cloud adoption?", a:["AWS launched EC2 and S3","Docker was released","Kubernetes became available","Azure launched"], c:0},
 
-    {q:"Which technologies transformed application deployment during the 2010s?", a:["Containers and orchestration","Mainframes and time-sharing","Physical servers and tape drives","Only SQL databases"], c:0},
+      {q:"Which technologies transformed application deployment during the 2010s?", a:["Containers and orchestration","Mainframes and time-sharing","Physical servers and tape drives","Only SQL databases"], c:0},
 
-    {q:"Which technology is used to create and run containers?", a:["Docker","VMware","EC2","Salesforce"], c:0},
+      {q:"Which technology is used to create and run containers?", a:["Docker","VMware","EC2","Salesforce"], c:0},
 
-    {q:"Which technology is used to manage and orchestrate containers?", a:["Kubernetes","S3","Azure App Services","Google Workspace"], c:0},
+      {q:"Which technology is used to manage and orchestrate containers?", a:["Kubernetes","S3","Azure App Services","Google Workspace"], c:0},
 
-    {q:"Which cloud technologies are described as dominating the 2020s?", a:["Serverless, edge computing, AI-driven cloud services, and multi-cloud architectures","Mainframes, floppy disks, and tape drives","Only physical servers","Only desktop applications"], c:0},
+      {q:"Which cloud technologies are described as dominating the 2020s?", a:["Serverless, edge computing, AI-driven cloud services, and multi-cloud architectures","Mainframes, floppy disks, and tape drives","Only physical servers","Only desktop applications"], c:0},
 
-    {q:"Cloud computing is the result of decades of innovation in what area?", a:["Distributed systems","Word processing","Desktop publishing","Computer graphics"], c:0},
+      {q:"Cloud computing is the result of decades of innovation in what area?", a:["Distributed systems","Word processing","Desktop publishing","Computer graphics"], c:0},
 
-    {q:"Which of the following is a modern IT use of cloud computing?", a:["Enterprise applications and SaaS platforms","Only local file storage","Only physical networking","Only BIOS configuration"], c:0},
+      {q:"Which of the following is a modern IT use of cloud computing?", a:["Enterprise applications and SaaS platforms","Only local file storage","Only physical networking","Only BIOS configuration"], c:0},
 
-    {q:"How can cloud computing support web applications?", a:["By supporting global web and mobile applications","By preventing network access","By requiring every application to run locally","By eliminating databases"], c:0},
+      {q:"How can cloud computing support web applications?", a:["By supporting global web and mobile applications","By preventing network access","By requiring every application to run locally","By eliminating databases"], c:0},
 
-    {q:"What type of processing can cloud platforms support?", a:["Big data analytics and real-time processing","Only offline processing and analytics","Only manual calculations and manual statistics","Only word processing and data implimentation"], c:0},
+      {q:"What type of processing can cloud platforms support?", a:["Big data analytics and real-time processing","Only offline processing and analytics","Only manual calculations and manual statistics","Only word processing and data implimentation"], c:0},
 
-    {q:"Which workloads can cloud computing support?", a:["Machine learning and AI workloads","Only operating system installation","Only spreadsheet printing","Only hardware testing"], c:0},
+      {q:"Which workloads can cloud computing support?", a:["Machine learning and AI workloads","Only operating system installation","Only spreadsheet printing","Only hardware testing"], c:0},
 
-    {q:"What development practices can cloud computing support?", a:["DevOps pipelines and CI/CD automation","Only manual software deployment","Only hardware assembly","Only paper documentation"], c:0},
+      {q:"What development practices can cloud computing support?", a:["DevOps pipelines and CI/CD automation","Only manual software deployment","Only hardware assembly","Only paper documentation"], c:0},
 
-    {q:"Which cybersecurity operations are listed as cloud use cases?", a:["SIEM, SOAR, IAM, and threat detection","Only antivirus installation","Only password printing","Only physical locks"], c:0},
+      {q:"Which cybersecurity operations are listed as cloud use cases?", a:["SIEM, SOAR, IAM, and threat detection","Only antivirus installation","Only password printing","Only physical locks"], c:0},
 
-    {q:"What does IaaS stand for?", a:["Infrastructure as a Service","Internet as a System","Infrastructure and Application Software","Integrated Application as a Service"], c:0},
+      {q:"What does IaaS stand for?", a:["Infrastructure as a Service","Internet as a System","Infrastructure and Application Software","Integrated Application as a Service"], c:0},
 
-    {q:"What does PaaS stand for?", a:["Platform as a Service","Programming as a System","Platform and Storage Service","Private Application as a Service"], c:0},
+      {q:"What does PaaS stand for?", a:["Platform as a Service","Programming as a System","Platform and Storage Service","Private Application as a Service"], c:0},
 
-    {q:"What does SaaS stand for?", a:["Software as a Service","Storage as a System","Server as a Service","Security as a Service"], c:0},
+      {q:"What does SaaS stand for?", a:["Software as a Service","Storage as a System","Server as a Service","Security as a Service"], c:0},
 
-    {q:"What does IaaS primarily provide?", a:["Virtualized hardware resources","Fully managed applications","Only developer frameworks","Only email services"], c:0},
+      {q:"What does IaaS primarily provide?", a:["Virtualized hardware resources","Fully managed applications","Only developer frameworks","Only email services"], c:0},
 
-    {q:"What does PaaS primarily provide?", a:["Managed environments for application development","Physical data centers","Fully managed email accounts only","Hardware without networking"], c:0},
+      {q:"What does PaaS primarily provide?", a:["Managed environments for application development","Physical data centers","Fully managed email accounts only","Hardware without networking"], c:0},
 
-    {q:"What does SaaS primarily provide?", a:["Fully managed applications delivered over the internet","Virtual machines only in a confided software space","Raw networking hardware to be used with various other pieces of software","Operating system kernels only"], c:0},
+      {q:"What does SaaS primarily provide?", a:["Fully managed applications delivered over the internet","Virtual machines only in a confided software space","Raw networking hardware to be used with various other pieces of software","Operating system kernels only"], c:0},
 
-    {q:"What differs between IaaS, PaaS, and SaaS?", a:["Levels of control, flexibility, and responsibility","The color of their interfaces","The physical size of computers","The number of users allowed"], c:0},
+      {q:"What differs between IaaS, PaaS, and SaaS?", a:["Levels of control, flexibility, and responsibility","The color of their interfaces","The physical size of computers","The number of users allowed"], c:0},
 
-    {q:"What does IaaS provide as foundational resources?", a:["Compute, storage, and networking","Only email and calendars","Only application source code","Only database queries"], c:0},
+      {q:"What does IaaS provide as foundational resources?", a:["Compute, storage, and networking","Only email and calendars","Only application source code","Only database queries"], c:0},
 
-    {q:"What level of operating system control does IaaS provide?", a:["Full control over operating systems and applications","No control at all","Control only over browser settings and web based applications","Control only over email services and other network applications"], c:0},
+      {q:"What level of operating system control does IaaS provide?", a:["Full control over operating systems and applications","No control at all","Control only over browser settings and web based applications","Control only over email services and other network applications"], c:0},
 
-    {q:"What can users configure with IaaS?", a:["Firewalls, networks, and security policies","Only document formatting","Only application icons","Only email signatures"], c:0},
+      {q:"What can users configure with IaaS?", a:["Firewalls, networks, and security policies","Only document formatting","Only application icons","Only email signatures"], c:0},
 
-    {q:"Which is an example of an IaaS service?", a:["AWS EC2","Microsoft 365","Google Workspace","Salesforce"], c:0},
+      {q:"Which is an example of an IaaS service?", a:["AWS EC2","Microsoft 365","Google Workspace","Salesforce"], c:0},
 
-    {q:"Which Azure service is an IaaS example?", a:["Azure Virtual Machines","Azure App Services","Microsoft 365","Azure Workspace"], c:0},
+      {q:"Which Azure service is an IaaS example?", a:["Azure Virtual Machines","Azure App Services","Microsoft 365","Azure Workspace"], c:0},
 
-    {q:"Which Google Cloud service is an IaaS example?", a:["Google Compute Engine","Google App Engine","Google Workspace","Google Drive"], c:0},
+      {q:"Which Google Cloud service is an IaaS example?", a:["Google Compute Engine","Google App Engine","Google Workspace","Google Drive"], c:0},
 
-    {q:"Which is a use case for IaaS?", a:["Disaster recovery","Email collaboration only","Browser-based CRM only","Online document editing only"], c:0},
+      {q:"Which is a use case for IaaS?", a:["Disaster recovery","Email collaboration only","Browser-based CRM only","Online document editing only"], c:0},
 
-    {q:"Which type of system migration is an IaaS use case?", a:["Legacy system migration","Social media migration","Printer migration","Keyboard migration"], c:0},
+      {q:"Which type of system migration is an IaaS use case?", a:["Legacy system migration","Social media migration","Printer migration","Keyboard migration"], c:0},
 
-    {q:"What does PaaS provide for developers?", a:["A managed environment for building, deploying, and scaling applications", "A service for storing files and managing user accounts", "A system for monitoring network traffic and hardware", "A tool for purchasing and configuring physical servers"], c:0},
+      {q:"What does PaaS provide for developers?", a:["A managed environment for building, deploying, and scaling applications", "A service for storing files and managing user accounts", "A system for monitoring network traffic and hardware", "A tool for purchasing and configuring physical servers"], c:0},
 
-    {q:"Which task can PaaS perform automatically?", a:["OS patching and updates","Physical data center construction","Keyboard replacement","Manual server assembly"], c:0},
+      {q:"Which task can PaaS perform automatically?", a:["OS patching and updates","Physical data center construction","Keyboard replacement","Manual server assembly"], c:0},
 
-    {q:"What built-in capability is associated with PaaS?", a:["Monitoring and scaling","Physical hardware repair","Manual BIOS updates","Paper-based logging"], c:0},
+      {q:"What built-in capability is associated with PaaS?", a:["Monitoring and scaling","Physical hardware repair","Manual BIOS updates","Paper-based logging"], c:0},
 
-    {q:"What does PaaS integrate for developers?", a:["Developer tools and frameworks","Only physical storage devices","Only networking cables","Only user passwords"], c:0},
+      {q:"What does PaaS integrate for developers?", a:["Developer tools and frameworks","Only physical storage devices","Only networking cables","Only user passwords"], c:0},
 
-    {q:"Which is an example of PaaS?", a:["AWS Elastic Beanstalk","AWS EC2","Microsoft 365","Salesforce"], c:0},
+      {q:"Which is an example of PaaS?", a:["AWS Elastic Beanstalk","AWS EC2","Microsoft 365","Salesforce"], c:0},
 
-    {q:"Which Azure service is an example of PaaS?", a:["Azure App Services","Azure Virtual Machines","Microsoft 365","Azure Storage Drives"], c:0},
+      {q:"Which Azure service is an example of PaaS?", a:["Azure App Services","Azure Virtual Machines","Microsoft 365","Azure Storage Drives"], c:0},
 
-    {q:"Which Google Cloud service is an example of PaaS?", a:["Google App Engine","Google Compute Engine","Google Workspace","Google Cloud Storage only"], c:0},
+      {q:"Which Google Cloud service is an example of PaaS?", a:["Google App Engine","Google Compute Engine","Google Workspace","Google Cloud Storage only"], c:0},
 
-    {q:"Which development scenario is a PaaS use case?", a:["Rapid development without managing infrastructure","Managing physical data centers","Replacing computer hardware","Manually installing operating systems"], c:0},
+      {q:"Which development scenario is a PaaS use case?", a:["Rapid development without managing infrastructure","Managing physical data centers","Replacing computer hardware","Manually installing operating systems"], c:0},
 
-    {q:"How are SaaS applications typically accessed?", a:["Through a browser or API","Only through physical terminals","Only through BIOS","Only through USB devices"], c:0},
+      {q:"How are SaaS applications typically accessed?", a:["Through a browser or API","Only through physical terminals","Only through BIOS","Only through USB devices"], c:0},
 
-    {q:"What does SaaS eliminate for users?", a:["Installation and maintenance","Internet access","All user accounts","All application functionality"], c:0},
+      {q:"What does SaaS eliminate for users?", a:["Installation and maintenance","Internet access","All user accounts","All application functionality"], c:0},
 
-    {q:"What type of pricing is commonly associated with SaaS?", a:["Subscription-based pricing","Hardware-only pricing","No pricing","Per-keyboard pricing"], c:0},
+      {q:"What type of pricing is commonly associated with SaaS?", a:["Subscription-based pricing","Hardware-only pricing","No pricing","Per-keyboard pricing"], c:0},
 
-    {q:"What happens automatically with SaaS applications?", a:["Updates and security patches","Physical server construction","Network cable installation","CPU replacement"], c:0},
+      {q:"What happens automatically with SaaS applications?", a:["Updates and security patches","Physical server construction","Network cable installation","CPU replacement"], c:0},
 
-    {q:"Which is an example of SaaS?", a:["Microsoft 365","AWS EC2","Google Compute Engine","Azure Virtual Machines"], c:0},
+      {q:"Which is an example of SaaS?", a:["Microsoft 365","AWS EC2","Google Compute Engine","Azure Virtual Machines"], c:0},
 
-    {q:"Which Google product is a good SaaS example?", a:["Google Workspace","Google Compute Engine","Google App Engine","Kubernetes"], c:0},
+      {q:"Which Google product is a good SaaS example?", a:["Google Workspace","Google Compute Engine","Google App Engine","Kubernetes"], c:0},
 
-    {q:"Which of these is a good SaaS example?", a:["Salesforce","AWS EC2","Azure Virtual Machines","Google Compute Engine"], c:0},
+      {q:"Which of these is a good SaaS example?", a:["Salesforce","AWS EC2","Azure Virtual Machines","Google Compute Engine"], c:0},
 
-    {q:"Which is a listed SaaS use case?", a:["Email and collaboration tools","Legacy hardware migration","Firewall configuration","Virtual machine management"], c:0},
+      {q:"Which is a listed SaaS use case?", a:["Email and collaboration tools","Legacy hardware migration","Firewall configuration","Virtual machine management"], c:0},
 
-    {q:"What is a public cloud?", a:["Shared infrastructure that is scalable and cost-effective","Dedicated infrastructure for one organization only","A combination of private and public infrastructure","Infrastructure shared only by organizations in one industry"], c:0},
+      {q:"What is a public cloud?", a:["Shared infrastructure that is scalable and cost-effective","Dedicated infrastructure for one organization only","A combination of private and public infrastructure","Infrastructure shared only by organizations in one industry"], c:0},
 
-    {q:"What is a private cloud?", a:["Dedicated infrastructure offering enhanced control","Shared infrastructure for everyone","A cloud used only for email","A cloud with no security controls"], c:0},
+      {q:"What is a private cloud?", a:["Dedicated infrastructure offering enhanced control","Shared infrastructure for everyone","A cloud used only for email","A cloud with no security controls"], c:0},
 
-    {q:"What is a hybrid cloud?", a:["A combination of public and private cloud","A combination of two private clouds only","A cloud without infrastructure","A cloud used only by schools"], c:0},
+      {q:"What is a hybrid cloud?", a:["A combination of public and private cloud","A combination of two private clouds only","A cloud without infrastructure","A cloud used only by schools"], c:0},
 
-    {q:"What is a community cloud?", a:["A cloud shared by organizations with similar requirements","A cloud available only to one individual and to be viewed by multiple organizations","A cloud with no shared infrastructure and no means of sharing it to other organizations","A cloud used only for gaming"], c:0},
+      {q:"What is a community cloud?", a:["A cloud shared by organizations with similar requirements","A cloud available only to one individual and to be viewed by multiple organizations","A cloud with no shared infrastructure and no means of sharing it to other organizations","A cloud used only for gaming"], c:0},
 
-    {q:"Which sectors are given as examples for community clouds?", a:["Healthcare and education","Retail and entertainment only","Manufacturing and transportation only","Gaming and sports only"], c:0},
+      {q:"Which sectors are given as examples for community clouds?", a:["Healthcare and education","Retail and entertainment only","Manufacturing and transportation only","Gaming and sports only"], c:0},
 
-    {q:"Which deployment model supports legacy systems according?", a:["Hybrid cloud","Public cloud","Community cloud","SaaS"], c:0},
+      {q:"Which deployment model supports legacy systems according?", a:["Hybrid cloud","Public cloud","Community cloud","SaaS"], c:0},
 
-    {q:"Which deployment model is described as compliance-friendly?", a:["Private cloud","Public cloud","SaaS","Community cloud"], c:0},
+      {q:"Which deployment model is described as compliance-friendly?", a:["Private cloud","Public cloud","SaaS","Community cloud"], c:0},
 
-    {q:"What do deployment models help determine?", a:["Governance, security, and cost strategies","CPU instruction sets","Keyboard layouts","Programming language syntax"], c:0},
+      {q:"What do deployment models help determine?", a:["Governance, security, and cost strategies","CPU instruction sets","Keyboard layouts","Programming language syntax"], c:0},
 
-    {q:"Which cloud provider is described as having the largest ecosystem?", a:["AWS","Azure","Google Cloud","IBM Cloud"], c:0},
+      {q:"Which cloud provider is described as having the largest ecosystem?", a:["AWS","Azure","Google Cloud","IBM Cloud"], c:0},
 
-    {q:"Which provider is described as having broad service offerings?", a:["AWS","Oracle Cloud","Alibaba Cloud","Azure only"], c:0},
+      {q:"Which provider is described as having broad service offerings?", a:["AWS","Oracle Cloud","Alibaba Cloud","Azure only"], c:0},
 
-    {q:"Which provider is associated with strong enterprise integration?", a:["Azure","AWS","Google Cloud","Alibaba Cloud"], c:0},
+      {q:"Which provider is associated with strong enterprise integration?", a:["Azure","AWS","Google Cloud","Alibaba Cloud"], c:0},
 
-    {q:"Which provider is described as being strong in Microsoft-centric environments?", a:["Azure","AWS","Google Cloud","IBM Cloud"], c:0},
+      {q:"Which provider is described as being strong in Microsoft-centric environments?", a:["Azure","AWS","Google Cloud","IBM Cloud"], c:0},
 
-    {q:"Which provider is described as leading in data analytics and AI?", a:["Google Cloud","Azure","AWS","Oracle Cloud"], c:0},
+      {q:"Which provider is described as leading in data analytics and AI?", a:["Google Cloud","Azure","AWS","Oracle Cloud"], c:0},
 
-    {q:"Which of the following is listed as another cloud provider?", a:["IBM Cloud","Docker Cloud only","Kubernetes Cloud","Microsoft Workspace Cloud"], c:0},
+      {q:"Which of the following is listed as another cloud provider?", a:["IBM Cloud","Docker Cloud only","Kubernetes Cloud","Microsoft Workspace Cloud"], c:0},
 
-    {q:"Which is a cloud computing use case?", a:["Hosting websites and applications","Manufacturing CPUs","Digital storing media files like textbooks","Handling servicing for keyboards"], c:0},
+      {q:"Which is a cloud computing use case?", a:["Hosting websites and applications","Manufacturing CPUs","Digital storing media files like textbooks","Handling servicing for keyboards"], c:0},
 
-    {q:"How can cloud computing be used with data?", a:["Data warehousing and analytics","Only physical data filing","Only paper-based storage","Only local spreadsheets"], c:0},
+      {q:"How can cloud computing be used with data?", a:["Data warehousing and analytics","Only physical data filing","Only paper-based storage","Only local spreadsheets"], c:0},
 
-    {q:"What type of pipelines can cloud computing support?", a:["Machine learning pipelines","Only printing pipelines","Only hardware pipelines","Only keyboard pipelines"], c:0},
+      {q:"What type of pipelines can cloud computing support?", a:["Machine learning pipelines","Only printing pipelines","Only hardware pipelines","Only keyboard pipelines"], c:0},
 
-    {q:"What type of devices can cloud platforms manage?", a:["IoT devices","Only desktop monitors","Only keyboards","Only printers"], c:0},
+      {q:"What type of devices can cloud platforms manage?", a:["IoT devices","Only desktop monitors","Only keyboards","Only printers"], c:0},
 
-    {q:"What work environment can cloud computing support?", a:["Virtual desktops and remote work","Only local desktop work","Only data center work","Only offline computing"], c:0},
+      {q:"What work environment can cloud computing support?", a:["Virtual desktops and remote work","Only local desktop work","Only data center work","Only offline computing"], c:0},
 
-    {q:"What does IAM stand for?", a:["Identity and Access Management","Internet Application Management","Infrastructure Access Machine","Integrated Application Monitoring"], c:0},
+      {q:"What does IAM stand for?", a:["Identity and Access Management","Internet Application Management","Infrastructure Access Machine","Integrated Application Monitoring"], c:0},
 
-    {q:"What are two forms of encryption mentioned in cloud security?", a:["Encryption at rest and in transit","Encryption at startup and shutdown","Encryption at login and logout","Encryption at CPU and RAM"], c:0},
+      {q:"What are two forms of encryption mentioned in cloud security?", a:["Encryption at rest and in transit","Encryption at startup and shutdown","Encryption at login and logout","Encryption at CPU and RAM"], c:0},
 
-    {q:"What is network segmentation used as in cloud cybersecurity?", a:["A security consideration","A billing model","A storage type","A deployment model"], c:0},
+      {q:"What is network segmentation used as in cloud cybersecurity?", a:["A security consideration","A billing model","A storage type","A deployment model"], c:0},
 
-    {q:"What is an additional form of segmentation?", a:["Micro-segmentation","Macro-storage","Virtual partitioning","Cloud division"], c:0},
+      {q:"What is an additional form of segmentation?", a:["Micro-segmentation","Macro-storage","Virtual partitioning","Cloud division"], c:0},
 
-    {q:"What security activities should cloud environments include?", a:["Logging, monitoring, and threat detection","Only application development","Only billing","Only hardware upgrades"], c:0},
+      {q:"What security activities should cloud environments include?", a:["Logging, monitoring, and threat detection","Only application development","Only billing","Only hardware upgrades"], c:0},
 
-    {q:"Where must security be integrated?", a:["Into every cloud architecture","Only into private clouds","Only into SaaS","Only into physical data centers"], c:0},
+      {q:"Where must security be integrated?", a:["Into every cloud architecture","Only into private clouds","Only into SaaS","Only into physical data centers"], c:0},
 
-{q:"What is the shared responsibility model?", a:["A model dividing security responsibilities between the provider and customer","A model dividing cloud resources between multiple customers","A model dividing application costs between different departments","A model dividing network traffic between multiple servers"], c:0},
-    {q:"Who is responsible for physical data center security?", a:["The cloud provider","The customer only","The application developer only","The end user only"], c:0},
+  {q:"What is the shared responsibility model?", a:["A model dividing security responsibilities between the provider and customer","A model dividing cloud resources between multiple customers","A model dividing application costs between different departments","A model dividing network traffic between multiple servers"], c:0},
+      {q:"Who is responsible for physical data center security?", a:["The cloud provider","The customer only","The application developer only","The end user only"], c:0},
 
-    {q:"Who is responsible for hardware and the hypervisor?", a:["The cloud provider","The customer only","The SaaS user","The database administrator only"], c:0},
+      {q:"Who is responsible for hardware and the hypervisor?", a:["The cloud provider","The customer only","The SaaS user","The database administrator only"], c:0},
 
-    {q:"Who is responsible for identity management?", a:["The customer","The cloud provider only","The hardware manufacturer","The internet service provider"], c:0},
+      {q:"Who is responsible for identity management?", a:["The customer","The cloud provider only","The hardware manufacturer","The internet service provider"], c:0},
 
-    {q:"Who is responsible for data protection?", a:["The customer","The cloud provider only","The network cable manufacturer","The operating system vendor only"], c:0},
+      {q:"Who is responsible for data protection?", a:["The customer","The cloud provider only","The network cable manufacturer","The operating system vendor only"], c:0},
 
-    {q:"Who is responsible for application security?", a:["The customer","The physical data center","The cloud provider in every situation","The internet service provider"], c:0},
+      {q:"Who is responsible for application security?", a:["The customer","The physical data center","The cloud provider in every situation","The internet service provider"], c:0},
 
-    {q:"Does responsibility remain identical across IaaS, PaaS, and SaaS?", a:["No, responsibility varies across the service models","Yes, it is always identical","Only in public cloud","Only in private cloud"], c:0},
+      {q:"Does responsibility remain identical across IaaS, PaaS, and SaaS?", a:["No, responsibility varies across the service models","Yes, it is always identical","Only in public cloud","Only in private cloud"], c:0},
 
-    {q:"What is a cloud region?", a:["A geographic location of cloud resources","A physical computer","A software application","A security policy"], c:0},
+      {q:"What is a cloud region?", a:["A geographic location of cloud resources","A physical computer","A software application","A security policy"], c:0},
 
-    {q:"What is an Availability Zone?", a:["An independent data center within a region","A cloud billing account","A virtual machine","A type of container"], c:0},
+      {q:"What is an Availability Zone?", a:["An independent data center within a region","A cloud billing account","A virtual machine","A type of container"], c:0},
 
-    {q:"What is a virtual machine?", a:["A software-based computer","A physical data center","A network cable","A database table"], c:0},
+      {q:"What is a virtual machine?", a:["A software-based computer","A physical data center","A network cable","A database table"], c:0},
 
-    {q:"What is a container?", a:["A lightweight, portable application environment","A physical, heavy server rack","A database type","A large-scale, geographic region"], c:0},
+      {q:"What is a container?", a:["A lightweight, portable application environment","A physical, heavy server rack","A database type","A large-scale, geographic region"], c:0},
 
-    {q:"What is serverless computing?", a:["Event-driven compute without managing servers","Computing without software","Computing without networks","A physical server architecture"], c:0},
+      {q:"What is serverless computing?", a:["Event-driven compute without managing servers","Computing without software","Computing without networks","A physical server architecture"], c:0},
 
-    {q:"What is an API Gateway?", a:["An entry point for APIs","A physical firewall","A database","A storage disk"], c:0},
+      {q:"What is an API Gateway?", a:["An entry point for APIs","A physical firewall","A database","A storage disk"], c:0},
 
-    {q:"What is object storage designed for?", a:["Scalable storage for unstructured data","CPU instructions","Operating system kernels","Network routing tables"], c:0},
+      {q:"What is object storage designed for?", a:["Scalable storage for unstructured data","CPU instructions","Operating system kernels","Network routing tables"], c:0},
 
-    {q:"What does a load balancer do?", a:["Distributes traffic across resources","Encrypts every file automatically","Creates virtual machines","Stores unstructured data"], c:0},
+      {q:"What does a load balancer do?", a:["Distributes traffic across resources","Encrypts every file automatically","Creates virtual machines","Stores unstructured data"], c:0},
 
-    {q:"Which is a benefit of cloud computing?", a:["Reduced capital expenditure","Increased hardware ownership requirements","Reduced scalability","Slower deployment"], c:0},
+      {q:"Which is a benefit of cloud computing?", a:["Reduced capital expenditure","Increased hardware ownership requirements","Reduced scalability","Slower deployment"], c:0},
 
-    {q:"What type of scalability is listed as a cloud benefit?", a:["Elastic scalability","Fixed scalability","Manual scalability","Hardware-only scalability"], c:0},
+      {q:"What type of scalability is listed as a cloud benefit?", a:["Elastic scalability","Fixed scalability","Manual scalability","Hardware-only scalability"], c:0},
 
-    {q:"What geographic benefit does cloud computing provide?", a:["Global distribution","Local-only distribution","Single-device distribution","Offline distribution"], c:0},
+      {q:"What geographic benefit does cloud computing provide?", a:["Global distribution","Local-only distribution","Single-device distribution","Offline distribution"], c:0},
 
-    {q:"What can cloud computing improve about deployment?", a:["Deployment cycles can be faster","Deployment becomes entirely manual","Deployment is limited to physical servers","Deployment is eliminated"], c:0},
+      {q:"What can cloud computing improve about deployment?", a:["Deployment cycles can be faster","Deployment becomes entirely manual","Deployment is limited to physical servers","Deployment is eliminated"], c:0},
 
-    {q:"What security-related benefit is mentioned?", a:["Built-in security and compliance tools","No security controls","Automatic removal of all risks","Elimination of cybersecurity"], c:0},
+      {q:"What security-related benefit is mentioned?", a:["Built-in security and compliance tools","No security controls","Automatic removal of all risks","Elimination of cybersecurity"], c:0},
 
-    {q:"What is one challenge associated with cloud computing?", a:["Vendor lock-in","Guaranteed portability","Unlimited resources","Zero configuration requirements"], c:0},
+      {q:"What is one challenge associated with cloud computing?", a:["Vendor lock-in","Guaranteed portability","Unlimited resources","Zero configuration requirements"], c:0},
 
-    {q:"What type of concerns can arise from cloud data location?", a:["Data residency and privacy concerns","Keyboard residency concerns","CPU ownership concerns","Monitor placement concerns"], c:0},
+      {q:"What type of concerns can arise from cloud data location?", a:["Data residency and privacy concerns","Keyboard residency concerns","CPU ownership concerns","Monitor placement concerns"], c:0},
 
-    {q:"What can cloud misconfigurations potentially lead to?", a:["Breaches","Automatic security","Lower network latency in every case","Free resources"], c:0},
+      {q:"What can cloud misconfigurations potentially lead to?", a:["Breaches","Automatic security","Lower network latency in every case","Free resources"], c:0},
 
-    {q:"What can poor resource management cause?", a:["Cost overruns","Automatic cost elimination","Guaranteed savings","No billing"], c:0},
+      {q:"What can poor resource management cause?", a:["Cost overruns","Automatic cost elimination","Guaranteed savings","No billing"], c:0},
 
-    {q:"Why is understanding cloud risks important?", a:["It is essential for secure cloud adoption","It eliminates the need for security","It prevents all cloud usage","It removes the need for governance"], c:0},
+      {q:"Why is understanding cloud risks important?", a:["It is essential for secure cloud adoption","It eliminates the need for security","It prevents all cloud usage","It removes the need for governance"], c:0},
 
-    {q:"What is a multi-cloud strategy?", a:["Using multiple cloud environments or providers","Using only one physical server","Using no cloud providers","Using only private cloud"], c:0},
+      {q:"What is a multi-cloud strategy?", a:["Using multiple cloud environments or providers","Using only one physical server","Using no cloud providers","Using only private cloud"], c:0},
 
-    {q:"What technologies are associated with cloud-native development?", a:["Microservices and containers","Mainframes and tape drives","BIOS and USB","Only physical servers"], c:0},
+      {q:"What technologies are associated with cloud-native development?", a:["Microservices and containers","Mainframes and tape drives","BIOS and USB","Only physical servers"], c:0},
 
-    {q:"What type of cloud services are identified as a modern trend?", a:["AI-driven cloud services","Paper-based cloud services","Offline-only cloud services","Hardware-only cloud services"], c:0},
+      {q:"What type of cloud services are identified as a modern trend?", a:["AI-driven cloud services","Paper-based cloud services","Offline-only cloud services","Hardware-only cloud services"], c:0},
 
-    {q:"What is edge computing intended to support?", a:["Low-latency workloads","Only offline workloads","Only physical storage","Only email applications"], c:0},
+      {q:"What is edge computing intended to support?", a:["Low-latency workloads","Only offline workloads","Only physical storage","Only email applications"], c:0},
 
-    {q:"What security architecture is listed as a cloud adoption trend?", a:["Zero-trust security architectures","No-trust hardware architecture","Single-password architecture","Physical-only security architecture"], c:0},
+      {q:"What security architecture is listed as a cloud adoption trend?", a:["Zero-trust security architectures","No-trust hardware architecture","Single-password architecture","Physical-only security architecture"], c:0},
 
-    {q:"How is cloud computing continuing to change modern IT?", a:["It continues to evolve rapidly and shape modern IT","It is being replaced entirely by mainframes","It is becoming limited to local networks","It is no longer changing"], c:0},
+      {q:"How is cloud computing continuing to change modern IT?", a:["It continues to evolve rapidly and shape modern IT","It is being replaced entirely by mainframes","It is becoming limited to local networks","It is no longer changing"], c:0},
 
-    {q:"Which of the following is one of the main learning objectives of learning Cloud Computing?", a:["Understanding elasticity, scalability, and resource pooling","Learning only assembly language","Building physical CPUs","Designing desktop monitors"], c:0},
+      {q:"Which of the following is one of the main learning objectives of learning Cloud Computing?", a:["Understanding elasticity, scalability, and resource pooling","Learning only assembly language","Building physical CPUs","Designing desktop monitors"], c:0},
 
-    {q:"Which three service models should learners be able to differentiate?", a:["IaaS, PaaS, and SaaS","AWS, Azure, and Google Cloud","Public, private, and hybrid only","VM, container, and serverless"], c:0},
+      {q:"Which three service models should learners be able to differentiate?", a:["IaaS, PaaS, and SaaS","AWS, Azure, and Google Cloud","Public, private, and hybrid only","VM, container, and serverless"], c:0},
 
-    {q:"Which deployment models should learners be able to identify?", a:["Public, private, hybrid, and community","IaaS, PaaS, and SaaS","VM, container, and serverless","AWS, Azure, and Google"], c:0},
+      {q:"Which deployment models should learners be able to identify?", a:["Public, private, hybrid, and community","IaaS, PaaS, and SaaS","VM, container, and serverless","AWS, Azure, and Google"], c:0},
 
-    {q:"Which major cloud providers are specifically discussed?", a:["AWS, Azure, and Google Cloud","Docker, Kubernetes, and VMware","Salesforce, Microsoft 365, and Google Workspace","IBM, Oracle, and Alibaba only"], c:0},
+      {q:"Which major cloud providers are specifically discussed?", a:["AWS, Azure, and Google Cloud","Docker, Kubernetes, and VMware","Salesforce, Microsoft 365, and Google Workspace","IBM, Oracle, and Alibaba only"], c:0},
     ],
     quiz2: [
         {q:"What is Zero Trust based on?",a:["Never trust, always verify","Trust all internal network traffic","Trust users after one successful login","Allow access based only on IP address"],c:0},
@@ -734,17 +945,292 @@ window.questionBank = {
         {q:"Fill in the blank: The Zero Trust roadmap begins by establishing an identity ______.",a:["foundation","firewall","database","perimeter"],c:0},
         {q:"Which roadmap step applies microsegmentation and network isolation?",a:["Segment Workloads","Enforce MFA & Conditional Access","Apply Identity Boundaries","Continuous Monitoring"],c:0},
         {q:"Which roadmap step maps identities to allowed resources and actions?",a:["Apply Identity Boundaries","Segment Workloads","Establish Identity Foundation","Continuous Monitoring"],c:0},
-        {q:"Which statement best summarizes Zero Trust?",a:["Never trust, always verify","Trust everything inside the network","Use only perimeter firewalls","Allow access based only on IP address"],c:0}
-    ]
+        {q:"Which statement best summarizes Zero Trust?",a:["Never trust, always verify","Trust everything inside the network","Use only perimeter firewalls","Allow access based only on IP address"],c:0},
+    ],
+
+    test1: [
+      {q:"What is cloud computing?", a:["On-demand delivery of computing resources over the internet with usage-based billing","A system that requires organizations to own and maintain all computing hardware","A method of storing information exclusively on local computers","A network protocol designed primarily for transferring files between computers"], c:0},
+      {q:"Which of the following is an example of a computing resource provided through cloud computing?", a:["Physical keyboards and monitors only","Compute resources, storage, networking, and databases","Printed documents and offline filing systems","Local devices without internet connectivity"], c:1},
+      {q:"Which statement best describes the purpose of cloud computing?", a:["To eliminate the need for all software applications","To ensure that every organization uses identical hardware","To abstract physical infrastructure and enable organizations to scale globally without owning hardware","To prevent organizations from accessing computing resources remotely"], c:2},
+      {q:"Which NIST characteristic allows users to provision cloud resources automatically without human intervention?", a:["Measured service","Broad network access","Resource pooling","On-demand self-service"], c:3},
+      {q:"What does broad network access mean in cloud computing?", a:["Cloud services are accessible through standard networks and devices, including laptops, mobile devices, and APIs","Cloud resources can only be accessed from a provider's physical data center","Cloud services require a dedicated computer for every individual user","Cloud applications must operate without internet or network connectivity"], c:0},
+      {q:"Which NIST characteristic involves providers sharing pooled resources among multiple customers?", a:["Rapid elasticity","Resource pooling","Measured service","On-demand self-service"], c:1},
+      {q:"Which cloud characteristic allows computing resources to scale up or down automatically according to demand?", a:["Broad network access","Measured service","Rapid elasticity","Resource pooling"], c:2},
+      {q:"True or False: Measured service means that cloud resource usage is monitored, controlled, and billed according to consumption.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"Which development contributed to shared computing during the 1960s?", a:["The widespread adoption of Kubernetes orchestration","The commercial launch of AWS EC2 and S3","The introduction of serverless computing and edge computing","Time-sharing systems and mainframe computers"], c:3},
+      {q:"What important role did virtualization play in the evolution of cloud computing during the 1990s?", a:["It enabled hardware abstraction and helped make virtualized computing environments possible","It replaced all distributed systems with single-user desktop computers","It introduced subscription-based office productivity software","It eliminated the need for operating systems and applications"], c:0},
+      {q:"Which cloud computing milestone occurred in 2006 according to the slideshow?", a:["Docker and Kubernetes transformed application deployment","AWS launched EC2 and S3, marking commercial cloud adoption","Microsoft 365 introduced cloud-based productivity applications","Serverless computing and edge computing became dominant trends"], c:1},
+      {q:"Which technologies transformed application deployment during the 2010s?", a:["Mainframes and time-sharing systems","Traditional physical servers and local storage","Containers such as Docker and orchestration tools such as Kubernetes","Only desktop virtualization and standalone applications"], c:2},
+      {q:"True or False: The slideshow describes serverless computing, edge computing, AI-driven cloud services, and multi-cloud architectures as major trends of the 2020s.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"Which of the following is an example of cloud computing supporting modern IT operations?", a:["Restricting all applications to a single physical computer","Replacing all cybersecurity tools with manual inspections","Eliminating automation from software development workflows","Supporting CI/CD pipelines, machine learning, analytics, and cybersecurity operations"], c:3},
+      {q:"What does Infrastructure as a Service (IaaS) primarily provide?", a:["Fully managed business applications accessed through a browser","Virtualized compute, storage, and networking resources","A managed application development environment with automatic operating system updates","A shared cloud environment exclusively for organizations in one industry"], c:1},
+      {q:"Which of the following is an example of an IaaS offering?", a:["Google Workspace","Salesforce","AWS EC2","Google App Engine"], c:2},
+      {q:"A developer wants to build and deploy an application without managing the underlying infrastructure or manually patching the operating system. Which service model is most appropriate?", a:["Platform as a Service (PaaS)","Infrastructure as a Service (IaaS)","Private Cloud exclusively","Software installed and maintained on a local computer"], c:0},
+      {q:"Which service is an example of Platform as a Service (PaaS)?", a:["Azure Virtual Machines","Google Workspace","AWS EC2","Azure App Services"], c:3},
+      {q:"Which characteristic is most closely associated with Software as a Service (SaaS)?", a:["Full customer control over virtual machine operating systems and firewalls","Fully managed applications with automatic updates and typically subscription-based pricing","A requirement to configure all underlying hardware and networking","A development platform requiring customers to maintain the provider's physical servers"], c:1},
+      {q:"True or False: Microsoft 365, Google Workspace, and Salesforce are examples of SaaS offerings listed in the slideshow.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"Which deployment model uses shared infrastructure that is generally scalable and cost-effective?", a:["Private cloud","Community cloud","Public cloud","Hybrid cloud"], c:2},
+      {q:"An organization needs dedicated infrastructure and enhanced control to support its compliance requirements. Which deployment model best matches these needs?", a:["Public cloud","Community cloud","Hybrid cloud","Private cloud"], c:3},
+      {q:"What distinguishes a hybrid cloud deployment model?", a:["It combines public and private cloud environments to provide flexibility and support legacy systems","It is shared exclusively by organizations with identical industry requirements","It uses only public infrastructure shared by unrelated customers","It requires all computing resources to remain on individual desktop computers"], c:0},
+      {q:"Which deployment model is designed for organizations with similar requirements, such as healthcare or education institutions?", a:["Public cloud","Community cloud","Private cloud","Hybrid cloud"], c:1},
+      {q:"Which statement correctly describes the major cloud providers discussed in the slideshow?", a:["AWS specializes exclusively in healthcare, Azure in gaming, and Google Cloud in desktop hardware","Google Cloud is described as having the broadest overall ecosystem, while AWS focuses exclusively on AI","AWS has a broad service ecosystem, Azure integrates strongly with Microsoft environments, and Google Cloud is strong in analytics and AI","All providers offer identical services, pricing models, and service architectures"], c:2},
+      {q:"True or False: Cloud computing use cases include website hosting, data warehousing, machine learning pipelines, IoT device management, backup, disaster recovery, and virtual desktops.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"Which of the following is a cloud cybersecurity measure identified in the slideshow?", a:["Disabling all logging to reduce storage consumption","Giving every user unrestricted access to cloud resources","Avoiding encryption whenever data crosses a network","Using IAM, encryption, network segmentation, monitoring, and threat detection"], c:3},
+      {q:"Under the shared responsibility model, which responsibility generally belongs to the cloud provider?", a:["Managing every customer's application code and user permissions","Securing physical data centers, hardware, hypervisors, and network infrastructure","Determining every customer's data protection policies","Managing all customer identities and application-level security"], c:1},
+      {q:"What is an availability zone in cloud computing?", a:["A geographic location containing every cloud resource worldwide","A lightweight, portable environment for running applications","An independent data center or set of independent data centers within a region","A service that distributes incoming traffic across multiple resources"], c:2},
+      {q:"Which statement correctly identifies a cloud computing challenge and a modern adoption trend?", a:["Vendor lock-in is a challenge, while multi-cloud strategies and zero-trust architectures are adoption trends","Rapid elasticity is a challenge, while physical mainframes are the primary modern adoption trend","Global distribution is a challenge, while eliminating cybersecurity controls is a recommended trend","Measured service is a challenge, while avoiding cloud-native development is a leading adoption trend"], c:0},
+
+      {q:"What is the primary purpose of cloud architecture?", a:["To define how cloud services are built and delivered, determining scalability, reliability, and security","To ensure all applications run on one physical server with identical configurations","To eliminate networking and identity management from cloud environments","To replace all software development processes with automated hardware upgrades"], c:0},
+      {q:"What does virtualization allow a physical server to do?", a:["Run only one operating system without sharing hardware resources","Run multiple virtual machines on a single physical server","Execute serverless functions without a network connection","Replace all storage devices with container images"], c:1},
+      {q:"Which statement correctly describes a Type 1 hypervisor?", a:["It runs as an application inside a desktop operating system","It is designed exclusively for running containers in Kubernetes","It runs directly on physical hardware without requiring a host operating system","It manages application requests through an API gateway"], c:2},
+      {q:"Which of the following is an example of a Type 2 hosted hypervisor?", a:["VMware ESXi","Microsoft Hyper-V","KVM","Oracle VirtualBox"], c:3},
+      {q:"True or False: Type 1 hypervisors generally provide higher performance and stronger isolation than Type 2 hypervisors.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"What is a major difference between virtual machines and containers?", a:["Virtual machines share the host operating system kernel, while containers each require a complete guest OS","Containers require more resources and take longer to start than virtual machines in typical use","Virtual machines use a full guest OS, while containers share the host OS kernel","Containers require dedicated physical hardware, while virtual machines cannot share servers"], c:2},
+      {q:"Which technology provides a platform for building, shipping, and running containers?", a:["Kubernetes","Docker","AWS Cognito","Amazon Route 53"], c:1},
+      {q:"Which Docker component is responsible for building, versioning, and distributing container images?", a:["Container runtime","Network bridge","Kubelet","Image management"], c:3},
+      {q:"What is the primary purpose of Kubernetes?", a:["To automate deployment, scaling, load balancing, and self-healing of containerized applications","To provide a desktop interface for manually installing operating systems","To replace cloud networking with direct physical connections","To store all application files in a single relational database"], c:0},
+      {q:"What is a pod in Kubernetes?", a:["A physical server dedicated to running the control plane","A database containing the complete state of a Kubernetes cluster","The smallest deployable unit, containing one or more containers","A firewall that controls all traffic entering a cloud network"], c:2},
+      {q:"Which Kubernetes control plane component receives commands from developers and tools?", a:["Kube-proxy","API server","Kubelet","Container runtime"], c:1},
+      {q:"Which Kubernetes component stores cluster state in a distributed key-value database?", a:["Scheduler","Controller manager","Kubelet","etcd"], c:3},
+      {q:"True or False: The Kubernetes scheduler selects worker nodes for new pods based on resource requirements and constraints.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"What is the role of the kubelet on a Kubernetes worker node?", a:["It stores all cluster configuration in a distributed database","It distributes external traffic across multiple cloud regions","It ensures containers in pods are running as expected","It authenticates all users through a cloud identity provider"], c:2},
+      {q:"Which statement best describes serverless computing?", a:["Developers must configure and maintain every physical server themselves","Event-driven code runs without developers managing the underlying servers","Applications can only run on virtual machines with complete guest operating systems","Every function must maintain persistent local state between invocations"], c:1},
+      {q:"How is serverless computing typically billed?", a:["Only for actual compute execution time used","A fixed fee for every physical server owned by the customer","Exclusively through annual hardware licensing","According to the number of operating systems installed on a virtual machine"], c:0},
+      {q:"Which workload is particularly suitable for serverless computing?", a:["A continuously running process requiring full operating system control","An application requiring persistent connections and no interruptions","A workload that cannot tolerate any cold-start latency","An event-driven application with intermittent or unpredictable demand"], c:3},
+      {q:"Which AWS service manages user sign-up, sign-in, and identity management in the serverless architecture described?", a:["Amazon S3","Amazon Cognito","Amazon DynamoDB","AWS Lambda"], c:1},
+      {q:"What is the role of an API Gateway in a serverless application?", a:["To store the full state of a Kubernetes cluster","To replace the database with a container registry","To provide an entry point for API requests and handle routing, throttling, and security","To allocate virtual CPUs to physical servers"], c:2},
+      {q:"True or False: In the described AWS serverless architecture, Lambda can execute application logic and interact with DynamoDB for data or S3 for files.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"What is a Virtual Private Cloud (VPC)?", a:["A public website that hosts downloadable virtual machine images","A load balancer that distributes requests between application servers","A database used to store cloud networking configurations","An isolated virtual network within a cloud environment"], c:3},
+      {q:"What is the main difference between public and private subnets?", a:["Public subnets are intended for internet accessibility, while private subnets have no direct internet access","Private subnets always allow unrestricted inbound internet connections, while public subnets prohibit them","Public subnets are exclusively for databases, while private subnets only host load balancers","Private subnets cannot communicate with other cloud resources under any circumstances"], c:0},
+      {q:"What is the purpose of a NAT gateway in cloud networking?", a:["To store authentication tokens for cloud users","To provide outbound internet access for resources in private subnets","To distribute incoming HTTP requests across multiple application servers","To automatically assign pods to Kubernetes worker nodes"], c:1},
+      {q:"Which statement correctly compares application and network load balancers?", a:["Application load balancers operate at Layer 4, while network load balancers operate exclusively at Layer 7","Both types only distribute traffic between database tables","Application load balancers operate at Layer 7 for HTTP/HTTPS, while network load balancers operate at Layer 4 for TCP/UDP","Network load balancers are used exclusively to encrypt files stored in object storage"], c:2},
+      {q:"What is the principle of least privilege in Identity and Access Management (IAM)?", a:["Give every user administrator access to prevent permission errors","Allow users to share permanent credentials for convenience","Require all applications to run using the same identity","Grant users and services only the minimum access required for their tasks"], c:3},
+      {q:"True or False: IAM policies can define permissions, while multi-factor authentication (MFA) strengthens account security.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"What is the difference between logging and monitoring in cloud observability?", a:["Logging measures CPU usage only, while monitoring stores application source code","Logging captures detailed events and application output, while monitoring tracks system health and performance","Logging distributes network traffic, while monitoring creates container images","Logging assigns pods to nodes, while monitoring controls user authentication"], c:1},
+      {q:"What does distributed tracing help developers understand?", a:["How much physical disk space a hypervisor owns","Which users have permission to modify IAM policies","How requests travel across multiple distributed services from beginning to end","How to allocate virtual CPUs beyond the available physical cores"], c:2},
+      {q:"Which statement correctly describes container networking modes?", a:["Bridge networking shares the host network stack directly, while host networking creates a private bridged network","Overlay networking is restricted to containers running on the same host","A service mesh replaces all application services with physical network routers","Overlay networking enables communication across multiple nodes, while host networking shares the host network stack"], c:3},
+      {q:"Which security technology inspects HTTP/HTTPS traffic at Layer 7 to help block threats such as SQL injection and cross-site scripting (XSS)?", a:["Web Application Firewall (WAF)","Network Access Control List (Network ACL)","NAT gateway","Container registry"], c:0},
+
+      {q:"What is cloud architecture?", a:["The blueprint for designing, deploying, and operating cloud systems","A process for manufacturing physical servers for data centers","A method of converting all applications into standalone desktop software","A system used exclusively to manage cloud storage billing"], c:0},
+      {q:"Which compute model provides full operating system isolation and dedicated virtual hardware?", a:["Containers","Virtual machines","Serverless functions","Object storage"], c:1},
+      {q:"What is the primary limitation of vertical scaling?", a:["It requires every application to use containers","It automatically distributes workloads across multiple cloud providers","It is limited by the hardware capacity of a single instance","It prevents administrators from increasing CPU or RAM"], c:2},
+      {q:"How does horizontal scaling increase computing capacity?", a:["By adding more CPU cores to one physical processor only","By increasing the storage capacity of a single disk","By replacing multiple instances with one larger instance","By adding more instances, commonly behind a load balancer"], c:3},
+      {q:"True or False: Auto scaling can automatically adjust cloud capacity based on CPU usage, request volume, or custom metrics.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"What is a container image layer?", a:["A dedicated physical disk attached to a virtual machine","A component of a layered filesystem that supports efficient image storage and reuse","A network gateway that connects private subnets to the internet","A Kubernetes control plane component responsible for scheduling pods"], c:1},
+      {q:"What does OverlayFS do in container technology?", a:["It assigns IP addresses to virtual private clouds","It distributes incoming traffic across application servers","It combines multiple filesystem layers into one unified filesystem view","It automatically scales serverless functions based on request volume"], c:2},
+      {q:"What happens when a container modifies a file from a lower, read-only OverlayFS layer?", a:["The entire container image is immediately deleted","The physical host operating system must be reinstalled","The file is permanently modified in every shared image","The file is copied into the writable layer before modification"], c:3},
+      {q:"Which is a benefit of using containers for microservices?", a:["Services can be deployed independently, and failures can be isolated between services","Every service must use the same programming language and runtime","Any service failure automatically requires redeploying the entire application","All services must share a single process and filesystem"], c:0},
+      {q:"Which compute model is best suited to an application requiring full operating system control and compatibility with a legacy OS?", a:["Serverless","Virtual machines","Containers exclusively","Object storage"], c:1},
+      {q:"True or False: Serverless functions are typically stateless between invocations, so persistent state should be stored externally.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"Which storage type is best suited to storing large amounts of unstructured data, such as backups, media, and data lakes?", a:["Block storage","File storage","Object storage","Virtual memory"], c:2},
+      {q:"Which storage type provides raw volumes attached to compute instances, similar to physical disks?", a:["Object storage","File storage","Container storage layers","Block storage"], c:3},
+      {q:"What is a key advantage of cloud file storage?", a:["It provides shared hierarchical filesystem access for multiple clients simultaneously","It only supports unstructured objects without directory hierarchies","It can only be mounted by a single virtual machine","It eliminates the need for file-sharing protocols"], c:0},
+      {q:"Which statement correctly describes object storage versioning?", a:["It automatically increases the CPU allocation of a virtual machine","It retains multiple versions of objects, helping recover previous states and audit changes","It distributes network traffic between multiple application servers","It converts every stored file into a block storage volume"], c:1},
+      {q:"What is the purpose of object storage lifecycle policies?", a:["To assign private IP ranges to cloud subnets","To encrypt only data transferred over public networks","To automatically transition objects between storage tiers or delete them after a specified time","To determine which Kubernetes worker node executes each pod"], c:2},
+      {q:"Which storage performance metric measures input/output operations completed per second?", a:["Throughput","Latency","Durability","IOPS"], c:3},
+      {q:"True or False: Throughput measures data transfer rate, while latency measures the time required to complete an individual I/O operation.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"What does a CIDR block represent in a virtual private cloud?", a:["A list of permitted application usernames","An IP address range allocated to the VPC","A list of object storage lifecycle policies","A group of container images stored in a registry"], c:1},
+      {q:"What is the function of a route table in cloud networking?", a:["To store database snapshots for disaster recovery","To authenticate users before they access applications","To determine where network traffic should be directed","To allocate virtual processors to guest operating systems"], c:2},
+      {q:"Which statement correctly distinguishes an internet gateway from a NAT gateway in the slideshow?", a:["An internet gateway is exclusively for outbound traffic, while a NAT gateway permits unrestricted inbound connections","Both gateways serve only to connect two private subnets","A NAT gateway provides public inbound access, while an internet gateway only supports private DNS","An internet gateway enables internet-routable traffic, while a NAT gateway lets private resources initiate outbound internet connections"], c:3},
+      {q:"Which load balancer operates at Layer 7 and supports HTTP/HTTPS routing using host headers and path-based rules?", a:["Application Load Balancer","Network Load Balancer","Gateway Load Balancer","Classic Load Balancer exclusively"], c:0},
+      {q:"What is the primary purpose of a Gateway Load Balancer?", a:["To provide shared filesystem access to Linux and Windows machines","To transparently direct traffic through third-party network appliances","To store virtual machine snapshots across availability zones","To manage user sign-up and authentication for serverless applications"], c:1},
+      {q:"True or False: A multi-availability-zone deployment helps prevent a single availability zone failure from causing an application outage.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"How do stateless application designs improve high availability?", a:["They require every request to return to the same physical server","They store all persistent data exclusively in local instance memory","They keep state in durable external stores so any suitable instance can handle a request","They prevent load balancers from redistributing requests between instances"], c:2},
+      {q:"Which practice helps ensure cloud environments can be consistently reproduced and reviewed?", a:["Manually configuring each environment without recording changes","Giving all developers unrestricted administrator permissions","Disabling monitoring to reduce operational overhead","Using Infrastructure as Code to version, review, and reproduce environments"], c:3},
+      {q:"Which statement best describes the purpose of network segmentation in cloud architecture?", a:["Separating public, private, and data tiers to help control communication and improve security","Combining all cloud resources into one unrestricted network segment","Allowing every database to receive direct connections from the public internet","Replacing IAM policies with shared credentials for all services"], c:0},
+      {q:"True or False: The slideshow recommends encrypting data both in transit and at rest by default.", a:["True","False","BLANK","BLANK"], c:0},
+      {q:"Which combination best supports a resilient cloud architecture?", a:["A single availability zone, manual scaling, and permanently fixed instances","Multi-AZ deployment, auto scaling, load balancing, and stateless design","One oversized virtual machine without health checks or monitoring","Public access to every subnet and unrestricted application permissions"], c:1},
+      {q:"An organization wants to reduce storage costs for archival data that rarely needs fast access. Which approach best follows the slideshow's storage recommendations?", a:["Use the highest-IOPS block storage tier for every archived file","Store all archived data in virtual machine memory","Match the storage tier to the workload instead of over-provisioning high-performance volumes","Move all archival data to compute instances with maximum CPU capacity"], c:2},
+
+      {q:"What is the primary purpose of Identity and Access Management (IAM) in cloud environments?", a:["To automatically scale resources based on traffic","To ensure only authorized identities access specific resources","To replicate application data across geographic regions","To monitor application performance and network latency"], c:1},
+      {q:"What distinguishes an IAM role from a user identity?", a:["A role is a machine or service identity that uses temporary access","A role is a permanent human identity with long-term credentials","A role stores application data across multiple availability zones","A role automatically increases CPU and memory when demand rises"], c:0},
+      {q:"What do IAM policies define?", a:["The number of instances required for an application","The network routes between public and private subnets","The allowed actions that identities can perform on resources","The recovery time required after a regional outage"], c:2},
+      {q:"What is the purpose of multi-factor authentication (MFA)?", a:["To eliminate the need for identity audit logs","To allow every user to access all cloud resources","To automatically distribute requests across instances","To add an additional authentication factor for stronger security"], c:3},
+      {q:"Which IAM principle grants identities only the permissions needed for their tasks?", a:["Least privilege","Horizontal scaling","Active-active recovery","Event-driven processing"], c:0},
+      {q:"According to the lecture, what is a recommended alternative to long-term access keys?", a:["Permanent administrator credentials","Temporary credentials and short-lived tokens","Shared credentials for all application services","Credentials stored directly in application source code"], c:1},
+      {q:"What does identity federation allow an organization to do?", a:["Replace all security policies with network routing rules","Create a separate permanent password for every service","Integrate with corporate identity and single sign-on providers","Automatically replicate data between cloud regions"], c:2},
+      {q:"What does scalability describe?", a:["The ability of a system to grow by adding more resources","The automatic deletion of all unused application data","The process of verifying every identity continuously","The ability to recover only from a complete regional outage"], c:0},
+      {q:"How does elasticity differ from scalability?", a:["Elasticity only applies to applications running on one server","Elasticity prevents systems from increasing their capacity","Elasticity requires all resources to be provisioned manually","Elasticity automatically adjusts resources according to real-time demand"], c:3},
+      {q:"Which metric could trigger an auto-scaling action?", a:["The color scheme of the application interface","CPU utilization crossing a configured threshold","The number of developers assigned to a project","The length of the application's source code"], c:1},
+      {q:"A message-processing system has a growing backlog in its queue. Which auto-scaling signal is most directly relevant?", a:["The number of database tables","The number of identity policies","Queue depth","The number of availability zones"], c:2},
+      {q:"What is horizontal scaling?", a:["Increasing CPU and RAM on an existing instance","Reducing the number of application services","Adding more instances to handle increased demand","Moving every application component to a single server"], c:2},
+      {q:"Which statement best describes vertical scaling?", a:["Increasing CPU or RAM on an existing machine","Adding more instances behind a load balancer","Replicating an application across multiple regions","Automatically replacing failed services with new ones"], c:0},
+      {q:"Why is horizontal scaling often preferred for cloud-native distributed applications?", a:["It removes the need for monitoring and security","It avoids all network communication between services","It guarantees that no application component can fail","It supports large-scale growth and built-in redundancy"], c:3},
+      {q:"What is redundancy in a resilient cloud architecture?", a:["Removing duplicate components to reduce all resource usage","Duplicating critical components so one failure does not stop the system","Using one central server for every application request","Storing all backups on the same component as production"], c:1},
+      {q:"What is the purpose of replication in cloud resilience?", a:["To increase the number of human IAM users","To prevent applications from using load balancers","To maintain multiple synchronized copies of data across locations","To ensure every application uses the same programming language"], c:2},
+      {q:"What does failover do when a failure is detected?", a:["Automatically switches traffic to healthy resources","Increases the memory of every existing instance","Deletes replicated copies of the application data","Disables health checks until the failed resource recovers"], c:0},
+      {q:"Why deploy an application across multiple availability zones (Multi-AZ)?", a:["To make all application services depend on one server","To eliminate the need for data replication","To ensure every resource stays within one physical location","To help the application survive an availability zone outage"], c:3},
+      {q:"What is the purpose of self-healing systems?", a:["To prevent applications from using distributed storage","To replace failed units using mechanisms such as Kubernetes or auto scaling","To keep every failed instance running indefinitely","To remove all automated recovery procedures"], c:1},
+      {q:"What is the main trade-off among disaster recovery models?", a:["Programming language choice versus database schema size","Authentication speed versus the number of user accounts","Cost versus recovery time objective (RTO) and recovery point objective (RPO)","Network bandwidth versus the number of developers"], c:2},
+      {q:"Which disaster recovery model is generally the lowest-cost option but has the slowest recovery?", a:["Backup and Restore","Active-Active","Warm Standby","Pilot Light"], c:0},
+      {q:"Which disaster recovery model maintains a smaller version of production that can be scaled up during a disaster?", a:["Backup and Restore","Active-Active","Pilot Light","Warm Standby"], c:3},
+      {q:"Which statement describes the Active-Active disaster recovery model?", a:["It restores all systems only after backups are recovered","It operates fully redundant multi-region systems that serve traffic simultaneously","It keeps only minimal core services running until disaster strikes","It relies entirely on periodic offsite backups"], c:1},
+      {q:"What is one benefit of the microservices pattern?", a:["It eliminates all distributed system complexity","It guarantees that database consistency is never a concern","It allows services to be deployed independently","It removes the need for operational monitoring"], c:2},
+      {q:"In event-driven architecture, what triggers a workflow?", a:["An event, such as a file upload or queue message","A requirement to restart every service on a schedule","A manual update to every application's source code","A permanent connection between every producer and consumer"], c:0},
+      {q:"What does CQRS stand for in the context of cloud design patterns?", a:["Cloud Queue Routing System","Continuous Query Recovery Service","Centralized Quality and Reliability Strategy","Command Query Responsibility Segregation"], c:3},
+      {q:"How does saga choreography coordinate a distributed transaction?", a:["A central controller directly instructs every service at each step","Services publish events and react to events from other services","A single database locks all participating services during the transaction","A load balancer assigns every transaction to the same instance"], c:1},
+      {q:"What is the primary purpose of an API Gateway?", a:["To provide a single entry point that manages and secures API traffic","To replace all storage systems with a single database","To increase CPU capacity on individual application instances","To replicate every virtual machine across multiple regions"], c:0},
+      {q:"What happens when a circuit breaker enters the open state?", a:["All requests continue normally while failures are ignored","The service immediately increases its CPU and memory allocation","Requests fail fast without calling the unhealthy service","Every request is redirected permanently to the same instance"], c:2},
+      {q:"What is the purpose of the bulkhead pattern?", a:["To make every service share one common resource pool","To retry every failed request without any delay","To migrate an entire legacy system in one large rewrite","To isolate components so one failure does not take down the whole system"], c:3},
+
+      {q:"What were the key drivers behind the evolution of virtualization?", a:["Efficiency, isolation, and scalability","Encryption, authentication, and database normalization","Programming speed, user interfaces, and source control","Storage compression, file sharing, and application branding"], c:0},
+      {q:"What is the primary purpose of a hypervisor?", a:["To manage application source code and dependencies","To replace the guest operating system with a container runtime","To provide virtualized hardware and manage virtual machine resources","To route all application requests through an API gateway"], c:2},
+      {q:"Which hypervisor component allocates CPU time, memory, and I/O resources across virtual machines?", a:["Device emulation","Scheduler","VM monitor","I/O virtualization"], c:1},
+      {q:"What is the purpose of device emulation in a hypervisor?", a:["To provide virtual hardware devices to guest operating systems","To assign MAC addresses to physical network adapters","To compress virtual disk images before deployment","To isolate application processes using Linux namespaces"], c:0},
+      {q:"What does memory ballooning allow a hypervisor to do?", a:["Increase the number of guest operating systems without using memory","Convert all virtual disks into read-only image layers","Prevent virtual machines from sharing physical CPU resources","Reclaim unused memory from virtual machines when the host is under pressure"], c:3},
+      {q:"Which technologies provide hardware-assisted virtualization support for Intel and AMD processors?", a:["VMDK and VHDX","NPT and VLAN","Intel VT-x and AMD-V","Docker and Kubernetes"], c:2},
+      {q:"What is a benefit of Nested Page Tables (NPT) and Extended Page Tables (EPT)?", a:["They eliminate the need for guest operating systems","They reduce memory address translation overhead","They automatically encrypt every virtual disk","They replace the hypervisor's resource scheduler"], c:1},
+      {q:"What distinguishes a Type 1 hypervisor from a Type 2 hypervisor?", a:["Type 1 runs directly on hardware, while Type 2 runs on a host operating system","Type 1 is only used for development, while Type 2 is only used in data centers","Type 1 requires a host operating system, while Type 2 does not","Type 1 only runs containers, while Type 2 only runs physical machines"], c:0},
+      {q:"Which of the following is an example of a Type 2 hypervisor listed in the lecture?", a:["Xen","ESXi","KVM","VirtualBox"], c:3},
+      {q:"Which sequence best represents the VM lifecycle stages presented in the lecture?", a:["Booting, compiling, testing, publishing, and archiving","Provisioning, booting, running, pausing, snapshotting, migrating, and decommissioning","Creating images, assigning namespaces, applying cgroups, and deleting containers","Authentication, authorization, encryption, replication, and recovery"], c:1},
+      {q:"Why is live migration important in cloud environments?", a:["It allows containers to share the host kernel","It replaces the need for virtual CPU scheduling","It supports cloud elasticity by moving running virtual machines","It automatically converts block storage into object storage"], c:2},
+      {q:"Which sequence correctly represents the layered VM architecture from bottom to top?", a:["Applications, guest OS, hypervisor, virtual hardware, physical hardware","Physical hardware, hypervisor, virtual hardware, guest OS, applications","Hypervisor, physical hardware, applications, guest OS, virtual hardware","Physical hardware, guest OS, applications, virtual hardware, hypervisor"], c:1},
+      {q:"How do hypervisors map virtual CPUs (vCPUs) to physical CPUs?", a:["By assigning every vCPU its own dedicated physical processor in all cases","By replacing CPU scheduling with filesystem permissions","By allowing guest operating systems to control all host CPUs directly","By scheduling virtual CPUs onto physical processors using techniques such as time slicing"], c:3},
+      {q:"What is time slicing in virtual CPU scheduling?", a:["Dividing CPU time among vCPUs so physical cores can be shared","Assigning all CPU time to the virtual machine with the most memory","Moving virtual disk files between storage pools","Separating network traffic into isolated tenant segments"], c:0},
+      {q:"What is the purpose of NUMA-aware placement?", a:["To force all virtual machines to use the same CPU priority","To remove the need for virtual memory translation","To place vCPUs near local memory to reduce latency","To automatically create snapshots before every VM migration"], c:2},
+      {q:"Which virtual memory technique uses software-managed mappings of guest memory pages?", a:["Extended Page Tables","Shadow Page Tables","Thin Provisioning","I/O Throttling"], c:1},
+      {q:"What happens when virtual memory is swapped to disk?", a:["Guest memory pages may be moved to disk when memory is overcommitted","All guest memory is permanently stored on a virtual network switch","Virtual CPUs are converted into physical CPU cores","Read-only container image layers are merged into one file"], c:0},
+      {q:"What is one function of virtual switches in a virtual networking architecture?", a:["Creating guest operating systems from physical hardware","Allocating memory dynamically between virtual machines","Replacing storage pools with virtual disks","Enabling VM-to-VM communication and network traffic filtering"], c:3},
+      {q:"What is thin provisioning in VM storage virtualization?", a:["Reserving all possible disk capacity before a VM starts","Encrypting virtual disk contents during network transmission","Allocating storage space as it is needed rather than upfront","Creating an independent physical disk for every virtual machine"], c:2},
+      {q:"Which VM security feature verifies the integrity of firmware and the bootloader?", a:["Secure Boot","Traffic shaping","Snapshot chaining","NUMA-aware placement"], c:0},
+      {q:"Why did containers emerge as an alternative to virtual machines for some workloads?", a:["Containers require a complete guest OS for every instance","Containers share the host kernel, reducing overhead and startup time","Containers provide stronger hardware-level isolation than virtual machines","Containers eliminate the need for application dependencies"], c:1},
+      {q:"What is the role of a container runtime?", a:["To manage physical storage pools for virtual machines","To translate guest physical addresses into host physical addresses","To distribute virtual CPU time among guest operating systems","To start and manage container processes"], c:3},
+      {q:"What do Linux namespaces provide to containers?", a:["A way to isolate views of resources such as processes, networking, and filesystems","A method for allocating virtual disk space only when required","A mechanism for copying data between disaster recovery regions","A way to increase physical CPU frequency during traffic spikes"], c:0},
+      {q:"What is the primary purpose of control groups (cgroups)?", a:["To assign MAC addresses to containers on physical networks","To sign container images and verify their provenance","To limit and account for resource usage such as CPU and memory","To provide full guest operating systems to isolated workloads"], c:2},
+      {q:"How do layered container images improve deployment efficiency?", a:["They require each container to store a completely separate operating system","They reduce duplication by reusing layers and speed up deployment","They automatically provide hardware-level isolation between containers","They remove the need for application code and dependencies"], c:1},
+      {q:"Which container networking mode enables networking across multiple hosts in a cluster?", a:["Bridge","Host","Macvlan","Overlay"], c:3},
+      {q:"What is the purpose of Seccomp in container security?", a:["To filter system calls and reduce the attack surface","To allocate disk space dynamically for container images","To route application traffic to the nearest geographic region","To manage virtual CPU scheduling for guest operating systems"], c:0},
+      {q:"Which statement accurately compares VM and container isolation?", a:["Containers each run a full guest OS, while VMs share the host kernel","Containers have stronger hardware isolation and higher overhead than VMs","VMs use hardware-level isolation and a full guest OS, while containers share the host kernel","VMs and containers provide identical isolation boundaries and startup times"], c:2},
+      {q:"Which situation is most appropriate for using a virtual machine rather than a container?", a:["A microservice needs rapid scaling and high instance density","A CI/CD pipeline needs consistent development and production environments","An application needs lightweight instances that share the host kernel","A workload requires full OS control or support for different kernels"], c:3},
+
+      {q:"What is one of the main reasons Kubernetes was developed?", a:["To replace all cloud storage with local disks","To automate deployments, scaling, and recovery of distributed workloads","To eliminate the need for container runtimes","To provide physical hardware for every application"], c:1},
+      {q:"What are the two main parts of Kubernetes architecture?", a:["API Servers and databases","Pods and container images","Services and Ingress controllers","Control plane and worker nodes"], c:3},
+      {q:"What is the primary role of the Kubernetes API Server?", a:["To serve as the central gateway for cluster operations","To run all application containers on worker nodes","To assign CPU time directly to every container","To provide physical network cables between nodes"], c:0},
+      {q:"Which Kubernetes component stores cluster configuration and state in a distributed key-value store?", a:["Kubelet","Scheduler","etcd","Kube-proxy"], c:2},
+      {q:"Which consensus mechanism is mentioned in the lecture in relation to etcd?", a:["Round Robin","Raft consensus","Least Connections","IP Hash"], c:1},
+      {q:"What is the Kubernetes scheduler responsible for?", a:["Maintaining virtual IP addresses for Services","Storing every container image in the cluster","Performing authentication for all external websites","Deciding which worker node should run each Pod"], c:3},
+      {q:"How can node affinity influence Pod scheduling?", a:["It allows Pods to prefer or require nodes with specific labels","It automatically converts every Pod into a Service","It stores the desired cluster state outside etcd","It prevents the API Server from receiving scheduling requests"], c:0},
+      {q:"What is the primary responsibility of the Kubernetes Controller Manager?", a:["To expose every Pod directly to the public internet","To assign IP addresses to physical network adapters","To ensure the actual cluster state matches the desired state","To compile container images before they are deployed"], c:2},
+      {q:"Which controller maintains the desired number of Pods in a ReplicaSet?", a:["Job Controller","ReplicaSet Controller","Node Controller","Ingress Controller"], c:1},
+      {q:"What is the purpose of the kubelet on a worker node?", a:["To store all cluster configuration in a distributed database","To route external HTTP requests based on domain names","To assign public IP addresses to cloud load balancers","To ensure Pods are running and manage their containers"], c:3},
+      {q:"What is the role of kube-proxy?", a:["To maintain network rules that route Service traffic to backend Pods","To select which node should run each new Pod","To maintain the revision history of Deployments","To validate container image signatures before building images"], c:0},
+      {q:"Which of the following is a container runtime mentioned in the lecture?", a:["etcd","Traefik","containerd","Calico"], c:2},
+      {q:"What is a Pod in Kubernetes?", a:["A physical server dedicated to one application","The smallest deployable unit in Kubernetes","A database containing all cluster configuration","A load balancer that distributes requests across nodes"], c:1},
+      {q:"What networking characteristic do containers within the same Pod share?", a:["Each container must use a different Pod IP address","Each container has a separate network namespace and IP by default","Each container must run on a different worker node","Containers share the same IP address and network namespace"], c:3},
+      {q:"What does the Pending Pod state indicate?", a:["The Pod has been accepted but is not yet running","All containers in the Pod exited successfully","At least one container in the Pod has failed","The Kubernetes system cannot determine the Pod's state"], c:0},
+      {q:"When is a Pod considered to be in the Succeeded state?", a:["When it has been assigned to a node but has not started","When its containers are still actively processing requests","When all its containers have exited successfully","When the scheduler cannot identify a suitable node"], c:2},
+      {q:"What is a sidecar container designed to do?", a:["Replace the Kubernetes API Server","Augment the main application with functions such as logging or metrics","Assign a stable public IP to a Service","Maintain the desired number of identical Pods"], c:1},
+      {q:"What is the purpose of an ambassador container pattern?", a:["To maintain deployment revision history","To transform application output into a standard format","To replace failed worker nodes automatically","To mediate network access between an application and external services"], c:3},
+      {q:"What happens when a Pod managed by a ReplicaSet is deleted or fails?", a:["The ReplicaSet can create a replacement Pod to maintain the desired count","The entire Kubernetes control plane must be restarted","All other Pods in the cluster are automatically deleted","The Service permanently loses its virtual IP address"], c:0},
+      {q:"Which feature allows a Kubernetes Deployment to gradually replace Pods with a new application version?", a:["Node affinity","Image signing","Rolling updates","NAT rules"], c:2},
+      {q:"What is the purpose of a Deployment rollback?", a:["To assign a different IP address to every container","To revert to a previous application revision after a problem","To remove all ReplicaSets from the cluster permanently","To prevent the scheduler from placing Pods on worker nodes"], c:1},
+      {q:"Why are Kubernetes Services useful for connecting to Pods?", a:["They ensure every Pod keeps the same IP address after restarting","They require clients to track each Pod's changing IP address","They expose every backend Pod directly to the public internet","They provide stable networking even when individual Pods are replaced"], c:3},
+      {q:"What is the default Kubernetes Service type for internal-only access?", a:["ClusterIP","NodePort","LoadBalancer","Ingress"], c:0},
+      {q:"How does a NodePort Service expose an application?", a:["By creating an HTTP path rule at an Ingress controller","By assigning a unique public IP to every Pod","By opening the same port on each node's IP address","By providing access only through an internal virtual IP"], c:2},
+      {q:"Which Kubernetes Service type can automatically provision a cloud load balancer?", a:["ClusterIP","LoadBalancer","NodePort","ReplicaSet"], c:1},
+      {q:"What is a primary purpose of Kubernetes Ingress?", a:["To maintain the desired number of replicas for a workload","To store Pod status and cluster configuration","To manage CPU and memory limits for containers","To route external HTTP/HTTPS traffic into the cluster"], c:3},
+      {q:"What does path-based Ingress routing allow an application to do?", a:["Send requests to different Services based on URL paths such as /api and /app","Select a worker node based only on its CPU utilization","Assign a different container runtime to every incoming request","Replace all Service virtual IP addresses with physical hardware addresses"], c:0},
+      {q:"What does an Ingress controller do?", a:["Stores all Kubernetes objects in a strongly consistent database","Maintains the desired number of replicas for each Deployment","Watches Ingress objects and configures the underlying routing system","Starts and stops every container directly without a node agent"], c:2},
+      {q:"Which statement describes the Kubernetes networking model presented in the lecture?", a:["Pods on different nodes must always communicate through NAT","Each Pod gets an IP, and Pods can communicate across nodes without NAT","Only worker nodes receive IP addresses; Pods communicate through files","Services require every Pod to retain its original IP address permanently"], c:1},
+      {q:"What is the purpose of Container Network Interface (CNI) plugins in Kubernetes?", a:["To manage Deployment revision history and application rollbacks","To store desired and observed cluster state","To determine which Pods have successfully completed batch jobs","To implement Kubernetes networking, using plugins such as Calico, Cilium, and Flannel"], c:3},
+
+      {q:"What is the main reason Zero Trust security models were developed?", a:["Traditional perimeter security struggles with cloud workloads, remote users, and lateral movement","Cloud providers no longer support traditional firewalls or network access controls","Organizations need to eliminate authentication requirements for internal applications","Static network addresses have become mandatory for all cloud resources"], c:0},
+      {q:"Which statement best describes the Zero Trust principle 'Never Trust, Always Verify'?", a:["Trust every request originating from an organization's private network","Verify identities and requests instead of automatically trusting network location","Allow authenticated users to access all resources within their department","Require authentication only when a user first joins the organization"], c:1},
+      {q:"What does the Zero Trust principle 'Assume Breach' encourage organizations to do?", a:["Disable all external connections to prevent attackers from reaching systems","Assume that every security control has already been permanently compromised","Design security controls with the expectation that attackers may already be inside","Trust internal workloads unless they generate a confirmed security incident"], c:2},
+      {q:"Which option correctly describes the three stages of identity-based access?", a:["Authorization identifies the user, identity grants permissions, and authentication monitors activity","Authentication grants access, authorization creates identities, and identity encrypts traffic","Identity verifies passwords, authentication defines roles, and authorization detects anomalies","Identity identifies the requester, authentication verifies them, and authorization determines permissions"], c:3},
+      {q:"What is the primary difference between authentication and authorization?", a:["Authentication verifies identity, while authorization determines permitted resources and actions","Authentication assigns network addresses, while authorization encrypts application traffic","Authentication evaluates device health, while authorization replaces identity providers","Authentication grants administrative roles, while authorization verifies passwords"], c:0},
+      {q:"Which example represents a workload identity?", a:["An employee signing into a company email account","A container or Kubernetes pod identified for access-control decisions","A physical office building assigned an internal network address","A department receiving permission to purchase computer equipment"], c:1},
+      {q:"What is the purpose of an Identity Provider (IdP)?", a:["To route packets between cloud subnets without checking user identities","To replace all application authorization policies with network address rules","To manage identities and support authentication services such as SSO","To isolate every container by assigning it a separate physical server"], c:2},
+      {q:"Which combination correctly identifies three common types of multi-factor authentication evidence?", a:["Username, email address, and network location","Application name, device address, and user department","Encryption key, server address, and database name","Something you know, something you have, and something you are"], c:3},
+      {q:"What is adaptive access designed to evaluate before granting access?", a:["Only whether the user supplied a valid username and password","Context such as device posture, location, user behavior, and risk","Only whether the request originates from an organization's office","The number of applications installed on the organization's servers"], c:1},
+      {q:"What does device posture describe in a Zero Trust architecture?", a:["The physical orientation and location of a computer in the office","The number of user accounts associated with a particular device","The security condition of a device, including patching and compliance","The amount of network bandwidth allocated to a device"], c:2},
+      {q:"Why should an unusual login location not automatically prove that an account is compromised?", a:["Legitimate users may travel, work remotely, or connect through VPNs","Location information cannot be collected by identity providers","Zero Trust policies must always ignore geographic information","Authentication systems cannot compare current and previous login locations"], c:0},
+      {q:"What may happen when a user's activity is identified as unusually risky?", a:["The user automatically receives permanent administrator privileges","The system disables every security policy for the current session","The system grants access because the account has already authenticated","The system can require additional verification through step-up authentication"], c:3},
+      {q:"What is the primary responsibility of a Policy Decision Point (PDP)?", a:["Forwarding all network traffic without evaluating security requirements","Evaluating identities, context, and policies to make access decisions","Assigning IP addresses to every workload in a cloud environment","Encrypting all traffic between services using mutual TLS"], c:1},
+      {q:"What is the primary responsibility of a Policy Enforcement Point (PEP)?", a:["Creating user identities and registering them with an identity provider","Defining every organization's security policies without evaluating requests","Enforcing access decisions by permitting or blocking communication","Calculating risk scores from user behavior and device posture"], c:2},
+      {q:"Which statement correctly describes the relationship between a PDP and a PEP?", a:["The PDP makes the decision, and the PEP enforces that decision","The PEP creates identities, and the PDP assigns their network addresses","The PDP encrypts traffic, and the PEP replaces authentication factors","The PEP evaluates policies, and the PDP only records network activity"], c:0},
+      {q:"What is microsegmentation intended to accomplish?", a:["Combine all workloads into one trusted network to simplify administration","Replace workload authentication with unrestricted internal network access","Allow communication between systems whenever they share a subnet","Divide networks into small security zones that restrict unnecessary communication"], c:3},
+      {q:"How does microsegmentation help limit the impact of a security breach?", a:["By guaranteeing that compromised workloads cannot execute any code","By preventing attackers from freely moving between isolated systems","By removing the need to authenticate users inside cloud environments","By allowing every internal service to communicate with every database"], c:1},
+      {q:"Which technique enforces security rules directly on individual endpoints or virtual machines?", a:["Software-defined perimeters","Identity federation and single sign-on","Host-based firewalls","Service discovery without access policies"], c:2},
+      {q:"What is a defining feature of policy-driven segmentation?", a:["Security rules are applied automatically according to organizational intent","Every workload must use the same static IP address permanently","Network isolation is determined exclusively by physical server location","Access rules are disabled whenever a workload changes environments"], c:0},
+      {q:"What is the difference between East-West and North-South network traffic?", a:["East-West connects users to the internet, while North-South connects services internally","East-West is encrypted traffic, while North-South is unencrypted traffic","East-West occurs only in physical networks, while North-South occurs in cloud networks","East-West connects internal workloads, while North-South connects external and internal systems"], c:3},
+      {q:"Why does microsegmentation primarily target East-West traffic?", a:["East-West traffic is always public and does not require authentication","East-West communication can provide attackers with paths for lateral movement","East-West traffic cannot be monitored using traditional networking tools","East-West traffic only occurs when users access applications through VPNs"], c:1},
+      {q:"What is the main purpose of a Software-Defined Perimeter (SDP)?", a:["Expose every application publicly while restricting only database queries","Allow access based on network location instead of authenticated identity","Hide resources until identity is verified and access is approved","Replace all encryption with dynamically assigned network addresses"], c:2},
+      {q:"What are identity boundaries intended to define?", a:["Which identities can access specific workloads and perform particular actions","Which physical computers must remain connected to the same switch","Which applications must share the same database and network address","Which users can bypass authentication when accessing internal resources"], c:0},
+      {q:"What is the purpose of identity-aware firewalls?", a:["To permit traffic only when all systems share an identical IP address","To replace service identities with broad network-level trust relationships","To allow all internal applications to communicate without authorization checks","To apply access rules based on authenticated users, applications, or services"], c:3},
+      {q:"How does Zero Trust Network Access (ZTNA) differ from traditional broad network access through a VPN?", a:["ZTNA grants permanent access to every resource after the first login","ZTNA grants identity-based access to specific applications rather than entire networks","ZTNA removes authentication requirements for applications hosted in the cloud","ZTNA depends exclusively on whether a user has an internal IP address"], c:1},
+      {q:"What does a default-deny allowlist policy mean?", a:["All traffic is allowed unless a user reports suspicious activity","Only external traffic is denied, while internal traffic is automatically trusted","Access is denied by default, and required communication must be explicitly permitted","Access is granted to every authenticated identity regardless of its permissions"], c:2},
+      {q:"Which statement correctly compares security groups and network ACLs in cloud environments?", a:["Security groups are instance-level stateful firewalls, while network ACLs provide subnet-level stateless filtering","Security groups are subnet-level stateless filters, while network ACLs manage user authentication","Security groups encrypt service calls, while network ACLs issue workload certificates","Security groups control only application identities, while network ACLs manage single sign-on"], c:0},
+      {q:"What role does mutual TLS (mTLS) play in a service mesh?", a:["It assigns a public IP address to each microservice before communication","It replaces authorization policies with location-based network filtering","It allows services to communicate without presenting cryptographic credentials","It encrypts and authenticates service-to-service communication"], c:3},
+      {q:"Which approach supports Zero Trust security for Kubernetes containers?", a:["Allowing every pod in the cluster to communicate with every other pod","Using pod-level identities, namespace segmentation, and policy-driven communication","Trusting containers whenever they are deployed on the same worker node","Disabling workload authentication after a pod successfully starts"], c:1},
+      {q:"Which sequence best matches the Zero Trust implementation roadmap presented in the lecture?", a:["Deploy public applications, disable MFA, combine workloads, and trust internal traffic","Configure network addresses, remove identity providers, and permit unrestricted service access","Establish identity services, enforce MFA, segment workloads, apply identity boundaries, and monitor continuously","Enable network encryption, remove authorization rules, and stop monitoring authenticated users"], c:2},
+
+      {q:"What is a Virtual Private Cloud (VPC) in a public cloud environment?", a:["A shared network where all cloud customers use identical security settings","A logically isolated network with customizable IP address ranges","A physical server dedicated exclusively to hosting database applications","A routing service that automatically connects every cloud network to the internet"], c:1},
+      {q:"Why should overlapping CIDR ranges be avoided when designing VPC networks?", a:["They prevent workloads from using private IP addresses for internal communication","They force all subnets to use the same routing table and firewall policies","They prevent security groups from allowing inbound connections to virtual machines","They can cause conflicts that break VPC peering and hybrid connectivity"], c:3},
+      {q:"Which of the following is a valid private IPv4 address range specified by RFC 1918?", a:["10.0.0.0/8","11.0.0.0/8","172.0.0.0/12","193.168.0.0/16"], c:0},
+      {q:"What is the primary purpose of dividing a VPC into subnets?", a:["To eliminate the need for route tables and gateway configurations","To assign every cloud resource a publicly accessible IP address","To create smaller networks for workload placement and logical isolation","To automatically encrypt all network traffic between cloud applications"], c:2},
+      {q:"Which configuration best describes a public subnet?", a:["A subnet that has no route to the internet and hosts internal databases","A subnet with a route to an Internet Gateway that can support public-facing resources","A subnet that permits outbound traffic only through a NAT Gateway","A subnet that blocks all communication with resources outside its own address range"], c:1},
+      {q:"Which workload would most commonly be placed in a private subnet?", a:["A publicly accessible web server that accepts internet connections directly","A public load balancer receiving requests from external customers","A bastion host designed to provide controlled administrative entry","A database server that should not accept direct inbound internet connections"], c:3},
+      {q:"What distinguishes an isolated subnet from a typical private subnet in the lecture?", a:["An isolated subnet has no internet path at all, while a private subnet can use NAT for outbound access","An isolated subnet requires a public IP address, while a private subnet cannot use private addresses","An isolated subnet permits unrestricted inbound internet traffic, while a private subnet blocks all outbound traffic","An isolated subnet must connect through a VPN Gateway, while a private subnet must use an Internet Gateway"], c:0},
+      {q:"According to the lecture, how many IP addresses are represented by a /24 subnet?", a:["16 IP addresses","64 IP addresses","256 IP addresses","4,096 IP addresses"], c:2},
+      {q:"What should designers remember about subnet IP allocation in common cloud environments?", a:["Every address in a subnet is available for workload assignment","Cloud providers typically reserve five IP addresses per subnet","A /28 subnet always provides 256 usable addresses","Subnet sizes cannot be changed or planned for future scaling"], c:1},
+      {q:"What is the main responsibility of a route table in a VPC?", a:["To store user passwords and authenticate cloud administrators","To assign workload identities to applications and databases","To encrypt every packet before it leaves a subnet","To define traffic destinations and the next hops used to forward traffic"], c:3},
+      {q:"What does the route 0.0.0.0/0 generally represent in an IPv4 route table?", a:["A default route that matches traffic not covered by more specific routes","A route that permits communication only between identical IP addresses","A route that directs all traffic exclusively to the local VPC network","A route that blocks every connection originating outside the subnet"], c:0},
+      {q:"What is the purpose of the local route associated with a VPC CIDR block?", a:["To forward all outbound traffic to a NAT Gateway","To connect the VPC directly to every on-premises network","To allow routing between resources within the VPC address range","To expose every private subnet to the public internet"], c:2},
+      {q:"What is the primary function of an Internet Gateway (IGW)?", a:["To allow private subnets outbound internet access without accepting inbound connections","To support internet communication for appropriately configured public-facing resources","To filter subnet traffic using ordered stateless allow and deny rules","To create encrypted private connections between unrelated cloud organizations"], c:1},
+      {q:"Which statement correctly describes a NAT Gateway?", a:["It provides unrestricted inbound and outbound internet connectivity to private workloads","It replaces the need for route tables in public and private subnets","It is primarily used to assign public IP addresses to every private database","It allows private-subnet resources to initiate outbound internet connections without allowing internet-initiated inbound connections"], c:3},
+      {q:"A private-subnet application needs to download software updates from the internet. Which configuration best supports this requirement?", a:["Configure its default route to use a NAT Gateway","Assign every database a public IP and route directly through the IGW","Remove the default route and rely on the local VPC route","Configure a subnet-level deny rule for all outbound internet traffic"], c:0},
+      {q:"Which statement correctly compares an Internet Gateway with a NAT Gateway?", a:["Both gateways only permit outbound traffic initiated by private workloads","A NAT Gateway provides inbound public access, while an IGW blocks inbound connections","An IGW supports inbound and outbound internet communication, while a NAT Gateway supports private-subnet outbound access","An IGW is used only for on-premises routing, while a NAT Gateway connects VPCs through peering"], c:2},
+      {q:"What is a key limitation of VPC peering?", a:["It requires all connected VPCs to use exactly the same CIDR range","It does not provide transitive routing between peered VPCs","It sends all inter-VPC traffic through the public internet","It can connect only a single virtual machine in each VPC"], c:1},
+      {q:"What is the primary advantage of a Transit Gateway compared with many individual VPC peering connections?", a:["It removes the need for network routes between all connected VPCs","It automatically makes every attached workload publicly accessible","It guarantees that all connected networks have overlapping IP ranges","It provides a central hub for scalable connectivity between many VPCs and on-premises networks"], c:3},
+      {q:"How does Zero Trust apply to cloud networking?", a:["It verifies requests, uses identity-based access, isolates workloads, and continuously monitors activity","It trusts all traffic within a VPC and checks only connections from the public internet","It replaces identity checks with a policy that permits all private IP addresses","It requires every cloud resource to use a public IP address for authentication"], c:0},
+      {q:"What is a defining characteristic of a Security Group (SG)?", a:["It is a stateless subnet firewall that requires explicit rules in both directions","It evaluates numbered rules in order and supports explicit deny rules","It is a stateful instance-level firewall that automatically allows return traffic","It applies only to traffic between separate VPCs connected through peering"], c:2},
+      {q:"How do Network Access Control Lists (NACLs) differ from Security Groups?", a:["NACLs are stateful and applied to individual network interfaces","NACLs are stateless subnet-level filters that support allow and deny rules","NACLs automatically permit return traffic without outbound rules","NACLs cannot explicitly deny traffic from particular sources"], c:1},
+      {q:"How are NACL rules evaluated according to the lecture?", a:["All rules are evaluated simultaneously, and the most permissive rule wins","Rules are evaluated only when a Security Group has no configured rules","Rules are applied randomly based on current network traffic volume","Rules are processed by rule number, and the first matching rule wins"], c:3},
+      {q:"Which firewall rule design follows the principle of least privilege?", a:["Allow only the required ports and sources, documenting exceptions clearly","Allow every inbound port and monitor the traffic for suspicious activity","Permit all outbound and inbound traffic whenever authentication succeeds","Use the same unrestricted firewall rules for every workload in the VPC"], c:0},
+      {q:"Why should inbound and outbound firewall policies be considered separately?", a:["Cloud firewalls always block outbound traffic unless inbound traffic is allowed","Inbound and outbound rules must use identical source and destination addresses","Each traffic direction needs its own policy to control the communication that is permitted","Separate policies eliminate the need to configure subnet routing"], c:2},
+      {q:"What is the purpose of a bastion host in a cloud architecture?", a:["To provide a public database endpoint for all application workloads","To provide a controlled administrative entry point into private subnets","To automatically translate private IP addresses into public DNS names","To replace every firewall with a single network-wide access rule"], c:1},
+      {q:"Which option is identified in the lecture as an alternative that can reduce the need for bastion hosts?", a:["VPC peering without route tables","An Internet Gateway assigned to each database","A public IP address on every private workload","Managed services such as SSM or Cloud Shell"], c:3},
+      {q:"What is a key benefit of PrivateLink or endpoint services?", a:["They provide private access to supported cloud services without requiring public IP exposure","They route all application requests through publicly accessible internet gateways","They require workloads to expose their services through public IP addresses","They automatically permit all connected VPCs to communicate without policy restrictions"], c:0},
+      {q:"Which tool or mechanism can capture IP traffic metadata to help analyze network communication?", a:["A NAT Gateway that automatically records all application source code","A Transit Gateway that replaces security monitoring and incident response","VPC Flow Logs","A CIDR block that identifies suspicious user behavior"], c:2},
+      {q:"Which architecture separates web, application, and data workloads into distinct subnet tiers?", a:["A single-subnet architecture with unrestricted internal communication","A three-tier architecture","A flat network architecture with no segmentation","A transitive peering architecture without routing controls"], c:1},
+      {q:"Which option best describes a Zero Trust segmented VPC design?", a:["All workloads share one trusted network and use IP addresses as their only security control","Every private workload receives direct inbound access from the public internet","All application tiers use overlapping CIDR ranges to simplify connectivity","Workloads are isolated using fine-grained controls based on identity and permitted communication"], c:3},
+
+      {q:"Which of the following is a common threat in modern cloud environments?", a:["Automatic subnet creation without manual IP address assignment","Credential theft involving stolen API keys, tokens, and passwords","Routine operating system updates performed by cloud providers","Load balancing requests across multiple application instances"], c:1},
+      {q:"Why are cloud security threats increasing as organizations adopt more cloud services?", a:["Cloud environments eliminate the need for identity management","Cloud providers require every application to use public IP addresses","Cloud systems prevent organizations from automating security controls","Rapid adoption and complex architectures can outpace security reviews"], c:3},
+      {q:"What is the correct sequence of stages in the cloud attack kill chain presented in the lecture?", a:["Reconnaissance, initial access, privilege escalation, lateral movement, data exfiltration","Initial access, reconnaissance, data exfiltration, privilege escalation, lateral movement","Reconnaissance, lateral movement, initial access, data exfiltration, privilege escalation","Privilege escalation, initial access, reconnaissance, lateral movement, data exfiltration"], c:0},
+      {q:"What is the purpose of reconnaissance during a cloud attack?", a:["To encrypt stolen data before sending it outside the organization","To permanently disable all identity providers in the cloud environment","To discover potential targets, resources, and configuration weaknesses","To restore compromised workloads to their original configurations"], c:2},
+      {q:"Which scenario is an example of credential theft in a cloud environment?", a:["A cloud provider replaces failed hardware in a data center","An application downloads an approved software update","A security administrator enables logging for database connections","An attacker obtains an API key accidentally embedded in application code"], c:3},
+      {q:"What is MFA fatigue as an identity-based attack?", a:["Repeatedly changing passwords until an account becomes locked","Flooding a user with authentication prompts until one is accepted","Reusing a cloud provider's encryption keys across multiple services","Disabling multi-factor authentication after a successful login"], c:1},
+      {q:"What occurs during a token replay attack?", a:["An attacker reuses a stolen session or access token to impersonate an authorized requester","A developer rotates an expired API key before deploying an application","A cloud provider automatically issues a new token after an operating system update","A user authenticates with multiple independent authentication factors"], c:0},
+      {q:"How does OAuth consent phishing typically compromise access?", a:["By forcing a database to accept connections from every IP address","By exploiting a physical security weakness at a cloud data center","By tricking users into granting a malicious application access permissions","By preventing applications from communicating with third-party services"], c:2},
+      {q:"Which situation is an example of a cloud supply chain risk?", a:["A private subnet uses a route table to reach a NAT Gateway","A database uses encryption to protect sensitive customer records","A user is required to complete MFA before accessing an application","An attacker injects malicious build steps into a CI/CD pipeline"], c:3},
+      {q:"What is the central idea of the cloud shared responsibility model?", a:["The provider is responsible for every aspect of security in all service models","Cloud security responsibilities are divided between the provider and the customer","The customer manages physical data centers while the provider manages user accounts","The provider and customer must both configure every security control identically"], c:1},
+      {q:"Under the IaaS responsibility breakdown presented in the lecture, which task belongs to the customer?", a:["Maintaining the physical security of the cloud data center","Managing the provider's hypervisor infrastructure","Securing and patching the guest operating system","Maintaining the provider's physical host hardware"], c:2},
+      {q:"Which responsibility is assigned to the provider in the lecture's PaaS model?", a:["Writing and securing the customer's application logic","Managing customer identity and access permissions","Defining the customer's data governance requirements","Maintaining the operating system and runtime infrastructure"], c:3},
+      {q:"Which responsibility remains with the customer when using SaaS?", a:["Managing user identities, access policies, and data classification","Maintaining the provider's physical servers and network hardware","Patching the provider's underlying operating system","Managing the provider's application stack and platform availability"], c:0},
+      {q:"Which example represents a dangerous cloud storage misconfiguration?", a:["Restricting a storage bucket to authorized application identities","Encrypting files before storing them in cloud object storage","Leaving a storage bucket containing sensitive files publicly accessible","Requiring authentication before users download protected objects"], c:2},
+      {q:"What is a potential consequence of exposing a storage bucket to the public internet?", a:["Automatic removal of all customer records from the cloud environment","Sensitive data leakage, credential exposure, and compliance violations","Guaranteed prevention of unauthorized access to stored objects","Automatic conversion of private storage objects into encrypted backups"], c:1},
+      {q:"Why are wildcard permissions such as s3:* or ec2:* potentially dangerous?", a:["They automatically expire every credential associated with a workload","They restrict a role to a single explicitly approved resource","They prevent applications from accessing cloud storage or compute resources","They can grant far more permissions than an application actually requires"], c:3},
+      {q:"What is a security risk of running an application with an administrative cloud role?", a:["A compromised application may gain excessive privileges over cloud resources","The application will be unable to authenticate using service identities","The cloud provider will automatically block every outbound connection","The application will be restricted to reading public documentation"], c:0},
+      {q:"What does the lecture identify as a risk of long-lived cloud credentials?", a:["They cannot be used by applications or automation services","They automatically enforce least-privilege permissions on every request","Static keys may remain valid indefinitely if they are not rotated or expired","They require every cloud workload to use multi-factor authentication"], c:2},
+      {q:"Why is an inbound security group rule allowing 0.0.0.0/0 on a sensitive port dangerous?", a:["It prevents any external system from discovering the exposed service","It can make the port reachable from anywhere on the IPv4 internet","It forces all connections to pass through a private VPN first","It automatically limits access to devices managed by the organization"], c:1},
+      {q:"Which configuration is an example of an insecure API gateway?", a:["Requiring authentication and enforcing request throttling","Applying authorization checks to sensitive application resources","Limiting access to internal APIs to approved workloads","Exposing an API without authentication or rate limiting"], c:3},
+      {q:"Which is a Kubernetes security misconfiguration identified in the lecture?", a:["Restricting pod communication through network policies","Using hardened container images from trusted sources","Exposing a Kubernetes dashboard without authentication","Requiring authentication for requests to the Kubernetes API server"], c:2},
+      {q:"What is a major consequence of insufficient cloud logging and monitoring?", a:["Attackers may remain undetected, and investigators may lack audit trails","All cloud workloads automatically lose their assigned private IP addresses","Encryption at rest is automatically disabled for every storage service","Network segmentation becomes impossible in every cloud environment"], c:0},
+      {q:"How can one overprivileged service account increase the impact of a cloud breach?", a:["It forces every workload to use a separate identity provider","It can allow a single compromised identity to access many resources","It automatically blocks attackers from escalating their privileges","It limits the compromised application to its original network segment"], c:1},
+      {q:"How does microsegmentation help mitigate cloud threats?", a:["It removes the need to authenticate service-to-service requests","It grants all workloads access to shared administrative credentials","It ensures every cloud application runs on a separate physical server","It restricts lateral movement by limiting communication between workloads"], c:3},
+      {q:"Which combination matches the defense-in-depth layers presented in the lecture?", a:["Identity controls, network segmentation, workload protection, data encryption, and monitoring","Public IP addressing, unrestricted access, shared credentials, and reduced logging","Application scaling, load balancing, automatic backups, and resource tagging only","Physical security, public storage, broad permissions, and manual incident reporting"], c:0},
+      {q:"Which practice is recommended for protecting human access to cloud environments?", a:["Allowing administrators to share permanent access keys between applications","Granting full administrative roles to every authenticated employee","Enforcing multi-factor authentication for all human access","Disabling conditional access whenever a user works remotely"], c:2},
+      {q:"What is the purpose of Cloud Security Posture Management (CSPM)?", a:["To issue OAuth tokens to third-party applications automatically","To identify cloud misconfigurations and security posture weaknesses","To replace all cloud identity and access management systems","To manage application source code without reviewing deployment templates"], c:1},
+      {q:"What is the primary purpose of Cloud Infrastructure Entitlement Management (CIEM)?", a:["To encrypt every network connection between application containers","To scan application dependencies for known software vulnerabilities","To automatically publish internal services to the public internet","To identify and right-size permissions granted to cloud identities"], c:3},
+      {q:"How does Infrastructure as Code (IaC) scanning improve cloud security?", a:["It detects insecure infrastructure templates before they are deployed","It replaces all runtime monitoring with manual configuration reviews","It grants administrative permissions to infrastructure deployment accounts","It prevents organizations from automating cloud resource provisioning"], c:0},
+    ],
   },
 
 
   SocIndi: {
     review: {
-
-  // =========================
-  // CHAPTER 1
-  // =========================
     "CHAPTER 1": [
   {q:"What are the main components of technology in the textbook's definition?", a:["Science, politics, law, and education","Tools, techniques, knowledge, and organization","Energy, materials, trade, and transportation","Machines, factories, money, and markets"], c:1},
   {q:"How does the textbook broadly define technology?", a:["A collection of machines used for industrial production","A human-created system using knowledge and organization","Physical objects developed without social influences","Scientific knowledge converted directly into useful products"], c:1},
@@ -771,12 +1257,8 @@ window.questionBank = {
   {q:"Why can technology not substitute for effective governance?", a:["Technical methods cannot by themselves resolve political and social questions","Governance problems are primarily engineering problems with technical solutions","Technological systems can automatically establish fair political institutions","Technological expertise eliminates the need for public participation"], c:0},
   {q:"What broader lesson does the textbook draw from technological systems?", a:["Technical choices connect with organizational, social, economic, and political conditions","Technological development is mainly about producing better physical objects","Social institutions have little relevance once technology begins operating","Technical components can always be studied independently of their surroundings"], c:0},
   {q:"What does the textbook emphasize about the development of technological systems?", a:["They may require many social, psychological, economic, and political adjustments","They depend only on technical improvements rather than social changes","They develop smoothly whenever engineers have enough scientific knowledge","They normally emerge fully formed with every component working immediately"], c:0},
-
-  // =========================
     ],
     "CHAPTER 2": [
-  // CHAPTER 2
-  // =========================
   {q:"Why can technological change create both winners and losers?", a:["Technologies affect only people who directly purchase them","Technological change normally provides identical benefits to every group","Benefits and costs can be distributed differently among social groups","Technological change has no meaningful economic consequences"], c:2},
   {q:"What concern is central to 'Whose Technology?'", a:["Which scientist first discovered the principles behind modern technology","Which country has produced the greatest number of inventions","Which machines can operate without human workers","Who controls technological choices and who receives their benefits"], c:3},
   {q:"Who were the Luddites?", a:["Scientists who organized early research laboratories in England","English workers who resisted aspects of industrial technological change","Farmers who introduced mechanical harvesting throughout Europe","Government officials who promoted industrial automation"], c:1},
@@ -802,12 +1284,8 @@ window.questionBank = {
   {q:"How should technology be evaluated according to the chapter?", a:["Evaluate technologies only by whether they increase production","Focus on invention while ignoring adoption and use","Judge technologies mainly by how advanced their physical components appear","Consider technical achievements and the social distribution of their effects"], c:3},
   {q:"Why connect technological choices with participation?", a:["Participation is needed because technologies cannot be evaluated technically","Public participation ensures that no technology will cause disruption","Participation matters only while a technology is being invented","Those choices can determine which groups gain influence, benefits, or opportunities"], c:3},
   {q:"What broad lesson does the chapter draw from technological change?", a:["Technological development can improve some conditions while disrupting others","Technological change consistently produces equal gains for society","Technological progress automatically resolves conflicts over resources","Technological development is mainly a technical process without social effects"], c:0},
-
-  // =========================
     ],
     "CHAPTER 4": [
-  // CHAPTER 4
-  // =========================
   {q:"What misconception about science and technology does Chapter 4 challenge?", a:["Technology is not simply scientific knowledge applied directly to practical problems","Technology developed only after modern scientific institutions appeared","Science and technology have completely unrelated goals and methods","Scientific discoveries always become technologies immediately"], c:0},
   {q:"How does the chapter distinguish the typical aims of science and technology?", a:["Science seeks knowledge, while technology uses knowledge to accomplish purposes","Science and technology have identical goals but different equipment","Science creates practical devices, while technology studies nature for its own sake","Technology seeks knowledge alone, while science focuses mainly on manufacturing"], c:0},
   {q:"What did Project Hindsight investigate?", a:["The contribution of scientific research to developing major weapons systems","The role of universities in patenting genetic information","The development of commercial radio and television","The effects of industrial technology on factory workers"], c:0},
@@ -833,12 +1311,8 @@ window.questionBank = {
   {q:"What does social construction of science mean in the chapter?", a:["Science has no methods for evaluating explanations","Scientific findings are simply invented without evidence","Scientific knowledge exists independently of institutions","Scientific activity can be influenced by social, political, organizational, and economic conditions"], c:3},
   {q:"What is the chapter's overall conclusion about science and technology?", a:["Science develops independently while technology follows a separate path","They are distinct enterprises that often intersect and influence one another","Science and technology have identical purposes despite different terminology","Technology is simply science applied immediately to practical problems"], c:1},
   {q:"Why can science and technology benefit from close contact?", a:["Each can provide knowledge, tools, or methods that support the other's development","They must become identical enterprises to make progress","Technology can progress only when science controls every technical decision","Scientific research becomes unnecessary once technology develops"], c:0},
-
-  // =========================
     ],
     "CHAPTER 10": [
-  // CHAPTER 10
-  // =========================
   {q:"What did Thomas Hunt Morgan's research help establish about genes?", a:["Chromosomes were identified as the location of key agents of heredity","DNA was shown to be unrelated to inherited characteristics","Genetic traits were found to develop independently of cells","Genes were shown to exist only outside chromosomes"], c:0},
   {q:"What discovery in the 1940s clarified the molecular basis of genes?", a:["DNA was identified as a key constituent of genes","Genes were shown to consist mainly of environmental experiences","Proteins were shown to be unrelated to cell reproduction","Chromosomes were shown to contain no hereditary information"], c:0},
   {q:"What did Watson and Crick determine in 1953?", a:["The first practical use of PCR machines","The complete sequence of every human gene","The first successful transfer of genes between organisms","The molecular structure of DNA as a double helix"], c:3},
@@ -864,12 +1338,8 @@ window.questionBank = {
   {q:"What does pluripotency mean in stem-cell research?", a:["The inability of cells to develop into specialized structures","The capacity of cells to develop into multiple specialized cell types","The ability of cells to survive without genetic information","The ability of a cell to produce only one specialized tissue"], c:1},
   {q:"What is a potential benefit of stem-cell technologies?", a:["They make genetic screening unnecessary for medicine","They may contribute to future therapies using specialized cells or tissues","They guarantee cures for every inherited disease","They eliminate ethical questions around genetic technology"], c:1},
   {q:"Why does Chapter 10 discuss eugenics?", a:["Eugenics was unrelated to heredity or reproductive control","Historical efforts to control reproduction raise concerns about genetic intervention","Eugenics demonstrated that genetic technologies are always successful","Historical eugenics programs focused only on agricultural crops"], c:1},
-
-  // =========================
     ],
     "Tharakan Article": [
-  // Tharakan Article
-  // =========================
   {q:"What does indigenous knowledge (IK) refer to in Tharakan’s discussion?", a:["Knowledge created only by governments", "Knowledge limited to modern industry", "Knowledge unique to a given culture", "Knowledge produced only by universities"], c:2},
   {q:"What distinguishes the modern scientific knowledge system (MSKS) from IKS?", a:["MSKS is rooted in formal academic research", "MSKS is restricted to agricultural communities", "MSKS is passed mainly through oral traditions", "MSKS develops only through local trial and error"], c:0},
   {q:"Which examples does Tharakan identify as indigenous knowledge systems that have survived?", a:["Ayurveda, universities, and industrial science", "Ayurveda, Unani, and acupuncture", "Panchayathi Raj, MSKS, and PCR", "Vrikshaturveda, MSKS, and patents"], c:1},
@@ -920,12 +1390,8 @@ window.questionBank = {
   {q:"Which publication is associated in the paper with the articulation of appropriate technology in the 1970s?", a:["Wiener’s Cybernetics", "Darwin’s On the Origin of Species", "Schumacher’s Small Is Beautiful", "Smith’s The Wealth of Nations"], c:2},
   {q:"What does the paper propose about IKS and MSKS?", a:["They can be integrated while recognizing their complementary strengths", "MSKS should always replace IKS in development projects", "IKS should replace all formal scientific research", "They are completely incompatible and must remain separate"], c:0},
   {q:"How can MSKS contribute to IKS according to the conclusion?", a:["MSKS can help validate indigenous knowledge through rigorous study", "MSKS should eliminate community participation in technology development", "MSKS should prevent indigenous practices from being documented", "MSKS should treat all indigenous practices as scientifically invalid"], c:0},
-
-  // =========================
     ],
     "Young Article": [
-  // Young Article
-  // =========================
   {q:"What is the main focus of Young’s article?", a:["How digital mapping replaces traditional geographic research", "How social media increases economic growth in northern cities", "How digital technologies reshape knowledge politics in Indigenous communities", "How urban governments regulate broadband infrastructure"], c:2},
   {q:"Which community is the central case study?", a:["A rural community in the American Midwest", "An Indigenous community in northern Australia", "A First Nations community in southern Ontario", "An Inuit community in the Canadian Arctic"], c:3},
   {q:"What does “knowledge politics” refer to?", a:["Processes that shape which forms of knowledge receive visibility and authority", "Government policies determining who may attend universities", "Technical standards organizing computer networks", "Political debates about the cost of digital devices"], c:0},
@@ -977,12 +1443,8 @@ window.questionBank = {
   {q:"What broader research agenda does Young call for?", a:["More research focused exclusively on urban communities in the Global North", "Less research into the social effects of ICTs", "More critical research on digital knowledge politics in Indigenous, rural, and Global South communities", "Research limited to measuring Internet infrastructure and access"], c:2},
   {q:"What central tension does the article identify about digital engagement?", a:["Digital technology separates communities completely from global networks", "Digital technology always empowers communities while eliminating traditional practices", "Digital technology can simultaneously empower communities and marginalize local knowledge", "Digital technology always marginalizes communities and provides no benefits"], c:2},
   {q:"What is the main lesson for ICT4D practitioners?", a:["They should assume connectivity benefits every community in the same way", "They should anticipate unintended consequences and consider local knowledge politics", "They should avoid examining technology’s interaction with local cultural practices", "They should focus only on increasing access to digital infrastructure"], c:1},
-
-  // =========================
     ],
     "Chapter 1 and 4 Review": [
-  // Chapter 1 and 4 Review
-  // =========================
   {q:"Which description best matches Volti’s definition of technology?", a:["A social institution created primarily to distribute goods and services equally","A scientific method focused on discovering universal laws through controlled experiments","A system based on knowledge, physical objects, and organization for specific goals","A collection of machines designed mainly for entertainment and personal convenience"], c:2},
   {q:"Which set correctly identifies the principal components of technology in Volti’s definition?", a:["Machines, mathematics, experiments, and scientific theories","Objects, inventions, industries, and government institutions","Science, politics, economics, and cultural values","Artifacts, knowledge, technique, and organization"], c:3},
   {q:"What is one limitation of Volti’s definition of technology?", a:["It assumes technologies are created to meet existing needs, although some seek applications","It assumes technology is always controlled by governments rather than individual inventors","It excludes physical artifacts and focuses entirely on knowledge and social relationships","It argues that technological development always produces practical solutions to urgent problems"], c:0},
@@ -1027,12 +1489,8 @@ window.questionBank = {
   {q:"Why might excessive emphasis on science and mathematics be problematic in engineering education?", a:["It ensures that engineers become unable to understand scientific principles and therefore cannot apply any technical knowledge","It may impede technological advance by giving insufficient attention to the multiple practical solutions possible in technology","It guarantees that engineers focus too heavily on social relationships rather than developing practical technological solutions","It prevents engineers from using rational thought because mathematical approaches are considered incompatible with technological development"], c:1},
   {q:"Who was John Ambrose Fleming in relation to early radio technology?", a:["He was involved in advancing early radio technology through his work with technological developments in the field","He was a Roman engineer whose aqueduct designs became the foundation for modern radio communication systems","He was a Greek scientist whose research established the first complete scientific theory of radio technology","He was an engineer who rejected scientific research and argued that radio could develop without technological experimentation"], c:0},
   {q:"What does the history of science and technology suggest about the idea that technology is simply applied science?", a:["Science and technology have historically been identical activities, with differences appearing only in modern industrial societies","Technology has often developed without complete scientific understanding, while technology has also stimulated scientific knowledge","Technology is always a direct application of scientific theories, although practical development may occur at different speeds","Technology depends entirely on prior scientific discovery, while scientific development is never influenced by technological achievements"], c:1},
-
-  // =========================
     ],
     "Chapter 2 and 10 Review": [
-  // Chapter 2 and 10 Review
-  // =========================
   {q:"What does Volti mean when he describes technology as a subversive force?", a:["Technology primarily creates political institutions without significantly changing economic relationships","Technology is considered subversive only when governments deliberately restrict its development","Technology usually preserves existing social arrangements while producing only minor economic benefits","Technology can deliver benefits while disrupting existing economic and social arrangements"], c:3},
   {q:"Which sequence best illustrates older technologies being displaced by newer technologies?", a:["Telegraph, Pony Express, telephone","Pony Express, telegraph, telephone","Pony Express, telephone, telegraph","Telephone, Pony Express, telegraph"], c:1},
   {q:"How did smartphones contribute to the disruption caused by Uber and other ride-sharing services?", a:["Smartphones allowed ride-sharing companies to avoid the need for contractors and employment arrangements","Smartphones replaced transportation companies by directly providing vehicles to every passenger","Smartphone technology helped make ride-sharing services rapidly accessible and widely usable","Smartphones eliminated conflicts between ride-sharing companies and established transportation businesses"], c:2},
@@ -1335,7 +1793,6 @@ window.questionBank = {
   },
 
   DataSci: [
-
       // =========================
       // INTRODUCTION TO DATA SCIENCE
       // =========================
@@ -1942,433 +2399,521 @@ window.questionBank = {
     {q:"What does convergence mean in the k-means process?", a:["Points stop moving between clusters and centroids stabilize","Every point becomes an outlier","The number of clusters becomes zero","All points receive different labels"], c:0},
     {q:"What are the three important questions in hierarchical clustering?", a:["How to represent clusters, determine cluster nearness, and decide when to stop combining","How to label data, remove features, and calculate regression","How to normalize data, split data, and calculate accuracy","How to choose Python, R, and SQL"], c:0}
   ],
+
   SoftEngi: {
     quiz1: [
         {q:"What is software engineering?",a:["A branch of computer science and engineering focused on designing, developing, testing, and maintaining software","The process of writing code as quickly as possible","A method used only for testing software","A technique for designing computer hardware"],c:0},
-
         {q:"Why is programming alone not enough when building large software systems?",a:["Large systems must also address requirements, reliability, security, maintainability, scalability, and change","Programming languages cannot be used for large systems","Programming is only useful for databases","Large systems do not require testing"],c:0},
-
         {q:"What is the main difference between programming and software engineering?",a:["Programming focuses on making code work, while software engineering focuses on making the entire system succeed","Programming focuses on requirements while software engineering only writes code","Programming is used for hardware while software engineering is used for software","There is no meaningful difference"],c:0},
-
         {q:"Which sequence best represents the software engineering process presented in the slideshow?",a:["Requirements → Design → Code → Test → Deploy → Evolve","Code → Deploy → Requirements → Design → Test → Delete","Design → Code → Requirements → Deploy → Test → Evolve","Test → Code → Design → Requirements → Deploy → Evolve"],c:0},
-
         {q:"A developer creates an application that works correctly on their laptop, but it cannot handle thousands of users. What concept from the lecture does this demonstrate?",a:["A system can work technically while still failing to meet software engineering requirements such as scalability","The application is automatically good software because it runs","The developer only needs to learn another programming language","The application does not need testing"],c:0},
-
         {q:"Which of the following is NOT one of the qualities of good software discussed in the slideshow?",a:["Dependable and secure","Maintainable","Efficient","Guaranteed to require no future changes"],c:3},
-
         {q:"A banking application calculates every balance correctly but allows users to access other customers' accounts. Which software quality is most clearly suffering?",a:["Security","Efficiency","Maintainability","Compatibility"],c:0},
-
         {q:"A video streaming application is easy to use and fast, but every modification breaks another feature. Which quality is suffering?",a:["Maintainability","Efficiency","Acceptability","Physical safety"],c:0},
-
         {q:"A banking application works correctly, but every page takes 25 seconds to load. Which quality is most clearly affected?",a:["Efficiency","Security","Maintainability","Acceptability"],c:0},
-
         {q:"Why is maintainability important according to the slideshow?",a:["Software changes are inevitable, so adding or modifying features should be manageable","Software should never be modified after release","Maintainability only matters during initial coding","Maintainability eliminates the need for testing"],c:0},
-
         {q:"What does it mean for software to be dependable and secure?",a:["It should avoid causing physical or economic harm and prevent malicious attacks","It should always use the newest programming language","It should never require maintenance","It should only work on one computer"],c:0},
-
         {q:"A team builds software without discussing requirements first. Different developers make incompatible assumptions about the system. What is a likely result?",a:["Integration failures, defects, security risks, rework, and missed deadlines","The project will automatically become more efficient","The lack of requirements will eliminate defects","The project will require less communication but have no other consequences"],c:0},
-
         {q:"Why does the slideshow emphasize that software engineering should be systematic rather than ad-hoc?",a:["A structured approach provides defined processes, methods, and evidence instead of relying on unplanned coding","Ad-hoc coding always uses too many programming languages","Systematic development eliminates the need for developers","A systematic process guarantees that software will never contain defects"],c:0},
-
         {q:"A software team receives new requirements every week. Which software engineering mindset is most appropriate?",a:["Treat the software as evolutionary and prepare for continual change","Assume the original requirements can never change","Rewrite the entire application after every requirement change","Stop testing once Version 1.0 works"],c:0},
-
         {q:"Which statement best explains why building software is difficult?",a:["Users, technology, regulations, security threats, scale, teams, budgets, and requirements can all change","Programming languages are inherently impossible to understand","Software never changes after it is released","Only hardware limitations make software difficult"],c:0},
-
         {q:"A team successfully releases Version 1.0 but struggles when users request major changes. What lesson from the slideshow best applies?",a:["Software engineering must prepare software to survive future versions and changing conditions","Version 1.0 should always be considered the final version","Future changes should be ignored until the software fails","The team should avoid collecting user feedback"],c:0},
-
         {q:"What is a software process?",a:["A structured way of building software","A programming language used to build software","A tool used exclusively for debugging","A document containing only source code"],c:0},
-
         {q:"What question does the Specification/Requirements stage answer?",a:["What should we build?","How should we deploy it?","Did we build it correctly?","How should we modify the code next year?"],c:0},
-
         {q:"What question does the Design stage answer?",a:["How should we build it?","What should the customer buy?","Did we test every line of code?","When should the software be retired?"],c:0},
-
         {q:"What is the purpose of Verification and Validation?",a:["To determine whether the software was built correctly and meets the intended needs","To decide which programming language should be used","To replace requirements with code","To eliminate the need for users"],c:0},
-
         {q:"What does the Evolution stage of the software process address?",a:["What happens when the software needs to change","How to write the first line of code","How to purchase computer hardware","How to remove all documentation"],c:0},
-
         {q:"A process step has a clearly defined objective, input, and output. Why is this useful?",a:["It makes the work more structured and allows the result of the step to be checked","It guarantees that no developer will ever make a mistake","It removes the need for specialized skills","It means the project no longer needs requirements"],c:0},
-
         {q:"Why should a good software process support early detection of faults?",a:["Late detection is more costly and can lead to more rework","Early detection makes testing unnecessary","Faults found early cannot affect software quality","Late detection is always cheaper"],c:0},
-
         {q:"A development team follows the same defined process across several projects and can predict what activities will occur. Which characteristic of a good process does this demonstrate?",a:["Predictability and repeatability","Randomness","Ad-hoc development","Elimination of testing"],c:0},
-
         {q:"Why should a software process support testing and maintainability?",a:["A good process should produce testable outcomes and make the software easier to adapt to changes","Testing prevents software from ever changing","Maintainability means software cannot be modified","Testing is only necessary after the project is abandoned"],c:0},
-
         {q:"A team decides to immediately code a hospital database without clearly determining what the system should do. Why is this a poor software engineering decision?",a:["Unclear requirements can lead to incompatible designs, defects, security risks, rework, and missed deadlines","Coding first guarantees that requirements will become clearer automatically","Databases do not require requirements","Hospital systems are too simple to require a process"],c:0},
-
         {q:"Why would simply hiring more programmers not necessarily solve the problems of a growing software system?",a:["More developers do not automatically solve problems involving requirements, coordination, security, scalability, maintainability, and process","More programmers always make software worse","Programming cannot be used by teams","Hiring programmers prevents requirements from changing"],c:0},
-
         {q:"A team has software that works but only one developer understands the code. From a software engineering perspective, what is the main concern?",a:["Maintainability and understandability are poor because the system is difficult for others to safely modify","The system is automatically efficient","The system has no requirements","The system is necessarily secure"],c:0},
-
         {q:"Which statement best justifies the idea that 'good software' means more than 'software that works'?",a:["Software must also consider qualities such as security, reliability, usability, efficiency, maintainability, and scalability","Working software never needs testing","Correctness is not important in software","Software quality only depends on how many lines of code exist"],c:0},
-
         {q:"A team uses GitHub pull requests and code reviews during development. Which modern software engineering practice from the slideshow does this represent?",a:["Collaborative development","Cloud-native systems","AI-assisted engineering","Only traditional programming"],c:0},
-
         {q:"A company automatically runs tests whenever developers submit changes and uses automated deployment pipelines. Which modern practice does this best represent?",a:["Continuous engineering using automated tests and CI/CD","Only manual development","Traditional waterfall-only development","Requirements gathering"],c:0},
-
         {q:"A team uses Scrum and repeatedly gathers feedback while developing a product. Which modern software engineering approach is being demonstrated?",a:["Iterative development","Hardware engineering","Database normalization","Manual deployment"],c:0},
-
         {q:"A system is built using APIs, services, containers, and cloud infrastructure. Which modern software engineering area from the slideshow does this represent?",a:["Cloud-native systems","Collaborative development only","Manual testing","Traditional debugging"],c:0},
-
         {q:"A team uses AI to help generate code, create tests, review code, and produce documentation. Which concept from the slideshow does this demonstrate?",a:["AI-assisted engineering","Cloud-native development","Only requirements engineering","Manual software engineering"],c:0},
-
         {q:"A team is deciding whether to prioritize making a feature work quickly or designing it so that future developers can safely modify it. Which decision better reflects software engineering, and why?",a:["Designing for future modification because software engineering prepares systems for change and maintainability","Making it work once because future changes are never expected","Avoiding both approaches because software engineering only concerns testing","Writing more code because more code always means better software"],c:0},
-
         {q:"What is the main idea behind the statement 'We don't just build software. We engineer software that can survive change'?",a:["Software should be designed to handle future changes and evolve over time","Software should never be modified after release","Software should only focus on making the first version work","Software should avoid user feedback"],c:0},
-
         {q:"Which sequence represents the learning approach presented in the slideshow?",a:["Learn → Apply → Build → Break → Improve → Change → Evolve","Build → Learn → Deploy → Forget → Replace → Repeat","Code → Test → Submit → Finish → Stop → Restart","Plan → Code → Submit → Ignore → Deploy → Finish"],c:0},
-
         {q:"Why does the course emphasize practice rather than only listening to lectures?",a:["Software engineering skills require students to apply concepts and practice engineering decisions","Software engineering can only be learned through programming competitions","Lectures are not part of the course","Practice eliminates the need to understand concepts"],c:0},
-
         {q:"Which topic belongs to the Foundations portion of the course?",a:["Software Engineering, SDLC, processes, Agile, XP, Scrum, planning, and risk","Only APIs and cloud services","Only testing and refactoring","Only ethics and responsible AI"],c:0},
-
         {q:"Which topics are included in the Design portion of the software engineering journey?",a:["Requirements, User Stories, UML, Design Patterns, and Architecture","Testing, TDD, CI, and version control","Cloud, APIs, and microservices only","Ethics, accountability, and responsible AI only"],c:0},
-
         {q:"Which topics are part of Build & Verify?",a:["Clean Code, SOLID, Testing, TDD, Version Control, and CI","User Stories, UML, and Architecture only","Distributed Systems and Microservices only","Planning, risk, and Scrum only"],c:0},
-
         {q:"A developer finishes a feature but the code contains duplicated logic and is difficult to modify. Which part of the course journey is most relevant?",a:["Improve & Evolve, including code smells and refactoring","Foundations only","Professional Practice only","Project team formation"],c:0},
-
         {q:"Why is technical debt included in the Improve & Evolve portion of the course?",a:["Software may accumulate problems that make future changes more difficult and require improvement","Technical debt means a project has borrowed money","Technical debt guarantees that software will become faster","Technical debt eliminates the need for maintenance"],c:0},
-
         {q:"Which topic belongs to Modern Software Engineering?",a:["Distributed Systems, APIs, Microservices, Cloud, AI-Assisted SE, and Agentic SE","Only UML and requirements","Only Scrum and XP","Only clean code and SOLID"],c:0},
-
         {q:"A developer uses an AI system to help generate code but reviews the output before accepting it. Which course area does this relate to?",a:["AI-Assisted Software Engineering and professional engineering responsibility","Only project team formation","Only UML design","Only version control"],c:0},
-
         {q:"Why does the course include Professional Practice as part of software engineering?",a:["Engineering involves responsibility, including human oversight, ethics, accountability, and responsible AI","Professional practice is only about writing more code","Software engineers do not make decisions that affect others","Professional practice replaces technical skills"],c:0},
-
         {q:"What is the purpose of lectures in the course?",a:["To understand concepts, examples, real-world cases, and demonstrations","To complete the entire team project","To replace labs and assignments","To perform only programming exercises"],c:0},
-
         {q:"What is the main purpose of labs?",a:["To practice Git, testing, UML, refactoring, tools, and development workflows","To replace all lectures","To complete quizzes for marks only","To avoid using development tools"],c:0},
-
         {q:"What makes the assignments different from simple coding exercises?",a:["They involve individual engineering challenges and require engineering decisions","They only require memorizing programming syntax","They are always completed as a team","They contain no software engineering concepts"],c:0},
-
         {q:"What is the purpose of the team project?",a:["To build and evolve a real software system as an engineering team","To submit one final code file without development history","To practice programming individually without collaboration","To avoid using version control"],c:0},
-
         {q:"A student receives feedback on a failed test, revises the implementation, and adapts the solution. Which course learning activity does this demonstrate?",a:["Feedback and reflection","Project formation","Assessment weighting","Repository setup"],c:0},
-
         {q:"Which sequence best describes the broader learning cycle shown in the course?",a:["Hear it → See it → Try it → Apply it → Explain it → Improve it","Hear it → Memorize it → Submit it → Forget it → Repeat it","Code it → Submit it → Ignore it → Finish it","Read it → Test it → Delete it → Replace it"],c:0},
-
         {q:"What does 'Assessment = Show Me You Can Engineer' emphasize?",a:["Students are expected to demonstrate engineering ability rather than simply produce working code","Students are graded only on how quickly they write code","Students only need to memorize terminology","Assessment is unrelated to engineering decisions"],c:0},
-
         {q:"A student completes an assignment but cannot explain why they selected their architecture. Based on the course assessment philosophy, what is missing?",a:["Engineering reasoning and justification for the decision","More lines of source code","A second programming language","A larger GitHub repository"],c:0},
-
         {q:"Which topics are specifically associated with Assignment A1?",a:["Requirements, Process, Planning, and Risk","Testing, Quality, Refactoring, and Change","UML, Architecture, Trade-offs, and AI Critique","Cloud, APIs, and Microservices"],c:0},
-
         {q:"Which topics are specifically associated with Assignment A2?",a:["Testing, Quality, Refactoring, and Change","Requirements, Process, Planning, and Risk","UML, Architecture, Trade-offs, and AI Critique","GitHub, teamwork, and project formation"],c:0},
-
         {q:"Which topics are specifically associated with Assignment A3?",a:["UML, Architecture, Trade-offs, and AI Critique","Requirements, Process, Planning, and Risk","Testing, Quality, Refactoring, and Change","Only Scrum and XP"],c:0},
-
         {q:"A team creates a working application, but the architecture is difficult to maintain. Which project evaluation category is most directly concerned with this issue?",a:["Engineering Quality","Correctness only","Process Evidence only","Team Formation"],c:0},
-
         {q:"A team can demonstrate that its application works, but cannot explain how it knows the system works. Which evaluation category is most directly affected?",a:["Verification","Engineering Quality","Reasoning","Team Formation"],c:0},
-
         {q:"Why is 'Because it works' not always considered an engineering justification?",a:["A working result does not explain why a particular decision was made or provide evidence of the engineering process","Working software is never important","Engineering decisions do not require reasoning","A system cannot be verified"],c:0},
-
         {q:"A team chooses a database technology because it is popular but cannot explain how it fits the project's requirements. What would the course expect the team to provide?",a:["Reasoning that explains and justifies the engineering decision","Only a screenshot of the database","More GitHub commits without explanations","A different programming language"],c:0},
-
         {q:"What is the first mandatory step in the project journey?",a:["Team and project repository setup","Final Engineering Release","Iteration Release II","Demo and Engineering Defense"],c:0},
-
         {q:"Why does the project use multiple engineering iterations instead of only one final submission?",a:["The project is intended to be built and evolved through multiple stages of engineering work","Multiple iterations prevent students from using version control","The final release is not important","Iteration makes requirements unnecessary"],c:0},
-
         {q:"What does the project Requirements + Plan stage provide before later development?",a:["A defined understanding of requirements and a plan for the project","A completed final application","Only a GitHub README","A finished deployment"],c:0},
-
         {q:"A team waits until the night before submission to create its GitHub commits so the repository looks active. Why does this conflict with the course expectations?",a:["GitHub is intended to show the actual story and evolution of the project, not manufactured history","GitHub cannot store commits","Teams are not allowed to use branches","Pull requests are only for individual assignments"],c:0},
-
         {q:"What can GitHub commits tell an instructor about a project?",a:["What changed during development","Which programming language the instructor prefers","How much money the project cost","Whether the project will never need maintenance"],c:0},
-
         {q:"What can branches demonstrate in the project's GitHub repository?",a:["How work was organized","Whether users liked the application","How many students are in the university","Whether the application is physically secure"],c:0},
-
         {q:"What can pull requests and reviews demonstrate?",a:["How team members collaborated and reviewed changes","Which requirements were written before the project began","How much cloud storage was purchased","Whether the application is guaranteed to be bug-free"],c:0},
-
         {q:"What can issues and backlog information show?",a:["What the team was working on","Which programming language is objectively best","How many lines of code are required for the project","Whether the instructor approved every commit"],c:0},
-
         {q:"A team has extensive GitHub history showing commits, branches, pull requests, tests, and changes over time. Why is this valuable according to the slideshow?",a:["The repository provides evidence of how the team engineered and evolved the software","GitHub automatically proves that the software has no defects","The repository replaces the need for testing","GitHub makes project requirements unnecessary"],c:0},
-
         {q:"What are the three major elements of successful software engineering?",a:["People, Process, and Technology","Code, Hardware, and Networks","Users, Databases, and Servers","Planning, Coding, and Deployment"],c:0},
-
         {q:"What is the main role of the people involved in software engineering?",a:["They provide skills, collaboration, communication, creativity, and human judgment","They only write source code","They replace the need for a software process","They eliminate the need for technology"],c:0},
-
         {q:"According to the slideshow, what is the main purpose of a software process?",a:["To structure and coordinate how software development work gets done","To replace developers with automated tools","To ensure every project uses exactly the same model","To eliminate all changes to requirements"],c:0},
-
         {q:"Why can great technology become a liability when used without the right people and process?",a:["Technology alone cannot replace human judgment, coordination, and engineering discipline","Technology automatically creates poor software","Technology cannot be used by software developers","Technology prevents teams from communicating"],c:0},
-
         {q:"Which sequence represents the Software Development Life Cycle presented in the slideshow?",a:["Specification → Design → Implementation → Validation → Maintenance & Evolution","Design → Implementation → Specification → Maintenance → Validation","Implementation → Specification → Design → Validation → Maintenance","Validation → Design → Specification → Implementation → Maintenance"],c:0},
-
         {q:"What is the purpose of the Specification stage?",a:["To specify what the software should do and its constraints","To convert the design into working code","To test individual units","To modify the system after release"],c:0},
-
         {q:"What happens during the Design stage?",a:["The organization of the software's components is defined","Customer requirements are completely ignored","The system is immediately deployed","Only maintenance tasks are performed"],c:0},
-
         {q:"What is the purpose of the Implementation stage?",a:["To convert the conceptual design into a real software system","To determine whether the customer wants the product","To gather only future requirements","To replace the software process"],c:0},
-
         {q:"What does Validation check?",a:["Whether the software does what the customer wants","Whether developers used the same programming language","Whether the design document is long enough","Whether the project has enough developers"],c:0},
-
         {q:"What is the purpose of Maintenance and Evolution?",a:["To change the system in response to changing customer or market needs","To prevent any changes after deployment","To rewrite the entire system after every release","To remove customer feedback"],c:0},
-
         {q:"What is the Opportunistic model?",a:["An ad-hoc approach where developers directly build the software without systematically applying software engineering principles","A highly structured process with formal verification at every stage","A model based entirely on customer prototypes","A risk-driven iterative model"],c:0},
-
         {q:"A beginner immediately starts coding without defining requirements, design, testing, or maintenance plans. Which model does this most closely represent?",a:["Opportunistic development","Waterfall","V-Model","Prototyping"],c:0},
-
         {q:"What is a major danger of the Opportunistic model?",a:["Client requirements may not be properly met because there is no systematic process","Requirements are documented too carefully","Testing happens too early","The system is changed too frequently"],c:0},
-
         {q:"Why can Opportunistic development result in high maintenance costs?",a:["There is no clear plan for maintenance and design can deteriorate, making future changes difficult","The model requires too much documentation","The model requires too many testing stages","The model prevents developers from changing code"],c:0},
-
         {q:"What is the central idea of the Waterfall model?",a:["Complete one major stage before moving to the next, with defined outcomes for each stage","Continuously change requirements throughout development","Build multiple prototypes and discard them","Perform testing before defining requirements"],c:0},
-
         {q:"Which project would be the best fit for the Waterfall model?",a:["A project with stable, well-understood requirements and clear milestones and deliverables","A project where requirements change every week","A project where customers do not know what they want","A project requiring constant experimentation"],c:0},
-
         {q:"Why does Waterfall struggle when requirements change frequently?",a:["Changes can require significant rework across design, code, and testing","Waterfall has no documentation","Waterfall does not have defined stages","Waterfall prevents developers from writing code"],c:0},
-
         {q:"A government project has stable requirements, strict documentation requirements, and contract-driven milestones. Which process model may be appropriate?",a:["Waterfall","Opportunistic","Evolutionary Prototyping","Only Agile"],c:0},
-
         {q:"A company discovers a major requirement mistake late in a Waterfall project. Why could fixing it be expensive?",a:["The mistake may affect completed design, code, and testing stages and require significant rework","Waterfall does not allow requirements to exist","Waterfall automatically deletes previous work","Waterfall prevents testing"],c:0},
-
         {q:"Which statement best describes a limitation of Waterfall?",a:["It provides structure and predictability but handles changing requirements poorly","It has no defined stages","It does not allow documentation","It is designed specifically for constantly changing requirements"],c:0},
-
         {q:"What is the V-Model?",a:["An extension of Waterfall that connects development activities with corresponding testing activities","A version of Opportunistic development without coding","A model that completely eliminates requirements","A prototype-only development process"],c:0},
-
         {q:"What is the main difference between Verification and Validation in the V-Model?",a:["Verification asks whether we are building the product right, while Validation asks whether we are building the right product","Verification asks what customers want, while Validation writes the code","Verification happens only after deployment, while Validation happens before requirements","There is no difference between them"],c:0},
-
         {q:"A developer reviews a design against its specification without executing the software. Is this primarily verification or validation?",a:["Verification","Validation","Maintenance","Implementation"],c:0},
-
         {q:"A testing team executes the completed software to determine whether it meets customer needs. Is this primarily verification or validation?",a:["Validation","Verification","Specification","Design"],c:0},
-
         {q:"In the V-Model, what testing activity corresponds to Business Requirements?",a:["Acceptance Testing","Unit Testing","Component Testing","System/Integration Testing"],c:0},
-
         {q:"In the V-Model, what testing activity corresponds to Low-Level Design?",a:["Unit Testing","Acceptance Testing","System Testing","Integration Testing"],c:0},
-
         {q:"Why does the V-Model encourage thinking about testing while requirements and design are being created?",a:["Development decisions on the left side guide corresponding testing activities on the right side","Testing can only be performed before requirements exist","It prevents developers from writing code","It eliminates the need for validation"],c:0},
-
         {q:"What is a major strength of the V-Model?",a:["Testing is considered early and systematically, with a clear relationship between development and testing","It completely eliminates rework","It handles constantly changing requirements extremely well","It requires no documentation"],c:0},
-
         {q:"What is a major limitation of the V-Model?",a:["It remains relatively rigid and can have difficulty accommodating changing requirements","It has no connection between development and testing","It does not support defect detection","It has no defined development stages"],c:0},
-
         {q:"What is the central idea behind the Prototyping model?",a:["Build an early version, let customers evaluate it, refine requirements, and repeat until requirements are better understood","Complete all requirements before showing anything to customers","Avoid customer feedback until deployment","Build the final system immediately without experimentation"],c:0},
-
         {q:"A customer cannot clearly explain what they want from a new application. Which process model is particularly appropriate according to the slideshow?",a:["Prototyping","Waterfall","Opportunistic development","V-Model only"],c:0},
-
         {q:"Why are prototypes useful when requirements are unclear?",a:["Customers can evaluate something concrete and provide feedback that helps clarify missing or misunderstood requirements","Prototypes eliminate the need for customers","Prototypes guarantee the final system will have no defects","Prototypes prevent requirements from changing"],c:0},
-
         {q:"What is the key difference between throw-away and evolutionary prototyping?",a:["Throw-away prototypes are discarded after learning, while evolutionary prototypes are progressively refined toward the required system","Throw-away prototypes become the final product while evolutionary prototypes are discarded","Both approaches always produce the final system immediately","There is no difference between the two"],c:0},
-
         {q:"A team creates a quick user-interface prototype to discover what customers actually want, then discards the prototype before building the real system. What type of prototyping is this?",a:["Throw-away prototyping","Evolutionary prototyping","Waterfall prototyping","V-Model prototyping"],c:0},
-
         {q:"A team repeatedly improves its prototype based on user feedback until the prototype becomes the required system. What type of prototyping is this?",a:["Evolutionary prototyping","Throw-away prototyping","Opportunistic development","Waterfall"],c:0},
-
         {q:"A customer assumes that a prototype is ready for production even though it was built only to answer specific questions. What problem does this demonstrate?",a:["A prototype may be mistaken for a finished product even though its purpose is learning and evaluation","Waterfall requirements are too stable","The V-Model does not support testing","Prototypes cannot receive customer feedback"],c:0},
-
-    {q:"What is the main focus of the Spiral Model?",a:["Identifying and reducing important risks throughout development","Completing all requirements before any development begins","Delivering the entire system before collecting feedback","Avoiding prototypes and experiments during development"],c:0},
-
-    {q:"A team understands the requirements for a new AI-based feature, but they are unsure whether the technology will perform accurately enough. Which process model best addresses this situation?",a:["Spiral Model because it uses risk analysis to investigate uncertain solutions","Waterfall because all requirements should be completed before development","Opportunistic development because the team should immediately start coding","V-Model because testing only happens after the implementation is complete"],c:0},
-
-    {q:"What are the four main sectors of the Spiral Model?",a:["Determine objectives, identify and resolve risks, develop the next version, review and plan the next phase","Gather requirements, write documentation, deploy the system, retire the system","Design the interface, write code, release the product, collect complaints","Plan the entire project, build everything, test everything, deliver everything"],c:0},
-
-    {q:"In the Spiral Model, what happens during the 'Determine Objectives' sector?",a:["The team identifies objectives, alternatives, and constraints for the next cycle","The team deploys the finished product to all users","The team performs only final acceptance testing","The team removes all previous prototypes from the project"],c:0},
-
-    {q:"What is the purpose of the 'Identify & Resolve Risks' sector in the Spiral Model?",a:["To analyze risks, explore alternatives, and reduce uncertainty before making larger commitments","To ensure every requirement is permanently fixed before development starts","To replace all testing with customer interviews","To complete the final system documentation before coding begins"],c:0},
-
-    {q:"A Spiral Model loop has finished development and validation. What should happen next?",a:["The team reviews what was learned and plans the next phase","The team automatically ends the entire project","The team returns to the original requirements without considering new information","The team discards the software regardless of its quality"],c:0},
-
-    {q:"What does moving outward through the Spiral Model loops generally represent?",a:["More knowledge, more investment, and a more complete system","Less testing, less knowledge, and fewer project commitments","A reduction in requirements and a smaller final system","A move away from risk analysis toward completely fixed planning"],c:0},
-
-    {q:"What is the purpose of the first Spiral Model loop?",a:["To explore whether the idea can work using techniques such as experiments, prototypes, or feasibility studies","To deliver every planned feature to customers","To complete the final production system","To perform only maintenance activities"],c:0},
-
-    {q:"A team uses a small experiment to determine whether a new technology is feasible before committing significant resources. Which Spiral loop activity does this best represent?",a:["Loop 1 — Explore","Loop 2 — Understand & Refine","Loop 3 — Develop Further","Later loops — Toward the Complete System"],c:0},
-
-    {q:"What is the main purpose of Loop 2 in the Spiral Model?",a:["To understand what has been learned, refine requirements, and investigate remaining risks and alternatives","To immediately release the complete system to customers","To eliminate all future planning from the project","To perform only final acceptance testing"],c:0},
-
-    {q:"Which activities are associated with Loop 3 of the Spiral Model?",a:["Design, implementation, and testing to further develop and validate the solution","Only brainstorming and identifying initial project objectives","Only gathering customer opinions without building anything","Only planning the project's budget and schedule"],c:0},
-
-    {q:"Which statement correctly describes the relationship between the Spiral Model and prototyping?",a:["Prototypes can be used as risk-reduction techniques within the Spiral Model, but the Spiral Model is not the same as prototyping","The Spiral Model and prototyping are exactly the same process model","Prototyping cannot be used during Spiral development","The Spiral Model is simply another name for evolutionary prototyping"],c:0},
-
-    {q:"What is a major strength of the Spiral Model?",a:["Major risks can be identified and addressed before larger commitments are made","All project requirements are guaranteed to remain unchanged","It eliminates the need for experienced risk analysis","It always requires exactly four development loops"],c:0},
-
-    {q:"Why can the Spiral Model have significant management overhead?",a:["Repeated risk analysis, development, and evaluation require additional effort","Every loop must produce a completely separate final product","The model does not allow any automation","The model requires every developer to work independently"],c:0},
-
-    {q:"Why does the Spiral Model require risk expertise?",a:["Effective identification and analysis of important risks can be difficult","Every project must use the same predetermined risk list","Risk analysis is performed only after deployment","Risk expertise is needed to prevent developers from writing code"],c:0},
-
-    {q:"Which project is the best fit for the Spiral Model?",a:["A large, complex system with significant technical uncertainty and high-risk decisions","A tiny project with no significant uncertainty and a very small scope","A simple program where requirements and implementation are already completely known","A small script that will be discarded after one use"],c:0},
-
-    {q:"What is the key idea behind choosing a software process model?",a:["Different projects have different needs, so the process should match the project's requirements, change, feedback, risk, and context","Every software project should use exactly the same process model","Agile should always be selected regardless of project characteristics","The oldest available process model should always be selected"],c:0},
-
-    {q:"What is the main difference between Plan-Driven and Agile development?",a:["Plan-Driven emphasizes more planning upfront, while Agile plans throughout development and adapts to change","Plan-Driven does not involve planning, while Agile requires all planning before coding","Plan-Driven uses testing while Agile does not","Agile requires all requirements to be finalized before development"],c:0},
-
-    {q:"How are requirements generally handled in Plan-Driven development compared with Agile development?",a:["Plan-Driven defines requirements earlier, while Agile allows requirements to evolve","Plan-Driven avoids requirements, while Agile fixes every requirement permanently","Both approaches require all requirements to remain unchanged","Agile defines all requirements before development and Plan-Driven discovers them after deployment"],c:0},
-
-    {q:"A project uses short iterations, regularly delivers increments, and incorporates changing requirements. Which approach does this describe?",a:["Agile development","Opportunistic development","Traditional Waterfall development","Strictly plan-driven development"],c:0},
-
-    {q:"Which statement about planning in Agile is correct?",a:["Agile involves planning throughout development rather than eliminating planning","Agile means the team does not need a plan","Agile requires every project decision to be made before development begins","Agile replaces planning with random development"],c:0},
-
-    {q:"Why can Agile be useful for software projects?",a:["Teams often learn what they really need while building the software and receiving feedback","Software requirements never change once development begins","Agile prevents customers from changing priorities","Agile eliminates the need for users to provide feedback"],c:0},
-
-    {q:"A team delivers a working feature, receives user feedback, learns from it, and changes the next version. Which Agile cycle does this demonstrate?",a:["Deliver → Feedback → Learn → Adapt → Deliver Again","Plan → Freeze → Document → Deploy → Stop","Design → Code → Ignore Feedback → Release → Repeat","Requirements → Contract → Implementation → Retirement"],c:0},
-
-    {q:"Why does the lecture emphasize that Agile is more than simply being fast?",a:["Moving quickly without feedback can result in moving quickly in the wrong direction","Agile requires developers to avoid delivering software quickly","Agile means completing the entire project before collecting feedback","Being fast automatically guarantees software quality"],c:0},
-
-    {q:"Which of the following best describes the Agile mindset?",a:["Deliver value, collaborate, learn from feedback, embrace useful change, and improve continuously","Follow the original plan regardless of new information","Avoid customer involvement until the project is complete","Focus primarily on producing documentation instead of working software"],c:0},
-
-    {q:"Which statement is one of the four Agile Manifesto values?",a:["Individuals and interactions over processes and tools","Processes and tools over individuals and interactions","Comprehensive documentation over working software","Following a plan over responding to change"],c:0},
-
-    {q:"A customer requests an important change after seeing the first working version of a system. According to the Agile Manifesto in practice, what should the team do?",a:["Discuss the value and impact of the change, then adapt appropriately","Reject the request because the original requirements were finalized","Implement the change immediately without discussing its impact","Ignore the request until the entire system is completed"],c:0},
-
-    {q:"What does 'Working software over comprehensive documentation' mean in the Agile Manifesto?",a:["Working software is valued more, while documentation still has value","Agile teams should never create documentation","Documentation is always more important than working software","Agile teams should only document the project after it is cancelled"],c:0},
-
-    {q:"Which Agile theme focuses on delivering useful software early and frequently?",a:["Value","Change","People","Quality & Improvement"],c:0},
-
-    {q:"Which Agile theme emphasizes collaboration, communication, and trust within the team?",a:["People","Value","Change","Quality & Improvement"],c:0},
-
-    {q:"When is Agile particularly helpful?",a:["When requirements may evolve, frequent delivery creates value, and customers can provide feedback","When requirements must never change and customer feedback is impossible","When the project cannot be divided into useful increments","When stakeholders are unavailable throughout development"],c:0},
-
-    {q:"A team cannot regularly access customers for feedback and the project requires strict regulatory traceability. What should the team recognize about Agile?",a:["Agile may face challenges because customer availability and compliance requirements can affect how it is applied","Agile automatically eliminates the need for customer involvement and traceability","Agile requires the team to remove all documentation","Agile guarantees that regulatory requirements no longer apply"],c:0},
-
-    {q:"Why can too little documentation become a problem for an Agile project?",a:["It can make maintenance and onboarding more difficult","It guarantees that requirements will never change","It prevents working software from being delivered","It eliminates the need for technical discipline"],c:0},
-
-    {q:"What is the relationship between Agile and Scrum?",a:["Agile is a set of values, principles, and a mindset, while Scrum is one framework for applying Agile ideas","Agile and Scrum are exactly the same thing","Scrum is a software development language and Agile is a testing tool","Agile is a Scrum-specific documentation standard"],c:0},
-
-    {q:"A team argues that Agile means accepting every requirement change immediately. Which response is most accurate?",a:["Agile welcomes useful change, but teams still need to discuss value, impact, and appropriate adaptation","Agile requires every requested change to be implemented immediately","Agile prohibits all requirement changes after development starts","Agile means requirements do not need to be evaluated"],c:0},
-
-    {q:"What is the main idea behind Extreme Programming (XP)?",a:["Take proven software-development practices and apply them continuously and intensively","Avoid automated testing so developers can work faster","Complete all requirements before writing any code","Use large releases with long periods between feedback"],c:0},
-
-    {q:"When is XP particularly applicable?",a:["When requirements change frequently, the team is small and collaborative, and automated testing is possible","When requirements never change and the team works independently","When customer feedback is unavailable and testing cannot be automated","When development consists of one large release with no intermediate versions"],c:0},
-
-    {q:"What does XP require regarding tests and builds?",a:["All tests should run with each build and all tests must pass for the build to be accepted","Tests should only be performed after the entire project is completed","Only the newest feature needs to be tested after each release","Tests are optional when the development team is experienced"],c:0},
-
-    {q:"What is incremental planning in XP?",a:["Selecting release stories based on available time and relative priority, then breaking stories into development tasks","Creating a complete detailed plan that cannot change during development","Allowing developers to choose features without considering priorities","Planning only after the final software release"],c:0},
-
-    {q:"What is the goal of small releases in XP?",a:["Develop minimal useful functionality that provides business value and release it frequently","Delay all releases until every planned feature is completed","Release large amounts of functionality as rarely as possible","Release unfinished software without collecting feedback"],c:0},
-
-    {q:"What does the XP practice of simple design recommend?",a:["Do enough design to meet the current requirements and no more","Design every possible future feature before development begins","Avoid design completely and immediately begin coding","Create the most complex architecture possible for future expansion"],c:0},
-
-    {q:"What is Test-First Development in XP?",a:["Writing automated unit tests for new functionality before implementing the functionality","Writing tests only after the software has been released","Testing only the user interface before writing the application logic","Allowing customers to manually test every line of code"],c:0},
-
-    {q:"A developer notices that an existing section of code can be simplified without changing its behavior. Which XP practice addresses this?",a:["Refactoring","Collective Ownership","Planning Game","On-Site Customer"],c:0},
-
-    {q:"What is pair programming?",a:["Two developers work together, checking each other's work and providing continuous support","Two customers independently write requirements for the same feature","Two teams develop completely separate versions of the same system","A developer writes code while another developer performs only project management"],c:0},
-
-    {q:"What is the purpose of collective ownership in XP?",a:["All developers share responsibility for the code so that no isolated islands of expertise develop","Only the original developer is allowed to modify a section of code","Each developer owns a permanent section of the system and cannot modify other areas","Customers are given direct control over the source code"],c:0},
-
-    {q:"What happens during continuous integration in XP?",a:["Completed work is integrated into the whole system and the unit tests must pass after integration","Developers wait until the end of the project before combining their code","Only documentation is integrated after each task","The entire system is rewritten after every completed task"],c:0},
-
-    {q:"Why does XP promote a sustainable pace?",a:["Excessive overtime can reduce code quality and medium-term productivity","Developers should work as many hours as possible to maximize output","Shorter work hours eliminate the need for testing","Sustainable pace allows teams to avoid releasing software frequently"],c:0},
-
-    {q:"What is the role of the on-site customer in XP?",a:["A representative of the end user is available to the team and brings system requirements to them","The customer writes all of the source code for the development team","The customer is responsible only for testing after deployment","The customer manages the development team's working hours"],c:0},
-
-    {q:"What is the main purpose of fine-grained feedback in XP?",a:["To shorten the feedback loop so problems and misunderstandings can be discovered earlier","To reduce communication between developers and customers","To postpone feedback until after the final release","To eliminate the need for automated testing"],c:0},
-
-    {q:"Which sequence best represents the continuous process emphasized in XP?",a:["Integrate → Test → Improve → Deliver → Repeat","Plan → Freeze → Code → Stop → Deploy","Design → Document → Wait → Release → Retire","Code → Release → Ignore feedback → Rewrite → Stop"],c:0},
-
-    {q:"A development team wants to prevent knowledge about the system from becoming concentrated in one developer. Which XP practices are most directly relevant?",a:["Collective ownership, pair programming, and shared understanding","Small releases, simple design, and planning only","Sprint planning, velocity, and product backlog","Acceptance criteria, user stories, and story points"],c:0},
-
-    {q:"What is Scrum?",a:["An Agile framework for organizing iterative development","A programming language used to implement Agile systems","A testing method that replaces unit testing","A documentation standard for software projects"],c:0},
-
-    {q:"What is a Product Backlog?",a:["A list of work the Scrum team may need to address","A list containing only completed features","A list of bugs that cannot be fixed","A schedule containing only developer vacations"],c:0},
-
-    {q:"Which item could appear in a Product Backlog?",a:["Features, user stories, engineering improvements, architecture work, documentation, or investigation","Only customer-facing features that will appear in the final interface","Only tasks assigned to the ScrumMaster","Only defects discovered after deployment"],c:0},
-
-    {q:"What is the purpose of a Sprint?",a:["To complete a selected amount of work within a fixed-length period and produce a product increment","To continue indefinitely until every Product Backlog item is completed","To replace the Product Backlog with a permanent project plan","To perform only documentation work"],c:0},
-
-    {q:"What happens to unfinished work when a Sprint ends?",a:["It does not extend the Sprint and returns to the Product Backlog","The Sprint is automatically extended until the work is finished","It is permanently deleted from the Product Backlog","It automatically becomes part of the next Sprint without replanning"],c:0},
-
-    {q:"What is velocity in Scrum?",a:["An estimate of how much Product Backlog effort a team can cover in one Sprint","The number of developers assigned to a Scrum team","The number of bugs found during testing","The amount of time remaining before a Sprint ends"],c:0},
-
-    {q:"How should previous Sprint velocity be used?",a:["Observed velocity can help the team determine how much work it can reasonably select for the next Sprint","Previous velocity should be ignored because every Sprint must contain the same amount of work","Velocity determines which programming language the team must use","Velocity guarantees that every future Sprint will have identical results"],c:0},
-
-    {q:"What is the purpose of the Daily Scrum?",a:["To review progress, identify problems, and coordinate what the team plans to do next","To allow the ScrumMaster to assign every task individually","To replace Sprint Reviews and Retrospectives","To create the entire Product Backlog from scratch each day"],c:0},
-
-    {q:"Which sequence best represents the purpose of the end-of-Sprint review process?",a:["Review the product → review how the team worked → learn → feed improvements into the next Sprint","Deploy the product → freeze requirements → stop testing → begin a new project","Write requirements → code everything → avoid feedback → repeat the same Sprint","Assign tasks → remove the Product Backlog → restart development"],c:0},
-
-    {q:"What is a user story?",a:["A short description of functionality from the perspective of a user or stakeholder","A detailed technical design document written only for developers","A list of programming tasks without a user or business purpose","A complete specification of every system component"],c:0},
-
-    {q:"Which format best represents a typical user story?",a:["As a <type of user>, I want <user requirement> so that <rationale or benefit>","The system must <technical implementation> using <programming language> because <developer preference>","Developer: <task>; Tester: <bug>; Customer: <deadline>","If <developer action>, then <database query>, because <technical constraint>"],c:0},
-
-    {q:"Which user story is strongest according to the lecture?",a:["As a student, I want to book an available counselling appointment so that I can receive support without calling the clinic","As a user, I want a good website","As a student, I want login, booking, cancellation, payment, reminders, profile editing, and AI recommendations","Build the wellness system with all required features"],c:0},
-
-    {q:"What does the 'I' in INVEST stand for?",a:["Independent","Integrated","Iterative","Important"],c:0},
-
-    {q:"What does the 'N' in INVEST mean?",a:["Negotiable","Necessary","Networked","Normalized"],c:0},
-
-    {q:"What does the 'V' in INVEST mean?",a:["Valuable","Verified","Versioned","Visual"],c:0},
-
-    {q:"What does the 'T' in INVEST mean?",a:["Testable","Traceable","Technical","Timed"],c:0},
-
-    {q:"What are the Three C's of a User Story?",a:["Card → Conversation → Confirmation","Code → Compile → Commit","Customer → Coding → Completion","Create → Change → Correct"],c:0},
-
-    {q:"What is the purpose of the Conversation in the Three C's?",a:["To discuss the story with stakeholders and explore its real value and details","To automatically generate the source code for the story","To permanently finalize every technical implementation detail","To replace acceptance tests with informal discussion"],c:0},
-
-    {q:"What is the purpose of acceptance criteria?",a:["To define the conditions that must be satisfied for a user story to be accepted","To determine which developer should receive the story","To estimate the team's velocity without testing the story","To describe the complete architecture of the software"],c:0},
-
-    {q:"Which format is used for the acceptance-test structure shown in the lecture?",a:["Given → When → Then","Who → What → Why","Plan → Build → Release","Card → Conversation → Confirmation"],c:0},
-
-    {q:"What is the main purpose of the Planning Game?",a:["To plan work by combining customer priorities with developer estimates and risk information","To allow developers to choose requirements without customer involvement","To create a fixed plan that cannot change during development","To replace user stories with technical documentation"],c:0},
-
-    {q:"Who participates in Release Planning?",a:["The customer and developers","Only the developers","Only the customer","Only the project manager"],c:0},
-
-    {q:"What is the main goal of Release Planning?",a:["Select user stories and decide the schedule","Convert every user story into programming tasks immediately","Assign individual tasks to specific developers","Review completed software from the previous iteration"],c:0},
-
-    {q:"What is the main goal of Iteration Planning?",a:["Convert user stories into tasks and assign them","Determine the long-term business strategy of the organization","Select the product's entire feature set","Create the final project budget"],c:0},
-
-    {q:"What is the customer's primary responsibility during the Planning Game?",a:["Make decisions about requirements","Provide developer effort estimates","Calculate team velocity","Assign programming tasks to developers"],c:0},
-
-    {q:"What is the developer's responsibility during Release Planning?",a:["Provide effort estimates, estimation confidence, risk assessment, and team velocity","Determine which requirements are most valuable to customers","Approve all business requirements without customer input","Set the organization's marketing priorities"],c:0},
-
-    {q:"During the Exploration phase of the Planning Game, what happens?",a:["Customers provide or confirm stories while developers estimate difficulty, ask questions, and break large stories into smaller ones","Customers select stories and developers immediately begin coding them","Developers assign all tasks and calculate individual workloads","The team reviews the completed product and closes the project"],c:0},
-
-    {q:"During the Commitment phase of the Planning Game, what happens?",a:["Customers prioritize stories by business value while developers consider risk and velocity before stories are selected","Developers write acceptance tests while customers perform software testing","Customers assign tasks directly to individual developers","Developers permanently freeze the Product Backlog"],c:0},
-
-    {q:"What is the purpose of the Steering phase of the Planning Game?",a:["Adjust the plan during the iteration as new stories, changes, or removals arise","Prevent any changes to the plan after the iteration begins","Estimate all future projects at the beginning of development","Replace the customer with the development team"],c:0},
-
-    {q:"Why is exact effort estimation difficult?",a:["Software work is difficult to predict precisely and estimates can be affected by complexity, uncertainty, and incomplete knowledge","Software tasks always take exactly the same amount of time","Developers are always given complete information before estimating","Every software project uses identical technology and requirements"],c:0},
-
-    {q:"Which approach uses formulas derived from historical data for effort estimation?",a:["Formal estimation models such as COCOMO, SLIM, and SEER-SEM","Planning poker","Expert estimation only","Velocity tracking"],c:0},
-
-    {q:"What is expert estimation?",a:["Using the judgment and opinions of one or more expert developers to estimate effort","Using only a mathematical formula based on historical project data","Allowing customers to assign story points without developer input","Calculating effort only after the work has been completed"],c:0},
-
-    {q:"What is combination-based estimation?",a:["Using both formal estimation models and expert judgment","Using only customer opinions","Using only the team's previous velocity","Using only the number of lines of code"],c:0},
-
-    {q:"What is the main idea behind story points?",a:["They estimate relative effort by comparing one user story with another","They represent exact numbers of hours required to complete a story","They measure only the financial cost of a user story","They measure only the number of developers assigned to a story"],c:0},
-
-    {q:"Which three factors are considered when estimating story points?",a:["Amount of work, complexity of work, and risk or uncertainty","Number of developers, project budget, and customer satisfaction","Programming language, documentation size, and office location","Schedule length, number of meetings, and number of customers"],c:0},
-
-    {q:"Story A requires more work, is technically more difficult, and has greater uncertainty than Story B. What should generally happen to their story-point estimates?",a:["Story A should receive more story points than Story B","Story A should receive fewer story points than Story B","Both stories should automatically receive the same number of points","Story points cannot be used to compare the stories"],c:0},
-
-    {q:"Why does the lecture emphasize relative effort rather than absolute effort when using story points?",a:["Comparing stories helps teams estimate difficulty without pretending that an exact amount of time can be predicted","Story points are intended to represent exact hours for every developer","Relative estimates eliminate the need to compare different stories","Story points are calculated directly from project salary costs"],c:0},
-
-    {q:"Why can estimating software work directly in hours be difficult?",a:["Humans are poor at estimating time and development work does not progress linearly","Hours always produce estimates that are too large","Software development always takes exactly the same amount of time","Hours cannot be used to measure any form of software work"],c:0},
-
-    {q:"What is a characteristic of story points in Scrum according to the lecture?",a:["They represent relative effort and may use a Fibonacci sequence such as 1, 2, 3, 5, 8, 13, and 21","They always represent exact one-hour blocks","They must always equal the number of lines of code","They are determined only by the customer"],c:0},
-
-    {q:"What happens first in Planning Poker?",a:["A story is selected for effort estimation","The highest estimate is automatically accepted","The customer assigns points to each developer","The team calculates its final velocity"],c:0},
-
-    {q:"During Planning Poker, what happens after everyone secretly selects an estimate?",a:["Everyone reveals their cards simultaneously","The developer with the highest estimate automatically wins","Only the customer reveals their estimate","The lowest estimate becomes the final answer"],c:0},
-
-    {q:"During Planning Poker, two developers choose very different estimates. What should happen next?",a:["The developers with the lowest and highest estimates explain their reasoning, then everyone revises their estimates","The highest estimate automatically becomes the final estimate","The lowest estimate automatically becomes the final estimate","The story is immediately removed from the Product Backlog"],c:0},
-
-    {q:"What is team velocity?",a:["The amount of story points completed by a team during an iteration","The number of developers working during an iteration","The amount of time remaining in an iteration","The number of user stories currently in the Product Backlog"],c:0},
-
-    {q:"How can a team improve its estimates over multiple iterations?",a:["Use previous performance, compare similar stories, and build domain knowledge from experience","Ignore previous iterations and estimate every story from scratch","Increase every estimate by the same number of story points","Allow customers to determine all future story-point values"],c:0},
-
-    {q:"What does the 'Yesterday's Weather' rule suggest about future team velocity?",a:["The team's recent performance is a useful guide because today's results are likely to be more similar to recent results than unrelated values","The team should always double its previous velocity","The team should never use previous performance when planning","The team's future velocity should always equal the largest historical velocity"],c:0},
-
-    {q:"When should risk management take place?",a:["At the start of a project, at the start of Agile iterations, and at the start of major phases","Only after the software has been released","Only when a customer reports a defect","Only after the final project review"],c:0},
-
-    {q:"What are the four steps of risk management presented in the lecture?",a:["Risk identification, risk analysis, risk management planning, and risk review","Risk coding, risk testing, risk deployment, and risk retirement","Risk estimation, risk programming, risk release, and risk maintenance","Risk planning, coding, documentation, and customer approval"],c:0},
-
-    {q:"Which of the following is a project risk?",a:["A risk affecting the project schedule, development process, or resources","A risk affecting only the quality of the finished software","A risk affecting only the organization's competitors","A risk affecting only the user interface design"],c:0},
-
-    {q:"A development team adopts a new game engine and is unsure whether it will perform well. What type of risk is this?",a:["Product risk","Project risk","Business risk","Scheduling risk"],c:0},
-
-    {q:"A competitor releases a new product and the company's sales may decrease. What type of risk is this?",a:["Business risk","Product risk","Project risk","Implementation risk"],c:0},
-
-    {q:"When analyzing the risk of a user story, what does completeness measure?",a:["How well the details of the story are known","How many developers are assigned to the story","How many lines of code the story requires","How much money the customer will spend"],c:0},
-
-    {q:"A user story is highly likely to change during development. Which risk-analysis factor does this describe?",a:["High volatility","High completeness","High simplicity","Low complexity"],c:0},
-
-    {q:"A user story is technically difficult and complicated to implement. Which risk-analysis factor should receive a higher value?",a:["Complexity","Completeness","Volatility","Priority"],c:0},
-
-    {q:"A user story has a risk score of 5 using the lecture's completeness, volatility, and complexity scoring. How is the risk classified?",a:["High risk","Low risk","Medium risk","No risk"],c:0},
-
-    {q:"A user story has Complete = 0, Medium Volatility = 1, and Complex = 2. What is its total risk score and classification?",a:["3, which is Medium risk","2, which is Medium risk","4, which is High risk","5, which is High risk"],c:0}
-]
-  }
+        {q:"What is the main focus of the Spiral Model?",a:["Identifying and reducing important risks throughout development","Completing all requirements before any development begins","Delivering the entire system before collecting feedback","Avoiding prototypes and experiments during development"],c:0},
+        {q:"A team understands the requirements for a new AI-based feature, but they are unsure whether the technology will perform accurately enough. Which process model best addresses this situation?",a:["Spiral Model because it uses risk analysis to investigate uncertain solutions","Waterfall because all requirements should be completed before development","Opportunistic development because the team should immediately start coding","V-Model because testing only happens after the implementation is complete"],c:0},
+        {q:"What are the four main sectors of the Spiral Model?",a:["Determine objectives, identify and resolve risks, develop the next version, review and plan the next phase","Gather requirements, write documentation, deploy the system, retire the system","Design the interface, write code, release the product, collect complaints","Plan the entire project, build everything, test everything, deliver everything"],c:0},
+        {q:"In the Spiral Model, what happens during the 'Determine Objectives' sector?",a:["The team identifies objectives, alternatives, and constraints for the next cycle","The team deploys the finished product to all users","The team performs only final acceptance testing","The team removes all previous prototypes from the project"],c:0},
+        {q:"What is the purpose of the 'Identify & Resolve Risks' sector in the Spiral Model?",a:["To analyze risks, explore alternatives, and reduce uncertainty before making larger commitments","To ensure every requirement is permanently fixed before development starts","To replace all testing with customer interviews","To complete the final system documentation before coding begins"],c:0},
+        {q:"A Spiral Model loop has finished development and validation. What should happen next?",a:["The team reviews what was learned and plans the next phase","The team automatically ends the entire project","The team returns to the original requirements without considering new information","The team discards the software regardless of its quality"],c:0},
+        {q:"What does moving outward through the Spiral Model loops generally represent?",a:["More knowledge, more investment, and a more complete system","Less testing, less knowledge, and fewer project commitments","A reduction in requirements and a smaller final system","A move away from risk analysis toward completely fixed planning"],c:0},
+        {q:"What is the purpose of the first Spiral Model loop?",a:["To explore whether the idea can work using techniques such as experiments, prototypes, or feasibility studies","To deliver every planned feature to customers","To complete the final production system","To perform only maintenance activities"],c:0},
+        {q:"A team uses a small experiment to determine whether a new technology is feasible before committing significant resources. Which Spiral loop activity does this best represent?",a:["Loop 1 — Explore","Loop 2 — Understand & Refine","Loop 3 — Develop Further","Later loops — Toward the Complete System"],c:0},
+        {q:"What is the main purpose of Loop 2 in the Spiral Model?",a:["To understand what has been learned, refine requirements, and investigate remaining risks and alternatives","To immediately release the complete system to customers","To eliminate all future planning from the project","To perform only final acceptance testing"],c:0},
+        {q:"Which activities are associated with Loop 3 of the Spiral Model?",a:["Design, implementation, and testing to further develop and validate the solution","Only brainstorming and identifying initial project objectives","Only gathering customer opinions without building anything","Only planning the project's budget and schedule"],c:0},
+        {q:"Which statement correctly describes the relationship between the Spiral Model and prototyping?",a:["Prototypes can be used as risk-reduction techniques within the Spiral Model, but the Spiral Model is not the same as prototyping","The Spiral Model and prototyping are exactly the same process model","Prototyping cannot be used during Spiral development","The Spiral Model is simply another name for evolutionary prototyping"],c:0},
+        {q:"What is a major strength of the Spiral Model?",a:["Major risks can be identified and addressed before larger commitments are made","All project requirements are guaranteed to remain unchanged","It eliminates the need for experienced risk analysis","It always requires exactly four development loops"],c:0},
+        {q:"Why can the Spiral Model have significant management overhead?",a:["Repeated risk analysis, development, and evaluation require additional effort","Every loop must produce a completely separate final product","The model does not allow any automation","The model requires every developer to work independently"],c:0},
+        {q:"Why does the Spiral Model require risk expertise?",a:["Effective identification and analysis of important risks can be difficult","Every project must use the same predetermined risk list","Risk analysis is performed only after deployment","Risk expertise is needed to prevent developers from writing code"],c:0},
+        {q:"Which project is the best fit for the Spiral Model?",a:["A large, complex system with significant technical uncertainty and high-risk decisions","A tiny project with no significant uncertainty and a very small scope","A simple program where requirements and implementation are already completely known","A small script that will be discarded after one use"],c:0},
+        {q:"What is the key idea behind choosing a software process model?",a:["Different projects have different needs, so the process should match the project's requirements, change, feedback, risk, and context","Every software project should use exactly the same process model","Agile should always be selected regardless of project characteristics","The oldest available process model should always be selected"],c:0},
+        {q:"What is the main difference between Plan-Driven and Agile development?",a:["Plan-Driven emphasizes more planning upfront, while Agile plans throughout development and adapts to change","Plan-Driven does not involve planning, while Agile requires all planning before coding","Plan-Driven uses testing while Agile does not","Agile requires all requirements to be finalized before development"],c:0},
+        {q:"How are requirements generally handled in Plan-Driven development compared with Agile development?",a:["Plan-Driven defines requirements earlier, while Agile allows requirements to evolve","Plan-Driven avoids requirements, while Agile fixes every requirement permanently","Both approaches require all requirements to remain unchanged","Agile defines all requirements before development and Plan-Driven discovers them after deployment"],c:0},
+        {q:"A project uses short iterations, regularly delivers increments, and incorporates changing requirements. Which approach does this describe?",a:["Agile development","Opportunistic development","Traditional Waterfall development","Strictly plan-driven development"],c:0},
+        {q:"Which statement about planning in Agile is correct?",a:["Agile involves planning throughout development rather than eliminating planning","Agile means the team does not need a plan","Agile requires every project decision to be made before development begins","Agile replaces planning with random development"],c:0},
+        {q:"Why can Agile be useful for software projects?",a:["Teams often learn what they really need while building the software and receiving feedback","Software requirements never change once development begins","Agile prevents customers from changing priorities","Agile eliminates the need for users to provide feedback"],c:0},
+        {q:"A team delivers a working feature, receives user feedback, learns from it, and changes the next version. Which Agile cycle does this demonstrate?",a:["Deliver → Feedback → Learn → Adapt → Deliver Again","Plan → Freeze → Document → Deploy → Stop","Design → Code → Ignore Feedback → Release → Repeat","Requirements → Contract → Implementation → Retirement"],c:0},
+        {q:"Why does the lecture emphasize that Agile is more than simply being fast?",a:["Moving quickly without feedback can result in moving quickly in the wrong direction","Agile requires developers to avoid delivering software quickly","Agile means completing the entire project before collecting feedback","Being fast automatically guarantees software quality"],c:0},
+        {q:"Which of the following best describes the Agile mindset?",a:["Deliver value, collaborate, learn from feedback, embrace useful change, and improve continuously","Follow the original plan regardless of new information","Avoid customer involvement until the project is complete","Focus primarily on producing documentation instead of working software"],c:0},
+        {q:"Which statement is one of the four Agile Manifesto values?",a:["Individuals and interactions over processes and tools","Processes and tools over individuals and interactions","Comprehensive documentation over working software","Following a plan over responding to change"],c:0},
+        {q:"A customer requests an important change after seeing the first working version of a system. According to the Agile Manifesto in practice, what should the team do?",a:["Discuss the value and impact of the change, then adapt appropriately","Reject the request because the original requirements were finalized","Implement the change immediately without discussing its impact","Ignore the request until the entire system is completed"],c:0},
+        {q:"What does 'Working software over comprehensive documentation' mean in the Agile Manifesto?",a:["Working software is valued more, while documentation still has value","Agile teams should never create documentation","Documentation is always more important than working software","Agile teams should only document the project after it is cancelled"],c:0},
+        {q:"Which Agile theme focuses on delivering useful software early and frequently?",a:["Value","Change","People","Quality & Improvement"],c:0},
+        {q:"Which Agile theme emphasizes collaboration, communication, and trust within the team?",a:["People","Value","Change","Quality & Improvement"],c:0},
+        {q:"When is Agile particularly helpful?",a:["When requirements may evolve, frequent delivery creates value, and customers can provide feedback","When requirements must never change and customer feedback is impossible","When the project cannot be divided into useful increments","When stakeholders are unavailable throughout development"],c:0},
+        {q:"A team cannot regularly access customers for feedback and the project requires strict regulatory traceability. What should the team recognize about Agile?",a:["Agile may face challenges because customer availability and compliance requirements can affect how it is applied","Agile automatically eliminates the need for customer involvement and traceability","Agile requires the team to remove all documentation","Agile guarantees that regulatory requirements no longer apply"],c:0},
+        {q:"Why can too little documentation become a problem for an Agile project?",a:["It can make maintenance and onboarding more difficult","It guarantees that requirements will never change","It prevents working software from being delivered","It eliminates the need for technical discipline"],c:0},
+        {q:"What is the relationship between Agile and Scrum?",a:["Agile is a set of values, principles, and a mindset, while Scrum is one framework for applying Agile ideas","Agile and Scrum are exactly the same thing","Scrum is a software development language and Agile is a testing tool","Agile is a Scrum-specific documentation standard"],c:0},
+        {q:"A team argues that Agile means accepting every requirement change immediately. Which response is most accurate?",a:["Agile welcomes useful change, but teams still need to discuss value, impact, and appropriate adaptation","Agile requires every requested change to be implemented immediately","Agile prohibits all requirement changes after development starts","Agile means requirements do not need to be evaluated"],c:0},
+        {q:"What is the main idea behind Extreme Programming (XP)?",a:["Take proven software-development practices and apply them continuously and intensively","Avoid automated testing so developers can work faster","Complete all requirements before writing any code","Use large releases with long periods between feedback"],c:0},
+        {q:"When is XP particularly applicable?",a:["When requirements change frequently, the team is small and collaborative, and automated testing is possible","When requirements never change and the team works independently","When customer feedback is unavailable and testing cannot be automated","When development consists of one large release with no intermediate versions"],c:0},
+        {q:"What does XP require regarding tests and builds?",a:["All tests should run with each build and all tests must pass for the build to be accepted","Tests should only be performed after the entire project is completed","Only the newest feature needs to be tested after each release","Tests are optional when the development team is experienced"],c:0},
+        {q:"What is incremental planning in XP?",a:["Selecting release stories based on available time and relative priority, then breaking stories into development tasks","Creating a complete detailed plan that cannot change during development","Allowing developers to choose features without considering priorities","Planning only after the final software release"],c:0},
+        {q:"What is the goal of small releases in XP?",a:["Develop minimal useful functionality that provides business value and release it frequently","Delay all releases until every planned feature is completed","Release large amounts of functionality as rarely as possible","Release unfinished software without collecting feedback"],c:0},
+        {q:"What does the XP practice of simple design recommend?",a:["Do enough design to meet the current requirements and no more","Design every possible future feature before development begins","Avoid design completely and immediately begin coding","Create the most complex architecture possible for future expansion"],c:0},
+        {q:"What is Test-First Development in XP?",a:["Writing automated unit tests for new functionality before implementing the functionality","Writing tests only after the software has been released","Testing only the user interface before writing the application logic","Allowing customers to manually test every line of code"],c:0},
+        {q:"A developer notices that an existing section of code can be simplified without changing its behavior. Which XP practice addresses this?",a:["Refactoring","Collective Ownership","Planning Game","On-Site Customer"],c:0},
+        {q:"What is pair programming?",a:["Two developers work together, checking each other's work and providing continuous support","Two customers independently write requirements for the same feature","Two teams develop completely separate versions of the same system","A developer writes code while another developer performs only project management"],c:0},
+        {q:"What is the purpose of collective ownership in XP?",a:["All developers share responsibility for the code so that no isolated islands of expertise develop","Only the original developer is allowed to modify a section of code","Each developer owns a permanent section of the system and cannot modify other areas","Customers are given direct control over the source code"],c:0},
+        {q:"What happens during continuous integration in XP?",a:["Completed work is integrated into the whole system and the unit tests must pass after integration","Developers wait until the end of the project before combining their code","Only documentation is integrated after each task","The entire system is rewritten after every completed task"],c:0},
+        {q:"Why does XP promote a sustainable pace?",a:["Excessive overtime can reduce code quality and medium-term productivity","Developers should work as many hours as possible to maximize output","Shorter work hours eliminate the need for testing","Sustainable pace allows teams to avoid releasing software frequently"],c:0},
+        {q:"What is the role of the on-site customer in XP?",a:["A representative of the end user is available to the team and brings system requirements to them","The customer writes all of the source code for the development team","The customer is responsible only for testing after deployment","The customer manages the development team's working hours"],c:0},
+        {q:"What is the main purpose of fine-grained feedback in XP?",a:["To shorten the feedback loop so problems and misunderstandings can be discovered earlier","To reduce communication between developers and customers","To postpone feedback until after the final release","To eliminate the need for automated testing"],c:0},
+        {q:"Which sequence best represents the continuous process emphasized in XP?",a:["Integrate → Test → Improve → Deliver → Repeat","Plan → Freeze → Code → Stop → Deploy","Design → Document → Wait → Release → Retire","Code → Release → Ignore feedback → Rewrite → Stop"],c:0},
+        {q:"A development team wants to prevent knowledge about the system from becoming concentrated in one developer. Which XP practices are most directly relevant?",a:["Collective ownership, pair programming, and shared understanding","Small releases, simple design, and planning only","Sprint planning, velocity, and product backlog","Acceptance criteria, user stories, and story points"],c:0},
+        {q:"What is Scrum?",a:["An Agile framework for organizing iterative development","A programming language used to implement Agile systems","A testing method that replaces unit testing","A documentation standard for software projects"],c:0},
+        {q:"What is a Product Backlog?",a:["A list of work the Scrum team may need to address","A list containing only completed features","A list of bugs that cannot be fixed","A schedule containing only developer vacations"],c:0},
+        {q:"Which item could appear in a Product Backlog?",a:["Features, user stories, engineering improvements, architecture work, documentation, or investigation","Only customer-facing features that will appear in the final interface","Only tasks assigned to the ScrumMaster","Only defects discovered after deployment"],c:0},
+        {q:"What is the purpose of a Sprint?",a:["To complete a selected amount of work within a fixed-length period and produce a product increment","To continue indefinitely until every Product Backlog item is completed","To replace the Product Backlog with a permanent project plan","To perform only documentation work"],c:0},
+        {q:"What happens to unfinished work when a Sprint ends?",a:["It does not extend the Sprint and returns to the Product Backlog","The Sprint is automatically extended until the work is finished","It is permanently deleted from the Product Backlog","It automatically becomes part of the next Sprint without replanning"],c:0},
+        {q:"What is velocity in Scrum?",a:["An estimate of how much Product Backlog effort a team can cover in one Sprint","The number of developers assigned to a Scrum team","The number of bugs found during testing","The amount of time remaining before a Sprint ends"],c:0},
+        {q:"How should previous Sprint velocity be used?",a:["Observed velocity can help the team determine how much work it can reasonably select for the next Sprint","Previous velocity should be ignored because every Sprint must contain the same amount of work","Velocity determines which programming language the team must use","Velocity guarantees that every future Sprint will have identical results"],c:0},
+        {q:"What is the purpose of the Daily Scrum?",a:["To review progress, identify problems, and coordinate what the team plans to do next","To allow the ScrumMaster to assign every task individually","To replace Sprint Reviews and Retrospectives","To create the entire Product Backlog from scratch each day"],c:0},
+        {q:"Which sequence best represents the purpose of the end-of-Sprint review process?",a:["Review the product → review how the team worked → learn → feed improvements into the next Sprint","Deploy the product → freeze requirements → stop testing → begin a new project","Write requirements → code everything → avoid feedback → repeat the same Sprint","Assign tasks → remove the Product Backlog → restart development"],c:0},
+        {q:"What is a user story?",a:["A short description of functionality from the perspective of a user or stakeholder","A detailed technical design document written only for developers","A list of programming tasks without a user or business purpose","A complete specification of every system component"],c:0},
+        {q:"Which format best represents a typical user story?",a:["As a <type of user>, I want <user requirement> so that <rationale or benefit>","The system must <technical implementation> using <programming language> because <developer preference>","Developer: <task>; Tester: <bug>; Customer: <deadline>","If <developer action>, then <database query>, because <technical constraint>"],c:0},
+        {q:"Which user story is strongest according to the lecture?",a:["As a student, I want to book an available counselling appointment so that I can receive support without calling the clinic","As a user, I want a good website","As a student, I want login, booking, cancellation, payment, reminders, profile editing, and AI recommendations","Build the wellness system with all required features"],c:0},
+        {q:"What does the 'I' in INVEST stand for?",a:["Independent","Integrated","Iterative","Important"],c:0},
+        {q:"What does the 'N' in INVEST mean?",a:["Negotiable","Necessary","Networked","Normalized"],c:0},
+        {q:"What does the 'V' in INVEST mean?",a:["Valuable","Verified","Versioned","Visual"],c:0},
+        {q:"What does the 'T' in INVEST mean?",a:["Testable","Traceable","Technical","Timed"],c:0},
+        {q:"What are the Three C's of a User Story?",a:["Card → Conversation → Confirmation","Code → Compile → Commit","Customer → Coding → Completion","Create → Change → Correct"],c:0},
+        {q:"What is the purpose of the Conversation in the Three C's?",a:["To discuss the story with stakeholders and explore its real value and details","To automatically generate the source code for the story","To permanently finalize every technical implementation detail","To replace acceptance tests with informal discussion"],c:0},
+        {q:"What is the purpose of acceptance criteria?",a:["To define the conditions that must be satisfied for a user story to be accepted","To determine which developer should receive the story","To estimate the team's velocity without testing the story","To describe the complete architecture of the software"],c:0},
+        {q:"Which format is used for the acceptance-test structure shown in the lecture?",a:["Given → When → Then","Who → What → Why","Plan → Build → Release","Card → Conversation → Confirmation"],c:0},
+        {q:"What is the main purpose of the Planning Game?",a:["To plan work by combining customer priorities with developer estimates and risk information","To allow developers to choose requirements without customer involvement","To create a fixed plan that cannot change during development","To replace user stories with technical documentation"],c:0},
+        {q:"Who participates in Release Planning?",a:["The customer and developers","Only the developers","Only the customer","Only the project manager"],c:0},
+        {q:"What is the main goal of Release Planning?",a:["Select user stories and decide the schedule","Convert every user story into programming tasks immediately","Assign individual tasks to specific developers","Review completed software from the previous iteration"],c:0},
+        {q:"What is the main goal of Iteration Planning?",a:["Convert user stories into tasks and assign them","Determine the long-term business strategy of the organization","Select the product's entire feature set","Create the final project budget"],c:0},
+        {q:"What is the customer's primary responsibility during the Planning Game?",a:["Make decisions about requirements","Provide developer effort estimates","Calculate team velocity","Assign programming tasks to developers"],c:0},
+        {q:"What is the developer's responsibility during Release Planning?",a:["Provide effort estimates, estimation confidence, risk assessment, and team velocity","Determine which requirements are most valuable to customers","Approve all business requirements without customer input","Set the organization's marketing priorities"],c:0},
+        {q:"During the Exploration phase of the Planning Game, what happens?",a:["Customers provide or confirm stories while developers estimate difficulty, ask questions, and break large stories into smaller ones","Customers select stories and developers immediately begin coding them","Developers assign all tasks and calculate individual workloads","The team reviews the completed product and closes the project"],c:0},
+        {q:"During the Commitment phase of the Planning Game, what happens?",a:["Customers prioritize stories by business value while developers consider risk and velocity before stories are selected","Developers write acceptance tests while customers perform software testing","Customers assign tasks directly to individual developers","Developers permanently freeze the Product Backlog"],c:0},
+        {q:"What is the purpose of the Steering phase of the Planning Game?",a:["Adjust the plan during the iteration as new stories, changes, or removals arise","Prevent any changes to the plan after the iteration begins","Estimate all future projects at the beginning of development","Replace the customer with the development team"],c:0},
+        {q:"Why is exact effort estimation difficult?",a:["Software work is difficult to predict precisely and estimates can be affected by complexity, uncertainty, and incomplete knowledge","Software tasks always take exactly the same amount of time","Developers are always given complete information before estimating","Every software project uses identical technology and requirements"],c:0},
+        {q:"Which approach uses formulas derived from historical data for effort estimation?",a:["Formal estimation models such as COCOMO, SLIM, and SEER-SEM","Planning poker","Expert estimation only","Velocity tracking"],c:0},
+        {q:"What is expert estimation?",a:["Using the judgment and opinions of one or more expert developers to estimate effort","Using only a mathematical formula based on historical project data","Allowing customers to assign story points without developer input","Calculating effort only after the work has been completed"],c:0},
+        {q:"What is combination-based estimation?",a:["Using both formal estimation models and expert judgment","Using only customer opinions","Using only the team's previous velocity","Using only the number of lines of code"],c:0},
+        {q:"What is the main idea behind story points?",a:["They estimate relative effort by comparing one user story with another","They represent exact numbers of hours required to complete a story","They measure only the financial cost of a user story","They measure only the number of developers assigned to a story"],c:0},
+        {q:"Which three factors are considered when estimating story points?",a:["Amount of work, complexity of work, and risk or uncertainty","Number of developers, project budget, and customer satisfaction","Programming language, documentation size, and office location","Schedule length, number of meetings, and number of customers"],c:0},
+        {q:"Story A requires more work, is technically more difficult, and has greater uncertainty than Story B. What should generally happen to their story-point estimates?",a:["Story A should receive more story points than Story B","Story A should receive fewer story points than Story B","Both stories should automatically receive the same number of points","Story points cannot be used to compare the stories"],c:0},
+        {q:"Why does the lecture emphasize relative effort rather than absolute effort when using story points?",a:["Comparing stories helps teams estimate difficulty without pretending that an exact amount of time can be predicted","Story points are intended to represent exact hours for every developer","Relative estimates eliminate the need to compare different stories","Story points are calculated directly from project salary costs"],c:0},
+        {q:"Why can estimating software work directly in hours be difficult?",a:["Humans are poor at estimating time and development work does not progress linearly","Hours always produce estimates that are too large","Software development always takes exactly the same amount of time","Hours cannot be used to measure any form of software work"],c:0},
+        {q:"What is a characteristic of story points in Scrum according to the lecture?",a:["They represent relative effort and may use a Fibonacci sequence such as 1, 2, 3, 5, 8, 13, and 21","They always represent exact one-hour blocks","They must always equal the number of lines of code","They are determined only by the customer"],c:0},
+        {q:"What happens first in Planning Poker?",a:["A story is selected for effort estimation","The highest estimate is automatically accepted","The customer assigns points to each developer","The team calculates its final velocity"],c:0},
+        {q:"During Planning Poker, what happens after everyone secretly selects an estimate?",a:["Everyone reveals their cards simultaneously","The developer with the highest estimate automatically wins","Only the customer reveals their estimate","The lowest estimate becomes the final answer"],c:0},
+        {q:"During Planning Poker, two developers choose very different estimates. What should happen next?",a:["The developers with the lowest and highest estimates explain their reasoning, then everyone revises their estimates","The highest estimate automatically becomes the final estimate","The lowest estimate automatically becomes the final estimate","The story is immediately removed from the Product Backlog"],c:0},
+        {q:"What is team velocity?",a:["The amount of story points completed by a team during an iteration","The number of developers working during an iteration","The amount of time remaining in an iteration","The number of user stories currently in the Product Backlog"],c:0},
+        {q:"How can a team improve its estimates over multiple iterations?",a:["Use previous performance, compare similar stories, and build domain knowledge from experience","Ignore previous iterations and estimate every story from scratch","Increase every estimate by the same number of story points","Allow customers to determine all future story-point values"],c:0},
+        {q:"What does the 'Yesterday's Weather' rule suggest about future team velocity?",a:["The team's recent performance is a useful guide because today's results are likely to be more similar to recent results than unrelated values","The team should always double its previous velocity","The team should never use previous performance when planning","The team's future velocity should always equal the largest historical velocity"],c:0},
+        {q:"When should risk management take place?",a:["At the start of a project, at the start of Agile iterations, and at the start of major phases","Only after the software has been released","Only when a customer reports a defect","Only after the final project review"],c:0},
+        {q:"What are the four steps of risk management presented in the lecture?",a:["Risk identification, risk analysis, risk management planning, and risk review","Risk coding, risk testing, risk deployment, and risk retirement","Risk estimation, risk programming, risk release, and risk maintenance","Risk planning, coding, documentation, and customer approval"],c:0},
+        {q:"Which of the following is a project risk?",a:["A risk affecting the project schedule, development process, or resources","A risk affecting only the quality of the finished software","A risk affecting only the organization's competitors","A risk affecting only the user interface design"],c:0},
+        {q:"A development team adopts a new game engine and is unsure whether it will perform well. What type of risk is this?",a:["Product risk","Project risk","Business risk","Scheduling risk"],c:0},
+        {q:"A competitor releases a new product and the company's sales may decrease. What type of risk is this?",a:["Business risk","Product risk","Project risk","Implementation risk"],c:0},
+        {q:"When analyzing the risk of a user story, what does completeness measure?",a:["How well the details of the story are known","How many developers are assigned to the story","How many lines of code the story requires","How much money the customer will spend"],c:0},
+        {q:"A user story is highly likely to change during development. Which risk-analysis factor does this describe?",a:["High volatility","High completeness","High simplicity","Low complexity"],c:0},
+        {q:"A user story is technically difficult and complicated to implement. Which risk-analysis factor should receive a higher value?",a:["Complexity","Completeness","Volatility","Priority"],c:0},
+        {q:"A user story has a risk score of 5 using the lecture's completeness, volatility, and complexity scoring. How is the risk classified?",a:["High risk","Low risk","Medium risk","No risk"],c:0},
+        {q:"A user story has Complete = 0, Medium Volatility = 1, and Complex = 2. What is its total risk score and classification?",a:["3, which is Medium risk","2, which is Medium risk","4, which is High risk","5, which is High risk"],c:0}
+    ],
+  },
+
+  CompGFX: {
+    test1: [
+{q:"Which of the following best describes imaging in computer graphics?", a:["Representing two-dimensional images for visual display","Constructing three-dimensional objects from physical materials","Simulating changes in objects over a period of time","Calculating the movement of objects through three-dimensional space"], c:0},
+{q:"What is the primary purpose of modeling in computer graphics?", a:["Representing three-dimensional objects and their geometry","Converting rendered images into different colour models","Simulating changes in an animation over time","Applying filters to improve the appearance of photographs"], c:0},
+{q:"Which statement best describes rendering?", a:["Constructing two-dimensional images from three-dimensional models","Creating three-dimensional geometry from sampled image pixels","Recording the physical movements of a person for later analysis","Dividing a two-dimensional image into smaller regions for processing"], c:0},
+{q:"In computer graphics, what does animation primarily involve?", a:["Simulating changes in objects or scenes over time","Representing the geometry of objects using polygon meshes","Converting continuous image values into discrete colour levels","Constructing two-dimensional images from static three-dimensional models"], c:0},
+{q:"Which of the following is an example of image processing rather than 3D modeling?", a:["Applying a filter to modify an existing image","Constructing a polygon mesh to represent a character","Creating a solid object using constructive solid geometry","Defining a parametric curve to represent part of a model"], c:0},
+{q:"What is the purpose of sampling in image representation?", a:["Representing an image by taking measurements at discrete spatial locations","Determining how a 3D model should respond to lighting","Defining the joints and degrees of freedom of an animated figure","Combining multiple solid objects into a single geometric representation"], c:0},
+{q:"Which statement best describes quantization in image representation?", a:["Mapping measured image values to a finite set of representable levels","Increasing the number of geometric surfaces in a 3D model","Calculating how light travels between objects in a scene","Defining the sequence of key poses used in an animation"], c:0},
+{q:"What is aliasing associated with in computer graphics?", a:["Artifacts that can occur when continuous visual information is represented discretely","The process of combining solid objects using geometric operations","The organization of objects into a hierarchical scene graph","The simulation of coordinated movements among many animated characters"], c:0},
+{q:"Which of the following is listed as an image-processing operation in the slideshow?", a:["Morphing an image from one appearance or shape toward another","Creating a polygon mesh to represent a complex 3D object","Applying inverse kinematics to determine joint configurations","Using a scene graph to organize objects in a 3D environment"], c:0},
+{q:"What is the role of texture mapping in the 3D rendering pipeline?", a:["Applying image-based surface detail to a three-dimensional model","Converting a sequence of keyframes into motion-capture recordings","Dividing three-dimensional space into smaller spatial regions","Reconstructing a continuous image from a set of sampled values"], c:0},
+{q:"Which statement best distinguishes direct and global illumination as topics in rendering?", a:["They concern approaches to representing how illumination affects a scene","They describe different ways to organize animation keyframes","They are methods for converting polygon meshes into point clouds","They refer to different techniques for sampling two-dimensional images"], c:0},
+{q:"What is the purpose of viewing transformations in the rendering pipeline?", a:["To establish how a scene is positioned and viewed from a viewing perspective","To determine the number of colours available in a raster image","To record the movement of joints during a live performance","To convert a collection of surfaces into a solid using geometric operations"], c:0},
+{q:"Which geometric representation describes an object using a collection of points in space?", a:["Point cloud","Polygon mesh","Scene graph","Keyframe sequence"], c:0},
+{q:"What is a polygon mesh primarily used to represent?", a:["A surface using connected polygonal elements","An animation using a sequence of timed poses","A photograph using a finite grid of colour values","A hierarchy describing relationships between scene objects only"], c:0},
+{q:"Which statement best describes parametric curves and surfaces in 3D modeling?", a:["They use parameters to define geometric curves or surfaces","They store only the final two-dimensional pixels of a rendered image","They record the positions of people using motion-capture equipment","They simulate lighting by tracing the paths of individual rays"], c:0},
+{q:"What is constructive solid geometry primarily concerned with?", a:["Constructing complex solids using operations on simpler geometric solids","Animating crowds by coordinating the movement of individual characters","Changing image colours through quantization and filtering","Recording facial expressions for use in keyframe animation"], c:0},
+{q:"What is the main idea behind procedural modeling?", a:["Generating geometric models through defined procedures or rules","Manually changing every pixel of a finished rendered image","Recording a person's movements and directly displaying the recordings","Using a viewing transformation to determine the camera perspective"], c:0},
+{q:"Which statement best describes a scene graph in computer graphics?", a:["A hierarchical structure for organizing objects and their relationships in a scene","A sequence of image samples used to reconstruct a photograph","A collection of recorded movements used to animate a character","A technique for combining colours into a raster image"], c:0},
+{q:"What is the main purpose of motion capture in animation?", a:["Recording real-world movement data for use in digital animation","Automatically generating all object geometry from polygonal surfaces","Converting a rendered scene into a collection of sampled pixels","Applying geometric operations to combine several solid objects"], c:0},
+{q:"How does inverse kinematics differ conceptually from forward kinematics?", a:["Inverse kinematics determines joint configurations from a desired end position, while forward kinematics calculates the resulting position from joint configurations","Inverse kinematics reconstructs images from samples, while forward kinematics applies image filters","Inverse kinematics records real-world motion, while forward kinematics creates polygon meshes","Inverse kinematics calculates colour values, while forward kinematics determines texture coordinates"], c:0},
+{q:"Computer graphics is used only for entertainment and has no applications in scientific or educational settings.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"Subdivision surfaces are included among the topics related to three-dimensional object representations and modeling.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Rendering and modeling refer to exactly the same process because both involve creating three-dimensional objects.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"The slideshow identifies computer-aided design, scientific visualization, training, education, e-commerce, and computer art as applications of computer graphics.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Photorealistic and non-photorealistic graphics are both identified as possible goals of computer graphics.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Why are different representations used to model 3D objects in computer graphics?", a:["Different tasks have different requirements for acquisition, rendering, manipulation, animation, and analysis","Different representations are required because every 3D object must use a different programming language","Different representations are used primarily to ensure all objects require identical amounts of storage","Different representations are necessary because computers cannot display objects defined using other methods"], c:0},
+{q:"How can the choice of a data structure influence a computer graphics application?", a:["It determines which algorithms can be applied and how efficiently they operate","It determines the physical dimensions of the computer running the application","It ensures that every representation produces an identical rendering time","It prevents the application from converting objects into other representations"], c:0},
+{q:"Which statement best describes a range image?", a:["A two-dimensional grid whose pixel values represent distances or depth from a viewpoint","An unstructured collection of three-dimensional points without a fixed spatial arrangement","A hierarchy of solid objects combined through Boolean operations","A connected collection of polygons that approximates an object's surface"], c:0},
+{q:"How can a range camera or scanner determine depth information?", a:["It illuminates an object and uses the captured pattern together with known camera and light positions and orientations","It records the object's colour and assumes that every pixel has the same depth","It divides the object into voxels and measures the temperature of each volume element","It connects sampled surface points into polygons and calculates depth from their colours"], c:0},
+{q:"What distinguishes a point cloud from a range image?", a:["A point cloud is an unstructured set of 3D points, while a range image organizes depth measurements in a 2D grid","A point cloud represents only solid interiors, while a range image represents only object colours","A point cloud requires a fixed grid, while a range image contains points with unrestricted spatial organization","A point cloud uses Boolean operations, while a range image uses hierarchical object instances"], c:0},
+{q:"Which statement describes how a point cloud can be acquired?", a:["A 3D scanner measures distances to unobstructed surface locations, using contact or non-contact methods","A rendering pipeline calculates the object's final colours and stores them as depth measurements","A scene graph combines simple solids and records the resulting object's temperature","A parametric equation generates every surface point without requiring measurements or geometric definitions"], c:0},
+{q:"What is a common purpose of collecting points on an object's external surface?", a:["The collected points can later be used to reconstruct the object's surface","The points automatically define every joint required for character animation","The points directly specify all illumination calculations for the final image","The points eliminate the need for any geometric representation of the object"], c:0},
+{q:"Which statement best describes a polygonal mesh?", a:["A connected collection of polygons, commonly triangles, used to represent a 3D surface","A regular three-dimensional array storing properties throughout a solid's interior","A mathematical equation whose zero values define an implicit surface","A hierarchy of simpler solid objects combined through Boolean operations"], c:0},
+{q:"How do subdivision surfaces produce smoother or more complex geometry?", a:["They repeatedly refine an original coarse mesh according to a subdivision rule","They increase image resolution by adding more pixels to the rendered image","They rotate a curve around an axis to generate a surface of revolution","They classify spatial regions into solid and empty cells using a binary tree"], c:0},
+{q:"How does a parametric surface define its geometry?", a:["Parameters such as u and v are varied to trace a continuous set of three-dimensional points","All points are selected independently without a mathematical relationship between them","The object is divided into volume pixels, each storing a separate occupancy value","The surface is defined exclusively by combining simpler solids through intersection and difference"], c:0},
+{q:"What happens to an ellipsoid's shape when its three radii are equal in the examples presented?", a:["The surface becomes a sphere","The surface becomes a flat polygonal mesh","The surface becomes an unstructured point cloud","The surface becomes a rectangular voxel grid"], c:0},
+{q:"Which statement best describes an implicit surface?", a:["It consists of points satisfying an equation such as f(x, y, z) = 0","It consists exclusively of connected triangular polygons with explicitly stored vertices","It is generated only by rotating a curve around a specified axis","It is a collection of depth values organized in a two-dimensional image"], c:0},
+{q:"For the implicit function described in the slideshow, what do negative and positive function values indicate?", a:["Negative values indicate points inside the surface, while positive values indicate points outside","Negative values indicate points outside the surface, while positive values indicate points inside","Negative values indicate the surface itself, while positive values always indicate the object's boundary","Negative and positive values both indicate points that must lie directly on the surface"], c:0},
+{q:"What is the stated advantage of parametric surfaces for rendering?", a:["Their parameters allow efficient traversal or marching along the surface","Their equations automatically eliminate all storage requirements for geometric information","Their structure makes every Boolean operation trivial regardless of the represented object","Their points remain unchanged in number and position under every geometric transformation"], c:0},
+{q:"According to the slideshow, what is an advantage of implicit surfaces?", a:["Their equation can make intersection calculations efficient","Their regular grid guarantees that rotations preserve the exact voxel count","Their hierarchy allows the same object definition to be reused without transformations","Their connected polygons make subdivision rules unnecessary for smooth surfaces"], c:0},
+{q:"What is a voxel?", a:["A volume pixel representing a sample in a regular three-dimensional array","A polygon that connects three or more points on a surface","A parameter that traces a curve across a three-dimensional model","A node that stores only the parent-child relationships of a scene graph"], c:0},
+{q:"Which set of properties could be stored within individual voxels?", a:["Occupancy, colour, density, and temperature","Parent nodes, child nodes, and animation keyframe timestamps only","Polygon connectivity, subdivision rules, and camera orientation only","Curve parameters, surface intersections, and Boolean operation sequences only"], c:0},
+{q:"Why are voxels useful for representing the interiors of solid objects?", a:["A 3D grid can store information throughout an object's volume rather than only along its surface","They represent every object using a continuous equation without any discrete samples","They require every object to have the same number of surface polygons","They store only external surface points and cannot represent interior properties"], c:0},
+{q:"What is a major storage disadvantage of a dense voxel grid with n samples along each dimension?", a:["Its storage requirement grows proportionally to n cubed","Its storage requirement remains constant regardless of grid resolution","Its storage requirement grows proportionally only to the square root of n","Its storage requirement depends exclusively on the number of surface polygons"], c:0},
+{q:"What does it mean that voxel representations are not affine invariant in the rotation example?", a:["A shape can occupy a different number of grid cells after rotation even though its actual shape has not changed","A voxel object cannot be rotated because its three-dimensional grid has no coordinate system","A rotation always changes the object's physical shape and therefore requires a new geometric definition","A voxel grid preserves every occupied cell during rotation without introducing approximation"], c:0},
+{q:"Which combination lists advantages of voxel representations identified in the slideshow?", a:["Simple and intuitive representation, consistent complexity, and straightforward Boolean operations","Continuous surface definition, minimal storage, and exact preservation under rotation","Efficient surface traversal, automatic smoothness, and compact parametric equations","Reusable object definitions, hierarchical animation, and independent local coordinate systems"], c:0},
+{q:"How does a binary space partitioning (BSP) tree represent an object?", a:["It recursively divides space using lines or planes and stores the resulting partitions in a binary tree","It stores a regular grid of volume samples with colour and density in each cell","It describes a surface by varying two parameters to generate continuous 3D points","It repeatedly refines a coarse polygon mesh using a sequence of subdivision rules"], c:0},
+{q:"What is the main idea behind constructive solid geometry (CSG)?", a:["Representing complex solids as hierarchies of Boolean operations on simpler shapes","Representing an object's surface as an unstructured collection of measured 3D points","Representing object depth as pixel values in a two-dimensional image","Representing animation by recording and replaying the positions of moving joints"], c:0},
+{q:"Which operations are identified as fundamental Boolean operations in constructive solid geometry?", a:["Union, intersection, and difference","Sampling, reconstruction, and quantization","Translation, rotation, and colour correction","Subdivision, interpolation, and texture mapping"], c:0},
+{q:"How does a swept volume differ conceptually from a surface of revolution?", a:["A swept volume moves a curve along another curve's path, while a surface of revolution rotates a curve about an axis","A swept volume stores interior temperature values, while a surface of revolution stores only object colours","A swept volume divides space with planes, while a surface of revolution combines solids using intersection","A swept volume samples a two-dimensional image, while a surface of revolution records motion capture"], c:0},
+{q:"What is the primary purpose of a scene graph in 3D modeling?", a:["Organizing objects into a hierarchy that describes their spatial and logical relationships","Storing every point in a model as an independent sample with no relationships","Representing a solid exclusively through a regular array of volume pixels","Converting captured depth measurements directly into a final two-dimensional image"], c:0},
+{q:"What is the difference between an object definition and an instance in a scene graph?", a:["A definition describes the object's geometry, while an instance places it in the scene using transformations such as translation, rotation, or scaling","A definition stores the object's rendered pixels, while an instance records its physical temperature","A definition records animation timing, while an instance converts the animation into a point cloud","A definition describes the camera position, while an instance replaces the object's geometry with voxels"], c:0},
+{q:"Which of the following is a possible component of a scene graph node?", a:["A geometry representation, modeling transformation, parent or child relationships, or bounding volume","A mandatory collection of depth pixels without any geometric or hierarchical information","A list of image filters that replaces all object definitions and transformations","A set of Boolean operations that cannot contain references to other objects"], c:0},
+{q:"Which is an advantage of scene graphs identified in the slideshow?", a:["They support reusable object definitions, hierarchical processing, and articulated animation","They eliminate the need for geometry by storing only the final rendered image","They guarantee that every object uses the same coordinate system and transformation","They prevent objects from appearing multiple times within a single scene"], c:0},
+{q:"The slideshow states that every fundamental 3D representation has sufficient expressive power to model any geometric object's shape, and that all geometric operations can be performed using any fundamental representation.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"A range image and a point cloud are identical because both must store every 3D point in a fixed two-dimensional grid.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"A voxel representation can store information about the interior of a solid, but a dense grid can require substantial storage as its resolution increases.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"An implicit surface is defined by varying parameters u and v to trace out a continuous set of three-dimensional points.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"Scene graphs can support the reuse of a geometric object definition by placing multiple instances of that object into a scene.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"What is a 3D polygonal mesh designed to represent?", a:["A two-dimensional surface embedded in three-dimensional space","A solid represented exclusively by a regular grid of volume samples","A sequence of images used to simulate changes over time","A mathematical equation that defines all points inside a solid"], c:0},
+{q:"Which statement best describes the structure of a polygonal mesh?", a:["It consists of polygons arranged to represent a surface in 3D space","It consists of independent points without any connections between them","It consists of image pixels arranged in a two-dimensional grid","It consists of simple solids combined using Boolean operations"], c:0},
+{q:"What is the primary purpose of a vertex table in a polygonal mesh?", a:["To record the vertices that define the geometry of the mesh","To record the lighting conditions used to render every polygon","To store the animation timing for each face of the model","To describe the hierarchy of objects within a scene graph"], c:0},
+{q:"What information does a face table typically contain in the mesh representation discussed in the slideshow?", a:["References to the vertices that make up each face","The colour and temperature of every point inside the solid","The sequence of camera positions used to view the model","The mathematical parameters used to define a continuous surface"], c:0},
+{q:"Why can multiple faces in a polygonal mesh reference the same vertex?", a:["Adjacent faces can share vertices along their common boundaries","Every face must have a completely separate copy of every vertex","Shared vertices are required to store the colour of each image pixel","Vertices can only be shared when the mesh represents a flat surface"], c:0},
+{q:"What is an important relationship between vertex tables and face tables?", a:["Face entries refer to vertices recorded in the vertex table","Vertex entries must contain the complete vertex list of every face","Face entries store only the transformations applied to the whole model","Vertex entries specify the order in which the model is rendered"], c:0},
+{q:"Why is sharing vertex references useful when representing a polygonal mesh?", a:["It allows connected faces to use common geometric points rather than duplicating them","It ensures that each polygon has a separate coordinate system","It removes the need to describe which vertices belong to each face","It converts a surface mesh into a collection of independent volume pixels"], c:0},
+{q:"Which statement best explains how a polygonal mesh represents a 3D object's surface?", a:["Vertices define geometric points, and faces connect selected vertices to form polygons","Pixels store depth values, and each pixel directly represents a complete polygon","Equations classify all points as inside or outside without using vertices","A hierarchy of Boolean operations combines simpler solid objects into a surface"], c:0},
+{q:"What is the role of MeshLab in the material covered by this slideshow?", a:["It is used to display and examine examples of polygonal meshes","It is used exclusively to create equations for implicit surfaces","It automatically records real-world motion for character animation","It is used to calculate the temperature stored in individual voxels"], c:0},
+{q:"What is the purpose of the standard OBJ file example in the slideshow?", a:["To demonstrate a file-based representation of a 3D polygonal mesh","To demonstrate how to record animation timing from motion capture","To demonstrate how to store an image using colour quantization","To demonstrate how to organize lighting sources in a rendering pipeline"], c:0},
+{q:"Which workflow best matches the OBJ example described in the slideshow?", a:["Examine an example_cube.obj file and display it in MeshLab","Capture an object's depth image and convert every pixel into a voxel","Create an animation and store each frame as a separate scene graph","Define an implicit surface equation and use it to calculate temperature"], c:0},
+{q:"Why is it useful to represent polygon faces using vertex references instead of describing every face independently?", a:["It provides a structured way to describe connected geometry and shared points","It guarantees that the mesh can only contain triangular faces","It prevents the mesh from being loaded into 3D visualization software","It removes the distinction between vertices and faces in the model"], c:0},
+{q:"What kind of information would be needed to construct a vertex table for a triangular prism?", a:["The coordinates of the prism's vertices","The camera's complete animation sequence","The temperature and density of every internal voxel","The lighting and shading settings for each rendered pixel"], c:0},
+{q:"What kind of information would be needed to construct a face table for a triangular prism?", a:["The vertex references that define each polygonal face","The colour values of every pixel in the final image","The parameters of every light source in the scene","The sequence of transformations applied to the viewing camera"], c:0},
+{q:"Why does the slideshow use a triangular prism as a practice question for vertex and face tables?", a:["It provides a geometric object whose vertices and faces can be represented in tables","It demonstrates how a continuous surface is defined by an implicit equation","It demonstrates how volume samples store properties throughout an object's interior","It demonstrates how a hierarchy of animated joints records human movement"], c:0},
+{q:"A 3D polygonal mesh represents a two-dimensional surface embedded in three-dimensional space.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"In a polygonal mesh, each face must use entirely separate vertices that cannot be shared with other faces.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"A face table can describe a polygon by listing references to the vertices that form that face.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The slideshow introduces vertex and face tables as part of understanding polygonal mesh representations.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The standard OBJ file example in the slideshow uses an example file named example_cube.obj.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"MeshLab is mentioned as a tool for displaying examples of polygonal meshes.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The slideshow states that polygonal meshes can only represent objects made entirely from triangular faces.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"A vertex table and a face table serve identical purposes because both store only the coordinates of vertices.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"The slideshow includes writing vertex and face tables for a triangular prism as a practice exercise.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"A polygonal mesh represents a surface using polygons rather than representing it exclusively as a regular 3D array of voxels.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"In the mesh representation described in the slideshow, faces refer to vertices that define their geometry.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The slideshow's outline includes more polygonal mesh examples, vertex and face tables, and the standard OBJ file format.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"An OBJ file example is used to demonstrate a representation unrelated to polygonal meshes.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"The slideshow introduces vertex and face tables as a way to describe the structure of a polygonal mesh.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"A triangular prism practice exercise requires thinking about how the object's vertices and faces can be represented using tables.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"What is the primary purpose of subdivision surfaces in computer graphics?", a:["To create more complex and smoother surfaces by repeatedly refining a coarse mesh","To represent an object's interior using a regular three-dimensional array of samples","To calculate lighting by tracing rays through a rendered scene","To record the positions of joints during real-world character movement"], c:0},
+{q:"Which industries commonly use subdivision surfaces according to the slideshow?", a:["Film and game industries","Database administration and network security industries","Spreadsheet development and word processing industries","Operating system development and computer manufacturing industries"], c:0},
+{q:"Which two steps are repeatedly applied in subdivision surface methods?", a:["Topology refinement and geometry refinement","Image sampling and image reconstruction","Lighting calculation and texture mapping","Object acquisition and motion capture"], c:0},
+{q:"What happens during topology refinement?", a:["Faces are split to create a more refined mesh structure","Existing vertex positions are averaged without changing the mesh structure","Lighting values are calculated for every surface point","The object is converted into a two-dimensional image"], c:0},
+{q:"What happens during geometry refinement?", a:["Vertex positions are updated using weighted averaging rules","Faces are divided into smaller faces without changing any vertex positions","The mesh is converted into a hierarchy of Boolean operations","The camera is moved to change the viewing transformation"], c:0},
+{q:"What is the limit surface in subdivision modeling?", a:["The smooth surface approached by repeatedly applying subdivision refinements","The original coarse mesh before any subdivision operation occurs","The boundary of the screen area in which the model is displayed","The set of edges that are permanently excluded from all geometric calculations"], c:0},
+{q:"Which of the following is a factor that distinguishes different subdivision schemes?", a:["The type of input mesh they accept","The programming language used to create the modeling application","The number of lights required to display the final surface","The file extension used to store the finished rendered image"], c:0},
+{q:"What is a consideration when choosing a topology refinement rule for a subdivision scheme?", a:["Whether the rule is straightforward to implement and produces the desired mesh structure","Whether the rule eliminates the need to store vertex positions","Whether the rule converts every surface into a point cloud","Whether the rule guarantees that all meshes contain the same number of faces"], c:0},
+{q:"What is an important goal of geometry refinement rules?", a:["Providing smoothness guarantees for the resulting limit surface","Ensuring that every face is represented by a separate coordinate system","Preventing the mesh from being refined more than once","Converting the mesh into an image without performing rendering"], c:0},
+{q:"Which type of mesh is used as the input for linear subdivision in the slideshow?", a:["A quadrilateral mesh","A triangular mesh only","A point cloud with no faces","A voxel grid containing volume samples"], c:0},
+{q:"What is the topology refinement rule for linear subdivision?", a:["Split every quadrilateral into four smaller quadrilaterals at the midpoints","Split every triangle into four triangles by inserting a new point at its centre","Replace every vertex with a separate polygonal solid","Rotate each quadrilateral around an axis to generate a surface of revolution"], c:0},
+{q:"Which statement about vertices in linear subdivision is consistent with the slideshow?", a:["The refinement process distinguishes new vertices, new vertices on existing edges, and existing vertices","Every vertex is removed and replaced by a point selected independently of its neighbours","Only vertices located at the centre of each original face are retained","All vertices must be positioned on the same plane after refinement"], c:0},
+{q:"How are vertex positions updated during linear subdivision?", a:["Using weighted averages that depend on the type of vertex being updated","By randomly selecting new coordinates within the object's bounding volume","By copying the camera position to every vertex in the mesh","By assigning every vertex the same coordinates as the original mesh centre"], c:0},
+{q:"Why is linear subdivision described as a useful example even though it is not common in practice?", a:["It demonstrates the basic process of topology and geometry refinement","It is the only subdivision scheme that can represent smooth surfaces","It eliminates the need for geometry refinement in every modeling application","It is required before any triangular mesh can be displayed in Blender"], c:0},
+{q:"Which type of mesh does Loop subdivision use as its input?", a:["A triangular mesh","A quadrilateral mesh only","A regular two-dimensional image grid","A point cloud with no connectivity information"], c:0},
+{q:"What is the topology refinement rule for Loop subdivision?", a:["Split every triangle into four smaller triangles","Split every quadrilateral into four smaller quadrilaterals","Replace each triangle with a single voxel","Combine adjacent triangles until the entire object becomes one polygon"], c:0},
+{q:"What do the terms odd and even vertices refer to in the context of Loop subdivision?", a:["Different vertex categories that use different geometry refinement weights","Two different file formats used to store triangular meshes","The two types of lighting used to shade a subdivided surface","Two alternative methods for representing an object's interior with voxels"], c:0},
+{q:"Why might a subdivision scheme need special rules for extraordinary vertices and boundaries?", a:["These mesh locations require consideration beyond the ordinary vertex refinement rules","These locations cannot be represented using vertices or faces","These locations are always removed before the first subdivision iteration","These locations can only appear in a mesh used for image processing"], c:0},
+{q:"What is the purpose of allowing non-stationary subdivision rules?", a:["To change subdivision behaviour locally for additional effects or specific mesh requirements","To force every mesh region to undergo exactly the same number of refinements","To ensure that all vertices remain fixed throughout every refinement step","To prevent a subdivision algorithm from using triangular faces"], c:0},
+{q:"What is adaptive subdivision intended to achieve?", a:["A good approximation of a smooth limit surface while staying within a limited triangle budget","The maximum possible number of triangles regardless of storage or processing costs","A representation in which all triangles have identical sizes and positions","A method that removes all curvature from a three-dimensional surface"], c:0},
+{q:"Which measures can help evaluate the quality of an adaptive subdivision approximation?", a:["The projected screen area of final triangles and the local surface curvature","The number of textures in the scene and the colour of the background","The file size of the original mesh and the name of the modeling software","The number of lights in the scene and the duration of the animation"], c:0},
+{q:"How does adaptive subdivision control the amount of refinement across a surface?", a:["It stops subdivision at different levels according to a quality-based stopping criterion","It subdivides every triangle until all regions contain the same number of vertices","It removes the original mesh and replaces it with a single polygon","It randomly selects regions to refine without considering approximation quality"], c:0},
+{q:"Why might vertices be projected onto the limit surface during adaptive subdivision?", a:["To help refined geometry approximate the intended smooth limit surface","To convert vertex coordinates into camera positions for rendering","To assign a unique colour to every triangle in the original mesh","To ensure that all vertices are moved to the centre of the object"], c:0},
+{q:"What is the purpose of balanced subdivision?", a:["To ensure neighbouring subdivision levels differ by no more than one","To ensure every face has exactly the same number of vertices","To prevent any two triangles from sharing an edge","To make every vertex have the same position after refinement"], c:0},
+{q:"Which is an advantage of subdivision surfaces identified in the slideshow?", a:["They provide a relatively simple method for describing complex surfaces and are fairly easy to implement","They guarantee that intersections between all meshes can be computed easily","They eliminate the need to define an initial mesh","They require less geometric information than every other representation in all situations"], c:0},
+{q:"Which difficulty associated with subdivision surfaces is identified in the slideshow?", a:["Specifying the initial mesh may not be intuitive, and computing mesh intersections is difficult","Subdivision surfaces cannot represent complex shapes or smooth boundaries","Subdivision surfaces can only be used in applications designed for film production","Subdivision surfaces cannot be implemented using computer algorithms"], c:0},
+{q:"Linear subdivision and Loop subdivision use identical input meshes and identical topology refinement rules.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"Subdivision surfaces are generated by repeatedly refining a coarse mesh to produce a more complex and smoother surface.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Topology refinement changes the mesh structure, while geometry refinement updates vertex positions through weighted averaging.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Adaptive subdivision can use local surface curvature and projected screen area when deciding how to refine a mesh.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Which of the following best describes a translation in two-dimensional computer graphics?", a:["Moving a point by adding horizontal and vertical displacement values to its coordinates","Changing a point's size by multiplying its coordinates by scaling factors","Changing the shape of an object by adding one coordinate to the other","Rotating a point around the origin using sine and cosine values"], c:0},
+{q:"What is the main purpose of a scaling transformation?", a:["To change an object's size by multiplying its coordinates by scaling factors","To move an object to a new position without changing its size","To reflect an object across an axis while preserving its dimensions","To change an object's position by adding translation values to its coordinates"], c:0},
+{q:"How does a shear transformation modify a two-dimensional object?", a:["It shifts coordinates in one direction according to the coordinate in another direction","It moves every point by the same horizontal and vertical displacement","It multiplies all coordinates by the same factor to change the object's size","It rotates every point around the origin while preserving its orientation"], c:0},
+{q:"Which mathematical functions are used in the two-dimensional rotation equations presented in the slideshow?", a:["Sine and cosine of the rotation angle","Exponential and logarithmic functions of the coordinates","Square roots and absolute values of the coordinates","Only addition and multiplication of translation values"], c:0},
+{q:"What is the main advantage of representing transformations using matrices?", a:["They provide a convenient and efficient way to represent and combine transformations","They eliminate the need to represent object coordinates mathematically","They ensure that every transformation preserves the original object's size","They allow translation to be represented by any two-by-two matrix"], c:0},
+{q:"What does multiplying a transformation matrix by a column vector accomplish?", a:["It applies the represented transformation to the point","It converts the point into a polygonal face table","It automatically generates a three-dimensional mesh from an image","It determines the lighting and shading values of the point"], c:0},
+{q:"Which group contains only linear two-dimensional transformations identified in the slideshow?", a:["Scaling, rotation, shear, and reflection","Translation, scaling, rotation, and perspective projection","Translation, reflection, texture mapping, and lighting","Translation, shearing, rendering, and image reconstruction"], c:0},
+{q:"Why can a general two-dimensional translation not be represented using only a two-by-two matrix acting on ordinary point coordinates?", a:["A two-by-two matrix represents linear transformations, and translation does not generally map the origin to itself","A two-by-two matrix can represent scaling but cannot represent rotation or reflection","A two-by-two matrix requires every point to have three-dimensional coordinates","A two-by-two matrix can only transform points whose coordinates are both positive"], c:0},
+{q:"Which property is satisfied by linear transformations according to the slideshow?", a:["The origin maps to the origin, and parallel lines remain parallel","The origin can move to any location, and parallel lines may intersect","Every line becomes curved, and coordinate ratios are not preserved","Every point moves by the same displacement regardless of the transformation"], c:0},
+{q:"What is the purpose of homogeneous coordinates in two-dimensional transformations?", a:["They add a third coordinate so transformations such as translation can be represented using three-by-three matrices","They add a third spatial dimension so every two-dimensional point becomes a three-dimensional object","They eliminate the need for matrices when applying rotation and scaling","They represent each point using its colour, depth, and lighting intensity"], c:0},
+{q:"In homogeneous coordinates, how is a point represented by (x, y, w) interpreted when w is nonzero?", a:["Its ordinary coordinates are (x/w, y/w)","Its ordinary coordinates are (x multiplied by w, y multiplied by w)","Its ordinary coordinates are (x+w, y+w)","Its ordinary coordinates are (w/x, w/y)"], c:0},
+{q:"What does a homogeneous coordinate representation of (x, y, 0) indicate in the slideshow?", a:["A point at infinity","The origin of the coordinate system","A point whose ordinary coordinates are (x, y)","A point that must be translated to become a valid finite point"], c:0},
+{q:"Which homogeneous coordinate vector is explicitly identified as not allowed in the slideshow?", a:["(0, 0, 0)","(1, 0, 1)","(0, 1, 1)","(2, 3, 1)"], c:0},
+{q:"How are affine transformations defined in the slideshow?", a:["As combinations of linear transformations and translations","As combinations of image filters and texture mapping","As transformations that only change an object's size","As transformations that always preserve the origin's position"], c:0},
+{q:"Which property distinguishes affine transformations from linear transformations?", a:["An affine transformation does not necessarily map the origin to the origin","An affine transformation cannot map lines to lines","An affine transformation always changes parallel lines into intersecting lines","An affine transformation cannot be composed with another transformation"], c:0},
+{q:"What does it mean that affine transformations are closed under composition?", a:["Combining affine transformations produces another affine transformation","Combining affine transformations always cancels their effects","Affine transformations can only be combined if they use identical matrices","Affine transformations cannot be combined with translations"], c:0},
+{q:"Why is matrix multiplication useful when combining several transformations?", a:["It allows a sequence of transformations to be represented by a composite matrix","It ensures that transformations can be applied in any order with identical results","It eliminates the need to know which transformation should occur first","It converts every nonlinear transformation into a translation"], c:0},
+{q:"What does it mean that matrix multiplication is associative?", a:["The grouping of matrices in a product can change without changing the product's result","The order of matrices can always be reversed without changing the result","Multiplying any two transformation matrices always produces the identity matrix","Every matrix multiplication produces the same result regardless of its operands"], c:0},
+{q:"Why does the order of transformations matter when combining transformation matrices?", a:["Matrix multiplication is not commutative, so reversing the order can change the result","Matrix multiplication is not associative, so changing grouping always changes the result","Transformation matrices can only be multiplied when their entries are identical","The order matters only when all transformations are translations"], c:0},
+{q:"How can a rotation around an arbitrary point (a, b) be performed using the method in the slideshow?", a:["Translate the point to the origin, rotate around the origin, and translate back","Rotate around the origin, scale the object, and remove the original vertices","Translate the point away from the origin, reflect it, and discard the translation","Scale around the origin, rotate around the new position, and convert to homogeneous coordinates"], c:0},
+{q:"Which matrix composition represents scaling around an arbitrary point (a, b) according to the slideshow?", a:["M = T(a,b) * S(sx,sy) * T(-a,-b)","M = S(sx,sy) * T(a,b) * T(-a,-b)","M = T(-a,-b) * S(sx,sy) * T(a,b)","M = T(a,b) * T(-a,-b) * S(sx,sy)"], c:0},
+{q:"What is the key difference between the homogeneous coordinate systems used for two-dimensional and three-dimensional transformations?", a:["Two-dimensional points use three homogeneous coordinates, while three-dimensional points use four","Two-dimensional points use four homogeneous coordinates, while three-dimensional points use three","Both systems use exactly two coordinates because the extra coordinates are only used for rotation","Three-dimensional transformations do not use homogeneous coordinates or matrices"], c:0},
+{q:"Which matrix size is generally used to represent three-dimensional modeling transformations in the slideshow?", a:["A four-by-four matrix","A two-by-two matrix","A three-by-three matrix only","A one-by-four matrix"], c:0},
+{q:"Which axes are specifically identified for basic three-dimensional rotation transformations?", a:["The X, Y, and Z axes","Only the X and Y axes","Only the vertical and horizontal screen axes","The camera, lighting, and viewing axes"], c:0},
+{q:"The slideshow states that linear transformations include scaling, rotation, shear, and reflection, but not translation.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"A two-by-two matrix is sufficient to represent every two-dimensional transformation, including general translation, using ordinary point coordinates.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"Affine transformations preserve lines and parallelism, but they do not necessarily map the origin to the origin.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Matrix multiplication is commutative, meaning that reversing the order of two transformation matrices always produces the same result.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"Three-dimensional modeling transformations can be represented using four-by-four matrices and combined through matrix multiplication, with the order of transformations mattering.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"What objects are included in Blender's default scene?", a:["A cube, a camera, and a light","A sphere, a camera, and a plane","A cylinder, a light, and a mesh grid","A cube, a camera, and a rendering engine"], c:0},
+{q:"Which mouse action is used to orient the 3D view in Blender according to the slideshow?", a:["Hold the middle mouse button and move the mouse","Hold Shift and the left mouse button","Scroll the mouse wheel while holding Alt","Hold Ctrl and the right mouse button"], c:0},
+{q:"How can you pan the 3D view in Blender using the mouse?", a:["Hold Shift and the middle mouse button","Hold Ctrl and the left mouse button","Scroll the mouse wheel without moving the mouse","Hold Alt and the right mouse button"], c:0},
+{q:"Which action is used to zoom the 3D view in Blender?", a:["Scroll with the middle mouse button or hold Ctrl with the middle mouse button","Hold Shift and the middle mouse button while moving horizontally","Click the left mouse button repeatedly over the object","Hold Alt and the left mouse button while rotating the view"], c:0},
+{q:"What is the main purpose of Object Mode in Blender as demonstrated in the slideshow?", a:["Select, move, rotate, and scale entire objects","Edit only individual vertices and edges of a mesh","Create materials and assign lighting properties to faces","Automatically generate a smooth subdivision surface"], c:0},
+{q:"What is the main purpose of Edit Mode in Blender?", a:["Modify mesh components such as vertices, edges, and faces","Change only the position of the camera and lights","Adjust the zoom and orientation of the 3D view","Add objects without changing existing mesh geometry"], c:0},
+{q:"Which mesh components can be edited in Edit Mode according to the slideshow?", a:["Vertices, edges, and faces","Only vertices and cameras","Only faces and lights","Objects, cameras, and materials only"], c:0},
+{q:"What happens when the Subdivide operation is applied to selected mesh geometry?", a:["It adds additional geometry by splitting the selected mesh elements","It removes the selected vertices and merges the surrounding faces","It converts the entire mesh into a camera object","It automatically translates the selected geometry to the origin"], c:0},
+{q:"In the demonstrated subdivision example, what action follows selecting the top four vertices of the cube?", a:["Right-click and choose Subdivide","Open Object Mode and select Scale","Add a cylinder through the Mesh menu","Apply a Subdivision Surface modifier to the entire scene"], c:0},
+{q:"What is the purpose of the Move or Translate operation in Blender?", a:["Change the position of a selected object or mesh component","Change the viewing direction without changing object coordinates","Create new vertices along every selected edge","Smooth a mesh by adding a subdivision modifier"], c:0},
+{q:"Which operation changes an object's orientation?", a:["Rotate","Inset Faces","Loop Cut","Subdivide"], c:0},
+{q:"Which operation changes an object's size?", a:["Scale","Translate","Knife","Inset Faces"], c:0},
+{q:"What does the Inset Faces tool do in the demonstrated modeling workflow?", a:["Creates a face inside an existing face","Deletes half of the selected mesh faces","Adds a camera at the center of the selected face","Smooths all edges and vertices of the mesh"], c:0},
+{q:"What is the purpose of the Extrude Region operation?", a:["Extends a selected face or region to create additional geometry","Moves the 3D view without changing the mesh","Removes vertices from the selected region","Converts a polygon mesh into an image reference"], c:0},
+{q:"Which pair of tools is demonstrated for adding structure around a shape in Edit Mode?", a:["Loop Cut and Extrude","Zoom and Pan","Rotate and Toggle X-Ray","Camera and Light"], c:0},
+{q:"What is the purpose of the Loop Cut tool in the slideshow's modeling examples?", a:["Add cuts that introduce additional mesh geometry around a shape","Change the camera's viewing angle without altering the mesh","Apply a material to every face in a selected region","Automatically create a smooth surface without adding edges"], c:0},
+{q:"What is the Knife Tool used for in the demonstrated workflow?", a:["Creating cuts in a mesh by selecting points and confirming the cut","Scaling an entire object around its center","Adding a light source inside a mesh","Automatically converting triangles into quadrilaterals"], c:0},
+{q:"After making a cut with the Knife Tool in the demonstrated example, what additional operation is performed?", a:["Select and delete half of the faces","Apply a Subdivision Surface modifier to the camera","Move the light to the origin","Convert the mesh into a reference image"], c:0},
+{q:"How does the slideshow demonstrate creating a cylinder in Blender?", a:["Use Object Mode and choose Add, then Mesh, then Cylinder","Use Edit Mode and choose Add, then Camera, then Cylinder","Use the Knife Tool to convert a cube into a cylinder","Use Inset Faces to create a cylinder automatically"], c:0},
+{q:"What modeling approach is suggested for creating repeated patterns on a mesh?", a:["Use Loop Cut several times, select faces, and extrude them","Repeatedly scale the camera and rotate the light","Delete all faces and use only the original vertices","Apply the Subdivision Surface modifier without adding any cuts"], c:0},
+{q:"What is the purpose of the Subdivision Surface modifier demonstrated with an IcoSphere?", a:["Make the mesh appear smoother by increasing subdivision levels","Create an image reference from the existing mesh","Remove all faces and retain only the original vertices","Move the object along the X, Y, and Z axes"], c:0},
+{q:"In the IcoSphere example, what effect does increasing the subdivision level have?", a:["The object becomes progressively smoother","The object automatically changes into a cylinder","The object loses its camera and lighting settings","The object becomes less detailed as the level increases"], c:0},
+{q:"Why does the slideshow caution that subdivision may not work well when modeling a chair with a more regular shape?", a:["The Subdivision Surface modifier does not always produce the desired shape for every model","Subdivision can only be applied to objects containing no faces","The modifier works only on image references, not on meshes","Subdivision automatically deletes every extruded region"], c:0},
+{q:"Which modeling method is demonstrated for creating a chair seat, legs, and back?", a:["Start with a cube and use Loop Cut and Extrude","Start with a camera and use Inset Faces and Pan","Start with a light and use the Knife Tool to create a reference image","Start with an IcoSphere and use only the Subdivision Surface modifier"], c:0},
+{q:"Which sequence is demonstrated as one way to model a chess piece from a cylinder?", a:["Select the top face, then extrude and scale it","Select the camera, then subdivide and translate it","Select the bottom face, then delete every vertex","Select the light, then use Loop Cut and Toggle X-Ray"], c:0},
+{q:"What is one use of an image reference when modeling in Blender?", a:["Providing visual guidance for constructing a 3D model, such as a cat","Automatically converting any image into a fully modeled 3D object","Replacing all vertices and faces with a camera","Removing the need to manipulate mesh geometry"], c:0},
+{q:"Which approach does the slideshow recommend when beginning to create a 3D model?", a:["Start with a primitive mesh and build upon it","Begin by deleting every object and creating all geometry without primitives","Create a reference image and avoid using mesh components","Apply subdivision repeatedly before adding any geometry"], c:0},
+{q:"The slideshow recommends using Loop Cut or the Knife Tool to add vertices, edges, and faces when building a mesh.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The Subdivision Surface modifier is guaranteed to work well for every type of 3D model, including regular shapes such as a chair.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"The slideshow recommends repeatedly moving vertices and extruding faces to extend smaller parts of a larger shape.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"What is the purpose of UV mapping in 3D modeling?", a:["Mapping parts of a 2D image onto the surface of a 3D model","Converting a 3D model into a lighting parameter file","Changing the position of a model along the X, Y, and Z axes","Increasing the number of vertices in a mesh automatically"], c:0},
+{q:"Which Blender feature is used to assign a texture image to a 3D object's material?", a:["Image Texture","Subdivision Surface","Loop Cut","Extrude Region"], c:0},
+{q:"Where does the slideshow instruct users to go to add a new material to an object?", a:["Material Properties in the right panel","UV Editor in the left panel","Object Mode in the top toolbar","Image menu in the UV Editor"], c:0},
+{q:"After creating a new material, which sequence is described for selecting an image texture?", a:["Surface, Background, Color dot, Image Texture, then Open","Surface, Subdivision, Extrude, then Open","UV Editor, Mark Seam, Translate, then Save","Object Mode, Mesh, Cylinder, then Image Texture"], c:0},
+{q:"After selecting an image texture for a material, what additional step may be needed to see it on the object?", a:["Adjust the settings near the top right to display the texture","Delete the material and recreate the object's mesh","Export the object as an OBJ file before viewing it","Apply the Knife Tool to every face of the object"], c:0},
+{q:"Which Blender workspace does the slideshow recommend selecting to work with UV layouts?", a:["UV Editing","Animation","Compositing","Scripting"], c:0},
+{q:"In the UV Unwrap example, what transformation is applied after selecting one vertex in the left panel?", a:["Translate","Rotate","Scale","Extrude"], c:0},
+{q:"In the next UV Unwrap example, what transformation is applied after selecting four vertices in the left panel?", a:["Rotate","Translate","Subdivide","Inset Faces"], c:0},
+{q:"What is a UV seam used for in the demonstrated UV mapping workflow?", a:["Marking edges where the sphere's surface can be separated for mapping","Identifying the edges that should be deleted from the mesh","Specifying the direction of the sphere's rotation","Defining where the object's material must be removed"], c:0},
+{q:"How does the slideshow demonstrate selecting edges around the UV sphere to mark a seam?", a:["Hold Shift and left-click edges around the sphere's equator","Hold Ctrl and right-click vertices around the sphere's poles","Hold Alt and scroll over the sphere's surface","Hold Shift and middle-click faces around the sphere's center"], c:0},
+{q:"After selecting the desired edges around the sphere, which command marks the UV seam?", a:["Mark Seam from the UV menu","Extrude Region from the Mesh menu","Add Material from the Image menu","Subdivision Surface from the Object menu"], c:0},
+{q:"Which image is used in the slideshow to demonstrate mapping a 2D image onto a sphere?", a:["earth_2Dmap.jpg","cat.png","texture_cube.png","sphere_reference.jpg"], c:0},
+{q:"Where does the slideshow instruct users to open the 2D Earth image for UV mapping?", a:["In the UV Editor, through Image > Open","In Material Properties, through Subdivision > Open","In Object Mode, through Mesh > Open","In the 3D viewport, through Camera > Open"], c:0},
+{q:"In the Earth texture example, what is the relationship between the 2D image and the 3D sphere?", a:["Parts of the 2D Earth image are mapped onto corresponding faces of the sphere","The 2D image replaces the sphere's geometry entirely","The 2D image is used only to determine the sphere's rotation","Each pixel in the image becomes a separate camera object"], c:0},
+{q:"Which object does the slideshow instruct users to add for the Earth UV mapping example?", a:["A UV Sphere","A Cylinder","A Cube","An IcoSphere"], c:0},
+{q:"In the Earth texture example, what must be added to the sphere in addition to loading the image in the UV Editor?", a:["A material that uses the Earth image as its texture","A camera with the image assigned as its geometry","A subdivision modifier that contains the image file","A light source named after the image file"], c:0},
+{q:"What file extension is used for the mesh when exporting from Blender in the demonstrated workflow?", a:[".obj",".mtl",".jpg",".uv"], c:0},
+{q:"What additional file does Blender create alongside the OBJ file in the demonstrated export process?", a:["An MTL file containing material or lighting parameters","A JPG file containing the complete 3D mesh","A UV file containing only the camera settings","A PNG file containing all the object's vertices"], c:0},
+{q:"What is the role of the MTL file in the export workflow described in the slideshow?", a:["It stores material-related information, including lighting parameters","It stores the complete geometry of the mesh instead of the OBJ file","It contains the original 2D texture image itself","It records the steps used to translate vertices in Blender"], c:0},
+{q:"Which application is used in the slideshow to open the exported mesh with its texture?", a:["MeshLab","Photoshop","Unity","Visual Studio"], c:0},
+{q:"How does the slideshow instruct users to open the exported OBJ file in MeshLab?", a:["Drag and drop the OBJ file directly into MeshLab","Open the MTL file in Blender and export it as a JPG","Copy the mesh vertices into the UV Editor manually","Import the texture image first and convert it into an OBJ file"], c:0},
+{q:"Which line may need to be added to the MTL file to specify the Earth texture image?", a:["map_Kd earth_2Dmap.jpg","texture_uv earth_2Dmap.obj","image_map earth_2Dmap.mtl","surface_Kd earth_2Dmap.png"], c:0},
+{q:"What is the purpose of the line `map_Kd earth_2Dmap.jpg` in the demonstrated workflow?", a:["It identifies the image file used as the diffuse texture map","It defines the number of vertices in the exported mesh","It specifies the position of the camera relative to the sphere","It instructs Blender to subdivide the sphere into additional faces"], c:0},
+{q:"Which of the following best describes the workflow for applying an image texture to a Blender model?", a:["Create a material, select an Image Texture, open the image, and adjust the display settings","Export the model first, delete its material, and create a UV seam in MeshLab","Create a camera, add a light, and use the Knife Tool to load the image","Subdivide every face, translate the vertices, and save the scene as a JPG"], c:0},
+{q:"The slideshow demonstrates that UV mapping can be used to apply a 2D Earth map to a 3D sphere.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"In the UV Unwrap examples, selected vertices in the left panel can be translated or rotated.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The slideshow states that Blender exports an OBJ file without creating any accompanying MTL file.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"The slideshow recommends marking a seam around selected edges of the UV sphere before continuing with the UV mapping workflow.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The slideshow demonstrates opening an exported OBJ file in MeshLab by dragging and dropping it into the application.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"What does it mean for a line, curve, or surface to be represented parametrically?", a:["Its points are defined by functions of one or more parameters","Its geometry is stored only as a collection of disconnected triangles","Its shape is determined exclusively by lighting and material properties","Its coordinates must remain constant throughout the model"], c:0},
+{q:"As parameter u varies from 0 to 1, what does a 2D parametric curve produce?", a:["Points with coordinates defined by fx(u) and fy(u)","Points with three coordinates defined by fx(u), fy(u), and fz(u)","A surface defined by independent parameters u and v","A fixed point that does not depend on the parameter"], c:0},
+{q:"Which coordinate functions are used to describe points on a 3D parametric line or curve in the slideshow?", a:["fx(u), fy(u), and fz(u)","fx(u,v) and fy(u,v) only","fx(u), fy(v), and fz(w)","fx(v), fy(v), and fz(v) only"], c:0},
+{q:"How many independent parameters are used in the slideshow's general representation of a parametric 3D surface?", a:["Two parameters, u and v","One parameter, u","Three parameters, u, v, and w","Four parameters, x, y, z, and w"], c:0},
+{q:"What determines the boundary of a parametric line in the slideshow's formulation?", a:["Functions that define its x and y coordinates using a parameter","A collection of material properties and lighting values","A matrix that must contain only translation values","A set of faces that must form a closed polygon mesh"], c:0},
+{q:"Which shape is used as an example of a parametric curve in the slideshow?", a:["An ellipse","A cube","A polygon mesh","A subdivision sphere"], c:0},
+{q:"How can arbitrary parametric curves be defined using the approach introduced in the slideshow?", a:["Use blending functions to combine control points","Use only a single fixed coordinate without control points","Apply lighting parameters to a polygon mesh","Represent the curve exclusively as a rectangular surface"], c:0},
+{q:"What is the role of control points in the blending-function approach to parametric curves?", a:["They provide points that the blending functions use to define the curve","They determine the lighting settings of the curve's material","They specify the number of cameras needed to render the curve","They replace the parameter with a fixed coordinate value"], c:0},
+{q:"What does the term 'piecewise parametric curve' mean in the slideshow?", a:["A curve divided into segments, each defined by a subset of control points","A single curve that must use every control point at the same time","A curve whose coordinates are defined only by surface parameters","A curve represented exclusively by one straight line segment"], c:0},
+{q:"Which two types of cubic parametric curves are specifically listed in the slideshow?", a:["Cubic B-spline and cubic Bézier","Cubic ellipse and cubic polygon","Cubic translation and cubic rotation","Cubic mesh and cubic voxel"], c:0},
+{q:"How many control points are specified for the cubic Bézier curve example?", a:["Four control points","Two control points","Three control points","Eight control points"], c:0},
+{q:"As parameter t goes from 0 to 1 in the cubic Bézier example, what happens?", a:["Points on the curve are traced out","The control points are automatically deleted","The curve is converted into a 3D surface","The parameter becomes a lighting coefficient"], c:0},
+{q:"Which two methods for generating cubic Bézier curves are described in the slideshow?", a:["Using a formula and drawing the curve geometrically","Using a camera and applying a texture","Using polygon subdivision and deleting faces","Using translation matrices and rotating the coordinate system"], c:0},
+{q:"What can be done with multiple Bézier curves to create a longer curve?", a:["Connect the curves together","Convert all control points into surface normals","Remove the parameter from each curve","Replace the curves with a single quadrilateral face"], c:0},
+{q:"What is the purpose of blending functions in a cubic curve representation?", a:["To determine how control points contribute to points on the curve","To calculate the lighting parameters stored in a material file","To determine which camera observes the curve","To specify how a polygon mesh is exported to another application"], c:0},
+{q:"What does a parametric surface use to define its 3D coordinates?", a:["Functions of two parameters, u and v","A single parameter that defines only x and y","Four independent parameters that each represent a coordinate axis","A fixed list of lighting parameters without coordinate functions"], c:0},
+{q:"Which set of functions matches the slideshow's representation of a parametric surface?", a:["x=fx(u,v), y=fy(u,v), z=fz(u,v)","x=fx(u), y=fy(u), z=fz(u) only","x=fx(v), y=fy(w), z=fz(t)","x=fx(u,v), y=fy(u), z=fz(v,w)"], c:0},
+{q:"Which examples are used to illustrate parametric surfaces in the slideshow?", a:["A quadrilateral and an ellipsoid","A cube and a camera","A cylinder and a polygonal line","A Bézier curve and a B-spline curve"], c:0},
+{q:"What is a piecewise parametric surface divided into?", a:["Parametric patches","Independent lighting systems","Camera coordinate frames","Unrelated control-point matrices"], c:0},
+{q:"How are parametric patches defined according to the slideshow?", a:["By blending control points to determine points on the patch","By storing only a list of disconnected vertices","By assigning a separate camera to every surface point","By replacing all surface coordinates with material colours"], c:0},
+{q:"What does Q(u,v) represent in the discussion of parametric patches?", a:["A point on the patch defined using the parameters u and v","The number of control points in a cubic curve","A matrix that stores only surface lighting parameters","The fixed origin of every patch regardless of its shape"], c:0},
+{q:"In the parametric patch formulation, what does matrix M describe?", a:["The blending functions for a parametric cubic curve, such as Bézier or B-spline","The camera projection used to render the surface","The material properties used to colour the surface","The number of vertices that must be deleted from the control mesh"], c:0},
+{q:"Which two types of patches are specifically illustrated in the slideshow?", a:["B-spline patches and Bézier patches","Voxel patches and camera patches","Translation patches and rotation patches","Polygon patches and lighting patches"], c:0},
+{q:"Which is listed as an advantage of parametric surfaces?", a:["Points on the surface are easy to enumerate","Continuity constraints are always trivial to maintain","Surface intersections are always easy to find","The control mesh can use any arrangement without restrictions"], c:0},
+{q:"Which limitation of parametric surfaces is identified in the slideshow?", a:["The control mesh must consist of quadrilaterals","The surface cannot describe complex shapes","Points on the surface cannot be calculated","Parametric surfaces cannot be used for 3D modeling"], c:0},
+{q:"Which difficulty is listed among the disadvantages of parametric surfaces?", a:["Maintaining continuity constraints can be difficult","Generating points on the surface is impossible","The method cannot use blending functions","Parametric surfaces cannot be divided into patches"], c:0},
+{q:"Which application of parametric surfaces is described in the slideshow?", a:["Designing smooth 3D shapes such as cars and ships","Representing only the movement of a camera","Storing material and lighting parameters for exported meshes","Creating polygonal edges without defining surface geometry"], c:0},
+{q:"How are parametric curves used in keyframe animation according to the slideshow?", a:["An artist specifies control points and smooth curves are generated along them","An artist specifies lighting values and the software generates polygon faces","The animator manually enters every point without using a curve","The curves automatically replace all keyframes with a single fixed point"], c:0},
+{q:"A parametric 3D surface uses two parameters, u and v, to define its points in three-dimensional space.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"A cubic Bézier curve in the slideshow's example is defined using four control points, and its points are traced as t ranges from 0 to 1.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The slideshow states that parametric surfaces have no difficulty maintaining continuity constraints or finding intersections.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"What does OpenGL stand for?", a:["Open Graphics Library","Open Geometry Language","Object Graphics Layer","Optimized Graphics Library"], c:0},
+{q:"What is OpenGL primarily used for?", a:["Creating 2D and 3D graphics, including rendering, modeling, imaging, and animation","Designing databases and managing files for graphics applications","Automatically converting photographs into complete 3D models","Creating user interfaces without handling graphical objects"], c:0},
+{q:"How does OpenGL compare to graphics software such as Blender?", a:["OpenGL provides a more general, low-level programming approach","OpenGL is a high-level modeling interface that requires no programming","OpenGL only supports editing textures on existing models","OpenGL is a file format used exclusively to store Blender scenes"], c:0},
+{q:"What does OpenGL allow programmers to create?", a:["Their own 2D and 3D virtual worlds","Only flat images with no geometric descriptions","Only prebuilt objects that cannot be transformed","Only animations that use previously recorded video"], c:0},
+{q:"Which of the following does OpenGL consider a geometric primitive?", a:["Points, lines, polygons, and images","Cameras, keyboards, and mouse controls","Materials, lighting settings, and animation timelines only","Complete scenes, applications, and operating systems"], c:0},
+{q:"How can OpenGL be used to construct a 3D scene?", a:["Create objects from geometric primitives and arrange them in 3D space","Import a finished video and convert each frame into a polygon","Use lighting alone to generate all object geometry","Create a texture image and treat it as the entire virtual world"], c:0},
+{q:"What does selecting a vantage point accomplish when creating a scene in OpenGL?", a:["It determines the viewpoint from which the composed scene is viewed","It changes the number of vertices used to define every object","It assigns the same colour to every polygon in the scene","It converts all 3D objects into independent 2D images"], c:0},
+{q:"According to the slideshow, how can the colour of an object be determined in OpenGL?", a:["By assigning colour directly, using lighting, applying textures, or combining these methods","Only by assigning a fixed colour before creating the geometry","Only by calculating shadows from the camera position","Only by loading an external image as the object's geometry"], c:0},
+{q:"What is the purpose of converting mathematical object descriptions and colour information into pixels?", a:["To produce the displayed image on the screen","To convert all objects into editable control points","To determine the source code's programming language","To replace geometric primitives with texture files"], c:0},
+{q:"What is a wireframe rendering in the examples intended to demonstrate?", a:["A view constructed from primitives such as lines and polygons that can reveal objects through other objects","A rendering that displays only textures and hides all object boundaries","A rendering that removes all geometry and displays only lighting","A view in which every object is represented as a solid, opaque colour"], c:0},
+{q:"Which visual features are demonstrated in the coloured OpenGL examples?", a:["Colour, lighting, shadows, and textures","Only wireframe edges and coordinate labels","Only object translations and rotation angles","Only untextured polygons with no lighting effects"], c:0},
+{q:"In which year does the slideshow state that OpenGL was developed?", a:["1992","1982","2002","2012"], c:0},
+{q:"Which characteristic of OpenGL allows it to be used across different operating systems and platforms?", a:["It is multi-platform","It only supports a single graphics card manufacturer","It requires all objects to be created in Blender first","It uses a platform-specific model format exclusively"], c:0},
+{q:"Which of the following is listed as an area where OpenGL is widely used?", a:["Virtual reality, visualization, flight simulation, and video games","Word processing, spreadsheet calculation, and database indexing","Audio compression, email delivery, and network routing","Document formatting, file archiving, and operating system installation"], c:0},
+{q:"Which alternative graphics and game programming technology is mentioned for comparison with OpenGL?", a:["Microsoft DirectX","Adobe Photoshop","Microsoft Excel","Blender's UV Editor"], c:0},
+{q:"What is the main purpose of drawing primitives in OpenGL?", a:["To use basic geometric elements as building blocks for shapes and scenes","To automatically generate lighting without any object geometry","To create texture files without defining any objects","To store complete scenes as a sequence of camera movements"], c:0},
+{q:"How could an approximate circle be drawn using geometric primitives, based on the slideshow's discussion?", a:["Connect multiple points with line segments arranged around a circular path","Use a single point and enlarge it until it becomes a circle","Apply a translation to a straight line without changing its shape","Place several textures on a square without changing its geometry"], c:0},
+{q:"Which OpenGL function is shown for translating an object in 2D?", a:["glTranslatef(tx, ty, 0.0)","glRotatef(angle, 0.0, 0.0, 1.0)","glScalef(sx, sy, 1.0)","glTranslatef(angle, sx, sy)"], c:0},
+{q:"Which OpenGL function is shown for rotating a 2D object around the z-axis?", a:["glRotatef(angle, 0.0, 0.0, 1.0)","glTranslatef(tx, ty, 0.0)","glScalef(sx, sy, 1.0)","glRotatef(tx, ty, angle)"], c:0},
+{q:"Which OpenGL function is shown for scaling an object in 2D?", a:["glScalef(sx, sy, 1.0)","glTranslatef(tx, ty, 0.0)","glRotatef(angle, 0.0, 0.0, 1.0)","glScalef(angle, tx, ty)"], c:0},
+{q:"What does the third argument of glTranslatef(tx, ty, 0.0) represent in the 2D example?", a:["The translation along the z-axis, set to zero for the 2D transformation","The rotation angle used to orient the object","The scaling factor applied to the object's height","The number of primitives used to draw the object"], c:0},
+{q:"What does the slideshow demonstrate about the order of 2D transformations?", a:["Changing the order of transformations can produce different results","Transformations always produce identical results regardless of their order","Translation must always be performed after scaling","Rotation can only be applied before an object is created"], c:0},
+{q:"Which OpenGL function is shown for translating an object in 3D?", a:["glTranslatef(tx, ty, tz)","glTranslatef(tx, ty, 0.0) only","glRotatef(angle, 1.0, 0.0, 0.0)","glScalef(sx, sy, sz)"], c:0},
+{q:"Which axis is specified by the rotation call glRotatef(angle, 1.0, 0.0, 0.0)?", a:["The x-axis","The y-axis","The z-axis","The axis defined by the object's translation"], c:0},
+{q:"Which rotation call specifies rotation around the y-axis?", a:["glRotatef(angle, 0.0, 1.0, 0.0)","glRotatef(angle, 1.0, 0.0, 0.0)","glRotatef(angle, 0.0, 0.0, 1.0)","glTranslatef(0.0, angle, 0.0)"], c:0},
+{q:"Which OpenGL function is shown for scaling an object in 3D?", a:["glScalef(sx, sy, sz)","glScalef(sx, sy, 1.0) only","glTranslatef(sx, sy, sz)","glRotatef(sx, sy, sz, 0.0)"], c:0},
+{q:"What does a negative scaling factor such as -0.5 in glScalef(2.0, -0.5, 1.0) indicate?", a:["Scaling along that axis includes a reflection of the coordinate direction","The object cannot be displayed because all scaling factors must be positive","The object is translated by negative half a unit along that axis","The object rotates by negative half a degree around that axis"], c:0},
+{q:"OpenGL can convert mathematical descriptions of objects and their colour information into pixels for display.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Applying a translation and then a rotation always produces the same result as applying the rotation and then the translation.", a:["True","False","BLANK","BLANK"], c:1},
+{q:"OpenGL is described in the slideshow as a multi-platform graphics library used in applications such as virtual reality and video games.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"Which objects are included in Blender's default scene?", a:["A cube, a camera, and a light","A sphere, a cylinder, and a camera","A plane, a light, and a mesh grid","A cube, a material, and a texture"], c:0},
+{q:"Which mouse control is used to zoom the 3D viewport in Blender, according to the slides?", a:["Scroll with the middle mouse button","Hold Shift and the middle mouse button","Hold the middle mouse button and press Enter","Left-click the object and drag horizontally"], c:0},
+{q:"How do you orient or rotate the view in Blender's 3D viewport using the demonstrated mouse controls?", a:["Hold the middle mouse button and move the mouse","Hold Shift and the middle mouse button","Scroll the mouse wheel while holding Ctrl","Hold the left mouse button and press Shift"], c:0},
+{q:"How do you pan the 3D viewport using the mouse controls described in the slides?", a:["Hold Shift and the middle mouse button","Hold Ctrl and the left mouse button","Hold the middle mouse button without moving the mouse","Scroll the mouse wheel while holding Alt"], c:0},
+{q:"Which Blender mode is used to select, move, rotate, and scale an entire object?", a:["Object Mode","Edit Mode","UV Editing mode only","Material Preview mode"], c:0},
+{q:"Which Blender mode allows you to modify individual vertices, edges, and faces of a mesh?", a:["Edit Mode","Object Mode","Camera View mode","Material Properties mode"], c:0},
+{q:"You want to move a single vertex without moving the entire object. Which approach should you use?", a:["Enter Edit Mode, select the vertex, and translate it","Stay in Object Mode and scale the entire object","Open Material Properties and change the surface colour","Open the UV Editor and mark a seam on the object"], c:0},
+{q:"Which operation would you use to change the position of an object or selected mesh component?", a:["Move or Translate","Rotate","Scale","Subdivide"], c:0},
+{q:"Which operation would you use to change the orientation of a selected object?", a:["Rotate","Translate","Inset Faces","Loop Cut"], c:0},
+{q:"Which operation changes the size of a selected object or mesh component?", a:["Scale","Knife","Mark Seam","Extrude Region"], c:0},
+{q:"You want to add more geometry by splitting selected mesh elements. Which operation from the slides should you use?", a:["Subdivide","Inset Faces","Translate","Mark Seam"], c:0},
+{q:"Which tool creates additional cuts in a mesh to add edges and faces around a shape?", a:["Loop Cut","Pan","Image Texture","Material Properties"], c:0},
+{q:"You want to create a cut through a mesh by choosing points and confirming the cut. Which tool should you use?", a:["Knife Tool","Subdivision Surface modifier","UV Editor","Extrude Region"], c:0},
+{q:"Which tool creates a smaller face inside an existing face?", a:["Inset Faces","Loop Cut","Knife Tool","Translate"], c:0},
+{q:"You select a face and want to extend it outward or inward to create additional geometry. Which tool should you use?", a:["Extrude Region","Mark Seam","Rotate View","Image Texture"], c:0},
+{q:"You want to create a more detailed shape by adding cuts and extending selected faces. Which combination of tools best matches the modeling techniques shown in the slides?", a:["Loop Cut and Extrude","Zoom and Pan","Mark Seam and Image Texture","Camera and Light"], c:0},
+{q:"Which Blender option is demonstrated for making a mesh smoother by increasing its subdivision level?", a:["Subdivision Surface modifier","Knife Tool","Inset Faces","UV Unwrap"], c:0},
+{q:"You want to add a cylinder to a Blender scene. Which menu sequence is shown in the slides?", a:["Object Mode > Add > Mesh > Cylinder","Edit Mode > UV > Mark Seam > Cylinder","Material Properties > Surface > Background > Cylinder","UV Editing > Image > Open > Cylinder"], c:0},
+{q:"Which workspace should you choose to work with UV layouts in Blender?", a:["UV Editing","Object Mode","Material Properties","3D Viewport only"], c:0},
+{q:"You want to mark a seam on a UV sphere. What sequence matches the demonstrated workflow?", a:["Enter Edit Mode, select edges, then choose Mark Seam from the UV menu","Enter Object Mode, select faces, then choose Extrude Region","Open Material Properties, select a colour, then choose Subdivide","Open the UV Editor, select an image, then choose Loop Cut"], c:0},
+{q:"Where do you go to assign an image texture to an object's material in the demonstrated Blender workflow?", a:["Material Properties, then Surface and Image Texture","The Knife Tool, then the UV menu","Object Mode, then the camera settings","The Loop Cut tool, then the Subdivision menu"], c:0},
+{q:"After selecting Image Texture for a material, which action loads an image file?", a:["Click Open and choose the texture file","Choose Mark Seam and select a mesh edge","Use Extrude Region to create a new face","Select Subdivide and choose an image from the viewport"], c:0},
+{q:"When exporting a textured mesh from Blender using the workflow in the slides, which file is created for the mesh?", a:["An OBJ file","An MTL file only","A JPG file","A UV file"], c:0},
+{q:"Blender's Edit Mode can be used to edit vertices, edges, and faces, while Object Mode is used to manipulate an entire object.", a:["True","False","BLANK","BLANK"], c:0},
+{q:"The slides demonstrate using Blender's Material Properties to assign an image texture to a model.", a:["True","False","BLANK","BLANK"], c:0},
+    ]
+  },
 };
 
 window.questionCodes = {
@@ -2376,7 +2921,8 @@ window.questionCodes = {
   CloudComp: "COMP-4312",
   SocIndi: "SOCI-2755",
   DataSci: "COMP-4112",
-  SoftEngi: "COMP-3415"
+  SoftEngi: "COMP-3415",
+  CompGFX: "COMP-4471"
 };
 
 window.quizThemes = {
@@ -2441,5 +2987,17 @@ window.quizThemes = {
     buttonAccent: "#6b431d",
     success: "#39c85a",
     danger: "#d94b4b"
-  }
+  },
+  CompGFX: {
+    pageBg: "#6f8074",
+    visualBg: "#348a58",
+    courseText: "#174d2a",
+    questionText: "#174d2a",
+    panelBg: "#6f8074",
+    panelBorder: "#91bf9b",
+    buttonBg: "#bec8c0",
+    buttonAccent: "#286b3b",
+    success: "#39c85a",
+    danger: "#d94b4b"
+  },
 };

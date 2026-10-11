@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="css/party-win.css">
 <link rel="stylesheet" href="css/preferences.css">
 <script src="./js/preferences.js" defer></script>
+<script src="./js/party-config.js" defer></script>
+<script src="./js/party-client.js" defer></script>
 <script src="./js/party-win.js" defer></script>
 </head>
 <body>
@@ -14,12 +16,14 @@
   <header class="party-results-header">
     <span class="party-results-kicker">PARTY MODE</span>
     <h1 id="partyResultsTitle">Final standings</h1>
-    <p id="partyResultsSummary">Loading the scores…</p>
+    <p id="partyResultsSummary"></p>
   </header>
   <section class="party-podium" id="partyPodium" aria-label="Player standings"></section>
   <p class="party-results-error" id="partyResultsError" role="status" aria-live="polite" hidden></p>
+  <p class="party-results-status" id="partyResultsStatus" role="status" aria-live="polite"></p>
   <footer class="party-results-actions">
     <button id="partyPlayAgain" type="button">PLAY AGAIN</button>
+    <button id="partyChooseNewQuiz" type="button">CHOOSE NEW QUIZ</button>
     <button id="partyReturnMenu" type="button">RETURN TO MENU</button>
   </footer>
 </main>

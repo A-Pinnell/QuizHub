@@ -127,7 +127,7 @@ html.high-contrast :is(.sound-toggle,.music-toggle,.music-preview-toggle,.option
   background:#fff!important;
   color:#000!important;
 }
-html.high-contrast :is(.quiz-option small,.setting-description,.setting-choice small,.menu-datetime){
+html.high-contrast :is(.quiz-option small,.setting-description,.setting-choice small,.music-track-name,.menu-datetime){
   color:#fff!important;
   opacity:1!important;
 }
