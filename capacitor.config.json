@@ -3,7 +3,7 @@
   "appName": "QuizHub",
   "webDir": "www",
   "server": {
-    "url": "https://a-pinnell.github.io/QuizHub/",
+    "url": "https://a-pinnell.github.io/QuizHub/?quizhubApp=android",
     "cleartext": false,
     "allowNavigation": ["a-pinnell.github.io"]
   }

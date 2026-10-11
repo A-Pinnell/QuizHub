@@ -1,1142 +1,1365 @@
-const resolveAssetUrl=(path)=>new URL(path, window.location.href).toString();
+const resolveAssetUrl = (path) =>
+	new URL(path, window.location.href).toString();
 
-const soundFiles={
-  highlight:resolveAssetUrl('sfx/highlight.wav'),
-  popup:resolveAssetUrl('sfx/Popup.wav'),
-  arrow:resolveAssetUrl('sfx/ArrowButton.wav'),
-  select:resolveAssetUrl('sfx/QuizSelect.wav'),
-  incorrect:resolveAssetUrl('sfx/Incorrect.wav'),
-  titleEnd:resolveAssetUrl('sfx/TitleEnd.wav'),
-  started:resolveAssetUrl('secret/Started.mp3'),
-  loading:resolveAssetUrl('secret/Loading.mp3')
+const soundFiles = {
+	highlight: resolveAssetUrl("sfx/highlight.wav"),
+	popup: resolveAssetUrl("sfx/Popup.wav"),
+	arrow: resolveAssetUrl("sfx/ArrowButton.wav"),
+	select: resolveAssetUrl("sfx/QuizSelect.wav"),
+	incorrect: resolveAssetUrl("sfx/Incorrect.wav"),
+	titleEnd: resolveAssetUrl("sfx/TitleEnd.wav"),
+	started: resolveAssetUrl("secret/Started.mp3"),
+	loading: resolveAssetUrl("secret/Loading.mp3"),
 };
 
-const soundCache={};
-let soundsMuted=localStorage.getItem('quizHubMuted')==='true';
-let activeHighlightSound=null;
-Object.entries(soundFiles).forEach(([name,path])=>{
-  const sound=new Audio(path);
-  sound.preload='auto';
-  soundCache[name]=sound;
+const soundCache = {};
+let soundsMuted = localStorage.getItem("quizHubMuted") === "true";
+let activeHighlightSound = null;
+Object.entries(soundFiles).forEach(([name, path]) => {
+	const sound = new Audio(path);
+	sound.preload = "auto";
+	soundCache[name] = sound;
 });
 
-function playSound(name,course=null,restart=false){
-  if(soundsMuted) return;
-  if(name==='highlight' && activeHighlightSound &&
-    !activeHighlightSound.paused && !activeHighlightSound.ended && !restart) return;
-  if(name==='highlight' && activeHighlightSound && restart){
-    activeHighlightSound.pause();
-    activeHighlightSound.currentTime=0;
-  }
-  const blancSubstituteSounds=['popup','select','begin'];
-  const soundName=window.quizHubPreferences.blancMode && blancSubstituteSounds.includes(name)?'started':name;
-  const defaultSource=soundFiles[soundName];
-  if(!defaultSource) return;
-  const soundSource=window.quizHubPreferences.resolveSfx(soundName,defaultSource,course);
-  const sound=soundSource===soundFiles[soundName]
-    ? soundCache[soundName].cloneNode()
-    : new Audio(soundSource);
-  if(name==='highlight') activeHighlightSound=sound;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
+function playSound(name, course = null, restart = false) {
+	if (soundsMuted) return;
+	if (
+		name === "highlight" &&
+		activeHighlightSound &&
+		!activeHighlightSound.paused &&
+		!activeHighlightSound.ended &&
+		!restart
+	)
+		return;
+	if (name === "highlight" && activeHighlightSound && restart) {
+		activeHighlightSound.pause();
+		activeHighlightSound.currentTime = 0;
+	}
+	const blancSubstituteSounds = ["popup", "select", "begin"];
+	const soundName =
+		window.quizHubPreferences.blancMode && blancSubstituteSounds.includes(name)
+			? "started"
+			: name;
+	const defaultSource = soundFiles[soundName];
+	if (!defaultSource) return;
+	const soundSource = window.quizHubPreferences.resolveSfx(
+		soundName,
+		defaultSource,
+		course,
+	);
+	const sound =
+		soundSource === soundFiles[soundName]
+			? soundCache[soundName].cloneNode()
+			: new Audio(soundSource);
+	if (name === "highlight") activeHighlightSound = sound;
+	sound.currentTime = 0;
+	sound.play().catch(() => {});
 }
 
-document.addEventListener('pointerover',event=>{
-  const control=event.target.closest('button, input, select, .setting-radio');
-  if(control && !control.contains(event.relatedTarget) &&
-    !control.classList.contains('sound-toggle') && !control.classList.contains('music-toggle')){
-    playSound('highlight');
-  }
+document.addEventListener("pointerover", (event) => {
+	const control = event.target.closest("button, input, select, .setting-radio");
+	if (
+		control &&
+		!control.contains(event.relatedTarget) &&
+		!control.classList.contains("sound-toggle") &&
+		!control.classList.contains("music-toggle")
+	) {
+		playSound("highlight");
+	}
 });
-document.addEventListener('pointerdown',event=>{
-  const control=event.target.closest('button, input, select, .setting-radio');
-  if(control && !control.classList.contains('sound-toggle') && !control.classList.contains('music-toggle')){
-    playSound('highlight');
-  }
+document.addEventListener("pointerdown", (event) => {
+	const control = event.target.closest("button, input, select, .setting-radio");
+	if (
+		control &&
+		!control.classList.contains("sound-toggle") &&
+		!control.classList.contains("music-toggle")
+	) {
+		playSound("highlight");
+	}
 });
 
-const soundToggle=document.getElementById('soundToggle');
-function updateSoundToggle(){
-  soundToggle.textContent=soundsMuted?'🔇':'🔊';
-  soundToggle.setAttribute('aria-label',soundsMuted?'Unmute sounds':'Mute sounds');
-  soundToggle.setAttribute('aria-pressed',String(soundsMuted));
+const soundToggle = document.getElementById("soundToggle");
+function updateSoundToggle() {
+	soundToggle.textContent = soundsMuted ? "🔇" : "🔊";
+	soundToggle.setAttribute(
+		"aria-label",
+		soundsMuted ? "Unmute sounds" : "Mute sounds",
+	);
+	soundToggle.setAttribute("aria-pressed", String(soundsMuted));
 }
-function setSoundsMuted(muted){
-  soundsMuted=Boolean(muted);
-  window.quizHubPreferences.setSoundMuted(soundsMuted);
-  updateSoundToggle();
+function setSoundsMuted(muted) {
+	soundsMuted = Boolean(muted);
+	window.quizHubPreferences.setSoundMuted(soundsMuted);
+	updateSoundToggle();
 }
-window.addEventListener('quizhub:preferenceschange',event=>{
-  soundsMuted=event.detail.soundMuted;
-  updateSoundToggle();
+window.addEventListener("quizhub:preferenceschange", (event) => {
+	soundsMuted = event.detail.soundMuted;
+	updateSoundToggle();
 });
-soundToggle.addEventListener('click',()=>{
-  setSoundsMuted(!soundsMuted);
+soundToggle.addEventListener("click", () => {
+	setSoundsMuted(!soundsMuted);
 });
 updateSoundToggle();
 
-let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
-const musicToggle=document.getElementById('musicToggle');
-const menuMusic=new Audio(resolveAssetUrl('music/MenuMusic.wav'));
-const normalMenuMusicSource=resolveAssetUrl('music/MenuMusic.wav');
-const blancMenuMusicSource=resolveAssetUrl('secret/BEN.wav');
-const quizMusicPreview=document.getElementById('quizMusicPreview');
-const quizPreviewMusic=new Audio();
-quizPreviewMusic.loop=true;
-quizPreviewMusic.preload='auto';
-quizPreviewMusic.volume=.45;
-let quizPreviewPlaying=false;
-let menuVisible=false;
-let menuMusicFadeFrame=null;
-let menuMusicFadePending=false;
-menuMusic.loop=true;
-menuMusic.volume=.45;
-function updateMusicToggle(){
-  musicToggle.textContent=musicMuted?'♫̸':'♫';
-  musicToggle.setAttribute('aria-label',musicMuted?'Unmute music':'Mute music');
-  musicToggle.setAttribute('aria-pressed',String(musicMuted));
+let musicMuted = localStorage.getItem("quizHubMusicMuted") === "true";
+const musicToggle = document.getElementById("musicToggle");
+const menuMusic = new Audio(resolveAssetUrl("music/MenuMusic.wav"));
+const normalMenuMusicSource = resolveAssetUrl("music/MenuMusic.wav");
+const blancMenuMusicSource = resolveAssetUrl("secret/BEN.wav");
+const quizMusicPreview = document.getElementById("quizMusicPreview");
+const quizPreviewMusic = new Audio();
+quizPreviewMusic.loop = true;
+quizPreviewMusic.preload = "auto";
+quizPreviewMusic.volume = 0.45;
+let quizPreviewPlaying = false;
+let menuVisible = false;
+let menuMusicFadeFrame = null;
+let menuMusicFadePending = false;
+menuMusic.loop = true;
+menuMusic.volume = 0.45;
+function updateMusicToggle() {
+	musicToggle.textContent = musicMuted ? "♫̸" : "♫";
+	musicToggle.setAttribute(
+		"aria-label",
+		musicMuted ? "Unmute music" : "Mute music",
+	);
+	musicToggle.setAttribute("aria-pressed", String(musicMuted));
 }
-function setMusicMuted(muted){
-  musicMuted=Boolean(muted);
-  window.quizHubPreferences.setMusicMuted(musicMuted);
-  if(musicMuted){
-    menuMusic.pause();
-    quizPreviewMusic.pause();
-  }else if(quizPreviewPlaying){
-    startQuizMusicPreview();
-  }else{
-    startMenuMusic();
-  }
-  updateMusicToggle();
+function setMusicMuted(muted) {
+	musicMuted = Boolean(muted);
+	window.quizHubPreferences.setMusicMuted(musicMuted);
+	if (musicMuted) {
+		menuMusic.pause();
+		quizPreviewMusic.pause();
+	} else if (quizPreviewPlaying) {
+		startQuizMusicPreview();
+	} else {
+		startMenuMusic();
+	}
+	updateMusicToggle();
 }
-function updateQuizMusicPreview(){
-  quizMusicPreview.textContent=quizPreviewPlaying?'■':'▶';
-  quizMusicPreview.setAttribute('aria-label',quizPreviewPlaying?'Stop selected quiz music preview':'Preview selected quiz music');
-  quizMusicPreview.setAttribute('aria-pressed',String(quizPreviewPlaying));
-  quizMusicPreview.title=quizPreviewPlaying?'Stop selected quiz music preview':'Preview selected quiz music';
+function updateQuizMusicPreview() {
+	quizMusicPreview.textContent = quizPreviewPlaying ? "■" : "▶";
+	quizMusicPreview.setAttribute(
+		"aria-label",
+		quizPreviewPlaying
+			? "Stop selected quiz music preview"
+			: "Preview selected quiz music",
+	);
+	quizMusicPreview.setAttribute("aria-pressed", String(quizPreviewPlaying));
+	quizMusicPreview.title = quizPreviewPlaying
+		? "Stop selected quiz music preview"
+		: "Preview selected quiz music";
 }
-function startQuizMusicPreview(){
-  if(!menuVisible || musicMuted || !quizPreviewPlaying) return;
-  if(menuMusicFadeFrame!==null){
-    cancelAnimationFrame(menuMusicFadeFrame);
-    menuMusicFadeFrame=null;
-  }
-  menuMusic.pause();
-  quizPreviewMusic.src=window.quizHubPreferences.resolveQuizMusic('music/QuizMusic.wav');
-  quizPreviewMusic.play().catch(error=>{
-    quizPreviewPlaying=false;
-    updateQuizMusicPreview();
-    if(settingsModal.classList.contains('open')){
-      settingsError.textContent=`Could not play quiz music preview: ${error.message}`;
-    }
-  });
+function startQuizMusicPreview() {
+	if (!menuVisible || musicMuted || !quizPreviewPlaying) return;
+	if (menuMusicFadeFrame !== null) {
+		cancelAnimationFrame(menuMusicFadeFrame);
+		menuMusicFadeFrame = null;
+	}
+	menuMusic.pause();
+	quizPreviewMusic.src = window.quizHubPreferences.resolveQuizMusic(
+		"music/QuizMusic.wav",
+	);
+	quizPreviewMusic.play().catch((error) => {
+		quizPreviewPlaying = false;
+		updateQuizMusicPreview();
+		if (settingsModal.classList.contains("open")) {
+			settingsError.textContent = `Could not play quiz music preview: ${error.message}`;
+		}
+	});
 }
-function stopQuizMusicPreview(resumeMenuMusic=true){
-  quizPreviewPlaying=false;
-  quizPreviewMusic.pause();
-  quizPreviewMusic.currentTime=0;
-  updateQuizMusicPreview();
-  if(resumeMenuMusic) startMenuMusic();
+function stopQuizMusicPreview(resumeMenuMusic = true) {
+	quizPreviewPlaying = false;
+	quizPreviewMusic.pause();
+	quizPreviewMusic.currentTime = 0;
+	updateQuizMusicPreview();
+	if (resumeMenuMusic) startMenuMusic();
 }
-function startMenuMusic(fadeIn=false){
-  if(fadeIn) menuMusicFadePending=true;
-  if(!menuVisible || musicMuted || quizPreviewPlaying) return;
+function startMenuMusic(fadeIn = false) {
+	if (fadeIn) menuMusicFadePending = true;
+	if (!menuVisible || musicMuted || quizPreviewPlaying) return;
 
-  const menuMusicSource=window.quizHubPreferences.blancMode?blancMenuMusicSource:normalMenuMusicSource;
-  if(menuMusic.src!==menuMusicSource){
-    menuMusic.src=menuMusicSource;
-    menuMusic.currentTime=0;
-  }
+	const menuMusicSource = window.quizHubPreferences.blancMode
+		? blancMenuMusicSource
+		: normalMenuMusicSource;
+	if (menuMusic.src !== menuMusicSource) {
+		menuMusic.src = menuMusicSource;
+		menuMusic.currentTime = 0;
+	}
 
-  if(menuMusicFadeFrame!==null){
-    cancelAnimationFrame(menuMusicFadeFrame);
-    menuMusicFadeFrame=null;
-  }
+	if (menuMusicFadeFrame !== null) {
+		cancelAnimationFrame(menuMusicFadeFrame);
+		menuMusicFadeFrame = null;
+	}
 
-  if(!menuMusicFadePending){
-    menuMusic.volume=.45;
-    menuMusic.play().catch(()=>{});
-    return;
-  }
+	if (!menuMusicFadePending) {
+		menuMusic.volume = 0.45;
+		menuMusic.play().catch(() => {});
+		return;
+	}
 
-  menuMusic.volume=0;
-  menuMusic.play().then(()=>{
-    menuMusicFadePending=false;
-    const fadeStartedAt=performance.now();
-    const fadeDuration=1150;
-    const raiseVolume=(now)=>{
-      if(musicMuted){
-        menuMusic.volume=0;
-        menuMusicFadeFrame=null;
-        return;
-      }
-      const progress=Math.min((now-fadeStartedAt)/fadeDuration,1);
-      menuMusic.volume=.45*progress;
-      if(progress<1) menuMusicFadeFrame=requestAnimationFrame(raiseVolume);
-      else menuMusicFadeFrame=null;
-    };
-    menuMusicFadeFrame=requestAnimationFrame(raiseVolume);
-  }).catch(()=>{});
+	menuMusic.volume = 0;
+	menuMusic
+		.play()
+		.then(() => {
+			menuMusicFadePending = false;
+			const fadeStartedAt = performance.now();
+			const fadeDuration = 1150;
+			const raiseVolume = (now) => {
+				if (musicMuted) {
+					menuMusic.volume = 0;
+					menuMusicFadeFrame = null;
+					return;
+				}
+				const progress = Math.min((now - fadeStartedAt) / fadeDuration, 1);
+				menuMusic.volume = 0.45 * progress;
+				if (progress < 1)
+					menuMusicFadeFrame = requestAnimationFrame(raiseVolume);
+				else menuMusicFadeFrame = null;
+			};
+			menuMusicFadeFrame = requestAnimationFrame(raiseVolume);
+		})
+		.catch(() => {});
 }
-musicToggle.addEventListener('click',()=>{
-  setMusicMuted(!musicMuted);
+musicToggle.addEventListener("click", () => {
+	setMusicMuted(!musicMuted);
 });
-quizMusicPreview.addEventListener('click',()=>{
-  if(quizPreviewPlaying) stopQuizMusicPreview();
-  else{
-    quizPreviewPlaying=true;
-    updateQuizMusicPreview();
-    startQuizMusicPreview();
-  }
+quizMusicPreview.addEventListener("click", () => {
+	if (quizPreviewPlaying) stopQuizMusicPreview();
+	else {
+		quizPreviewPlaying = true;
+		updateQuizMusicPreview();
+		startQuizMusicPreview();
+	}
 });
-document.addEventListener('pointerdown',()=>startMenuMusic());
-document.addEventListener('touchstart',()=>startMenuMusic(),{passive:true});
+document.addEventListener("pointerdown", () => startMenuMusic());
+document.addEventListener("touchstart", () => startMenuMusic(), {
+	passive: true,
+});
 updateMusicToggle();
 updateQuizMusicPreview();
 
-document.addEventListener('keydown',event=>{
-  if(event.key.toLowerCase()!=='m' || event.target.tagName==='INPUT') return;
-  event.preventDefault();
-  const muted=!(soundsMuted && musicMuted);
-  setSoundsMuted(muted);
-  setMusicMuted(muted);
+document.addEventListener("keydown", (event) => {
+	if (event.key.toLowerCase() !== "m" || event.target.tagName === "INPUT")
+		return;
+	event.preventDefault();
+	const muted = !(soundsMuted && musicMuted);
+	setSoundsMuted(muted);
+	setMusicMuted(muted);
 });
 
-const welcomeText="Let's Get Started!";
-const menuDate=document.getElementById('menuDate');
-const menuTime=document.getElementById('menuTime');
-const dateFormatter=new Intl.DateTimeFormat(undefined,{weekday:'short',year:'numeric',month:'short',day:'numeric'});
-const timeFormatter=new Intl.DateTimeFormat(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'});
-function updateMenuDateTime(){
-  const now=new Date();
-  menuDate.textContent=dateFormatter.format(now);
-  menuTime.textContent=timeFormatter.format(now);
+const welcomeText = "Let's Get Started!";
+const menuDate = document.getElementById("menuDate");
+const menuTime = document.getElementById("menuTime");
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
+	weekday: "short",
+	year: "numeric",
+	month: "short",
+	day: "numeric",
+});
+const timeFormatter = new Intl.DateTimeFormat(undefined, {
+	hour: "numeric",
+	minute: "2-digit",
+	second: "2-digit",
+});
+function updateMenuDateTime() {
+	const now = new Date();
+	menuDate.textContent = dateFormatter.format(now);
+	menuTime.textContent = timeFormatter.format(now);
 }
 updateMenuDateTime();
-setInterval(updateMenuDateTime,1000);
+setInterval(updateMenuDateTime, 1000);
 
-const welcomeLine=document.getElementById('welcomeLine');
-[...welcomeText].forEach(ch=>{
-  const span=document.createElement('span');
-  span.className='letter';
-  span.textContent=ch===' '? ' ' : ch;
-  welcomeLine.appendChild(span);
+const welcomeLine = document.getElementById("welcomeLine");
+[...welcomeText].forEach((ch) => {
+	const span = document.createElement("span");
+	span.className = "letter";
+	span.textContent = ch === " " ? " " : ch;
+	welcomeLine.appendChild(span);
 });
 
-let leaving=false;
-let preloadFrame=null;
-let quizLoaded=false;
-let welcomeVisible=false;
-let navigationStarted=false;
-let loadingSoundPlayed=false;
-let loadingCompleteScheduled=false;
-let navigationTarget='';
-let selectedCourse='';
-let quizMenuTrigger=null;
-let partyModeActive=false;
-let partyPlayers=[];
+let leaving = false;
+let preloadFrame = null;
+let quizLoaded = false;
+let welcomeVisible = false;
+let navigationStarted = false;
+let loadingSoundPlayed = false;
+let loadingCompleteScheduled = false;
+let navigationTarget = "";
+let selectedCourse = "";
+let quizMenuTrigger = null;
+let partyModeActive = false;
+let partyPlayers = [];
 
-const courseCodes={
-  CompArch:'COMP-2453',
-  CloudComp:'COMP-4312',
-  SocIndi: "SOCI-2755",
-  DataSci: 'COMP-4112',
-  SoftEngi: 'COMP-3415',
-  CompGFX: 'COMP-4471'
+const courseCodes = {
+	CompArch: "COMP-2453",
+	CloudComp: "COMP-4312",
+	SocIndi: "SOCI-2755",
+	DataSci: "COMP-4112",
+	SoftEngi: "COMP-3415",
+	CompGFX: "COMP-4471",
 };
 
-const courseQuizCatalog={
-  CompArch:[
-    {id:'quiz1', label:'First Slides Practice', detail:'for Sept 23'},
-    {id:'test1', label:'Midterm Practice', detail:'for Oct 21'},
-    {id:'binary-quiz', label:'Binary Practice', detail:'Standalone binary practice', external:'binary-quiz.html'},
-    {id:'hexadecimal-quiz', label:'Hexadecimal Practice', detail:'Standalone hexadecimal practice', external:'hexadecimal-quiz.html'}
-  ],
-  CloudComp:[
-    {id:'quiz1', label:'First Slides Practice', detail:'for Sept 24'},
-    {id:'quiz2', label:'Week 4 Slides Practice', detail:'for Oct 8'},
-    {id:'test1', label:'Midterm Practice', detail:'for Oct 22'}
-  ],
-  SocIndi:[
-    {id:'reviewQuiz', label:'Exam 1 Quiz', detail:'Based on expected Exam 1 material'},
-    {id:'textbookQuiz', label:'Textbook Quiz', detail:'Based on Textbook contents'}
-  ],
-  CompGFX:[
-    {id:'test1', label:'Midterm Practice', detail:'for Oct 21'}
-  ],
-  DataSci:[
-    {id:'test1', label:'Test 1 Practice', detail:'for Oct 22'}
-  ],
-  SoftEngi:[
-    {id:'test1', label:'Lectures 1–6 Practice', detail:'for Oct 8'}
-  ]
+const courseQuizCatalog = {
+	CompArch: [
+		{ id: "quiz1", label: "First Slides Practice", detail: "for Sept 23" },
+		{ id: "test1", label: "Midterm Practice", detail: "for Oct 21" },
+		{
+			id: "binary-quiz",
+			label: "Binary Practice",
+			detail: "Standalone binary practice",
+			external: "binary-quiz.html",
+		},
+		{
+			id: "hexadecimal-quiz",
+			label: "Hexadecimal Practice",
+			detail: "Standalone hexadecimal practice",
+			external: "hexadecimal-quiz.html",
+		},
+	],
+	CloudComp: [
+		{ id: "quiz1", label: "First Slides Practice", detail: "for Sept 24" },
+		{ id: "quiz2", label: "Week 4 Slides Practice", detail: "for Oct 8" },
+		{ id: "test1", label: "Midterm Practice", detail: "for Oct 22" },
+	],
+	SocIndi: [
+		{
+			id: "reviewQuiz",
+			label: "Exam 1 Quiz",
+			detail: "Based on expected Exam 1 material",
+		},
+		{
+			id: "textbookQuiz",
+			label: "Textbook Quiz",
+			detail: "Based on Textbook contents",
+		},
+	],
+	CompGFX: [{ id: "test1", label: "Midterm Practice", detail: "for Oct 21" }],
+	DataSci: [{ id: "test1", label: "Test 1 Practice", detail: "for Oct 22" }],
+	SoftEngi: [
+		{ id: "test1", label: "Lectures 1–6 Practice", detail: "for Oct 8" },
+	],
 };
 
-function renderQuizOptions(course){
-  const container=document.querySelector('.quiz-options');
-  if(!container) return;
+function renderQuizOptions(course) {
+	const container = document.querySelector(".quiz-options");
+	if (!container) return;
 
-  const options = (courseQuizCatalog[course] || courseQuizCatalog.CompArch)
-    .filter((quiz)=>!partyModeActive || !quiz.external);
-  container.innerHTML='';
-  document.getElementById('quizMenuTitle').textContent=partyModeActive
-    ? 'Choose a party quiz'
-    : 'Choose an Option';
-  document.querySelector('#quizModal .quiz-menu > p').textContent=partyModeActive
-    ? 'Take turns choosing answers. The best-scoring player wins.'
-    : 'Select which quiz you would like to take.';
+	const options = (
+		courseQuizCatalog[course] || courseQuizCatalog.CompArch
+	).filter((quiz) => !partyModeActive || !quiz.external);
+	container.innerHTML = "";
+	document.getElementById("quizMenuTitle").textContent = partyModeActive
+		? "Choose a party quiz"
+		: "Choose an Option";
+	document.querySelector("#quizModal .quiz-menu > p").textContent =
+		partyModeActive
+			? "Take turns choosing answers. The best-scoring player wins."
+			: "Select which quiz you would like to take.";
 
-  options.forEach((quiz)=>{
-    const button=document.createElement('button');
-    button.type='button';
-    button.className='quiz-option';
-    button.dataset.quiz=quiz.id;
-    button.innerHTML=`<span>${quiz.label}</span><small>${quiz.detail}</small>`;
-    button.addEventListener('click',()=>{
-      if(!selectedCourse) return;
-      playSound('select');
-      if(quiz.external){
-        startExternalQuiz(quiz.external);
-        return;
-      }
-      startQuiz(selectedCourse, button.dataset.quiz);
-    });
-    container.appendChild(button);
-  });
+	options.forEach((quiz) => {
+		const button = document.createElement("button");
+		button.type = "button";
+		button.className = "quiz-option";
+		button.dataset.quiz = quiz.id;
+		button.innerHTML = `<span>${quiz.label}</span><small>${quiz.detail}</small>`;
+		button.addEventListener("click", () => {
+			if (!selectedCourse) return;
+			playSound("select");
+			if (quiz.external) {
+				startExternalQuiz(quiz.external);
+				return;
+			}
+			startQuiz(selectedCourse, button.dataset.quiz);
+		});
+		container.appendChild(button);
+	});
 
-  const firstButton=container.querySelector('.quiz-option');
-  if(firstButton) firstButton.focus();
+	const firstButton = container.querySelector(".quiz-option");
+	if (firstButton) firstButton.focus();
 }
 
-function preloadQuiz(category, quiz){
-  preloadFrame=document.createElement('iframe');
-  preloadFrame.className='preload-frame';
-  const target=new URL('quiz.html',window.location.href);
-  target.searchParams.set('category',category);
-  target.searchParams.set('quiz',quiz);
-  if(partyModeActive) target.searchParams.set('partyMode','true');
-  navigationTarget=target.toString();
-  navigationStarted=false;
-  preloadFrame.src=navigationTarget;
-  preloadFrame.onload=()=>{
-    quizLoaded=true;
-    if(welcomeVisible) showLoadingComplete();
-  };
-  document.body.appendChild(preloadFrame);
+function preloadQuiz(category, quiz) {
+	preloadFrame = document.createElement("iframe");
+	preloadFrame.className = "preload-frame";
+	const target = new URL("quiz.html", window.location.href);
+	target.searchParams.set("category", category);
+	target.searchParams.set("quiz", quiz);
+	if (partyModeActive) target.searchParams.set("partyMode", "true");
+	navigationTarget = target.toString();
+	navigationStarted = false;
+	preloadFrame.src = navigationTarget;
+	preloadFrame.onload = () => {
+		quizLoaded = true;
+		if (welcomeVisible) showLoadingComplete();
+	};
+	document.body.appendChild(preloadFrame);
 }
 
-function startMenuExit(){
-  document.body.classList.remove('leaving','motion-fade-leaving');
-  if(window.quizHubPreferences.motionMode !== 'default'){
-    document.body.classList.add('motion-fade-leaving');
-  }else{
-    document.body.classList.add('leaving');
-  }
+function startMenuExit() {
+	document.body.classList.remove("leaving", "motion-fade-leaving");
+	if (window.quizHubPreferences.motionMode !== "default") {
+		document.body.classList.add("motion-fade-leaving");
+	} else {
+		document.body.classList.add("leaving");
+	}
 }
 
-function startExternalQuiz(target){
-  if(leaving) return;
-  document.body.classList.remove('compgfx-loading');
-  stopQuizMusicPreview(false);
-  menuMusic.pause();
-  menuMusic.currentTime=0;
-  closeQuizMenu();
-  leaving=true;
-  navigationStarted=false;
-  loadingSoundPlayed=false;
-  loadingCompleteScheduled=false;
-  document.querySelectorAll('.card').forEach(c=>c.disabled=true);
-  quizLoaded=false;
-  preloadFrame=document.createElement('iframe');
-  preloadFrame.className='preload-frame';
-  navigationTarget=target;
-  preloadFrame.src=navigationTarget;
-  preloadFrame.onload=()=>{
-    quizLoaded=true;
-    if(welcomeVisible){
-      if(window.quizHubPreferences.disableLoadingAnimation && !window.quizHubPreferences.blancMode) navigateToQuiz();
-      else showLoadingComplete();
-    }
-  };
-  document.body.appendChild(preloadFrame);
-  setTimeout(startMenuExit,520);
-  setTimeout(()=>{
-    welcomeVisible=true;
-    if(window.quizHubPreferences.disableLoadingAnimation && !window.quizHubPreferences.blancMode){
-      if(quizLoaded) navigateToQuiz();
-    }else{
-      showLoadingScreen();
-      if(quizLoaded) showLoadingComplete();
-    }
-  },1180);
-  setTimeout(()=>{
-    if(!quizLoaded){
-      const status=document.getElementById('loadingStatus');
-      status.textContent='Loading...';
-    }
-  },4500);
+function startExternalQuiz(target) {
+	if (leaving) return;
+	document.body.classList.remove("compgfx-loading");
+	stopQuizMusicPreview(false);
+	menuMusic.pause();
+	menuMusic.currentTime = 0;
+	closeQuizMenu();
+	leaving = true;
+	navigationStarted = false;
+	loadingSoundPlayed = false;
+	loadingCompleteScheduled = false;
+	document.querySelectorAll(".card").forEach((c) => (c.disabled = true));
+	quizLoaded = false;
+	preloadFrame = document.createElement("iframe");
+	preloadFrame.className = "preload-frame";
+	navigationTarget = target;
+	preloadFrame.src = navigationTarget;
+	preloadFrame.onload = () => {
+		quizLoaded = true;
+		if (welcomeVisible) {
+			if (
+				window.quizHubPreferences.disableLoadingAnimation &&
+				!window.quizHubPreferences.blancMode
+			)
+				navigateToQuiz();
+			else showLoadingComplete();
+		}
+	};
+	document.body.appendChild(preloadFrame);
+	setTimeout(startMenuExit, 520);
+	setTimeout(() => {
+		welcomeVisible = true;
+		if (
+			window.quizHubPreferences.disableLoadingAnimation &&
+			!window.quizHubPreferences.blancMode
+		) {
+			if (quizLoaded) navigateToQuiz();
+		} else {
+			showLoadingScreen();
+			if (quizLoaded) showLoadingComplete();
+		}
+	}, 1180);
+	setTimeout(() => {
+		if (!quizLoaded) {
+			const status = document.getElementById("loadingStatus");
+			status.textContent = "Loading...";
+		}
+	}, 4500);
 }
 
-function showLoadingComplete(){
-  if(loadingCompleteScheduled) return;
-  loadingCompleteScheduled=true;
-  if(window.quizHubPreferences.disableLoadingAnimation && !window.quizHubPreferences.blancMode){
-    navigateToQuiz();
-    return;
-  }
-  if(window.quizHubPreferences.blancMode){
-    setTimeout(navigateToQuiz,1650);
-    return;
-  }
-  const status=document.getElementById('loadingStatus');
-  status.textContent='Loading Complete';
-  status.classList.remove('complete');
-  void status.offsetWidth;
-  status.classList.add('complete');
-  setTimeout(()=>document.body.classList.add('welcome-out'),900);
-  setTimeout(navigateToQuiz,1650);
+function showLoadingComplete() {
+	if (loadingCompleteScheduled) return;
+	loadingCompleteScheduled = true;
+	if (
+		window.quizHubPreferences.disableLoadingAnimation &&
+		!window.quizHubPreferences.blancMode
+	) {
+		navigateToQuiz();
+		return;
+	}
+	if (window.quizHubPreferences.blancMode) {
+		setTimeout(navigateToQuiz, 1650);
+		return;
+	}
+	const status = document.getElementById("loadingStatus");
+	status.textContent = "Loading Complete";
+	status.classList.remove("complete");
+	void status.offsetWidth;
+	status.classList.add("complete");
+	setTimeout(() => document.body.classList.add("welcome-out"), 900);
+	setTimeout(navigateToQuiz, 1650);
 }
 
-function showLoadingScreen(){
-  if(window.quizHubPreferences.blancMode){
-    document.body.classList.add('blanc-loading');
-    if(!loadingSoundPlayed){
-      playSound('loading');
-      loadingSoundPlayed=true;
-    }
-  }
-  document.body.classList.add('show-welcome');
+function showLoadingScreen() {
+	if (window.quizHubPreferences.blancMode) {
+		document.body.classList.add("blanc-loading");
+		if (!loadingSoundPlayed) {
+			playSound("loading");
+			loadingSoundPlayed = true;
+		}
+	}
+	document.body.classList.add("show-welcome");
 }
 
-function navigateToQuiz(){
-  if(navigationStarted) return;
-  navigationStarted=true;
-  window.location.href=navigationTarget;
+function navigateToQuiz() {
+	if (navigationStarted) return;
+	navigationStarted = true;
+	window.location.href = navigationTarget;
 }
 
-function closeQuizMenu(){
-  const modal=document.getElementById('quizModal');
-  const returnFocus=quizMenuTrigger;
-  document.activeElement?.blur();
-  modal.classList.remove('open');
-  modal.setAttribute('aria-hidden','true');
-  selectedCourse='';
-  quizMenuTrigger=null;
-  if(returnFocus?.isConnected) returnFocus.focus();
+function closeQuizMenu() {
+	const modal = document.getElementById("quizModal");
+	const returnFocus = quizMenuTrigger;
+	document.activeElement?.blur();
+	modal.classList.remove("open");
+	modal.setAttribute("aria-hidden", "true");
+	selectedCourse = "";
+	quizMenuTrigger = null;
+	if (returnFocus?.isConnected) returnFocus.focus();
 }
 
-function openQuizMenu(course){
-  quizMenuTrigger=document.activeElement?.closest('.course-card') || null;
-  selectedCourse=course;
-  playSound('popup');
-  const modal=document.getElementById('quizModal');
-  document.getElementById('quizMenuCourse').textContent = courseCodes[course] || course;
-  renderQuizOptions(course);
-  modal.classList.add('open');
-  modal.setAttribute('aria-hidden','false');
-  requestAnimationFrame(()=>modal.querySelector('.quiz-option')?.focus());
+function openQuizMenu(course) {
+	quizMenuTrigger = document.activeElement?.closest(".course-card") || null;
+	selectedCourse = course;
+	playSound("popup");
+	const modal = document.getElementById("quizModal");
+	document.getElementById("quizMenuCourse").textContent =
+		courseCodes[course] || course;
+	renderQuizOptions(course);
+	modal.classList.add("open");
+	modal.setAttribute("aria-hidden", "false");
+	requestAnimationFrame(() => modal.querySelector(".quiz-option")?.focus());
 }
 
-function startQuiz(course, quiz){
-  if(leaving)return;
-  document.body.classList.toggle('compgfx-loading',course==='CompGFX');
-  if(partyModeActive){
-    try{
-      sessionStorage.setItem('quizHubPartyPlayers',JSON.stringify(partyPlayers));
-    }catch(error){
-      document.getElementById('partyModeError').textContent=`Could not save player profiles: ${error.message}`;
-      return;
-    }
-  }
-  stopQuizMusicPreview(false);
-  menuMusic.pause();
-  menuMusic.currentTime=0;
-  closeQuizMenu();
-  leaving=true;
-  navigationStarted=false;
-  loadingSoundPlayed=false;
-  loadingCompleteScheduled=false;
-  document.querySelectorAll('.card').forEach(c=>c.disabled=true);
-  quizLoaded=false;
-  preloadQuiz(course, quiz);
-  setTimeout(startMenuExit,520);
-  setTimeout(()=>{
-    welcomeVisible=true;
-    if(window.quizHubPreferences.disableLoadingAnimation && !window.quizHubPreferences.blancMode){
-      if(quizLoaded) navigateToQuiz();
-    }else{
-      showLoadingScreen();
-      if(quizLoaded) showLoadingComplete();
-    }
-  },1180);
-  setTimeout(()=>{
-    if(!quizLoaded){
-      const status=document.getElementById('loadingStatus');
-      status.textContent='Loading...';
-    }
-  },4500);
+function startQuiz(course, quiz) {
+	if (leaving) return;
+	document.body.classList.toggle("compgfx-loading", course === "CompGFX");
+	if (partyModeActive) {
+		try {
+			sessionStorage.setItem(
+				"quizHubPartyPlayers",
+				JSON.stringify(partyPlayers),
+			);
+		} catch (error) {
+			document.getElementById("partyModeError").textContent =
+				`Could not save player profiles: ${error.message}`;
+			return;
+		}
+	}
+	stopQuizMusicPreview(false);
+	menuMusic.pause();
+	menuMusic.currentTime = 0;
+	closeQuizMenu();
+	leaving = true;
+	navigationStarted = false;
+	loadingSoundPlayed = false;
+	loadingCompleteScheduled = false;
+	document.querySelectorAll(".card").forEach((c) => (c.disabled = true));
+	quizLoaded = false;
+	preloadQuiz(course, quiz);
+	setTimeout(startMenuExit, 520);
+	setTimeout(() => {
+		welcomeVisible = true;
+		if (
+			window.quizHubPreferences.disableLoadingAnimation &&
+			!window.quizHubPreferences.blancMode
+		) {
+			if (quizLoaded) navigateToQuiz();
+		} else {
+			showLoadingScreen();
+			if (quizLoaded) showLoadingComplete();
+		}
+	}, 1180);
+	setTimeout(() => {
+		if (!quizLoaded) {
+			const status = document.getElementById("loadingStatus");
+			status.textContent = "Loading...";
+		}
+	}, 4500);
 }
 
-document.querySelectorAll('.course-card').forEach(card=>{
-  card.addEventListener('click',()=>{
-    // Coming Soon courses intentionally do nothing.
-    if(card.dataset.comingSoon==='true'){
-      playSound('incorrect');
-      return;
-    }
-    openQuizMenu(card.dataset.course);
-  });
+document.querySelectorAll(".course-card").forEach((card) => {
+	card.addEventListener("click", () => {
+		// Coming Soon courses intentionally do nothing.
+		if (card.dataset.comingSoon === "true") {
+			playSound("incorrect");
+			return;
+		}
+		openQuizMenu(card.dataset.course);
+	});
 });
 
-const partyModeModal=document.getElementById('partyModeModal');
-const partyPlayerSetup=document.getElementById('partyPlayerSetup');
-const partyModeError=document.getElementById('partyModeError');
-const partyModeToggle=document.getElementById('partyModeToggle');
-const partyModeChoice=document.getElementById('partyModeChoice');
-const partyHostSetup=document.getElementById('partyHostSetup');
-const partyHostChoice=document.getElementById('partyHostChoice');
-const partySetupStorageKey='quizHubPartySetup';
-const defaultPartyColors=['#e8505b','#3686e8','#22a06b','#9254de','#e39426'];
-let partyProfileDrafts=defaultPartyColors.map((color,index)=>({name:`Player ${index+1}`,color,photo:''}));
-let partyModeTrigger=null;
+const partyModeModal = document.getElementById("partyModeModal");
+const partyPlayerSetup = document.getElementById("partyPlayerSetup");
+const partyModeError = document.getElementById("partyModeError");
+const partyModeToggle = document.getElementById("partyModeToggle");
+const partyModeChoice = document.getElementById("partyModeChoice");
+const partyHostSetup = document.getElementById("partyHostSetup");
+const partyHostChoice = document.getElementById("partyHostChoice");
+const partySetupStorageKey = "quizHubPartySetup";
+const defaultPartyColors = [
+	"#e8505b",
+	"#3686e8",
+	"#22a06b",
+	"#9254de",
+	"#e39426",
+];
+let partyProfileDrafts = defaultPartyColors.map((color, index) => ({
+	name: `Player ${index + 1}`,
+	color,
+	photo: "",
+}));
+let partyModeTrigger = null;
 
-function persistPartySetup(){
-  try{
-    sessionStorage.setItem(partySetupStorageKey,JSON.stringify({
-      players:partyProfileDrafts
-    }));
-    return true;
-  }catch(error){
-    partyModeError.textContent=`Could not remember player setup for this session: ${error.message}`;
-    return false;
-  }
+function persistPartySetup() {
+	try {
+		sessionStorage.setItem(
+			partySetupStorageKey,
+			JSON.stringify({
+				players: partyProfileDrafts,
+			}),
+		);
+		return true;
+	} catch (error) {
+		partyModeError.textContent = `Could not remember player setup for this session: ${error.message}`;
+		return false;
+	}
 }
 
-function restorePartySetup(){
-  try{
-    const saved=JSON.parse(sessionStorage.getItem(partySetupStorageKey) || 'null');
-    if(!saved || !Array.isArray(saved.players)) return;
-    partyProfileDrafts=defaultPartyColors.map((color,index)=>{
-      const player=saved.players[index];
-      return {
-        name:typeof player?.name==='string' ? player.name.slice(0,24) : `Player ${index+1}`,
-        color:typeof player?.color==='string' && /^#[0-9a-f]{6}$/i.test(player.color) ? player.color : color,
-        photo:typeof player?.photo==='string' && player.photo.startsWith('data:image/') ? player.photo : ''
-      };
-    });
-  }catch(error){
-    console.error('Could not restore party setup:',error);
-    partyModeError.textContent=`Could not restore the saved player setup: ${error.message}`;
-  }
+function restorePartySetup() {
+	try {
+		const saved = JSON.parse(
+			sessionStorage.getItem(partySetupStorageKey) || "null",
+		);
+		if (!saved || !Array.isArray(saved.players)) return;
+		partyProfileDrafts = defaultPartyColors.map((color, index) => {
+			const player = saved.players[index];
+			return {
+				name:
+					typeof player?.name === "string"
+						? player.name.slice(0, 24)
+						: `Player ${index + 1}`,
+				color:
+					typeof player?.color === "string" &&
+					/^#[0-9a-f]{6}$/i.test(player.color)
+						? player.color
+						: color,
+				photo:
+					typeof player?.photo === "string" &&
+					player.photo.startsWith("data:image/")
+						? player.photo
+						: "",
+			};
+		});
+	} catch (error) {
+		console.error("Could not restore party setup:", error);
+		partyModeError.textContent = `Could not restore the saved player setup: ${error.message}`;
+	}
 }
 
 restorePartySetup();
 
-function createPartyProfile(index,profile={}){
-    const card=document.createElement('fieldset');
-    card.className='party-player-card';
-    card.dataset.playerIndex=String(index);
-    const legend=document.createElement('legend');
-    legend.textContent=`Player ${index+1}`;
-    const row=document.createElement('div');
-    row.className='party-player-fields';
+function createPartyProfile(index, profile = {}) {
+	const card = document.createElement("fieldset");
+	card.className = "party-player-card";
+	card.dataset.playerIndex = String(index);
+	const legend = document.createElement("legend");
+	legend.textContent = `Player ${index + 1}`;
+	const row = document.createElement("div");
+	row.className = "party-player-fields";
 
-    const avatar=document.createElement('div');
-    avatar.className='party-player-avatar';
-    avatar.style.setProperty('--party-player-color',profile.color || '#e8505b');
-    if(profile.photo){
-      const image=document.createElement('img');
-      image.src=profile.photo;
-      image.alt='';
-      avatar.appendChild(image);
-    }else{
-      avatar.textContent=(profile.name || `Player ${index+1}`).trim().charAt(0).toUpperCase();
-    }
+	const avatar = document.createElement("div");
+	avatar.className = "party-player-avatar";
+	avatar.style.setProperty("--party-player-color", profile.color || "#e8505b");
+	if (profile.photo) {
+		const image = document.createElement("img");
+		image.src = profile.photo;
+		image.alt = "";
+		avatar.appendChild(image);
+	} else {
+		avatar.textContent = (profile.name || `Player ${index + 1}`)
+			.trim()
+			.charAt(0)
+			.toUpperCase();
+	}
 
-    const nameLabel=document.createElement('label');
-    nameLabel.className='party-player-name';
-    nameLabel.textContent='Name';
-    const nameInput=document.createElement('input');
-    nameInput.type='text';
-    nameInput.maxLength=24;
-    nameInput.required=true;
-    nameInput.value=profile.name || `Player ${index+1}`;
-    nameInput.setAttribute('aria-label',`Player ${index+1} name`);
-    nameLabel.appendChild(nameInput);
+	const nameLabel = document.createElement("label");
+	nameLabel.className = "party-player-name";
+	nameLabel.textContent = "Name";
+	const nameInput = document.createElement("input");
+	nameInput.type = "text";
+	nameInput.maxLength = 24;
+	nameInput.required = true;
+	nameInput.value = profile.name || `Player ${index + 1}`;
+	nameInput.setAttribute("aria-label", `Player ${index + 1} name`);
+	nameLabel.appendChild(nameInput);
 
-    const colorLabel=document.createElement('label');
-    colorLabel.className='party-player-color';
-    colorLabel.textContent='Color';
-    const colorInput=document.createElement('input');
-    colorInput.type='color';
-    colorInput.value=profile.color || ['#e8505b','#3686e8','#22a06b','#9254de','#e39426'][index];
-    colorInput.setAttribute('aria-label',`Player ${index+1} color`);
-    colorLabel.appendChild(colorInput);
+	const colorLabel = document.createElement("label");
+	colorLabel.className = "party-player-color";
+	colorLabel.textContent = "Color";
+	const colorInput = document.createElement("input");
+	colorInput.type = "color";
+	colorInput.value =
+		profile.color ||
+		["#e8505b", "#3686e8", "#22a06b", "#9254de", "#e39426"][index];
+	colorInput.setAttribute("aria-label", `Player ${index + 1} color`);
+	colorLabel.appendChild(colorInput);
 
-    const photoLabel=document.createElement('label');
-    photoLabel.className='party-player-photo';
-    photoLabel.textContent='Upload picture';
-    const photoInput=document.createElement('input');
-    photoInput.type='file';
-    photoInput.accept='image/*';
-    photoInput.setAttribute('aria-label',`Upload a picture for player ${index+1}`);
-    photoLabel.appendChild(photoInput);
-    row.append(nameLabel,colorLabel,photoLabel);
-    card.append(legend,avatar,row);
+	const photoLabel = document.createElement("label");
+	photoLabel.className = "party-player-photo";
+	photoLabel.textContent = "Upload picture";
+	const photoInput = document.createElement("input");
+	photoInput.type = "file";
+	photoInput.accept = "image/*";
+	photoInput.setAttribute(
+		"aria-label",
+		`Upload a picture for player ${index + 1}`,
+	);
+	photoLabel.appendChild(photoInput);
+	row.append(nameLabel, colorLabel, photoLabel);
+	card.append(legend, avatar, row);
 
-    nameInput.addEventListener('input',()=>{
-      const image=avatar.querySelector('img');
-      if(image) avatar.replaceChildren(image);
-      else avatar.textContent=nameInput.value.trim().charAt(0).toUpperCase();
-    });
-    colorInput.addEventListener('input',()=>avatar.style.setProperty('--party-player-color',colorInput.value));
-    photoInput.addEventListener('change',()=>{
-      const file=photoInput.files && photoInput.files[0];
-      if(!file) return;
-      if(!file.type.startsWith('image/')){
-        partyModeError.textContent='Choose an image file for the player picture.';
-        photoInput.value='';
-        return;
-      }
-      if(file.size>10*1024*1024){
-        partyModeError.textContent='Choose an image smaller than 10 MB.';
-        photoInput.value='';
-        return;
-      }
-      card.dataset.photoPending='true';
-      partyModeError.textContent='';
-      const reader=new FileReader();
-      reader.onload=()=>{
-        const image=new Image();
-        image.onload=()=>{
-          const canvas=document.createElement('canvas');
-          const scale=Math.min(1,256/Math.max(image.naturalWidth,image.naturalHeight));
-          canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
-          canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
-          const context=canvas.getContext('2d');
-          if(!context){
-            partyModeError.textContent='Could not process that player picture.';
-          }else{
-            context.drawImage(image,0,0,canvas.width,canvas.height);
-            const photo=canvas.toDataURL('image/jpeg',.82);
-            avatar.replaceChildren(Object.assign(document.createElement('img'),{src:photo,alt:''}));
-            card.dataset.photo=photo;
-            capturePartyDrafts();
-          }
-          delete card.dataset.photoPending;
-        };
-        image.onerror=()=>{
-          delete card.dataset.photoPending;
-          partyModeError.textContent='Could not load that player picture.';
-        };
-        image.src=String(reader.result);
-      };
-      reader.onerror=()=>{
-        delete card.dataset.photoPending;
-        partyModeError.textContent='Could not read that player picture.';
-      };
-      reader.readAsDataURL(file);
-    });
-    return card;
+	nameInput.addEventListener("input", () => {
+		const image = avatar.querySelector("img");
+		if (image) avatar.replaceChildren(image);
+		else avatar.textContent = nameInput.value.trim().charAt(0).toUpperCase();
+	});
+	colorInput.addEventListener("input", () =>
+		avatar.style.setProperty("--party-player-color", colorInput.value),
+	);
+	photoInput.addEventListener("change", () => {
+		const file = photoInput.files && photoInput.files[0];
+		if (!file) return;
+		if (!file.type.startsWith("image/")) {
+			partyModeError.textContent =
+				"Choose an image file for the player picture.";
+			photoInput.value = "";
+			return;
+		}
+		if (file.size > 10 * 1024 * 1024) {
+			partyModeError.textContent = "Choose an image smaller than 10 MB.";
+			photoInput.value = "";
+			return;
+		}
+		card.dataset.photoPending = "true";
+		partyModeError.textContent = "";
+		const reader = new FileReader();
+		reader.onload = () => {
+			const image = new Image();
+			image.onload = () => {
+				const canvas = document.createElement("canvas");
+				const scale = Math.min(
+					1,
+					256 / Math.max(image.naturalWidth, image.naturalHeight),
+				);
+				canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+				canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+				const context = canvas.getContext("2d");
+				if (!context) {
+					partyModeError.textContent = "Could not process that player picture.";
+				} else {
+					context.drawImage(image, 0, 0, canvas.width, canvas.height);
+					const photo = canvas.toDataURL("image/jpeg", 0.82);
+					avatar.replaceChildren(
+						Object.assign(document.createElement("img"), {
+							src: photo,
+							alt: "",
+						}),
+					);
+					card.dataset.photo = photo;
+					capturePartyDrafts();
+				}
+				delete card.dataset.photoPending;
+			};
+			image.onerror = () => {
+				delete card.dataset.photoPending;
+				partyModeError.textContent = "Could not load that player picture.";
+			};
+			image.src = String(reader.result);
+		};
+		reader.onerror = () => {
+			delete card.dataset.photoPending;
+			partyModeError.textContent = "Could not read that player picture.";
+		};
+		reader.readAsDataURL(file);
+	});
+	return card;
 }
 
-function renderPartyProfiles(){
-    partyPlayerSetup.replaceChildren(createPartyProfile(0,partyProfileDrafts[0]));
-    persistPartySetup();
+function renderPartyProfiles() {
+	partyPlayerSetup.replaceChildren(
+		createPartyProfile(0, partyProfileDrafts[0]),
+	);
+	persistPartySetup();
 }
 
-function capturePartyDrafts(){
-    [...partyPlayerSetup.querySelectorAll('.party-player-card')].forEach((card)=>{
-      const index=Number.parseInt(card.dataset.playerIndex,10);
-      if(!Number.isInteger(index) || index<0 || index>=5) return;
-      partyProfileDrafts[index]={
-        name:card.querySelector('.party-player-name input').value,
-        color:card.querySelector('.party-player-color input').value,
-        photo:card.dataset.photo || partyProfileDrafts[index]?.photo || ''
-      };
-    });
-    persistPartySetup();
+function capturePartyDrafts() {
+	[...partyPlayerSetup.querySelectorAll(".party-player-card")].forEach(
+		(card) => {
+			const index = Number.parseInt(card.dataset.playerIndex, 10);
+			if (!Number.isInteger(index) || index < 0 || index >= 5) return;
+			partyProfileDrafts[index] = {
+				name: card.querySelector(".party-player-name input").value,
+				color: card.querySelector(".party-player-color input").value,
+				photo: card.dataset.photo || partyProfileDrafts[index]?.photo || "",
+			};
+		},
+	);
+	persistPartySetup();
 }
 
-partyModeToggle.addEventListener('click',()=>{
-    partyModeTrigger=document.activeElement;
-    partyModeError.textContent='';
-    partyModeChoice.hidden=false;
-    partyHostSetup.hidden=true;
-    partyModeModal.classList.add('open');
-    partyModeModal.setAttribute('aria-hidden','false');
-    requestAnimationFrame(()=>partyHostChoice.focus());
+partyModeToggle.addEventListener("click", () => {
+	partyModeTrigger = document.activeElement;
+	partyModeError.textContent = "";
+	partyModeChoice.hidden = false;
+	partyHostSetup.hidden = true;
+	partyModeModal.classList.add("open");
+	partyModeModal.setAttribute("aria-hidden", "false");
+	requestAnimationFrame(() => partyHostChoice.focus());
 });
-partyHostChoice.addEventListener('click',()=>{
-    partyModeChoice.hidden=true;
-    partyHostSetup.hidden=false;
-    renderPartyProfiles();
+partyHostChoice.addEventListener("click", () => {
+	partyModeChoice.hidden = true;
+	partyHostSetup.hidden = false;
+	renderPartyProfiles();
 });
-document.getElementById('partyJoinChoice').addEventListener('click',()=>{
-  location.href='party-join.html';
+document.getElementById("partyJoinChoice").addEventListener("click", () => {
+	location.href = "party-join.html";
 });
-partyPlayerSetup.addEventListener('input',capturePartyDrafts);
-partyPlayerSetup.addEventListener('change',capturePartyDrafts);
-document.querySelectorAll('[data-close-party-mode]').forEach((element)=>element.addEventListener('click',()=>{
-    partyModeModal.classList.remove('open');
-    partyModeModal.setAttribute('aria-hidden','true');
-    partyModeActive=false;
-    partyPlayers=[];
-    if(partyModeTrigger?.isConnected) partyModeTrigger.focus();
-}));
-document.getElementById('partyModeStart').addEventListener('click',()=>{
-    if(partyPlayerSetup.querySelector('[data-photo-pending="true"]')){
-      partyModeError.textContent='Wait for player pictures to finish processing.';
-      return;
-    }
-    capturePartyDrafts();
-    const hostCard=partyPlayerSetup.querySelector('.party-player-card');
-    const hostProfile={
-      name:hostCard.querySelector('.party-player-name input').value.trim(),
-      color:hostCard.querySelector('.party-player-color input').value,
-      photo:hostCard.dataset.photo || ''
-    };
-    if(!hostProfile.name){
-      partyModeError.textContent='Enter your player name.';
-      return;
-    }
-    partyProfileDrafts[0]=hostProfile;
-    if(!persistPartySetup()) return;
-    const button=document.getElementById('partyModeStart');
-    button.disabled=true;
-    partyModeError.textContent='Creating room…';
-    const client=new window.QuizHubPartyClient();
-    let completed=false;
-    const onHosted=(message)=>{
-      if(completed) return;
-      completed=true;
-      sessionStorage.setItem('quizHubPartyProfile',JSON.stringify(hostProfile));
-      sessionStorage.setItem('quizHubPartyReconnect',JSON.stringify({
-        code:message.room.code,playerId:message.playerId
-      }));
-      location.href=`party-lobby.html?code=${encodeURIComponent(message.room.code)}&playerId=${encodeURIComponent(message.playerId)}&host=1`;
-    };
-    const onError=(message)=>{
-      if(completed) return;
-      completed=true;
-      partyModeError.textContent=/between 2 and 5 total players/i.test(message.message)
-        ? 'The party server is out of date and still limits rooms to five players. Redeploy the latest server.js from this repository, then try again.'
-        : message.message;
-      button.disabled=false;
-      client.close();
-    };
-    client.on('hosted',onHosted);
-    client.on('error',onError);
-    client.on('close',()=>{
-      if(!completed){
-        completed=true;
-        partyModeError.textContent='Connection to the party server was lost.';
-        button.disabled=false;
-      }
-    });
-    client.send({
-      type:'host',
-      capacity:50,
-      player:hostProfile
-    })
-      .catch((error)=>{
-        if(completed) return;
-        completed=true;
-        partyModeError.textContent=/between 2 and 5 total players/i.test(error.message)
-          ? 'The party server is out of date and still limits rooms to five players. Redeploy the latest server.js from this repository, then try again.'
-          : error.message;
-        button.disabled=false;
-        client.close();
-      });
+partyPlayerSetup.addEventListener("input", capturePartyDrafts);
+partyPlayerSetup.addEventListener("change", capturePartyDrafts);
+document.querySelectorAll("[data-close-party-mode]").forEach((element) =>
+	element.addEventListener("click", () => {
+		partyModeModal.classList.remove("open");
+		partyModeModal.setAttribute("aria-hidden", "true");
+		partyModeActive = false;
+		partyPlayers = [];
+		if (partyModeTrigger?.isConnected) partyModeTrigger.focus();
+	}),
+);
+document.getElementById("partyModeStart").addEventListener("click", () => {
+	if (partyPlayerSetup.querySelector('[data-photo-pending="true"]')) {
+		partyModeError.textContent =
+			"Wait for player pictures to finish processing.";
+		return;
+	}
+	capturePartyDrafts();
+	const hostCard = partyPlayerSetup.querySelector(".party-player-card");
+	const hostProfile = {
+		name: hostCard.querySelector(".party-player-name input").value.trim(),
+		color: hostCard.querySelector(".party-player-color input").value,
+		photo: hostCard.dataset.photo || "",
+	};
+	if (!hostProfile.name) {
+		partyModeError.textContent = "Enter your player name.";
+		return;
+	}
+	partyProfileDrafts[0] = hostProfile;
+	if (!persistPartySetup()) return;
+	const button = document.getElementById("partyModeStart");
+	button.disabled = true;
+	partyModeError.textContent = "Creating room…";
+	const client = new window.QuizHubPartyClient();
+	let completed = false;
+	const onHosted = (message) => {
+		if (completed) return;
+		completed = true;
+		sessionStorage.setItem("quizHubPartyProfile", JSON.stringify(hostProfile));
+		sessionStorage.setItem(
+			"quizHubPartyReconnect",
+			JSON.stringify({
+				code: message.room.code,
+				playerId: message.playerId,
+			}),
+		);
+		location.href = `party-lobby.html?code=${encodeURIComponent(message.room.code)}&playerId=${encodeURIComponent(message.playerId)}&host=1`;
+	};
+	const onError = (message) => {
+		if (completed) return;
+		completed = true;
+		partyModeError.textContent = /between 2 and 5 total players/i.test(
+			message.message,
+		)
+			? "The party server is out of date and still limits rooms to five players. Redeploy the latest server.js from this repository, then try again."
+			: message.message;
+		button.disabled = false;
+		client.close();
+	};
+	client.on("hosted", onHosted);
+	client.on("error", onError);
+	client.on("close", () => {
+		if (!completed) {
+			completed = true;
+			partyModeError.textContent = "Connection to the party server was lost.";
+			button.disabled = false;
+		}
+	});
+	client
+		.send({
+			type: "host",
+			capacity: 50,
+			player: hostProfile,
+		})
+		.catch((error) => {
+			if (completed) return;
+			completed = true;
+			partyModeError.textContent = /between 2 and 5 total players/i.test(
+				error.message,
+			)
+				? "The party server is out of date and still limits rooms to five players. Redeploy the latest server.js from this repository, then try again."
+				: error.message;
+			button.disabled = false;
+			client.close();
+		});
 });
 
-const menuTrack=document.getElementById('menuTrack');
-const menuPages=[...document.querySelectorAll('.menu-track .menu')];
-let menuPage=0;
+const menuTrack = document.getElementById("menuTrack");
+const menuPages = [...document.querySelectorAll(".menu-track .menu")];
+let menuPage = 0;
 
-function showMenuPage(page){
-  menuPage=(page+menuPages.length)%menuPages.length;
-  menuTrack.style.transform=`translateX(-${menuPage*50}%)`;
+function showMenuPage(page) {
+	menuPage = (page + menuPages.length) % menuPages.length;
+	menuTrack.style.transform = `translateX(-${menuPage * 50}%)`;
 }
 
-document.querySelectorAll('.menu-arrow').forEach(arrow=>{
-  arrow.addEventListener('click',()=>{
-    playSound('arrow');
-    showMenuPage(arrow.classList.contains('menu-arrow-left') ? menuPage-1 : menuPage+1);
-  });
+document.querySelectorAll(".menu-arrow").forEach((arrow) => {
+	arrow.addEventListener("click", () => {
+		playSound("arrow");
+		showMenuPage(
+			arrow.classList.contains("menu-arrow-left") ? menuPage - 1 : menuPage + 1,
+		);
+	});
 });
 
-let keyboardNavigation=false;
-document.addEventListener('pointerdown',()=>{keyboardNavigation=false;});
-document.addEventListener('focusin',event=>{
-  const button=event.target.closest('.course-card, .menu-arrow, .quiz-option');
-  if(button && keyboardNavigation){
-    if(button.classList.contains('course-card')){
-      document.querySelectorAll('.course-card.keyboard-selected').forEach(card=>{
-        card.classList.remove('keyboard-selected');
-      });
-      button.classList.add('keyboard-selected');
-    }
-    playSound('highlight');
-    keyboardNavigation=false;
-  }
+let keyboardNavigation = false;
+document.addEventListener("pointerdown", () => {
+	keyboardNavigation = false;
 });
-document.addEventListener('pointerover',event=>{
-  const card=event.target.closest('.course-card');
-  if(!card || card.contains(event.relatedTarget)) return;
-  document.querySelectorAll('.course-card.keyboard-selected').forEach(selected=>{
-    selected.classList.remove('keyboard-selected');
-  });
-  keyboardNavigation=false;
+document.addEventListener("focusin", (event) => {
+	const button = event.target.closest(
+		".course-card, .menu-arrow, .quiz-option",
+	);
+	if (button && keyboardNavigation) {
+		if (button.classList.contains("course-card")) {
+			document
+				.querySelectorAll(".course-card.keyboard-selected")
+				.forEach((card) => {
+					card.classList.remove("keyboard-selected");
+				});
+			button.classList.add("keyboard-selected");
+		}
+		playSound("highlight");
+		keyboardNavigation = false;
+	}
+});
+document.addEventListener("pointerover", (event) => {
+	const card = event.target.closest(".course-card");
+	if (!card || card.contains(event.relatedTarget)) return;
+	document
+		.querySelectorAll(".course-card.keyboard-selected")
+		.forEach((selected) => {
+			selected.classList.remove("keyboard-selected");
+		});
+	keyboardNavigation = false;
 });
 
-document.querySelectorAll('[data-close-quiz-menu]').forEach(el=>{
-  el.addEventListener('click',closeQuizMenu);
+document.querySelectorAll("[data-close-quiz-menu]").forEach((el) => {
+	el.addEventListener("click", closeQuizMenu);
 });
 
-const patchnotesModal=document.getElementById('patchnotesModal');
-const patchnotesContent=document.getElementById('patchnotesContent');
-let patchnotesTrigger=null;
-const downloadAppModal=document.getElementById('downloadAppModal');
-const downloadIntroStep=document.getElementById('downloadIntroStep');
-const downloadPlatformStep=document.getElementById('downloadPlatformStep');
-const downloadAppButton=document.getElementById('downloadAppButton');
-const appDownloadUrls={
-  windows:'https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Setup.exe',
-  linux:'https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Linux-x64.AppImage',
-  android:'https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Android.apk'
+const patchnotesModal = document.getElementById("patchnotesModal");
+const patchnotesContent = document.getElementById("patchnotesContent");
+let patchnotesTrigger = null;
+const downloadAppModal = document.getElementById("downloadAppModal");
+const downloadIntroStep = document.getElementById("downloadIntroStep");
+const downloadPlatformStep = document.getElementById("downloadPlatformStep");
+const downloadAppButton = document.getElementById("downloadAppButton");
+const appDownloadUrls = {
+	windows:
+		"https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Setup.exe",
+	linux:
+		"https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Linux-x64.AppImage",
+	android:
+		"https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Android.apk",
 };
-let downloadAppTrigger=null;
-function closePatchnotes(){
-  const returnFocus=patchnotesTrigger;
-  document.activeElement?.blur();
-  patchnotesModal.classList.remove('open');
-  patchnotesModal.setAttribute('aria-hidden','true');
-  patchnotesTrigger=null;
-  if(returnFocus?.isConnected) returnFocus.focus();
+let downloadAppTrigger = null;
+function closePatchnotes() {
+	const returnFocus = patchnotesTrigger;
+	document.activeElement?.blur();
+	patchnotesModal.classList.remove("open");
+	patchnotesModal.setAttribute("aria-hidden", "true");
+	patchnotesTrigger = null;
+	if (returnFocus?.isConnected) returnFocus.focus();
 }
-function openPatchnotes(){
-  patchnotesTrigger=document.getElementById('patchnotesButton');
-  patchnotesModal.classList.add('open');
-  patchnotesModal.setAttribute('aria-hidden','false');
-  requestAnimationFrame(()=>document.querySelector('.patchnotes-close').focus());
+function openPatchnotes() {
+	patchnotesTrigger = document.getElementById("patchnotesButton");
+	patchnotesModal.classList.add("open");
+	patchnotesModal.setAttribute("aria-hidden", "false");
+	requestAnimationFrame(() =>
+		document.querySelector(".patchnotes-close").focus(),
+	);
 }
-document.getElementById('patchnotesButton').addEventListener('click',()=>{
-  playSound('popup');
-  openPatchnotes();
+document.getElementById("patchnotesButton").addEventListener("click", () => {
+	playSound("popup");
+	openPatchnotes();
 });
-document.querySelectorAll('[data-close-patchnotes]').forEach(el=>{
-  el.addEventListener('click',closePatchnotes);
+document.querySelectorAll("[data-close-patchnotes]").forEach((el) => {
+	el.addEventListener("click", closePatchnotes);
 });
 
-function closeDownloadAppModal(){
-  const returnFocus=downloadAppTrigger;
-  document.activeElement?.blur();
-  downloadAppModal.classList.remove('open');
-  downloadAppModal.setAttribute('aria-hidden','true');
-  downloadAppButton.setAttribute('aria-expanded','false');
-  downloadIntroStep.hidden=false;
-  downloadPlatformStep.hidden=true;
-  downloadAppTrigger=null;
-  if(returnFocus?.isConnected) returnFocus.focus();
-}
-
-function openDownloadAppModal(){
-  downloadAppTrigger=downloadAppButton;
-  downloadIntroStep.hidden=false;
-  downloadPlatformStep.hidden=true;
-  downloadAppModal.classList.add('open');
-  downloadAppModal.setAttribute('aria-hidden','false');
-  downloadAppButton.setAttribute('aria-expanded','true');
-  requestAnimationFrame(()=>document.getElementById('downloadAppContinue').focus());
+function closeDownloadAppModal() {
+	const returnFocus = downloadAppTrigger;
+	document.activeElement?.blur();
+	downloadAppModal.classList.remove("open");
+	downloadAppModal.setAttribute("aria-hidden", "true");
+	downloadAppButton.setAttribute("aria-expanded", "false");
+	downloadIntroStep.hidden = false;
+	downloadPlatformStep.hidden = true;
+	downloadAppTrigger = null;
+	if (returnFocus?.isConnected) returnFocus.focus();
 }
 
-downloadAppButton.addEventListener('click',()=>{
-  playSound('popup');
-  openDownloadAppModal();
+function openDownloadAppModal() {
+	downloadAppTrigger = downloadAppButton;
+	downloadIntroStep.hidden = false;
+	downloadPlatformStep.hidden = true;
+	downloadAppModal.classList.add("open");
+	downloadAppModal.setAttribute("aria-hidden", "false");
+	downloadAppButton.setAttribute("aria-expanded", "true");
+	requestAnimationFrame(() =>
+		document.getElementById("downloadAppContinue").focus(),
+	);
+}
+
+downloadAppButton.addEventListener("click", () => {
+	playSound("popup");
+	openDownloadAppModal();
 });
 
-document.getElementById('downloadAppContinue').addEventListener('click',()=>{
-  playSound('popup');
-  downloadIntroStep.hidden=true;
-  downloadPlatformStep.hidden=false;
-  requestAnimationFrame(()=>downloadPlatformStep.querySelector('[data-download-platform]').focus());
+document.getElementById("downloadAppContinue").addEventListener("click", () => {
+	playSound("popup");
+	downloadIntroStep.hidden = true;
+	downloadPlatformStep.hidden = false;
+	requestAnimationFrame(() =>
+		downloadPlatformStep.querySelector("[data-download-platform]").focus(),
+	);
 });
 
-document.getElementById('downloadAppBack').addEventListener('click',()=>{
-  playSound('popup');
-  downloadPlatformStep.hidden=true;
-  downloadIntroStep.hidden=false;
-  requestAnimationFrame(()=>document.getElementById('downloadAppContinue').focus());
+document.getElementById("downloadAppBack").addEventListener("click", () => {
+	playSound("popup");
+	downloadPlatformStep.hidden = true;
+	downloadIntroStep.hidden = false;
+	requestAnimationFrame(() =>
+		document.getElementById("downloadAppContinue").focus(),
+	);
 });
 
-document.querySelectorAll('[data-close-download-app]').forEach(element=>{
-  element.addEventListener('click',closeDownloadAppModal);
+document.querySelectorAll("[data-close-download-app]").forEach((element) => {
+	element.addEventListener("click", closeDownloadAppModal);
 });
 
-document.querySelectorAll('[data-download-platform]').forEach(button=>{
-  button.addEventListener('click',()=>{
-    const downloadUrl=appDownloadUrls[button.dataset.downloadPlatform];
-    if(!downloadUrl) return;
-    playSound('popup');
-    window.location.assign(downloadUrl);
-  });
+document.querySelectorAll("[data-download-platform]").forEach((button) => {
+	button.addEventListener("click", () => {
+		const downloadUrl = appDownloadUrls[button.dataset.downloadPlatform];
+		if (!downloadUrl) return;
+		playSound("popup");
+		window.location.assign(downloadUrl);
+	});
 });
 
-const settingsModal=document.getElementById('settingsModal');
-const optionsToggle=document.getElementById('optionsToggle');
-const motionModeSlider=document.getElementById('motionModeSlider');
-const fullscreenSetting=document.getElementById('fullscreenSetting');
-const quizMusicSetting=document.getElementById('quizMusicSetting');
-const quizMusicTrackName=document.getElementById('quizMusicTrackName');
-const textSizeSetting=document.getElementById('textSizeSetting');
-const blancQuizMusicOption=document.getElementById('blancQuizMusicOption');
-const soundMutedSetting=document.getElementById('soundMutedSetting');
-const musicMutedSetting=document.getElementById('musicMutedSetting');
-const disableLoadingSetting=document.getElementById('disableLoadingSetting');
-const highContrastSetting=document.getElementById('highContrastSetting');
-const blancModeSetting=document.getElementById('blancModeSetting');
-const blancModeSettingRow=document.getElementById('blancModeSettingRow');
-const universityName=document.getElementById('universityName');
-const resetSettingsButton=document.getElementById('resetSettings');
-const settingsError=document.getElementById('settingsError');
-const motionModeNames=['default','minimal','reduced'];
-const motionModeLabels=['Default','Minimal','Reduced'];
-const quizThemeDetails={
-  default:{caption:'Default course themes',image:'./assets/quiz-theme-default.png',alt:"Preview of a course's default quiz style"},
-  quizhub:{caption:'QuizHub Style · the standard look for other courses',image:'./assets/quiz-theme-quizhub.png',alt:'Preview of the standard QuizHub quiz style'},
-  'ai-model':{caption:'AI Model Style · Software Engineering',image:'./assets/quiz-theme-ai-model.png',alt:'Preview of the AI Model quiz style'},
-  blended:{caption:'Blended Style · Computer Graphics',image:'./assets/quiz-theme-blended.png',alt:'Preview of the Blended quiz style'}
+const settingsModal = document.getElementById("settingsModal");
+const optionsToggle = document.getElementById("optionsToggle");
+const motionModeSlider = document.getElementById("motionModeSlider");
+const fullscreenSetting = document.getElementById("fullscreenSetting");
+const quizMusicSetting = document.getElementById("quizMusicSetting");
+const quizMusicTrackName = document.getElementById("quizMusicTrackName");
+const textSizeSetting = document.getElementById("textSizeSetting");
+const blancQuizMusicOption = document.getElementById("blancQuizMusicOption");
+const soundMutedSetting = document.getElementById("soundMutedSetting");
+const musicMutedSetting = document.getElementById("musicMutedSetting");
+const disableLoadingSetting = document.getElementById("disableLoadingSetting");
+const highContrastSetting = document.getElementById("highContrastSetting");
+const blancModeSetting = document.getElementById("blancModeSetting");
+const blancModeSettingRow = document.getElementById("blancModeSettingRow");
+const universityName = document.getElementById("universityName");
+const resetSettingsButton = document.getElementById("resetSettings");
+const settingsError = document.getElementById("settingsError");
+const motionModeNames = ["default", "minimal", "reduced"];
+const motionModeLabels = ["Default", "Minimal", "Reduced"];
+const quizThemeDetails = {
+	default: {
+		caption: "Default course themes",
+		image: "./assets/quiz-theme-default.png",
+		alt: "Preview of a course's default quiz style",
+	},
+	quizhub: {
+		caption: "QuizHub Style · the standard look for other courses",
+		image: "./assets/quiz-theme-quizhub.png",
+		alt: "Preview of the standard QuizHub quiz style",
+	},
+	"ai-model": {
+		caption: "AI Model Style · Software Engineering",
+		image: "./assets/quiz-theme-ai-model.png",
+		alt: "Preview of the AI Model quiz style",
+	},
+	blended: {
+		caption: "Blended Style · Computer Graphics",
+		image: "./assets/quiz-theme-blended.png",
+		alt: "Preview of the Blended quiz style",
+	},
 };
-const quizThemePreviewImage=document.getElementById('quizThemePreviewImage');
-const quizThemePreviewCaption=document.getElementById('quizThemePreviewCaption');
-const sfxStyleRadios=document.querySelectorAll('input[name="sfxStyle"]');
-let settingsTrigger=null;
-let blancUnlockProgress=0;
-let blancUnlockSoundPlayed=false;
-let blancModeUnlocked=false;
+const quizThemePreviewImage = document.getElementById("quizThemePreviewImage");
+const quizThemePreviewCaption = document.getElementById(
+	"quizThemePreviewCaption",
+);
+const sfxStyleRadios = document.querySelectorAll('input[name="sfxStyle"]');
+let settingsTrigger = null;
+let blancUnlockProgress = 0;
+let blancUnlockSoundPlayed = false;
+let blancModeUnlocked = false;
 
 function updateQuizMusicTrackName() {
-  const musicSetting = window.quizHubPreferences.quizMusic;
+	const musicSetting = window.quizHubPreferences.quizMusic;
 
-  const courseMusicNames = {
-    default: 'Track selected automatically for each course',
-    run: 'Closer by Nine Inch Nails [Instrumental]',
-    CompArch: 'What Would Sonic Do? ... from The Murder of Sonic The Hedgehog',
-    Practice1: 'Blue Spheres ... from Sonic Mania [QuizHub Mix]',
-    Practice2: 'Special Stage ... from Sonic 3D Blast (Genesis) [QuizHub Mix]',
-    CompGFX: 'Craterscape ... from Wild 9',
-    CloudComp: 'A Lone Prayer ... from Persona [QuizHub Mix]',
-    DataSci: 'Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]',
-    SoftEngi: 'Brainrot Hub Mix [Ratatung x Verity x Looping the Rooms]'
-  };
+	const courseMusicNames = {
+		default: "Track selected automatically for each course",
+		run: "Closer by Nine Inch Nails [Instrumental]",
+		CompArch: "What Would Sonic Do? ... from The Murder of Sonic The Hedgehog",
+		Practice1: "Blue Spheres ... from Sonic Mania [QuizHub Mix]",
+		Practice2: "Special Stage ... from Sonic 3D Blast (Genesis) [QuizHub Mix]",
+		CompGFX: "Craterscape ... from Wild 9",
+		CloudComp: "A Lone Prayer ... from Persona [QuizHub Mix]",
+		DataSci:
+			"Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]",
+		SoftEngi: "Brainrot Hub Mix [Ratatung x Verity x Looping the Rooms]",
+	};
 
-  if (courseMusicNames[musicSetting]) {
-    quizMusicTrackName.textContent = courseMusicNames[musicSetting];
-    return;
-  }
+	if (courseMusicNames[musicSetting]) {
+		quizMusicTrackName.textContent = courseMusicNames[musicSetting];
+		return;
+	}
 
-  quizMusicTrackName.textContent = 'No music track selected';
+	quizMusicTrackName.textContent = "No music track selected";
 }
-function syncSettings(){
-  const motionIndex=motionModeNames.indexOf(window.quizHubPreferences.motionMode);
-  motionModeSlider.value=String(motionIndex);
-  motionModeSlider.setAttribute('aria-valuetext',motionModeLabels[motionIndex]);
-  document.querySelectorAll('input[name="answerSide"]').forEach(input=>{
-    input.checked=input.value===window.quizHubPreferences.answerSide;
-  });
-  fullscreenSetting.checked=window.quizHubPreferences.fullscreen;
-  fullscreenSetting.disabled=!document.fullscreenElement &&
-    typeof document.documentElement.requestFullscreen!=='function';
-  blancQuizMusicOption.hidden=!window.quizHubPreferences.blancMode;
-  quizMusicSetting.value=window.quizHubPreferences.quizMusic;
-  updateQuizMusicTrackName();
-  textSizeSetting.value=window.quizHubPreferences.textSize;
-  document.querySelectorAll('input[name="quizTheme"]').forEach(input=>{
-    input.checked=input.value===window.quizHubPreferences.quizTheme;
-  });
-  sfxStyleRadios.forEach(input=>{
-    input.checked=input.value===window.quizHubPreferences.sfxStyle;
-  });
-  updateQuizThemePreview(window.quizHubPreferences.quizTheme);
-  soundMutedSetting.checked=window.quizHubPreferences.soundMuted;
-  musicMutedSetting.checked=window.quizHubPreferences.musicMuted;
-  disableLoadingSetting.checked=window.quizHubPreferences.disableLoadingAnimation;
-  highContrastSetting.checked=window.quizHubPreferences.highContrast;
-  blancModeSetting.checked=window.quizHubPreferences.blancMode;
-  blancModeSettingRow.hidden=!window.quizHubPreferences.blancMode && !blancModeUnlocked;
-}
-
-function updateQuizThemePreview(theme){
-  const details=quizThemeDetails[theme] || quizThemeDetails.default;
-  quizThemePreviewImage.src=details.image;
-  quizThemePreviewImage.alt=details.alt;
-  quizThemePreviewCaption.textContent=details.caption;
-}
-
-function closeSettings(){
-  blancUnlockProgress=0;
-  const returnFocus=settingsTrigger;
-  document.activeElement?.blur();
-  settingsModal.classList.remove('open');
-  settingsModal.setAttribute('aria-hidden','true');
-  optionsToggle.setAttribute('aria-expanded','false');
-  settingsTrigger=null;
-  if(returnFocus?.isConnected) returnFocus.focus();
+function syncSettings() {
+	const motionIndex = motionModeNames.indexOf(
+		window.quizHubPreferences.motionMode,
+	);
+	motionModeSlider.value = String(motionIndex);
+	motionModeSlider.setAttribute(
+		"aria-valuetext",
+		motionModeLabels[motionIndex],
+	);
+	document.querySelectorAll('input[name="answerSide"]').forEach((input) => {
+		input.checked = input.value === window.quizHubPreferences.answerSide;
+	});
+	fullscreenSetting.checked = window.quizHubPreferences.fullscreen;
+	fullscreenSetting.disabled =
+		!document.fullscreenElement &&
+		typeof document.documentElement.requestFullscreen !== "function";
+	blancQuizMusicOption.hidden = !window.quizHubPreferences.blancMode;
+	quizMusicSetting.value = window.quizHubPreferences.quizMusic;
+	updateQuizMusicTrackName();
+	textSizeSetting.value = window.quizHubPreferences.textSize;
+	document.querySelectorAll('input[name="quizTheme"]').forEach((input) => {
+		input.checked = input.value === window.quizHubPreferences.quizTheme;
+	});
+	sfxStyleRadios.forEach((input) => {
+		input.checked = input.value === window.quizHubPreferences.sfxStyle;
+	});
+	updateQuizThemePreview(window.quizHubPreferences.quizTheme);
+	soundMutedSetting.checked = window.quizHubPreferences.soundMuted;
+	musicMutedSetting.checked = window.quizHubPreferences.musicMuted;
+	disableLoadingSetting.checked =
+		window.quizHubPreferences.disableLoadingAnimation;
+	highContrastSetting.checked = window.quizHubPreferences.highContrast;
+	blancModeSetting.checked = window.quizHubPreferences.blancMode;
+	blancModeSettingRow.hidden =
+		!window.quizHubPreferences.blancMode && !blancModeUnlocked;
 }
 
-function openSettings(){
-  blancUnlockProgress=0;
-  settingsTrigger=optionsToggle;
-  syncSettings();
-  settingsModal.classList.add('open');
-  settingsModal.setAttribute('aria-hidden','false');
-  optionsToggle.setAttribute('aria-expanded','true');
-  requestAnimationFrame(()=>settingsModal.querySelector('.settings-close').focus());
+function updateQuizThemePreview(theme) {
+	const details = quizThemeDetails[theme] || quizThemeDetails.default;
+	quizThemePreviewImage.src = details.image;
+	quizThemePreviewImage.alt = details.alt;
+	quizThemePreviewCaption.textContent = details.caption;
 }
 
-document.addEventListener('keydown',event=>{
-  if(!settingsModal.classList.contains('open')) return;
-  const code='ben';
-  const key=event.key;
-  if(key===code[blancUnlockProgress]){
-    event.preventDefault();
-    blancUnlockProgress++;
-  }else{
-    blancUnlockProgress=key==='b'?1:0;
-  }
-  if(blancUnlockProgress===code.length){
-    blancUnlockProgress=0;
-    blancModeUnlocked=true;
-    blancModeSettingRow.hidden=false;
-    if(!blancUnlockSoundPlayed){
-      playSound('loading');
-      blancUnlockSoundPlayed=true;
-    }
-  }
+function closeSettings() {
+	blancUnlockProgress = 0;
+	const returnFocus = settingsTrigger;
+	document.activeElement?.blur();
+	settingsModal.classList.remove("open");
+	settingsModal.setAttribute("aria-hidden", "true");
+	optionsToggle.setAttribute("aria-expanded", "false");
+	settingsTrigger = null;
+	if (returnFocus?.isConnected) returnFocus.focus();
+}
+
+function openSettings() {
+	blancUnlockProgress = 0;
+	settingsTrigger = optionsToggle;
+	syncSettings();
+	settingsModal.classList.add("open");
+	settingsModal.setAttribute("aria-hidden", "false");
+	optionsToggle.setAttribute("aria-expanded", "true");
+	requestAnimationFrame(() =>
+		settingsModal.querySelector(".settings-close").focus(),
+	);
+}
+
+document.addEventListener("keydown", (event) => {
+	if (!settingsModal.classList.contains("open")) return;
+	const code = "ben";
+	const key = event.key;
+	if (key === code[blancUnlockProgress]) {
+		event.preventDefault();
+		blancUnlockProgress++;
+	} else {
+		blancUnlockProgress = key === "b" ? 1 : 0;
+	}
+	if (blancUnlockProgress === code.length) {
+		blancUnlockProgress = 0;
+		blancModeUnlocked = true;
+		blancModeSettingRow.hidden = false;
+		if (!blancUnlockSoundPlayed) {
+			playSound("loading");
+			blancUnlockSoundPlayed = true;
+		}
+	}
 });
 
-optionsToggle.addEventListener('click',()=>{
-  playSound('popup');
-  settingsError.textContent='';
-  openSettings();
+optionsToggle.addEventListener("click", () => {
+	playSound("popup");
+	settingsError.textContent = "";
+	openSettings();
 });
-motionModeSlider.addEventListener('input',()=>{
-  const motionIndex=Number(motionModeSlider.value);
-  const motionMode=motionModeNames[motionIndex];
-  motionModeSlider.setAttribute('aria-valuetext',motionModeLabels[motionIndex]);
-  window.quizHubPreferences.setMotionMode(motionMode);
+motionModeSlider.addEventListener("input", () => {
+	const motionIndex = Number(motionModeSlider.value);
+	const motionMode = motionModeNames[motionIndex];
+	motionModeSlider.setAttribute(
+		"aria-valuetext",
+		motionModeLabels[motionIndex],
+	);
+	window.quizHubPreferences.setMotionMode(motionMode);
 });
-quizMusicSetting.addEventListener('change',()=>{
-  window.quizHubPreferences.setQuizMusic(quizMusicSetting.value);
-  updateQuizMusicTrackName();
-  if(quizPreviewPlaying) startQuizMusicPreview();
+quizMusicSetting.addEventListener("change", () => {
+	window.quizHubPreferences.setQuizMusic(quizMusicSetting.value);
+	updateQuizMusicTrackName();
+	if (quizPreviewPlaying) startQuizMusicPreview();
 });
-textSizeSetting.addEventListener('change',()=>{
-  window.quizHubPreferences.setTextSize(textSizeSetting.value);
+textSizeSetting.addEventListener("change", () => {
+	window.quizHubPreferences.setTextSize(textSizeSetting.value);
 });
-document.querySelectorAll('input[name="quizTheme"]').forEach(input=>{
-  input.addEventListener('change',()=>{
-    if(!input.checked) return;
-    window.quizHubPreferences.setQuizTheme(input.value);
-    updateQuizThemePreview(input.value);
-  });
+document.querySelectorAll('input[name="quizTheme"]').forEach((input) => {
+	input.addEventListener("change", () => {
+		if (!input.checked) return;
+		window.quizHubPreferences.setQuizTheme(input.value);
+		updateQuizThemePreview(input.value);
+	});
 });
-sfxStyleRadios.forEach(input=>{
-  input.addEventListener('change',()=>{
-    if(!input.checked) return;
-    window.quizHubPreferences.setSfxStyle(input.value);
-    playSound('highlight','CompGFX',true);
-  });
+sfxStyleRadios.forEach((input) => {
+	input.addEventListener("change", () => {
+		if (!input.checked) return;
+		window.quizHubPreferences.setSfxStyle(input.value);
+		playSound("highlight", "CompGFX", true);
+	});
 });
-soundMutedSetting.addEventListener('change',()=>{
-  setSoundsMuted(soundMutedSetting.checked);
+soundMutedSetting.addEventListener("change", () => {
+	setSoundsMuted(soundMutedSetting.checked);
 });
-musicMutedSetting.addEventListener('change',()=>{
-  setMusicMuted(musicMutedSetting.checked);
+musicMutedSetting.addEventListener("change", () => {
+	setMusicMuted(musicMutedSetting.checked);
 });
-disableLoadingSetting.addEventListener('change',()=>{
-  window.quizHubPreferences.setDisableLoadingAnimation(disableLoadingSetting.checked);
+disableLoadingSetting.addEventListener("change", () => {
+	window.quizHubPreferences.setDisableLoadingAnimation(
+		disableLoadingSetting.checked,
+	);
 });
-highContrastSetting.addEventListener('change',()=>{
-  window.quizHubPreferences.setHighContrast(highContrastSetting.checked);
+highContrastSetting.addEventListener("change", () => {
+	window.quizHubPreferences.setHighContrast(highContrastSetting.checked);
 });
-blancModeSetting.addEventListener('change',()=>{
-  window.quizHubPreferences.setBlancMode(blancModeSetting.checked);
-  blancQuizMusicOption.hidden=!blancModeSetting.checked;
-  quizMusicSetting.value=window.quizHubPreferences.quizMusic;
-  updateQuizMusicTrackName();
-  if(blancModeSetting.checked){
-    playSound('started');
-  }
-  if(quizPreviewPlaying) startQuizMusicPreview();
-  updateBlancTitle(blancModeSetting.checked);
-  if(!quizPreviewPlaying) startMenuMusic(true);
+blancModeSetting.addEventListener("change", () => {
+	window.quizHubPreferences.setBlancMode(blancModeSetting.checked);
+	blancQuizMusicOption.hidden = !blancModeSetting.checked;
+	quizMusicSetting.value = window.quizHubPreferences.quizMusic;
+	updateQuizMusicTrackName();
+	if (blancModeSetting.checked) {
+		playSound("started");
+	}
+	if (quizPreviewPlaying) startQuizMusicPreview();
+	updateBlancTitle(blancModeSetting.checked);
+	if (!quizPreviewPlaying) startMenuMusic(true);
 });
-resetSettingsButton.addEventListener('click',()=>{
-  window.quizHubPreferences.reset();
-  setSoundsMuted(false);
-  setMusicMuted(false);
-  updateBlancTitle(false);
-  blancModeUnlocked=false;
-  blancModeSettingRow.hidden=true;
-  if(quizPreviewPlaying) startQuizMusicPreview();
-  syncSettings();
-  settingsError.textContent='';
-  if(document.fullscreenElement){
-    document.exitFullscreen().catch(error=>{
-      settingsError.textContent=`Could not exit fullscreen: ${error.message}`;
-    });
-  }
-  window.quizHubPreferences.setFullscreen(false);
+resetSettingsButton.addEventListener("click", () => {
+	window.quizHubPreferences.reset();
+	setSoundsMuted(false);
+	setMusicMuted(false);
+	updateBlancTitle(false);
+	blancModeUnlocked = false;
+	blancModeSettingRow.hidden = true;
+	if (quizPreviewPlaying) startQuizMusicPreview();
+	syncSettings();
+	settingsError.textContent = "";
+	if (document.fullscreenElement) {
+		document.exitFullscreen().catch((error) => {
+			settingsError.textContent = `Could not exit fullscreen: ${error.message}`;
+		});
+	}
+	window.quizHubPreferences.setFullscreen(false);
 });
-document.querySelectorAll('input[name="answerSide"]').forEach(input=>{
-  input.addEventListener('change',()=>{
-    if(input.checked) window.quizHubPreferences.setAnswerSide(input.value);
-  });
+document.querySelectorAll('input[name="answerSide"]').forEach((input) => {
+	input.addEventListener("change", () => {
+		if (input.checked) window.quizHubPreferences.setAnswerSide(input.value);
+	});
 });
-fullscreenSetting.addEventListener('change',()=>{
-  settingsError.textContent='';
-  if(fullscreenSetting.checked){
-    window.quizHubPreferences.setFullscreen(true);
-    if(typeof document.documentElement.requestFullscreen!=='function'){
-      fullscreenSetting.checked=false;
-      window.quizHubPreferences.setFullscreen(false);
-      settingsError.textContent='Fullscreen is not available in this browser.';
-      return;
-    }
-    document.documentElement.requestFullscreen().catch(error=>{
-      fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
-      window.quizHubPreferences.setFullscreen(false);
-      settingsError.textContent=`Could not enter fullscreen: ${error.message}`;
-    });
-  }else{
-    window.quizHubPreferences.setFullscreen(false);
-    if(!document.fullscreenElement) return;
-    document.exitFullscreen().catch(error=>{
-      fullscreenSetting.checked=document.fullscreenElement===document.documentElement;
-      settingsError.textContent=`Could not exit fullscreen: ${error.message}`;
-    });
-  }
+fullscreenSetting.addEventListener("change", () => {
+	settingsError.textContent = "";
+	if (fullscreenSetting.checked) {
+		window.quizHubPreferences.setFullscreen(true);
+		if (typeof document.documentElement.requestFullscreen !== "function") {
+			fullscreenSetting.checked = false;
+			window.quizHubPreferences.setFullscreen(false);
+			settingsError.textContent =
+				"Fullscreen is not available in this browser.";
+			return;
+		}
+		document.documentElement.requestFullscreen().catch((error) => {
+			fullscreenSetting.checked =
+				document.fullscreenElement === document.documentElement;
+			window.quizHubPreferences.setFullscreen(false);
+			settingsError.textContent = `Could not enter fullscreen: ${error.message}`;
+		});
+	} else {
+		window.quizHubPreferences.setFullscreen(false);
+		if (!document.fullscreenElement) return;
+		document.exitFullscreen().catch((error) => {
+			fullscreenSetting.checked =
+				document.fullscreenElement === document.documentElement;
+			settingsError.textContent = `Could not exit fullscreen: ${error.message}`;
+		});
+	}
 });
-document.addEventListener('fullscreenchange',()=>{
-  fullscreenSetting.checked=window.quizHubPreferences.fullscreen;
+document.addEventListener("fullscreenchange", () => {
+	fullscreenSetting.checked = window.quizHubPreferences.fullscreen;
 });
-document.querySelectorAll('[data-close-settings]').forEach(el=>{
-  el.addEventListener('click',closeSettings);
+document.querySelectorAll("[data-close-settings]").forEach((el) => {
+	el.addEventListener("click", closeSettings);
 });
 
-const textbookLibraryLink=document.getElementById('textbookLibraryLink');
-textbookLibraryLink.addEventListener('click',event=>{
-  if(event.button!==0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  event.preventDefault();
-  if(document.body.classList.contains('library-leaving')) return;
-  document.body.classList.add('library-leaving');
-  window.setTimeout(()=>window.location.assign(textbookLibraryLink.href),220);
+const textbookLibraryLink = document.getElementById("textbookLibraryLink");
+textbookLibraryLink.addEventListener("click", (event) => {
+	if (
+		event.button !== 0 ||
+		event.metaKey ||
+		event.ctrlKey ||
+		event.shiftKey ||
+		event.altKey
+	)
+		return;
+	event.preventDefault();
+	if (document.body.classList.contains("library-leaving")) return;
+	document.body.classList.add("library-leaving");
+	window.setTimeout(
+		() => window.location.assign(textbookLibraryLink.href),
+		220,
+	);
 });
 
-patchnotesContent.textContent=`
-Version 2.3.
+patchnotesContent.textContent = `
+Version 2.4
+- Downloadable versions should be functioning now
+- New icon for the site, which is also used in the downloadable versions
+
+Version 2.3
 - Computer Graphics quiz style has been improved
 - Computer Graphics now has a new default SFX Style, which can also be configued in the options
 - Computer Graphics has a unique loading screen now
@@ -1230,217 +1453,295 @@ Beta v0.1
 - Inital release with Intro Comp Arch Quiz 1
 `;
 
-document.addEventListener('keydown',event=>{
-  document.documentElement.classList.add('keyboard-controls');
-  if(event.key==='Tab') keyboardNavigation=true;
-  const openModal=[
-    document.getElementById('quizModal'),
-    patchnotesModal,
-    settingsModal,
-    partyModeModal,
-    downloadAppModal
-  ].find(modal=>modal.classList.contains('open'));
+document.addEventListener("keydown", (event) => {
+	document.documentElement.classList.add("keyboard-controls");
+	if (event.key === "Tab") keyboardNavigation = true;
+	const openModal = [
+		document.getElementById("quizModal"),
+		patchnotesModal,
+		settingsModal,
+		partyModeModal,
+		downloadAppModal,
+	].find((modal) => modal.classList.contains("open"));
 
-  if(event.key.toLowerCase()==='o' &&
-    !event.target.matches('input,textarea,select,[contenteditable="true"]')){
-    if(settingsModal.classList.contains('open')){
-      event.preventDefault();
-      closeSettings();
-      return;
-    }
-    if(!openModal){
-      event.preventDefault();
-      optionsToggle.click();
-      return;
-    }
-  }
+	if (
+		event.key.toLowerCase() === "o" &&
+		!event.target.matches('input,textarea,select,[contenteditable="true"]')
+	) {
+		if (settingsModal.classList.contains("open")) {
+			event.preventDefault();
+			closeSettings();
+			return;
+		}
+		if (!openModal) {
+			event.preventDefault();
+			optionsToggle.click();
+			return;
+		}
+	}
 
-  if(event.key==='Escape' && openModal){
-    event.preventDefault();
-    if(openModal.id==='quizModal') closeQuizMenu();
-    else if(openModal===patchnotesModal) closePatchnotes();
-    else if(openModal===settingsModal) closeSettings();
-    else if(openModal===downloadAppModal) closeDownloadAppModal();
-    else openModal.querySelector('.party-mode-close')?.click();
-    return;
-  }
+	if (event.key === "Escape" && openModal) {
+		event.preventDefault();
+		if (openModal.id === "quizModal") closeQuizMenu();
+		else if (openModal === patchnotesModal) closePatchnotes();
+		else if (openModal === settingsModal) closeSettings();
+		else if (openModal === downloadAppModal) closeDownloadAppModal();
+		else openModal.querySelector(".party-mode-close")?.click();
+		return;
+	}
 
-  if(event.key==='Tab' && openModal){
-    const dialog=openModal.querySelector('[role="dialog"]');
-    const focusable=[...dialog.querySelectorAll(
-      'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
-    )].filter(element=>
-      !element.closest('[hidden]') &&
-      element.getAttribute('aria-hidden')!=='true' &&
-      element.getClientRects().length>0
-    );
-    if(focusable.length){
-      const first=focusable[0];
-      const last=focusable[focusable.length-1];
-      if(event.shiftKey && (document.activeElement===first || !dialog.contains(document.activeElement))){
-        event.preventDefault();
-        last.focus();
-      }else if(!event.shiftKey && (document.activeElement===last || !dialog.contains(document.activeElement))){
-        event.preventDefault();
-        first.focus();
-      }
-    }
-    return;
-  }
+	if (event.key === "Tab" && openModal) {
+		const dialog = openModal.querySelector('[role="dialog"]');
+		const focusable = [
+			...dialog.querySelectorAll(
+				'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+			),
+		].filter(
+			(element) =>
+				!element.closest("[hidden]") &&
+				element.getAttribute("aria-hidden") !== "true" &&
+				element.getClientRects().length > 0,
+		);
+		if (focusable.length) {
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+			if (
+				event.shiftKey &&
+				(document.activeElement === first ||
+					!dialog.contains(document.activeElement))
+			) {
+				event.preventDefault();
+				last.focus();
+			} else if (
+				!event.shiftKey &&
+				(document.activeElement === last ||
+					!dialog.contains(document.activeElement))
+			) {
+				event.preventDefault();
+				first.focus();
+			}
+		}
+		return;
+	}
 
-  if(!openModal && event.key.toLowerCase()==='p' &&
-    !event.target.matches('input,textarea,select,[contenteditable="true"]')){
-    event.preventDefault();
-    partyModeToggle.click();
-    return;
-  }
+	if (
+		!openModal &&
+		event.key.toLowerCase() === "p" &&
+		!event.target.matches('input,textarea,select,[contenteditable="true"]')
+	) {
+		event.preventDefault();
+		partyModeToggle.click();
+		return;
+	}
 
-  if(event.key==='Escape'){
-    const modal=document.getElementById('quizModal');
-    if(modal.classList.contains('open')) closeQuizMenu();
-    if(patchnotesModal.classList.contains('open')) closePatchnotes();
-    if(settingsModal.classList.contains('open')) closeSettings();
-    return;
-  }
+	if (event.key === "Escape") {
+		const modal = document.getElementById("quizModal");
+		if (modal.classList.contains("open")) closeQuizMenu();
+		if (patchnotesModal.classList.contains("open")) closePatchnotes();
+		if (settingsModal.classList.contains("open")) closeSettings();
+		return;
+	}
 
-  if(event.target.tagName==='INPUT' || document.getElementById('quizModal').classList.contains('open') ||
-    patchnotesModal.classList.contains('open') || settingsModal.classList.contains('open') ||
-    partyModeModal.classList.contains('open') || downloadAppModal.classList.contains('open')) return;
+	if (
+		event.target.tagName === "INPUT" ||
+		document.getElementById("quizModal").classList.contains("open") ||
+		patchnotesModal.classList.contains("open") ||
+		settingsModal.classList.contains("open") ||
+		partyModeModal.classList.contains("open") ||
+		downloadAppModal.classList.contains("open")
+	)
+		return;
 
-  const pageCards=[...menuPages[menuPage].querySelectorAll('.course-card')];
-  const activeIndex=pageCards.indexOf(document.activeElement);
-  if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','PageUp','PageDown'].includes(event.key)) return;
+	const pageCards = [...menuPages[menuPage].querySelectorAll(".course-card")];
+	const activeIndex = pageCards.indexOf(document.activeElement);
+	if (
+		![
+			"ArrowLeft",
+			"ArrowRight",
+			"ArrowUp",
+			"ArrowDown",
+			"PageUp",
+			"PageDown",
+		].includes(event.key)
+	)
+		return;
 
-  event.preventDefault();
-  keyboardNavigation=true;
-  if(event.key==='PageUp' || event.key==='PageDown'){
-    const nextPage=event.key==='PageUp' ? menuPage-1 : menuPage+1;
-    playSound('arrow');
-    showMenuPage(nextPage);
-    menuPages[(nextPage+menuPages.length)%menuPages.length].querySelector('.course-card')?.focus();
-    return;
-  }
+	event.preventDefault();
+	keyboardNavigation = true;
+	if (event.key === "PageUp" || event.key === "PageDown") {
+		const nextPage = event.key === "PageUp" ? menuPage - 1 : menuPage + 1;
+		playSound("arrow");
+		showMenuPage(nextPage);
+		menuPages[(nextPage + menuPages.length) % menuPages.length]
+			.querySelector(".course-card")
+			?.focus();
+		return;
+	}
 
-  if(activeIndex<0){
-    pageCards[0]?.focus();
-    return;
-  }
+	if (activeIndex < 0) {
+		pageCards[0]?.focus();
+		return;
+	}
 
-  const column=activeIndex%3;
-  let nextIndex=activeIndex;
-  if(event.key==='ArrowUp') nextIndex=(activeIndex-3+pageCards.length)%pageCards.length;
-  if(event.key==='ArrowDown') nextIndex=(activeIndex+3)%pageCards.length;
-  if(event.key==='ArrowLeft'){
-    if(column===0){
-      playSound('arrow');
-      showMenuPage(menuPage-1);
-      menuPages[(menuPage+menuPages.length-1)%menuPages.length].querySelector('.course-card:last-child')?.focus();
-      return;
-    }
-    nextIndex=activeIndex-1;
-  }
-  if(event.key==='ArrowRight'){
-    if(column===2){
-      playSound('arrow');
-      showMenuPage(menuPage+1);
-      menuPages[(menuPage+1)%menuPages.length].querySelector('.course-card')?.focus();
-      return;
-    }
-    nextIndex=activeIndex+1;
-  }
-  pageCards[nextIndex]?.focus();
+	const column = activeIndex % 3;
+	let nextIndex = activeIndex;
+	if (event.key === "ArrowUp")
+		nextIndex = (activeIndex - 3 + pageCards.length) % pageCards.length;
+	if (event.key === "ArrowDown")
+		nextIndex = (activeIndex + 3) % pageCards.length;
+	if (event.key === "ArrowLeft") {
+		if (column === 0) {
+			playSound("arrow");
+			showMenuPage(menuPage - 1);
+			menuPages[(menuPage + menuPages.length - 1) % menuPages.length]
+				.querySelector(".course-card:last-child")
+				?.focus();
+			return;
+		}
+		nextIndex = activeIndex - 1;
+	}
+	if (event.key === "ArrowRight") {
+		if (column === 2) {
+			playSound("arrow");
+			showMenuPage(menuPage + 1);
+			menuPages[(menuPage + 1) % menuPages.length]
+				.querySelector(".course-card")
+				?.focus();
+			return;
+		}
+		nextIndex = activeIndex + 1;
+	}
+	pageCards[nextIndex]?.focus();
 });
-document.addEventListener('pointerdown',()=>{
-  document.documentElement.classList.remove('keyboard-controls');
+document.addEventListener("pointerdown", () => {
+	document.documentElement.classList.remove("keyboard-controls");
 });
 
-const stemTitle=document.querySelector('h1');
-const stemLetters=[...stemTitle.querySelectorAll('.stem-letter')];
-const originalStemText=stemLetters.map(letter=>letter.textContent);
-function updateBlancTitle(enabled){
-  const blancTitle=['B','e','n',' ','H','u','b'];
-  universityName.textContent=enabled?"Ben's Domain":'Lakehead University - Barrie STEM Hub';
-  stemLetters.forEach((letter,index)=>{
-    letter.textContent=enabled?blancTitle[index] || '':originalStemText[index];
-    letter.hidden=enabled && index>=blancTitle.length;
-  });
-  stemTitle.setAttribute('aria-label',enabled?'Ben Hub':'Lakehead STEM Hub');
-  document.title=enabled?'Ben Hub':'Quiz Hub';
+const stemTitle = document.querySelector("h1");
+const stemLetters = [...stemTitle.querySelectorAll(".stem-letter")];
+const originalStemText = stemLetters.map((letter) => letter.textContent);
+function updateBlancTitle(enabled) {
+	const blancTitle = ["B", "e", "n", " ", "H", "u", "b"];
+	universityName.textContent = enabled
+		? "Ben's Domain"
+		: "Lakehead University - Barrie STEM Hub";
+	stemLetters.forEach((letter, index) => {
+		letter.textContent = enabled
+			? blancTitle[index] || ""
+			: originalStemText[index];
+		letter.hidden = enabled && index >= blancTitle.length;
+	});
+	stemTitle.setAttribute(
+		"aria-label",
+		enabled ? "Ben Hub" : "Lakehead STEM Hub",
+	);
+	document.title = enabled ? "Ben Hub" : "Quiz Hub";
 }
 updateBlancTitle(window.quizHubPreferences.blancMode);
-const titleEndSound=new Audio(soundFiles.titleEnd);
-let titleEndPending=false;
-function tryPlayTitleEnd(){
-  if(!titleEndPending || soundsMuted) return;
-  titleEndSound.currentTime=0;
-  titleEndSound.play().then(()=>{titleEndPending=false;}).catch(()=>{});
+const titleEndSound = new Audio(soundFiles.titleEnd);
+let titleEndPending = false;
+function tryPlayTitleEnd() {
+	if (!titleEndPending || soundsMuted) return;
+	titleEndSound.currentTime = 0;
+	titleEndSound
+		.play()
+		.then(() => {
+			titleEndPending = false;
+		})
+		.catch(() => {});
 }
-stemLetters.forEach(letter=>letter.addEventListener('animationstart',event=>{
-  const lastVisibleLetter=stemLetters.filter(item=>!item.hidden).at(-1);
-  if(event.animationName==='titleEntrance' && event.currentTarget===lastVisibleLetter){
-    titleEndPending=true;
-    tryPlayTitleEnd();
-  }
-}));
-document.addEventListener('pointerdown',tryPlayTitleEnd);
-function pulseStem(){
-  if(leaving)return;
-  stemTitle.classList.remove('animating');
-  void stemTitle.offsetWidth;
-  stemTitle.classList.add('animating');
+stemLetters.forEach((letter) =>
+	letter.addEventListener("animationstart", (event) => {
+		const lastVisibleLetter = stemLetters.filter((item) => !item.hidden).at(-1);
+		if (
+			event.animationName === "titleEntrance" &&
+			event.currentTarget === lastVisibleLetter
+		) {
+			titleEndPending = true;
+			tryPlayTitleEnd();
+		}
+	}),
+);
+document.addEventListener("pointerdown", tryPlayTitleEnd);
+function pulseStem() {
+	if (leaving) return;
+	stemTitle.classList.remove("animating");
+	void stemTitle.offsetWidth;
+	stemTitle.classList.add("animating");
 }
 
-window.addEventListener('pageshow',event=>{
-  if(!event.persisted && !document.body.classList.contains('leaving') &&
-    !document.body.classList.contains('motion-fade-leaving') &&
-    !document.body.classList.contains('library-leaving'))return;
-  leaving=false;
-  welcomeVisible=false;
-  quizLoaded=false;
-  navigationTarget='';
-  document.body.classList.remove('leaving','motion-fade-leaving','library-leaving','show-welcome','welcome-out');
-  document.querySelectorAll('.card').forEach(card=>{card.disabled=false;});
-  if(preloadFrame){
-    preloadFrame.remove();
-    preloadFrame=null;
-  }
-  menuVisible=true;
-  document.body.classList.add('intro-complete','menu-visible');
-  startMenuMusic();
+window.addEventListener("pageshow", (event) => {
+	if (
+		!event.persisted &&
+		!document.body.classList.contains("leaving") &&
+		!document.body.classList.contains("motion-fade-leaving") &&
+		!document.body.classList.contains("library-leaving")
+	)
+		return;
+	leaving = false;
+	welcomeVisible = false;
+	quizLoaded = false;
+	navigationTarget = "";
+	document.body.classList.remove(
+		"leaving",
+		"motion-fade-leaving",
+		"library-leaving",
+		"show-welcome",
+		"welcome-out",
+	);
+	document.querySelectorAll(".card").forEach((card) => {
+		card.disabled = false;
+	});
+	if (preloadFrame) {
+		preloadFrame.remove();
+		preloadFrame = null;
+	}
+	menuVisible = true;
+	document.body.classList.add("intro-complete", "menu-visible");
+	startMenuMusic();
 });
 
 const returnParams = new URLSearchParams(window.location.search);
-const returningFromSetup = returnParams.get('fromSetup') === '1';
-const returningFromWin = returnParams.get('fromWin') === '1';
+const returningFromSetup = returnParams.get("fromSetup") === "1";
+const returningFromWin = returnParams.get("fromWin") === "1";
 if (returningFromSetup || returningFromWin) {
-  const cleanUrl = new URL(window.location.href);
-  cleanUrl.searchParams.delete(returningFromSetup ? 'fromSetup' : 'fromWin');
-  window.history.replaceState(null, '', cleanUrl);
+	const cleanUrl = new URL(window.location.href);
+	cleanUrl.searchParams.delete(returningFromSetup ? "fromSetup" : "fromWin");
+	window.history.replaceState(null, "", cleanUrl);
 }
 
 if (returningFromSetup) {
-  menuVisible=true;
-  document.body.classList.add('menu-return-setup','skip-title-intro','intro-complete','menu-visible');
-  startMenuMusic(true);
+	menuVisible = true;
+	document.body.classList.add(
+		"menu-return-setup",
+		"skip-title-intro",
+		"intro-complete",
+		"menu-visible",
+	);
+	startMenuMusic(true);
 } else if (returningFromWin) {
-  document.body.classList.add('menu-return-win','skip-title-intro','intro-complete');
-  setTimeout(()=>{
-    menuVisible=true;
-    document.body.classList.add('menu-visible');
-    startMenuMusic();
-  },1450);
+	document.body.classList.add(
+		"menu-return-win",
+		"skip-title-intro",
+		"intro-complete",
+	);
+	setTimeout(() => {
+		menuVisible = true;
+		document.body.classList.add("menu-visible");
+		startMenuMusic();
+	}, 1450);
 } else {
-  // Animated title entrance first; only after it finishes is the full menu revealed.
-  setTimeout(()=>document.body.classList.add('intro-complete'),1450);
-  setTimeout(()=>{
-    menuVisible=true;
-    document.body.classList.add('menu-visible');
-    startMenuMusic();
-  },2550);
+	// Animated title entrance first; only after it finishes is the full menu revealed.
+	setTimeout(() => document.body.classList.add("intro-complete"), 1450);
+	setTimeout(() => {
+		menuVisible = true;
+		document.body.classList.add("menu-visible");
+		startMenuMusic();
+	}, 2550);
 }
 
 // First title bounce occurs 15 seconds after the initial menu reveal, then every 15 seconds.
-setTimeout(()=>{
-  pulseStem();
-  setInterval(pulseStem,15000);
-},15000);
+setTimeout(() => {
+	pulseStem();
+	setInterval(pulseStem, 15000);
+}, 15000);

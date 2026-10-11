@@ -3,6 +3,7 @@
 const { app, BrowserWindow, dialog, shell } = require("electron");
 
 const siteUrl = new URL("https://a-pinnell.github.io/QuizHub/");
+siteUrl.searchParams.set("quizhubApp", "desktop");
 
 function openExternalUrl(rawUrl) {
   const url = new URL(rawUrl);

@@ -95,11 +95,12 @@ body.library-leaving{transform-origin:center center;animation:libraryPageExit .2
 html.blanc-mode .menu-area{background:url("../secret/blanc.png") center/100% 100% no-repeat!important}
 .patchnotes-button{position:absolute;left:50%;bottom:8px;z-index:4;border:0;border-radius:4px;background:rgba(0,0,0,.25);color:rgba(255,255,255,.82);padding:6px 12px;font:700 10px/1 Arial,sans-serif;letter-spacing:1.2px;cursor:pointer;transform:translateX(-50%);transition:background .18s ease,color .18s ease,transform .18s ease}
 .patchnotes-button:hover,.patchnotes-button:focus-visible{background:rgba(0,0,0,.45);color:#fff;transform:translateX(-50%) translateY(-2px);outline:2px solid rgba(245,179,53,.9);outline-offset:2px}
-.download-app-button{position:fixed;right:16px;bottom:14px;z-index:30;display:none;align-items:center;gap:8px;min-height:42px;padding:0 15px;border:1px solid rgba(255,255,255,.7);border-radius:999px;background:#102a52;color:#fff;font:700 12px/1 Arial,sans-serif;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 3px 12px rgba(0,0,0,.28);cursor:pointer;transition:background .18s ease}
-.download-app-button svg{width:18px;height:18px;flex:0 0 auto}
+.download-app-button{position:fixed;left:16px;bottom:14px;z-index:30;display:none;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:#102a52;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28);cursor:pointer;transition:background .18s ease}
+.download-app-button svg{width:21px;height:21px;flex:0 0 auto}
 body.menu-visible .download-app-button{display:flex}
 .download-app-button:hover,.download-app-button:focus-visible{background:#1c4479;outline:2px solid #f5c542;outline-offset:3px}
-@media(max-width:720px){.download-app-button{right:12px;bottom:12px;min-height:40px;padding:0 12px;font-size:11px}}
+@media(max-width:720px){.download-app-button{left:12px;bottom:12px;width:40px;height:40px}}
+html.native-app .download-app-button,html.native-app .fullscreen-setting{display:none!important}
 .menu-viewport{width:min(1120px,calc(100% - 110px));height:100%;max-height:470px;overflow:hidden}
 .menu-track{display:flex;width:200%;height:100%;transition:transform .55s cubic-bezier(.22,.8,.25,1);will-change:transform}
 .menu{flex:0 0 50%;width:50%;height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:clamp(18px,2.4vw,38px)}

@@ -1,6 +1,7 @@
 (function(){
   "use strict";
 
+  const isNativeApp=window.quizHubNativeApp===true;
   const storage = window.localStorage;
   const root = document.documentElement;
   const savedMotionMode = storage.getItem("quizHubMotionMode");
@@ -168,7 +169,7 @@
     fullscreenRetryPending=false;
   }
   function retryFullscreen(){
-    if(!preferences.fullscreen || fullscreenRequestPending ||
+    if(isNativeApp || !preferences.fullscreen || fullscreenRequestPending ||
       typeof document.documentElement.requestFullscreen !== "function") return;
     fullscreenRequestPending=true;
     document.documentElement.requestFullscreen().then(()=>{
@@ -226,7 +227,7 @@
   };
 
   window.addEventListener("pageshow",()=>{
-    if(!preferences.fullscreen || document.fullscreenElement ||
+    if(isNativeApp || !preferences.fullscreen || document.fullscreenElement ||
       typeof document.documentElement.requestFullscreen !== "function") return;
     document.documentElement.requestFullscreen().catch((error)=>{
       console.warn("Could not automatically restore site fullscreen:", error);
