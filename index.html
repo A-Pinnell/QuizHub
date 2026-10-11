@@ -28,7 +28,26 @@
 				/Electron\//.test(navigator.userAgent) ||
 				persistedNativeApp,
 			);
+			const isQuizHubOfflineApp = Boolean(
+				isQuizHubNativeApp &&
+				((isQuizHubAndroidApp &&
+					["localhost", "127.0.0.1"].includes(location.hostname)) ||
+					(/Electron\//.test(navigator.userAgent) &&
+						location.protocol === "file:")),
+			);
 			window.quizHubNativeApp = isQuizHubNativeApp;
+			window.quizHubOfflineApp = isQuizHubOfflineApp;
+			if (isQuizHubOfflineApp) {
+				document.documentElement.classList.add("offline-mode");
+				document.addEventListener(
+					"DOMContentLoaded",
+					() => {
+						const version = document.querySelector(".tagline");
+						if (version) version.textContent = `Offline ${version.textContent}`;
+					},
+					{ once: true },
+				);
+			}
 			if (isQuizHubAndroidApp) {
 				try {
 					sessionStorage.setItem("quizhubAndroidApp", "true");
@@ -53,6 +72,7 @@
 		<script src="./js/offline-app.js" defer></script>
 		<script src="./js/preferences.js" defer></script>
 		<script src="./js/party-config.js" defer></script>
+		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
 		<script src="./js/index.js" defer></script>
 	</head>
@@ -180,7 +200,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 2.5</div>
+						<div class="tagline">Version 2.5.1</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -190,6 +210,13 @@
 					</div>
 				</header>
 				<main class="menu-area">
+					<button
+						class="mixed-study-launch"
+						id="mixedStudyLaunch"
+						type="button">
+						<span>Mixed Study</span>
+						<small>Mix question banks across courses</small>
+					</button>
 					<button
 						class="menu-arrow menu-arrow-left"
 						type="button"
@@ -319,6 +346,18 @@
 				<h2 id="quizMenuTitle">Choose an Option</h2>
 				<p>Select which quiz you would like to take.</p>
 				<div class="quiz-options"></div>
+				<section class="mixed-study-options" id="mixedStudyOptions" hidden>
+					<p>Choose one or more question banks or review sets.</p>
+					<div class="mixed-source-list" id="mixedStudySources"></div>
+					<p
+						class="mixed-study-error"
+						id="mixedStudyError"
+						role="status"
+						aria-live="polite"></p>
+					<button class="mixed-study-start" id="mixedStudyStart" type="button">
+						START MIXED STUDY
+					</button>
+				</section>
 			</div>
 		</div>
 
@@ -633,7 +672,10 @@ Loading patch notes...</pre
 			</section>
 		</div>
 
-		<div class="no-connection-modal" id="partyNoConnectionModal" aria-hidden="true">
+		<div
+			class="no-connection-modal"
+			id="partyNoConnectionModal"
+			aria-hidden="true">
 			<div class="party-mode-backdrop" data-close-party-connection></div>
 			<section
 				class="party-mode-panel"
@@ -649,7 +691,9 @@ Loading patch notes...</pre
 				</button>
 				<div class="quiz-menu-kicker">CONNECTION REQUIRED</div>
 				<h2 id="partyNoConnectionTitle">No internet connection</h2>
-				<p>Party Mode requires an internet connection. Reconnect and try again.</p>
+				<p>
+					Party Mode requires an internet connection. Reconnect and try again.
+				</p>
 				<button
 					class="party-mode-start"
 					type="button"

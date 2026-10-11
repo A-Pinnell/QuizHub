@@ -336,7 +336,7 @@ const courseQuizCatalog = {
 		},
 	],
 	CompGFX: [{ id: "test1", label: "Midterm Practice", detail: "for Oct 21" }],
-	DataSci: [{ id: "test1", label: "Test 1 Practice", detail: "for Oct 22" }],
+	DataSci: [{ id: "test1", label: "Midterm Practice", detail: "for Oct 22" }],
 	SoftEngi: [
 		{ id: "test1", label: "Lectures 1–6 Practice", detail: "for Oct 8" },
 	],
@@ -344,17 +344,30 @@ const courseQuizCatalog = {
 
 function renderQuizOptions(course) {
 	const container = document.querySelector(".quiz-options");
-	if (!container) return;
+	const mixedOptions = document.getElementById("mixedStudyOptions");
+	if (!container || !mixedOptions) return;
 
+	const isMixedStudy = course === "MixedStudy";
+	container.hidden = isMixedStudy;
+	mixedOptions.hidden = !isMixedStudy;
+	if (isMixedStudy) {
+		window.QuizHubMixedStudy.renderSourceChoices(
+			document.getElementById("mixedStudySources"),
+		);
+		document.getElementById("mixedStudyError").textContent = "";
+	}
 	const options = (
 		courseQuizCatalog[course] || courseQuizCatalog.CompArch
 	).filter((quiz) => !partyModeActive || !quiz.external);
 	container.innerHTML = "";
 	document.getElementById("quizMenuTitle").textContent = partyModeActive
 		? "Choose a party quiz"
-		: "Choose an Option";
-	document.querySelector("#quizModal .quiz-menu > p").textContent =
-		partyModeActive
+		: isMixedStudy
+			? "Mixed Study"
+			: "Choose an Option";
+	document.querySelector("#quizModal .quiz-menu > p").textContent = isMixedStudy
+		? "Build a session from the course question banks you want to review."
+		: partyModeActive
 			? "Take turns choosing answers. The best-scoring player wins."
 			: "Select which quiz you would like to take.";
 
@@ -377,15 +390,19 @@ function renderQuizOptions(course) {
 	});
 
 	const firstButton = container.querySelector(".quiz-option");
-	if (firstButton) firstButton.focus();
+	if (isMixedStudy) {
+		document.querySelector("#mixedStudySources input")?.focus();
+	} else if (firstButton) firstButton.focus();
 }
 
-function preloadQuiz(category, quiz) {
+function preloadQuiz(category, quiz, mixedSources = null) {
 	preloadFrame = document.createElement("iframe");
 	preloadFrame.className = "preload-frame";
 	const target = new URL("quiz.html", window.location.href);
 	target.searchParams.set("category", category);
 	target.searchParams.set("quiz", quiz);
+	if (mixedSources)
+		target.searchParams.set("mixedSources", JSON.stringify(mixedSources));
 	if (partyModeActive) target.searchParams.set("partyMode", "true");
 	navigationTarget = target.toString();
 	navigationStarted = false;
@@ -502,25 +519,33 @@ function closeQuizMenu() {
 	document.activeElement?.blur();
 	modal.classList.remove("open");
 	modal.setAttribute("aria-hidden", "true");
+	document.getElementById("mixedStudyOptions").hidden = true;
+	document.querySelector(".quiz-options").hidden = false;
 	selectedCourse = "";
 	quizMenuTrigger = null;
 	if (returnFocus?.isConnected) returnFocus.focus();
 }
 
 function openQuizMenu(course) {
-	quizMenuTrigger = document.activeElement?.closest(".course-card") || null;
+	quizMenuTrigger =
+		document.activeElement?.closest(".course-card") ||
+		(document.activeElement?.id === "mixedStudyLaunch"
+			? document.activeElement
+			: null);
 	selectedCourse = course;
 	playSound("popup");
 	const modal = document.getElementById("quizModal");
 	document.getElementById("quizMenuCourse").textContent =
-		courseCodes[course] || course;
+		course === "MixedStudy"
+			? "MIXED QUESTION BANKS"
+			: courseCodes[course] || course;
 	renderQuizOptions(course);
 	modal.classList.add("open");
 	modal.setAttribute("aria-hidden", "false");
 	requestAnimationFrame(() => modal.querySelector(".quiz-option")?.focus());
 }
 
-function startQuiz(course, quiz) {
+function startQuiz(course, quiz, mixedSources = null) {
 	if (leaving) return;
 	document.body.classList.toggle("compgfx-loading", course === "CompGFX");
 	if (partyModeActive) {
@@ -545,7 +570,7 @@ function startQuiz(course, quiz) {
 	loadingCompleteScheduled = false;
 	document.querySelectorAll(".card").forEach((c) => (c.disabled = true));
 	quizLoaded = false;
-	preloadQuiz(course, quiz);
+	preloadQuiz(course, quiz, mixedSources);
 	setTimeout(startMenuExit, 520);
 	setTimeout(() => {
 		welcomeVisible = true;
@@ -576,10 +601,26 @@ document.querySelectorAll(".course-card").forEach((card) => {
 		}
 		openQuizMenu(card.dataset.course);
 	});
+
+	document.getElementById("mixedStudyLaunch").addEventListener("click", () => {
+		openQuizMenu("MixedStudy");
+	});
+	document.getElementById("mixedStudyStart").addEventListener("click", () => {
+		try {
+			const selectedSources = window.QuizHubMixedStudy.readSourceChoices(
+				document.getElementById("mixedStudySources"),
+			);
+			startQuiz("MixedStudy", "mixed", selectedSources);
+		} catch (error) {
+			document.getElementById("mixedStudyError").textContent = error.message;
+		}
+	});
 });
 
 const partyModeModal = document.getElementById("partyModeModal");
-const partyNoConnectionModal = document.getElementById("partyNoConnectionModal");
+const partyNoConnectionModal = document.getElementById(
+	"partyNoConnectionModal",
+);
 const partyPlayerSetup = document.getElementById("partyPlayerSetup");
 const partyModeError = document.getElementById("partyModeError");
 const partyModeToggle = document.getElementById("partyModeToggle");

@@ -147,6 +147,16 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   send(guest, { type: "check-room", code: hosted.room.code });
   assert.equal((await checkRoomPromise).room.players, 2);
 
+  const invalidMixedLaunch = waitForMessage(host, "error");
+  send(host, {
+    type: "launch",
+    code: hosted.room.code,
+    category: "MixedStudy",
+    quiz: "mixed",
+    mixedSources: [{ category: "NotACourse", quiz: "quiz1" }]
+  });
+  assert.match((await invalidMixedLaunch).message, /not available/i);
+
   const hostLaunch = waitForMessage(host, "launch");
   const guestLaunch = waitForMessage(guest, "launch");
   send(host, {
@@ -283,10 +293,57 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   send(host, {
     type: "launch",
     code: hosted.room.code,
-    category: "CloudComp",
-    quiz: "quiz1"
+    category: "MixedStudy",
+    quiz: "mixed",
+    mixedSources: [
+      { category: "CloudComp", quiz: "quiz2" },
+      { category: "CompArch", quiz: "quiz1" }
+    ]
   });
-  await Promise.all([hostLaunchAgain, guestLaunchAgain]);
+  const [mixedHostLaunch, mixedGuestLaunch] = await Promise.all([hostLaunchAgain, guestLaunchAgain]);
+  assert.deepEqual(mixedHostLaunch.mixedSources, [
+    { category: "CompArch", quiz: "quiz1" },
+    { category: "CloudComp", quiz: "quiz2" }
+  ]);
+  assert.deepEqual(mixedGuestLaunch.mixedSources, mixedHostLaunch.mixedSources);
+
+  const hostMixedSettings = waitForMessage(host, "room-state");
+  const guestMixedSettings = waitForMessage(guest, "room-state");
+  send(host, {
+    type: "quiz-config",
+    code: hosted.room.code,
+    config: {
+      questionCount: 1,
+      orderMode: "static",
+      timeLimitMinutes: null,
+      perQuestionTimeMinutes: null,
+      reviewSections: []
+    }
+  });
+  await Promise.all([hostMixedSettings, guestMixedSettings]);
+  const hostMixedStarted = waitForMessage(host, "quiz-start");
+  const guestMixedStarted = waitForMessage(guest, "quiz-start");
+  send(host, {
+    type: "quiz-start",
+    code: hosted.room.code,
+    config: {
+      questionSequence: [0],
+      orderMode: "static",
+      timeLimitMinutes: null,
+      perQuestionTimeMinutes: null
+    }
+  });
+  await Promise.all([hostMixedStarted, guestMixedStarted]);
+  const hostMixedEnded = waitForMessage(host, "game-over");
+  const guestMixedEnded = waitForMessage(guest, "game-over");
+  send(host, { type: "end-game", code: hosted.room.code, reason: "ended" });
+  await Promise.all([hostMixedEnded, guestMixedEnded]);
+  const hostMixedReplay = waitForMessage(host, "replay");
+  const guestMixedReplay = waitForMessage(guest, "replay");
+  send(host, { type: "replay", code: hosted.room.code });
+  const [mixedReplayMessage, guestMixedReplayMessage] = await Promise.all([hostMixedReplay, guestMixedReplay]);
+  assert.deepEqual(mixedReplayMessage.mixedSources, mixedHostLaunch.mixedSources);
+  assert.deepEqual(guestMixedReplayMessage, mixedReplayMessage);
 
   const hostOver = waitForMessage(host, "game-over");
   const hostRoomState = waitForMessage(host, "room-state");

@@ -23,6 +23,10 @@ The Windows and Linux desktop apps and the Android app load the hosted GitHub Pa
 
 The Android app injects its native plugin bridge into the hosted QuizHub pages so download and audio-focus features remain available after the app redirects to GitHub Pages. Changes to this native bridge require rebuilding and reinstalling the Android APK; publishing website files alone cannot add native plugin support to an already-installed APK.
 
+### Mixed Study
+
+Choose **Mixed Study** above the course cards to select question banks from multiple courses, including individual Tech Soc Indi People Can review sets. Use the **None**, **Midterm Reviews**, and **All** presets to quickly change the selection; Midterm Reviews includes the test/midterm practice banks and the Tech Soc Indi People Can exam review sections. Questions identify their course at the start, and the mode uses its own large-answer, game-show-style layout. The Party lobby offers the same bank selection; the host's selection is shared with every player.
+
 1. Install dependencies with `npm install`.
 2. Build a Windows installer with `npm run package:win` or a Linux AppImage with `npm run package:linux`.
 3. Find desktop builds in the `desktop-dist` directory.

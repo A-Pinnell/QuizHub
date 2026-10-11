@@ -5,6 +5,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { randomUUID, randomInt } = require("node:crypto");
 const { WebSocket, WebSocketServer } = require("ws");
+const mixedStudy = require("./js/mixed-study.js");
 
 const root = __dirname;
 const port = Number.parseInt(process.env.PORT || "8080", 10);
@@ -12,7 +13,7 @@ const roomCodeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 const roomLifetimeMs = 2 * 60 * 60 * 1000;
 const playerHandoffGraceMs = 60 * 1000;
 const maxRoomPlayers = 50;
-const maxQuizQuestions = 1000;
+const maxQuizQuestions = 5000;
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -39,6 +40,7 @@ function publicRoom(room) {
     partyOptions: room.partyOptions,
     category: room.category,
     quiz: room.quiz,
+    mixedSources: room.mixedSources,
     quizConfig: room.quizConfig,
     question: room.question && {
       questionNumber: room.question.questionNumber,
@@ -177,7 +179,7 @@ function handleMessage(socket, rawMessage) {
       const player = { ...profile, id: randomUUID(), ready: true, host: true, score: 0, socket, expireTimer: null };
       const room = {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
-        question: null, answersLocked: [], reveal: null, quizConfig: null,
+        question: null, answersLocked: [], reveal: null, quizConfig: null, mixedSources: null,
         partyOptions: { showPlayerScores: true, showLockedAnswers: true, earlyPointBonus: true }
       };
       room.expiration = setTimeout(() => {
@@ -278,14 +280,22 @@ function handleMessage(socket, rawMessage) {
         DataSci: ["test1"],
         SoftEngi: ["test1"]
       };
-      if (!validQuizzes[category]?.includes(quiz)) {
+      let mixedSources = null;
+      if (category === "MixedStudy" && quiz === "mixed") {
+        try {
+          mixedSources = mixedStudy.normalizeSources(message.mixedSources);
+        } catch (error) {
+          return sendError(socket, error.message);
+        }
+      } else if (!validQuizzes[category]?.includes(quiz)) {
         return sendError(socket, "Select a valid course and quiz.");
       }
       room.stage = "setup";
       room.category = category;
       room.quiz = quiz;
+      room.mixedSources = mixedSources;
       room.quizConfig = null;
-      broadcast(room, { type: "launch", category, quiz });
+      broadcast(room, { type: "launch", category, quiz, mixedSources });
       break;
     }
     case "party-options": {
@@ -329,7 +339,12 @@ function handleMessage(socket, rawMessage) {
         member.score = 0;
         member.handoff = true;
       });
-      broadcast(room, { type: "replay", category: room.category, quiz: room.quiz });
+      broadcast(room, {
+        type: "replay",
+        category: room.category,
+        quiz: room.quiz,
+        mixedSources: room.mixedSources
+      });
       break;
     }
     case "choose-new-quiz": {
@@ -342,6 +357,7 @@ function handleMessage(socket, rawMessage) {
       room.stage = "lobby";
       room.category = null;
       room.quiz = null;
+      room.mixedSources = null;
       room.quizConfig = null;
       room.question = null;
       room.answers = new Map();

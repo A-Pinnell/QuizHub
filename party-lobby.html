@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="css/preferences.css">
 <script src="js/audio-focus.js" defer></script>
 <script src="js/preferences.js" defer></script>
+<script src="js/mixed-study.js" defer></script>
 <script src="js/party-config.js" defer></script>
 <script src="js/party-client.js" defer></script>
 <script src="js/party-lobby.js" defer></script>
@@ -52,16 +53,28 @@
   <section class="party-host-controls" id="partyHostControls" hidden>
     <p class="party-room-limit">Up to 50 players can join this room. At least two players are needed to start.</p>
     <h2>Choose the quiz</h2>
-    <label for="partyCategory">Course</label>
-    <select id="partyCategory">
-      <option value="CompArch">Computer Architecture</option>
-      <option value="CloudComp">Cloud Computing</option>
-      <option value="SocIndi">Society, Individuals and Technology</option>
-      <option value="DataSci">Data Science</option>
-      <option value="SoftEngi">Software Engineering</option>
+    <label for="partyQuizMode">Quiz type</label>
+    <select id="partyQuizMode">
+      <option value="course">Single course quiz</option>
+      <option value="mixed">Mixed Study</option>
     </select>
-    <label for="partyQuiz">Quiz</label>
-    <select id="partyQuiz"></select>
+    <div id="partyCourseQuiz">
+      <label for="partyCategory">Course</label>
+      <select id="partyCategory">
+        <option value="CompArch">Computer Architecture</option>
+        <option value="CloudComp">Cloud Computing</option>
+        <option value="SocIndi">Society, Individuals and Technology</option>
+        <option value="DataSci">Data Science</option>
+        <option value="SoftEngi">Software Engineering</option>
+      </select>
+      <label for="partyQuiz">Quiz</label>
+      <select id="partyQuiz"></select>
+    </div>
+    <fieldset class="party-mixed-study" id="partyMixedStudy" hidden>
+      <legend>Question banks and review sets</legend>
+      <div class="mixed-source-list" id="partyMixedSources"></div>
+      <p class="party-error" id="partyMixedError" role="status" aria-live="polite"></p>
+    </fieldset>
     <button class="party-primary" id="partyLaunchButton" type="button" disabled>CHOOSE QUIZ SETTINGS</button>
   </section>
 </main>

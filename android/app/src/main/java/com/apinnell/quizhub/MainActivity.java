@@ -91,4 +91,25 @@ public class MainActivity extends BridgeActivity {
             Log.e(TAG, "Could not inject the native bridge into hosted QuizHub pages.", error);
         }
     }
+
+    @Override
+    public void onPause() {
+        Bridge bridge = getBridge();
+        if (bridge != null && bridge.getWebView() != null) {
+            bridge.getWebView().evaluateJavascript(
+                "document.querySelectorAll('audio,video').forEach(media => media.pause());",
+                null);
+            bridge.getWebView().onPause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        Bridge bridge = getBridge();
+        if (bridge != null && bridge.getWebView() != null) {
+            bridge.getWebView().onResume();
+        }
+        super.onResume();
+    }
 }

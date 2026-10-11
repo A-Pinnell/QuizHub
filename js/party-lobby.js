@@ -11,6 +11,11 @@
   const leaveButton=document.getElementById("partyLeaveButton");
   const hostControls=document.getElementById("partyHostControls");
   const launchButton=document.getElementById("partyLaunchButton");
+  const quizModeSelect=document.getElementById("partyQuizMode");
+  const courseQuizPanel=document.getElementById("partyCourseQuiz");
+  const mixedStudyPanel=document.getElementById("partyMixedStudy");
+  const mixedStudyError=document.getElementById("partyMixedError");
+  const mixedStudyChoices=document.getElementById("partyMixedSources");
   const categorySelect=document.getElementById("partyCategory");
   const quizSelect=document.getElementById("partyQuiz");
   const lobbyMusic=document.getElementById("partyLobbyMusic");
@@ -108,7 +113,7 @@
       :"Only the host can change these settings.";
   }
 
-  function enterQuiz(category,quiz){
+  function enterQuiz(category,quiz,mixedSources=null){
     if(!room) return;
     sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(room.players.map((player)=>({
       id:player.id,name:player.name,color:player.color,photo:player.photo,score:0
@@ -117,6 +122,7 @@
     const target=new URL("quiz.html",location.href);
     target.searchParams.set("category",category);
     target.searchParams.set("quiz",quiz);
+    if(mixedSources) target.searchParams.set("mixedSources",JSON.stringify(mixedSources));
     target.searchParams.set("partyMode","true");
     target.searchParams.set("partyRoom",code);
     target.searchParams.set("partyPlayer",playerId);
@@ -133,8 +139,17 @@
       return option;
     }));
   }
+  function renderQuizMode(){
+    const mixed=quizModeSelect.value==="mixed";
+    courseQuizPanel.hidden=mixed;
+    mixedStudyPanel.hidden=!mixed;
+    mixedStudyError.textContent="";
+  }
   categorySelect.addEventListener("change",renderQuizOptions);
+  quizModeSelect.addEventListener("change",renderQuizMode);
+  window.QuizHubMixedStudy.renderSourceChoices(mixedStudyChoices);
   renderQuizOptions();
+  renderQuizMode();
 
   leaveButton.addEventListener("click",async()=>{
     leaveButton.disabled=true;
@@ -148,10 +163,18 @@
   launchButton.addEventListener("click",async()=>{
     if(!room || launchButton.disabled) return;
     try{
-      await client.send({
-        type:"launch",code,category:categorySelect.value,quiz:quizSelect.value
-      });
-    }catch(sendError){error.textContent=sendError.message;}
+      if(quizModeSelect.value==="mixed"){
+        const mixedSources=window.QuizHubMixedStudy.readSourceChoices(mixedStudyChoices);
+        await client.send({type:"launch",code,category:"MixedStudy",quiz:"mixed",mixedSources});
+      }else{
+        await client.send({
+          type:"launch",code,category:categorySelect.value,quiz:quizSelect.value
+        });
+      }
+    }catch(sendError){
+      if(quizModeSelect.value==="mixed") mixedStudyError.textContent=sendError.message;
+      else error.textContent=sendError.message;
+    }
   });
   optionsButton.addEventListener("click",()=>{
     optionsDialog.hidden=false;
@@ -206,7 +229,7 @@
     room=message.room;
     renderPlayers();
     if(room.stage==="setup" || room.stage==="quiz"){
-      enterQuiz(room.category,room.quiz);
+      enterQuiz(room.category,room.quiz,room.mixedSources);
     }
   });
   client.on("room-state",(message)=>{
@@ -214,7 +237,7 @@
     renderPlayers();
   });
   client.on("all-ready",()=>{status.textContent="Everyone is ready.";});
-  client.on("launch",(message)=>enterQuiz(message.category,message.quiz));
+  client.on("launch",(message)=>enterQuiz(message.category,message.quiz,message.mixedSources));
   client.on("left",()=>location.replace("index.html"));
   client.on("host-changed",(message)=>{
     if(message.hostId===playerId){

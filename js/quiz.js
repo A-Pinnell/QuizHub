@@ -142,16 +142,30 @@ document.addEventListener('visibilitychange',()=>{
 const params = new URLSearchParams(location.search);
 const requestedCategory = canonicalCategory(params.get("category"));
 const requestedQuiz = params.get("quiz");
+const mixedStudyActive = requestedCategory === "MixedStudy" && requestedQuiz === "mixed";
+let mixedStudyConfigError = "";
+let requestedMixedSources = null;
+if (mixedStudyActive) {
+  try {
+    requestedMixedSources = window.QuizHubMixedStudy.normalizeSources(
+      JSON.parse(params.get("mixedSources") || "null"),
+    );
+  } catch (error) {
+    mixedStudyConfigError = error.message;
+  }
+}
 const partyRoomCode=(params.get("partyRoom")||"").toUpperCase();
 const partyPlayerId=params.get("partyPlayer")||"";
 const partyHost=params.get("partyHost")==="true";
 const networkPartyActive=/^[A-Z]{4}$/.test(partyRoomCode) && Boolean(partyPlayerId);
 const defaultCategory = Object.keys(questionBank)[0] || "CompArch";
-const category = requestedCategory && (questionBank[requestedCategory] || codes[requestedCategory]) ? requestedCategory : defaultCategory;
+const category = requestedCategory && (questionBank[requestedCategory] || codes[requestedCategory] || mixedStudyActive) ? requestedCategory : defaultCategory;
 const selectedQuizTheme=window.quizHubPreferences.quizTheme;
-const activeQuizTheme=selectedQuizTheme==="default"
-  ? category==="SoftEngi" ? "ai-model" : category==="CompGFX" ? "blended" : "quizhub"
-  : selectedQuizTheme;
+const activeQuizTheme=mixedStudyActive
+  ? "quizhub"
+  : selectedQuizTheme==="default"
+    ? category==="SoftEngi" ? "ai-model" : category==="CompGFX" ? "blended" : "quizhub"
+    : selectedQuizTheme;
 const socIndiReviewSections=category==="SocIndi" && requestedQuiz==="reviewQuiz" &&
   questionBank.SocIndi && questionBank.SocIndi.review && !Array.isArray(questionBank.SocIndi.review)
   ? questionBank.SocIndi.review
@@ -205,7 +219,16 @@ function getSelectedQuestionBank(){
   return selectedReviewSections.flatMap(section=>socIndiReviewSections[section] || []);
 }
 
-let bank = getSelectedQuestionBank();
+let bank = [];
+if (mixedStudyActive && !mixedStudyConfigError) {
+  try {
+    bank = window.QuizHubMixedStudy.buildQuestionBank(questionBank, requestedMixedSources);
+  } catch (error) {
+    mixedStudyConfigError = error.message;
+  }
+} else if (!mixedStudyActive) {
+  bank = getSelectedQuestionBank();
+}
 const rawMiniQuestions = params.get("miniQuestions");
 const customQuestionSequence = rawMiniQuestions
   ? rawMiniQuestions.split(",").map((value) => Number.parseInt(value, 10)).filter((value) => Number.isInteger(value) && value >= 0)
@@ -324,6 +347,15 @@ const softengiProgressTrack = document.querySelector('.softengi-progress-track')
 const softengiProgressBar = document.getElementById('softengiProgressBar');
 const softengiTime = document.getElementById('softengiTime');
 
+if (mixedStudyActive) {
+  document.body.classList.add("mixed-study-mode");
+  setupTitle.textContent = "Mixed Study";
+  if (mixedStudyConfigError) {
+    setupError.textContent = mixedStudyConfigError;
+    beginButton.disabled = true;
+  }
+}
+
 if (isSoftEngi) {
   document.body.classList.add('softengi-mode');
   softengiSidebar.hidden = false;
@@ -374,7 +406,9 @@ if(networkPartyActive){
   }
 }
 
-courseCode.textContent = `${codes[category] || category} - QUIZ`;
+courseCode.textContent = mixedStudyActive
+  ? "MIXED STUDY"
+  : `${codes[category] || category} - QUIZ`;
 let totalAvailable = bank.length;
 countInput.max = Math.max(1, totalAvailable);
 countInput.value = Math.max(1, totalAvailable);

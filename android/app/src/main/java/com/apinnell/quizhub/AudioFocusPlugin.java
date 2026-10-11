@@ -15,6 +15,7 @@ public class AudioFocusPlugin extends Plugin {
     private AudioManager audioManager;
     private AudioFocusRequest focusRequest;
     private boolean hasFocus;
+    private boolean appPaused;
     private final AudioManager.OnAudioFocusChangeListener focusChangeListener = change -> {
         if (change == AudioManager.AUDIOFOCUS_LOSS
             || change == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT
@@ -35,6 +36,10 @@ public class AudioFocusPlugin extends Plugin {
     public void requestFocus(PluginCall call) {
         if (audioManager == null) {
             call.reject("Android audio focus is unavailable.");
+            return;
+        }
+        if (appPaused) {
+            call.resolve(new com.getcapacitor.JSObject().put("granted", false));
             return;
         }
         if (!hasFocus && audioManager.isMusicActive()) {
@@ -71,8 +76,14 @@ public class AudioFocusPlugin extends Plugin {
 
     @Override
     protected void handleOnPause() {
+        appPaused = true;
         notifyListeners("audioFocusLost", new com.getcapacitor.JSObject());
         abandonFocus();
+    }
+
+    @Override
+    protected void handleOnResume() {
+        appPaused = false;
     }
 
     private void abandonFocus() {
