@@ -7,8 +7,8 @@ const packageDefinition = require("../offline-package.json");
 
 const root = path.resolve(__dirname, "..");
 const releaseTag = process.argv[2];
-if (!releaseTag || !/^v\d+(?:\.\d+){1,2}(?:[-+][0-9A-Za-z.-]+)?$/.test(releaseTag)) {
-  throw new Error("Pass a release tag, for example v2.4 or v2.4.0.");
+if (!releaseTag || !/^v\d+(?:\.\d+)*(?:[-+][0-9A-Za-z.-]+)?$/.test(releaseTag)) {
+  throw new Error("Pass a version tag, for example v2.4.0.");
 }
 
 for (const entry of packageDefinition.files) {
