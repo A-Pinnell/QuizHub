@@ -1,7 +1,11 @@
 "use strict";
 
 (() => {
-  const plugin = window.Capacitor?.registerPlugin?.("AudioFocus");
+  const capacitor = window.Capacitor;
+  const plugin =
+    typeof capacitor?.registerPlugin === "function"
+      ? capacitor.registerPlugin("AudioFocus")
+      : capacitor?.Plugins?.AudioFocus;
   if (!plugin) return;
 
   const tracks = new Set();

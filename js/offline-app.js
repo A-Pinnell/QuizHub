@@ -5,7 +5,11 @@
 
   const desktop = window.QuizHubDesktop;
   const capacitor = window.Capacitor;
-  const offline = desktop || capacitor?.registerPlugin?.("OfflineContent");
+  const offline =
+    desktop ||
+    (typeof capacitor?.registerPlugin === "function"
+      ? capacitor.registerPlugin("OfflineContent")
+      : capacitor?.Plugins?.OfflineContent);
   const modal = document.getElementById("offlineAppModal");
   const openButton = document.getElementById("offlineAppButton");
   const downloadButton = document.getElementById("offlineAppDownload");
@@ -36,7 +40,7 @@
   if (!offline) {
     downloadButton.disabled = true;
     statusMessage.textContent =
-      "Offline download is not available in this app version. Update QuizHub to enable it.";
+      "Could not connect to this app's offline-download service. Close and reopen QuizHub; if this continues, reinstall the latest Android app package.";
     return;
   }
 
