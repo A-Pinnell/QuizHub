@@ -759,7 +759,7 @@ body.mixed-study-mode .visual{background:radial-gradient(ellipse at 50% 35%,#176
 body.mixed-study-mode .quiz-heading{left:5%;top:8%;width:90%;max-width:none;text-align:center}
 body.mixed-study-mode .course-code{color:#ffda77;letter-spacing:.18em}
 body.mixed-study-mode .question-title{color:#fff;font-family:Arial,sans-serif;font-size:clamp(28px,3.7vw,54px);font-weight:800;line-height:1.15;text-align:center;text-wrap:pretty}
-body.mixed-study-mode .motivation{color:#fff}
+body.mixed-study-mode #feedback.motivation{color:#fff!important}
 body.mixed-study-mode .panel{background:linear-gradient(160deg,#111d39,#080f20);border-left-color:#d8a83e}
 body.mixed-study-mode .panel:has(#quizSetup:not([hidden])){color:#fff}
 body.mixed-study-mode .answers{display:flex;flex-direction:column;align-content:stretch;gap:clamp(10px,1.5vh,16px);flex:none}

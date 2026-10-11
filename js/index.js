@@ -960,12 +960,47 @@ document.getElementById("partyModeStart").addEventListener("click", () => {
 
 const menuTrack = document.getElementById("menuTrack");
 const menuPages = [...document.querySelectorAll(".menu-track .menu")];
+const menuCards = menuPages.flatMap((page) => [
+	...page.querySelectorAll(".course-card"),
+]);
+const coverMenuMedia = window.matchMedia(
+	"(max-width: 600px) and (min-aspect-ratio: 3/4) and (max-height: 800px)",
+);
+const coverMenuPageSize = 2;
 let menuPage = 0;
 
+function getCurrentMenuCards(page = menuPage) {
+	if (coverMenuMedia.matches) {
+		const start = page * coverMenuPageSize;
+		return menuCards.slice(start, start + coverMenuPageSize);
+	}
+	return [...menuPages[page].querySelectorAll(".course-card")];
+}
+
 function showMenuPage(page) {
-	menuPage = (page + menuPages.length) % menuPages.length;
+	const pageCount = coverMenuMedia.matches
+		? Math.ceil(menuCards.length / coverMenuPageSize)
+		: menuPages.length;
+	menuPage = (page + pageCount) % pageCount;
+	if (coverMenuMedia.matches) {
+		const visibleCards = new Set(getCurrentMenuCards());
+		menuCards.forEach((card) => {
+			card.style.display = visibleCards.has(card) ? "" : "none";
+		});
+		const activeSection = menuPages.findIndex((menu) =>
+			visibleCards.values().next().value?.closest(".menu") === menu,
+		);
+		menuTrack.style.transform = `translateX(-${activeSection * 50}%)`;
+		return;
+	}
+	menuCards.forEach((card) => {
+		card.style.display = "";
+	});
 	menuTrack.style.transform = `translateX(-${menuPage * 50}%)`;
 }
+
+showMenuPage(menuPage);
+coverMenuMedia.addEventListener("change", () => showMenuPage(menuPage));
 
 document.querySelectorAll(".menu-arrow").forEach((arrow) => {
 	arrow.addEventListener("click", () => {
@@ -1024,8 +1059,7 @@ const appDownloadUrls = {
 		"https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Setup.exe",
 	linux:
 		"https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Linux-x64.AppImage",
-	android:
-		"https://github.com/A-Pinnell/QuizHub/releases/latest/download/QuizHub-Android.apk",
+	android: "https://github.com/A-Pinnell/QuizHub/releases/latest/",
 };
 let downloadAppTrigger = null;
 function closePatchnotes() {
@@ -1618,7 +1652,7 @@ document.addEventListener("keydown", (event) => {
 	)
 		return;
 
-	const pageCards = [...menuPages[menuPage].querySelectorAll(".course-card")];
+	const pageCards = getCurrentMenuCards();
 	const activeIndex = pageCards.indexOf(document.activeElement);
 	if (
 		![
@@ -1638,14 +1672,36 @@ document.addEventListener("keydown", (event) => {
 		const nextPage = event.key === "PageUp" ? menuPage - 1 : menuPage + 1;
 		playSound("arrow");
 		showMenuPage(nextPage);
-		menuPages[(nextPage + menuPages.length) % menuPages.length]
-			.querySelector(".course-card")
-			?.focus();
+		getCurrentMenuCards()[0]?.focus();
 		return;
 	}
 
 	if (activeIndex < 0) {
 		pageCards[0]?.focus();
+		return;
+	}
+
+	if (coverMenuMedia.matches) {
+		if (event.key === "ArrowLeft" && activeIndex === 0) {
+			playSound("arrow");
+			showMenuPage(menuPage - 1);
+			const previousCards = getCurrentMenuCards();
+			previousCards[previousCards.length - 1]?.focus();
+			return;
+		}
+		if (event.key === "ArrowRight" && activeIndex === pageCards.length - 1) {
+			playSound("arrow");
+			showMenuPage(menuPage + 1);
+			getCurrentMenuCards()[0]?.focus();
+			return;
+		}
+		const nextIndex =
+			event.key === "ArrowLeft"
+				? activeIndex - 1
+				: event.key === "ArrowRight"
+					? activeIndex + 1
+					: 1 - activeIndex;
+		pageCards[nextIndex]?.focus();
 		return;
 	}
 
