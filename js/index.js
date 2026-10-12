@@ -1,3 +1,19 @@
+const syncViewportHeight = () => {
+	const viewportHeight =
+		window.visualViewport ? window.visualViewport.height : window.innerHeight;
+	document.documentElement.style.setProperty(
+		"--app-viewport-height",
+		`${viewportHeight}px`,
+	);
+};
+
+window.addEventListener("resize", syncViewportHeight);
+window.addEventListener("orientationchange", syncViewportHeight);
+if (window.visualViewport) {
+	window.visualViewport.addEventListener("resize", syncViewportHeight);
+}
+syncViewportHeight();
+
 const resolveAssetUrl = (path) =>
 	new URL(path, window.location.href).toString();
 
@@ -542,6 +558,7 @@ function openQuizMenu(course) {
 	renderQuizOptions(course);
 	modal.classList.add("open");
 	modal.setAttribute("aria-hidden", "false");
+	attachSwipeToModal(modal, closeQuizMenu);
 	requestAnimationFrame(() => modal.querySelector(".quiz-option")?.focus());
 }
 
@@ -964,7 +981,7 @@ const menuCards = menuPages.flatMap((page) => [
 	...page.querySelectorAll(".course-card"),
 ]);
 const coverMenuMedia = window.matchMedia(
-	"(max-width: 600px) and (min-aspect-ratio: 3/4) and (max-height: 800px)",
+	"(orientation: portrait) and (max-width: 900px) and (min-height: 640px)",
 );
 const coverMenuPageSize = 2;
 let menuPage = 0;
@@ -978,29 +995,119 @@ function getCurrentMenuCards(page = menuPage) {
 }
 
 function showMenuPage(page) {
-	const pageCount = coverMenuMedia.matches
-		? Math.ceil(menuCards.length / coverMenuPageSize)
-		: menuPages.length;
-	menuPage = (page + pageCount) % pageCount;
 	if (coverMenuMedia.matches) {
-		const visibleCards = new Set(getCurrentMenuCards());
-		menuCards.forEach((card) => {
-			card.style.display = visibleCards.has(card) ? "" : "none";
-		});
-		const activeSection = menuPages.findIndex((menu) =>
-			visibleCards.values().next().value?.closest(".menu") === menu,
-		);
-		menuTrack.style.transform = `translateX(-${activeSection * 50}%)`;
+		const pageCount = Math.ceil(menuCards.length / coverMenuPageSize);
+		menuPage = (page + pageCount) % pageCount;
+		menuTrack.style.width = `${pageCount * 100}%`;
+		menuTrack.style.transform =
+			`translateX(-${(menuPage * 100) / pageCount}%)`;
+		menuTrack.style.transition =
+			"transform 0.62s cubic-bezier(0.22, 1, 0.36, 1)";
 		return;
 	}
+
+	menuTrack.style.width = "";
+	const pageCount = menuPages.length;
+	menuPage = (page + pageCount) % pageCount;
 	menuCards.forEach((card) => {
 		card.style.display = "";
 	});
 	menuTrack.style.transform = `translateX(-${menuPage * 50}%)`;
+	menuTrack.style.transition = "transform 0.55s cubic-bezier(.22,.8,.25,1)";
+}
+
+function attachCoverMenuSwipe() {
+	const viewport = document.querySelector(".menu-viewport");
+	if (!viewport || viewport.dataset.swipeBound === "true") return;
+	viewport.dataset.swipeBound = "true";
+	let startX = 0;
+	let startY = 0;
+	let isTouching = false;
+	let horizontalDrag = false;
+	let startTranslateX = 0;
+	let suppressClickUntil = 0;
+
+	viewport.addEventListener(
+		"touchstart",
+		(event) => {
+			const touch = event.changedTouches[0];
+			startX = touch.clientX;
+			startY = touch.clientY;
+			isTouching = true;
+			horizontalDrag = false;
+			startTranslateX =
+				menuTrack.getBoundingClientRect().left -
+				viewport.getBoundingClientRect().left;
+		},
+		{ passive: true },
+	);
+
+	viewport.addEventListener(
+		"touchmove",
+		(event) => {
+			if (!isTouching || !coverMenuMedia.matches) return;
+			const touch = event.changedTouches[0];
+			const deltaX = touch.clientX - startX;
+			const deltaY = touch.clientY - startY;
+			if (
+				Math.abs(deltaX) > 12 &&
+				Math.abs(deltaX) > Math.abs(deltaY)
+			) {
+				horizontalDrag = true;
+				event.preventDefault();
+				menuTrack.style.transition = "none";
+				menuTrack.style.transform =
+					`translateX(${startTranslateX + deltaX}px)`;
+			}
+		},
+		{ passive: false },
+	);
+
+	viewport.addEventListener(
+		"touchend",
+		(event) => {
+			if (!isTouching) return;
+			isTouching = false;
+			const touch = event.changedTouches[0];
+			const deltaX = touch.clientX - startX;
+			const deltaY = touch.clientY - startY;
+			if (coverMenuMedia.matches && horizontalDrag) {
+				event.preventDefault();
+				suppressClickUntil = Date.now() + 500;
+				showMenuPage(
+					Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY)
+						? menuPage + (deltaX < 0 ? 1 : -1)
+						: menuPage,
+				);
+				if (Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY)) {
+					playSound("arrow");
+				}
+				return;
+			}
+			if (Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY)) {
+				event.preventDefault();
+				suppressClickUntil = Date.now() + 500;
+				showMenuPage(deltaX < 0 ? menuPage + 1 : menuPage - 1);
+				playSound("arrow");
+			}
+		},
+		{ passive: false },
+	);
+
+	viewport.addEventListener(
+		"click",
+		(event) => {
+			if (Date.now() >= suppressClickUntil) return;
+			event.preventDefault();
+			event.stopImmediatePropagation();
+		},
+		true,
+	);
 }
 
 showMenuPage(menuPage);
 coverMenuMedia.addEventListener("change", () => showMenuPage(menuPage));
+attachCoverMenuSwipe();
 
 document.querySelectorAll(".menu-arrow").forEach((arrow) => {
 	arrow.addEventListener("click", () => {
@@ -1077,6 +1184,7 @@ function openPatchnotes() {
 	requestAnimationFrame(() =>
 		document.querySelector(".patchnotes-close").focus(),
 	);
+	attachSwipeToModal(patchnotesModal, closePatchnotes);
 }
 document.getElementById("patchnotesButton").addEventListener("click", () => {
 	playSound("popup");
@@ -1085,6 +1193,63 @@ document.getElementById("patchnotesButton").addEventListener("click", () => {
 document.querySelectorAll("[data-close-patchnotes]").forEach((el) => {
 	el.addEventListener("click", closePatchnotes);
 });
+
+function attachSwipeToModal(modal, onClose) {
+	const panel = modal.querySelector('[role="dialog"]');
+	if (!panel || panel.dataset.swipeBound === "true") return;
+	panel.dataset.swipeBound = "true";
+	let startY = 0;
+	let startX = 0;
+	let startTop = 0;
+	let touching = false;
+
+	panel.addEventListener(
+		"touchstart",
+		(event) => {
+			const touch = event.changedTouches[0];
+			startY = touch.clientY;
+			startX = touch.clientX;
+			startTop = panel.scrollTop;
+			touching = true;
+		},
+		{ passive: true },
+	);
+
+	panel.addEventListener(
+		"touchmove",
+		(event) => {
+			if (!touching || panel.scrollTop > 0) return;
+			const touch = event.changedTouches[0];
+			const deltaY = touch.clientY - startY;
+			const deltaX = touch.clientX - startX;
+			if (deltaY < 0 && Math.abs(deltaY) > Math.abs(deltaX) * 1.3) {
+				event.preventDefault();
+				panel.style.transform = `translateY(${Math.max(deltaY, -180)}px)`;
+			}
+		},
+		{ passive: false },
+	);
+
+	panel.addEventListener(
+		"touchend",
+		(event) => {
+			if (!touching) return;
+			touching = false;
+			panel.style.transform = "";
+			const touch = event.changedTouches[0];
+			const deltaY = touch.clientY - startY;
+			const deltaX = touch.clientX - startX;
+			if (
+				deltaY < -120 &&
+				Math.abs(deltaY) > Math.abs(deltaX) * 1.3 &&
+				startTop <= 2
+			) {
+				onClose();
+			}
+		},
+		{ passive: true },
+	);
+}
 
 function closeDownloadAppModal() {
 	const returnFocus = downloadAppTrigger;
@@ -1669,6 +1834,11 @@ document.addEventListener("keydown", (event) => {
 	event.preventDefault();
 	keyboardNavigation = true;
 	if (event.key === "PageUp" || event.key === "PageDown") {
+		if (coverMenuMedia.matches) {
+			const cards = getCurrentMenuCards();
+			cards[event.key === "PageUp" ? 0 : cards.length - 1]?.focus();
+			return;
+		}
 		const nextPage = event.key === "PageUp" ? menuPage - 1 : menuPage + 1;
 		playSound("arrow");
 		showMenuPage(nextPage);
@@ -1682,25 +1852,16 @@ document.addEventListener("keydown", (event) => {
 	}
 
 	if (coverMenuMedia.matches) {
-		if (event.key === "ArrowLeft" && activeIndex === 0) {
-			playSound("arrow");
-			showMenuPage(menuPage - 1);
-			const previousCards = getCurrentMenuCards();
-			previousCards[previousCards.length - 1]?.focus();
-			return;
-		}
-		if (event.key === "ArrowRight" && activeIndex === pageCards.length - 1) {
-			playSound("arrow");
-			showMenuPage(menuPage + 1);
-			getCurrentMenuCards()[0]?.focus();
-			return;
-		}
-		const nextIndex =
-			event.key === "ArrowLeft"
-				? activeIndex - 1
-				: event.key === "ArrowRight"
-					? activeIndex + 1
-					: 1 - activeIndex;
+		const column = activeIndex % 2;
+		let nextIndex = activeIndex;
+		if (event.key === "ArrowLeft" && column > 0) nextIndex--;
+		if (event.key === "ArrowRight" && column === 0) nextIndex++;
+		if (event.key === "ArrowUp" && activeIndex >= 2) nextIndex -= 2;
+		if (
+			event.key === "ArrowDown" &&
+			activeIndex + 2 < pageCards.length
+		)
+			nextIndex += 2;
 		pageCards[nextIndex]?.focus();
 		return;
 	}
