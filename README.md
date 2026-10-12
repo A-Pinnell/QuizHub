@@ -1,4 +1,4 @@
-# QuizHub
+# <img src="assets/Logo.png?raw=true" alt="Particular Parks Logo" width="60%"/>
 
 ## GitHub Pages and online party games
 
