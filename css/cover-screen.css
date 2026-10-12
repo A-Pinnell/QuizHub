@@ -913,3 +913,72 @@
     font-size: 9px;
   }
 }
+
+@media screen and (orientation: portrait) and (max-width: 760px) {
+  body.compgfx-mode .gfx-cube-stage {
+    top: 23%;
+    left: 50%;
+    width: min(78vw, 36dvh, 300px);
+    --gfx-cube-depth: min(39vw, 18dvh, 150px);
+  }
+
+  body.compgfx-mode.gfx-quiz-started .gfx-cube-stage {
+    top: 23%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  body.compgfx-mode .quiz-content {
+    top: auto;
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    z-index: 6;
+    width: auto;
+    height: 45dvh;
+    max-height: calc(100% - 8px);
+    padding: 8px;
+    overflow: hidden;
+  }
+
+  body.compgfx-mode .quiz-content > .softengi-composer {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  body.compgfx-mode .answers {
+    flex: 1 1 0;
+    grid-template-rows: none;
+    grid-auto-rows: minmax(36px, auto);
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body.compgfx-mode .answer {
+    min-height: 36px;
+    padding: 7px 9px;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  body.compgfx-mode .controls {
+    position: relative;
+    z-index: 7;
+    flex: 0 0 auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+    margin-top: 6px;
+  }
+
+  body.compgfx-mode .controls .control {
+    min-height: 34px;
+  }
+
+  body.compgfx-mode .gfx-axis-gizmo {
+    top: 42px;
+    right: 8px;
+  }
+}

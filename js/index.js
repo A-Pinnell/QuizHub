@@ -1,6 +1,7 @@
 const syncViewportHeight = () => {
-	const viewportHeight =
-		window.visualViewport ? window.visualViewport.height : window.innerHeight;
+	const viewportHeight = window.visualViewport
+		? window.visualViewport.height
+		: window.innerHeight;
 	document.documentElement.style.setProperty(
 		"--app-viewport-height",
 		`${viewportHeight}px`,
@@ -404,7 +405,6 @@ function renderQuizOptions(course) {
 		});
 		container.appendChild(button);
 	});
-
 }
 
 function preloadQuiz(category, quiz, mixedSources = null) {
@@ -1001,8 +1001,7 @@ function showMenuPage(page) {
 		const pageCount = Math.ceil(menuCards.length / coverMenuPageSize);
 		menuPage = (page + pageCount) % pageCount;
 		menuTrack.style.width = `${pageCount * 100}%`;
-		menuTrack.style.transform =
-			`translateX(-${(menuPage * 100) / pageCount}%)`;
+		menuTrack.style.transform = `translateX(-${(menuPage * 100) / pageCount}%)`;
 		menuTrack.style.transition =
 			"transform 0.62s cubic-bezier(0.22, 1, 0.36, 1)";
 		return;
@@ -1051,15 +1050,11 @@ function attachCoverMenuSwipe() {
 			const touch = event.changedTouches[0];
 			const deltaX = touch.clientX - startX;
 			const deltaY = touch.clientY - startY;
-			if (
-				Math.abs(deltaX) > 12 &&
-				Math.abs(deltaX) > Math.abs(deltaY)
-			) {
+			if (Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY)) {
 				horizontalDrag = true;
 				event.preventDefault();
 				menuTrack.style.transition = "none";
-				menuTrack.style.transform =
-					`translateX(${startTranslateX + deltaX}px)`;
+				menuTrack.style.transform = `translateX(${startTranslateX + deltaX}px)`;
 			}
 		},
 		{ passive: false },
@@ -1214,8 +1209,7 @@ function attachSwipeToModal(modal, onClose) {
 			startX = touch.clientX;
 			startTop = panel.scrollTop;
 			touchingScrollable = false;
-			let target =
-				event.target instanceof Element ? event.target : null;
+			let target = event.target instanceof Element ? event.target : null;
 			while (target && target !== panel) {
 				const style = window.getComputedStyle(target);
 				if (
@@ -1632,6 +1626,9 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.5.2
+- Now presents probably on a Samsung Galaxy Z Flip 8 cover screen
+
 Version 2.5.1
 - Mixed Study has been added, which allows you to practice questions from a variety ofcourses in a single quiz. This quiz has a new theme and music, and is available in both the main menu and online party mode.
 - The Downloaded version can now be used offline, without an internet connection. This is still experimental and may not work on all devices and requires the standalone app already installed.
@@ -1878,10 +1875,7 @@ document.addEventListener("keydown", (event) => {
 		if (event.key === "ArrowLeft" && column > 0) nextIndex--;
 		if (event.key === "ArrowRight" && column === 0) nextIndex++;
 		if (event.key === "ArrowUp" && activeIndex >= 2) nextIndex -= 2;
-		if (
-			event.key === "ArrowDown" &&
-			activeIndex + 2 < pageCards.length
-		)
+		if (event.key === "ArrowDown" && activeIndex + 2 < pageCards.length)
 			nextIndex += 2;
 		pageCards[nextIndex]?.focus();
 		return;
