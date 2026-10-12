@@ -38,6 +38,34 @@ html.native-app .download-app-button {
   display: none !important;
 }
 
+html.offline-mode .textbook-library-link {
+  display: none !important;
+}
+
+.online-mode-modal {
+  z-index: 1300;
+}
+
+.online-mode-stay {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.online-mode-stay:hover,
+.online-mode-stay:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: 2px solid #f5c542;
+  outline-offset: 2px;
+}
+
 .offline-app-modal {
   position: fixed;
   inset: 0;

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="assets/icon.png">
 <title>Quiz Hub - Quiz</title>
 <script>
   let persistedNativeApp = false;
@@ -26,7 +27,7 @@
     document.documentElement.classList.add("native-app");
   }
 </script>
-<link rel="stylesheet" href="css/quiz.css" >
+<link rel="stylesheet" href="css/quiz.css?v=20261012-5" >
 <link rel="stylesheet" href="css/preferences.css">
 <link rel="stylesheet" href="css/cover-screen.css">
 <script src="./js/audio-focus.js" defer></script>
@@ -35,7 +36,7 @@
 <script src="./js/mixed-study.js" defer></script>
 <script src="./js/party-config.js" defer></script>
 <script src="./js/party-client.js" defer></script>
-<script src="./js/quiz.js" defer></script>
+<script src="./js/quiz.js?v=20261012-3" defer></script>
 </head>
 <body>
 <div class="quiz-page" id="quizPage">
@@ -190,7 +191,7 @@
         <nav class="controls">
           <button class="control" id="skip" type="button" aria-label="Skip question" title="Skip question"><span class="control-visible-label">SKIP</span><span class="softengi-control-icon" aria-hidden="true">»</span></button>
           <button class="control" id="next" type="button" aria-label="Next question" title="Next question" disabled><span class="control-visible-label">NEXT</span><span class="softengi-control-icon" aria-hidden="true">→</span></button>
-          <button class="control" id="quit" type="button">END QUIZ</button>
+          <button class="control" id="quit" type="button" aria-label="End quiz">END QUIZ</button>
         </nav>
       </div>
     </section>

@@ -70,7 +70,7 @@
     if (name === "highlight" && activeHighlightSound &&
       !activeHighlightSound.paused && !activeHighlightSound.ended) return;
     unlockBinaryAudio();
-    const soundName = window.quizHubPreferences.blancMode && ["popup", "begin", "select"].includes(name)
+    const soundName = window.quizHubPreferences.secretMode && ["popup", "begin", "select"].includes(name)
       ? "started"
       : name;
     const defaultSource = soundFiles[soundName];

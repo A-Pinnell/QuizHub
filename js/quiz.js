@@ -17,6 +17,12 @@ const soundFiles={
   comboUp:resolveAssetUrl('./sfx/ComboUp.wav')
 };
 
+const params=new URLSearchParams(location.search);
+const partyHost=params.get("partyHost")==="true";
+let hostDisplayEnabled=params.get("hostDisplay")==="true";
+const partyHostDisplay=hostDisplayEnabled && partyHost;
+let hostDisplayPlayerId=params.get("hostDisplayPlayer")||"";
+const hostDisplayMusicAllowed=!hostDisplayEnabled || partyHost;
 const soundCache={};
 let soundsMuted=localStorage.getItem('quizHubMuted')==='true';
 let activeHighlightSound=null;
@@ -49,7 +55,7 @@ function playSound(name){
   if(name==='highlight' && activeHighlightSound &&
     !activeHighlightSound.paused && !activeHighlightSound.ended) return;
   unlockQuizAudio();
-  const soundName=window.quizHubPreferences.blancMode && ['popup','begin','select'].includes(name)
+  const soundName=window.quizHubPreferences.secretMode && ['popup','begin','select'].includes(name)
     ? 'started'
     : name;
   const defaultSource=soundFiles[soundName];
@@ -115,7 +121,7 @@ function updateMusicToggle(){
   musicToggle.setAttribute('aria-pressed',String(musicMuted));
 }
 function startQuizMusic(){
-  if(isPreloadedQuiz || musicMuted) return;
+  if(isPreloadedQuiz || musicMuted || !hostDisplayMusicAllowed) return;
   quizMusic.play()
     .then(()=>{quizMusicPending=false;})
     .catch(()=>{quizMusicPending=true;});
@@ -139,7 +145,6 @@ document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible') startQuizMusic();
 });
 
-const params = new URLSearchParams(location.search);
 const requestedCategory = canonicalCategory(params.get("category"));
 const requestedQuiz = params.get("quiz");
 const mixedStudyActive = requestedCategory === "MixedStudy" && requestedQuiz === "mixed";
@@ -156,8 +161,34 @@ if (mixedStudyActive) {
 }
 const partyRoomCode=(params.get("partyRoom")||"").toUpperCase();
 const partyPlayerId=params.get("partyPlayer")||"";
-const partyHost=params.get("partyHost")==="true";
 const networkPartyActive=/^[A-Z]{4}$/.test(partyRoomCode) && Boolean(partyPlayerId);
+let hostDisplayAnswerer=hostDisplayEnabled && partyPlayerId===hostDisplayPlayerId;
+let canControlPartyQuiz=partyHost || (networkPartyActive && hostDisplayAnswerer);
+function syncHostDisplayControls(room){
+  if(!room) return;
+  hostDisplayEnabled=room.hostDisplay===true;
+  hostDisplayPlayerId=hostDisplayEnabled?room.hostDisplayPlayerId||"": "";
+  hostDisplayAnswerer=hostDisplayEnabled && partyPlayerId===hostDisplayPlayerId;
+  canControlPartyQuiz=partyHost || (networkPartyActive && hostDisplayAnswerer);
+  document.body.classList.toggle("host-display-answerer",hostDisplayEnabled && !partyHost);
+  document.body.classList.toggle("host-display-player",hostDisplayAnswerer);
+  if(networkPartyActive && !partyHost){
+    skipButton.hidden=!hostDisplayAnswerer;
+    nextButton.hidden=!hostDisplayAnswerer;
+    quitButton.hidden=false;
+    quitButton.textContent=hostDisplayAnswerer?"END QUIZ":"LEAVE GAME";
+    quitButton.setAttribute("aria-label",hostDisplayAnswerer?"End quiz":"Leave game");
+  }
+  const controls=nextButton.closest(".controls");
+  if(controls){
+    if(hostDisplayAnswerer){
+      controls.style.setProperty("display","grid","important");
+    }else{
+      controls.style.removeProperty("display");
+      controls.style.removeProperty("grid-template-columns");
+    }
+  }
+}
 const defaultCategory = Object.keys(questionBank)[0] || "CompArch";
 const category = requestedCategory && (questionBank[requestedCategory] || codes[requestedCategory] || mixedStudyActive) ? requestedCategory : defaultCategory;
 const selectedQuizTheme=window.quizHubPreferences.quizTheme;
@@ -247,7 +278,7 @@ if(partyModeRequested){
     }
     partyPlayers=savedPartyPlayers.map((player,index)=>({
       id:typeof player.id==="string" && player.id ? player.id : `player-${index+1}`,
-      name:typeof player.name==="string" && player.name.trim() ? player.name.trim().slice(0,24) : `Player ${index+1}`,
+      name:typeof player.name==="string" && player.name.trim() ? player.name.trim().slice(0,48) : `Player ${index+1}`,
       color:typeof player.color==="string" && /^#[0-9a-f]{6}$/i.test(player.color) ? player.color : "#4688e8",
       photo:typeof player.photo==="string" && player.photo.startsWith("data:image/") ? player.photo : "",
       score:0
@@ -259,6 +290,12 @@ if(partyModeRequested){
   }
 }
 const partyModeActive=partyModeRequested && (partyPlayers.length>=2 || networkPartyActive);
+if(networkPartyActive && hostDisplayEnabled && !partyHost){
+  document.body.classList.add("host-display-answerer");
+}
+if(networkPartyActive && hostDisplayAnswerer){
+  document.body.classList.add("host-display-player");
+}
 if(networkPartyActive && partyPlayers.length<2){
   partyConfigError="The shared player list could not be loaded.";
 }
@@ -337,7 +374,7 @@ const partyPlayerLeftDialog=document.getElementById("partyPlayerLeftDialog");
 const partyPlayerLeftMessage=document.getElementById("partyPlayerLeftMessage");
 const questionTitle = document.getElementById('questionTitle');
 const isSoftEngi = activeQuizTheme === "ai-model";
-const isCompGFX = activeQuizTheme === "blended";
+const isCompGFX = category === "CompGFX" && activeQuizTheme === "blended";
 const softengiSidebar = document.getElementById('softengiSidebar');
 const softengiScore = document.getElementById('softengiScore');
 const softengiCombo = document.getElementById('softengiCombo');
@@ -477,6 +514,10 @@ function animateCompGFXCursor(reduceMotion){
 
 function transitionCompGFXIntoQuiz(){
   if(!isCompGFX || !compGfxCube) return;
+  if(partyHostDisplay){
+    document.body.classList.add('gfx-quiz-started');
+    return;
+  }
 
   const motionMode = window.quizHubPreferences.motionMode;
   const reduceMotion = motionMode === 'reduced' ||
@@ -510,7 +551,7 @@ function transitionCompGFXIntoQuiz(){
 }
 
 function animateCompGFXCube(){
-  if(!isCompGFX || !compGfxCube) return;
+  if(!isCompGFX || !compGfxCube || partyHostDisplay) return 0;
 
   const motionMode = window.quizHubPreferences.motionMode;
   const reduceMotion = motionMode === 'reduced' ||
@@ -761,9 +802,9 @@ function createPartyAvatar(player,className){
   const avatar=document.createElement("span");
   avatar.className=className;
   avatar.style.setProperty("--party-player-color",player.color);
-  if(window.quizHubPreferences.blancMode || player.photo){
+  if(window.quizHubPreferences.secretMode || player.photo){
     const image=document.createElement("img");
-    image.src=window.quizHubPreferences.blancMode?"secret/blanc.png":player.photo;
+    image.src=window.quizHubPreferences.secretMode?"secret/secret.png":player.photo;
     image.alt="";
     avatar.appendChild(image);
   }else{
@@ -877,6 +918,7 @@ function startNetworkQuiz(config,roomSnapshot=null){
     setupError.textContent="The host sent an invalid quiz setup.";
     return;
   }
+  syncHostDisplayControls(roomSnapshot);
   partyStartPending=false;
   beginButton.disabled=!partyHost;
   questionSequence=config.questionSequence.slice();
@@ -898,6 +940,11 @@ function startNetworkQuiz(config,roomSnapshot=null){
   partyHistory=[];
   sequencePosition=0;
   quizStarted=true;
+  if(partyHostDisplay){
+    const hostDisplayHeading=questionTitle.closest(".quiz-heading");
+    if(hostDisplayHeading) document.body.append(hostDisplayHeading);
+    document.body.classList.add("host-display-active");
+  }
   setup.classList.remove("party-network-guest");
   if(isSoftEngi) document.body.classList.add("softengi-active");
   if(isCompGFX) transitionCompGFXIntoQuiz();
@@ -911,7 +958,7 @@ function startNetworkQuiz(config,roomSnapshot=null){
     const question=roomSnapshot.question;
     displayNetworkQuestion(question);
     if(roomSnapshot.reveal) revealNetworkQuestion(roomSnapshot.reveal);
-    else if(roomSnapshot.answersLocked?.includes(partyPlayerId)){
+    else if(!partyHostDisplay && roomSnapshot.answersLocked?.includes(partyPlayerId)){
       answered=true;
       stopQuestionTimer();
       answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
@@ -945,7 +992,14 @@ function displayNetworkQuestion(message){
   }
   questionNumber=sequencePosition+1;
   renderQuestion(message.answerOrder);
-  startQuestionTimer();
+  if(partyHostDisplay){
+    answered=false;
+    answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
+    skipButton.disabled=true;
+    nextButton.disabled=true;
+  }else{
+    startQuestionTimer();
+  }
 
 }
 
@@ -1009,6 +1063,9 @@ function revealNetworkQuestion(message){
   });
   const ownAnswer=message.answers.find((entry)=>entry.playerId===partyPlayerId);
   const ownPlayer=partyPlayers.find((player)=>player.id===partyPlayerId);
+  if(ownAnswer && ownAnswer.selectedIndex!==null){
+    playSound(ownAnswer.correct?"correct":"incorrect");
+  }
   const correctAnswer=current.a[message.correctIndex];
   const correctCount=message.answers.filter((entry)=>entry.correct).length;
   updatePartyComboStreaks(
@@ -1042,13 +1099,14 @@ function revealNetworkQuestion(message){
     : partyPlayers.find((player)=>player.id===partyPlayerId)?.score||0;
   const ownPoints=ownAnswer?.pointsEarned||0;
   const pointsMessage=ownPoints>0?` You earned ${ownPoints} point${ownPoints===1?"":"s"}.`:"";
-  feedback.textContent=`${correctCount} of ${partyPlayers.length} players answered correctly. Correct answer: ${formatPowerText(correctAnswer)}.${pointsMessage}`;
+  const answeringPlayerCount=partyPlayers.length;
+  feedback.textContent=`${correctCount} of ${answeringPlayerCount} players answered correctly. Correct answer: ${formatPowerText(correctAnswer)}.${pointsMessage}`;
   feedback.className=`motivation visible ${ownAnswer?.correct?"right":"wrong"}`;
-  nextButton.disabled=!partyHost;
+  nextButton.disabled=!canControlPartyQuiz;
   skipButton.disabled=true;
 
   updateMeta();
-  if(partyHost){
+  if(canControlPartyQuiz){
     if(questionNumber>=selectedQuestionCount){
       nextButton.textContent="FINISH QUIZ";
       nextButton.setAttribute("aria-label","Finish quiz");
@@ -1468,6 +1526,7 @@ function stopQuestionTimer(){
 
 function startQuestionTimer(){
   stopQuestionTimer();
+  if(partyHostDisplay) return;
   if(perQuestionTimeMinutes===null){
     remainingQuestionSeconds=null;
     updateQuestionTimer();
@@ -1485,10 +1544,7 @@ function startQuestionTimer(){
         partyConnection.send({type:"question-timeout",code:partyRoomCode})
           .catch((error)=>{setupError.textContent=`Could not time out the shared question: ${error.message}`;});
       }else if(networkPartyActive){
-        answered=true;
-        answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
-        skipButton.disabled=true;
-
+        submitNetworkAnswer(null);
       }else if(partyModeActive) finishPartyQuestion(true);
       else revealQuestion("timeout");
     }
@@ -1614,7 +1670,7 @@ comboPopup.addEventListener('animationend', (event) => {
 
 function renderQuestion(forcedAnswerOrder=null){
   if (!current) return;
-  const fadeCompGFXQuestion = isCompGFX && compGfxQuestionLoaded;
+  const fadeCompGFXQuestion = isCompGFX && !partyHostDisplay && compGfxQuestionLoaded;
   const compGfxTurnDuration = animateCompGFXCube();
   if (feedbackTypingTimer !== null) {
     clearInterval(feedbackTypingTimer);
@@ -1879,7 +1935,7 @@ function chooseAnswer(index){
 
 function goNext(){
   if (!quizStarted || quizEnded) return;
-  if(networkPartyActive && !partyHost) return;
+  if(networkPartyActive && !canControlPartyQuiz) return;
 
   if (!answered){
     feedback.textContent = 'Choose an answer or skip the question first.';
@@ -1888,21 +1944,8 @@ function goNext(){
   }
 
   if(networkPartyActive){
-    if(!partyHost) return;
     nextButton.disabled=true;
-    if(questionNumber>=selectedQuestionCount){
-      partyConnection.send({type:"next-question",code:partyRoomCode})
-        .catch((error)=>{
-          nextButton.disabled=false;
-          setupError.textContent=`Could not finish the shared quiz: ${error.message}`;
-        });
-      return;
-    }
     partyConnection.send({type:"next-question",code:partyRoomCode})
-      .then(()=>{
-        sequencePosition++;
-        loadQuestion();
-      })
       .catch((error)=>{
         nextButton.disabled=false;
         setupError.textContent=`Could not advance the shared quiz: ${error.message}`;
@@ -1917,7 +1960,11 @@ function goNext(){
 
 function skip(){
   if (!quizStarted || quizEnded || answered) return;
-  if(networkPartyActive && !partyHost) return;
+  if(networkPartyActive && !canControlPartyQuiz) return;
+  if(partyHostDisplay){
+    submitNetworkAnswer(null);
+    return;
+  }
   if(networkPartyActive){
     submitNetworkAnswer(null);
     return;
@@ -1942,6 +1989,9 @@ function quit(){
   // only the questions that have been displayed and recorded in history.
   if(networkPartyActive){
     if(partyHost){
+      partyConnection.send({type:"end-game",code:partyRoomCode,reason:"ended"})
+        .catch((error)=>{setupError.textContent=`Could not end the shared quiz: ${error.message}`;});
+    }else if(hostDisplayAnswerer){
       partyConnection.send({type:"end-game",code:partyRoomCode,reason:"ended"})
         .catch((error)=>{setupError.textContent=`Could not end the shared quiz: ${error.message}`;});
     }else{
@@ -1995,10 +2045,11 @@ function handleNetworkGameOver(message){
     quizEnded=true;
     stopTimer();
     stopQuestionTimer();
+    const currentResultPlayerId=partyHostDisplay?hostDisplayPlayerId:partyPlayerId;
     const result={
       category,
       quizType:requestedQuiz||"reviewQuiz",
-      score:partyPlayers.find((player)=>player.id===partyPlayerId)?.score||0,
+      score:partyPlayers.find((player)=>player.id===currentResultPlayerId)?.score||0,
       longestCombo,
       total:selectedQuestionCount,
       timeLimitMinutes,
@@ -2008,7 +2059,7 @@ function handleNetworkGameOver(message){
       onlineParty:true,
       partyRoomCode,
       partyHost,
-      partyCurrentPlayerId:partyPlayerId,
+      partyCurrentPlayerId:currentResultPlayerId,
       partyPlayers:partyPlayers.map((player)=>({
         ...player,
         longestCombo:partyLongestComboStreaks.get(player.id)||0
@@ -2135,6 +2186,7 @@ exitSetupButton.addEventListener("click",exitSetup);
 
 if(networkPartyActive){
   partyConnection.on("joined",(message)=>{
+    syncHostDisplayControls(message.room);
     updateNetworkPlayers(message.room.players);
     updatePartySettingsSummary(message.room.quizConfig);
     partyHideLockedAnswers=message.room.partyOptions?.showLockedAnswers===false;
@@ -2160,15 +2212,19 @@ if(networkPartyActive){
   });
   partyConnection.on("reveal",revealNetworkQuestion);
   partyConnection.on("next-question",()=>{
-    if(!partyHost){
+    if(partyHost){
+      sequencePosition++;
+      loadQuestion();
+    }else{
       nextButton.disabled=true;
       answered=false;
-
     }
+    if(partyHostDisplay) answered=false;
   });
   partyConnection.on("game-over",handleNetworkGameOver);
   partyConnection.on("left",()=>location.replace("index.html"));
   partyConnection.on("room-state",(message)=>{
+    syncHostDisplayControls(message.room);
     updateNetworkPlayers(message.room.players);
     updatePartySettingsSummary(message.room.quizConfig);
   });
@@ -2213,6 +2269,12 @@ answersEl.addEventListener("pointerover",event=>{
 document.addEventListener("keydown",event=>{
   if(event.key.toLowerCase()==="m" && event.target.tagName !== "INPUT"){
     event.preventDefault();
+    if(!hostDisplayMusicAllowed){
+      soundsMuted=!soundsMuted;
+      localStorage.setItem('quizHubMuted',String(soundsMuted));
+      updateSoundToggle();
+      return;
+    }
     const muted=!(soundsMuted && musicMuted);
     soundsMuted=muted;
     musicMuted=muted;

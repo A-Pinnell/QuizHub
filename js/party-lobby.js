@@ -25,6 +25,10 @@
   const showLockedAnswersInput=document.getElementById("partyShowLockedAnswers");
   const earlyBonusInput=document.getElementById("partyEarlyBonus");
   const optionsHint=document.getElementById("partyOptionsHint");
+  const hostDisplayInput=document.getElementById("partyHostDisplay");
+  const hostDisplayOption=document.getElementById("partyHostDisplayOption");
+  const hostDisplayPlayerSelect=document.getElementById("partyHostDisplayPlayer");
+  const hostDisplayAccountStatus=document.getElementById("partyHostDisplayAccountStatus");
   const quizCatalog={
     CompArch:[["quiz1","First Slides Practice"]],
     CloudComp:[["quiz1","First Slides Practice"],["quiz2","Week 4 Slides Practice"]],
@@ -56,25 +60,38 @@
     catch(parseError){console.error("Could not restore your party profile:",parseError);return null;}
   })();
 
+  function displayProfile(player){
+    if(!room?.hostDisplay || player.id!==room.hostDisplayPlayerId) return player;
+    return room.players.find((candidate)=>candidate.host)||player;
+  }
+
   function renderPlayers(){
     if(!room) return;
     renderPartyOptions();
-    playerList.replaceChildren(...room.players.map((player,index)=>{
+    playerList.replaceChildren(...room.players.map((player)=>{
+      const profile=displayProfile(player);
       const card=document.createElement("article");
       card.className="party-player-card";
-      card.style.setProperty("--player-color",player.color);
+      card.style.setProperty("--player-color",profile.color);
       const avatar=document.createElement("div");
       avatar.className="party-avatar";
-      if(window.quizHubPreferences.blancMode || player.photo){
+      if(window.quizHubPreferences.secretMode || profile.photo){
         const image=document.createElement("img");
-        image.src=window.quizHubPreferences.blancMode?"secret/blanc.png":player.photo;
+        image.src=window.quizHubPreferences.secretMode?"secret/secret.png":profile.photo;
         image.alt="";
         avatar.appendChild(image);
       }else{
-        avatar.textContent=player.name.charAt(0).toUpperCase();
+        avatar.textContent=profile.name.charAt(0).toUpperCase();
       }
       const name=document.createElement("strong");
-      name.textContent=player.name+(player.host?" (Host)":"");
+      const hostDisplayLabel=room.hostDisplay
+        ? player.host
+          ? " (Display)"
+          : player.id===room.hostDisplayPlayerId
+            ? " (Player)"
+            : ""
+        : player.host?" (Host)":"";
+      name.textContent=profile.name+hostDisplayLabel;
       const ready=document.createElement("span");
       ready.className=`party-ready-status${player.ready?" ready":""}`;
       ready.textContent=player.connected?"Ready":"Disconnected";
@@ -82,18 +99,65 @@
       card.append(avatar,name,ready);
       return card;
     }));
+    async function saveHostDisplayOptions(){
+      if(!room || !isHost || room.stage!=="lobby") return;
+      hostDisplayInput.disabled=true;
+      hostDisplayPlayerSelect.disabled=true;
+      try{
+        await client.send({
+          type:"host-display-options",
+          code,
+          enabled:hostDisplayInput.checked,
+          playerId:hostDisplayPlayerSelect.value
+        });
+      }catch(sendError){
+        error.textContent=sendError.message;
+        renderPlayers();
+      }
+    }
+    hostDisplayInput.addEventListener("change",saveHostDisplayOptions);
+    hostDisplayPlayerSelect.addEventListener("change",saveHostDisplayOptions);
     const ownPlayer=room.players.find((player)=>player.id===playerId);
     leaveButton.disabled=!ownPlayer;
-    const allReady=room.players.length>=2 && room.players.length<=room.capacity &&
+    hostDisplayInput.checked=room.hostDisplay===true;
+    hostDisplayInput.disabled=!isHost || room.stage!=="lobby";
+    hostDisplayOption.hidden=!room.hostDisplay;
+    hostDisplayPlayerSelect.replaceChildren(
+      Object.assign(document.createElement("option"),{
+        value:"",
+        textContent:"Choose a player account"
+      }),
+      ...room.players.filter((player)=>!player.host).map((player)=>{
+        const option=document.createElement("option");
+        option.value=player.id;
+        option.textContent=player.name+(player.connected?"":" (disconnected)");
+        return option;
+      })
+    );
+    hostDisplayPlayerSelect.value=room.hostDisplayPlayerId||"";
+    hostDisplayPlayerSelect.disabled=!isHost || room.stage!=="lobby";
+    hostDisplayAccountStatus.textContent=
+      "Select a player already in the lobby. That player answers from their device.";
+    const minimumPlayers=room.hostDisplay?3:2;
+    const allReady=room.players.length>=minimumPlayers && room.players.length<=room.capacity &&
       room.players.every((player)=>player.ready && player.connected);
     status.textContent=room.stage==="lobby"
-      ? room.players.length<2
-        ? `${room.players.length} of ${room.capacity} players · waiting for at least one more player`
+      ? room.players.length<minimumPlayers
+        ? room.hostDisplay
+          ? `${room.players.length} of ${room.capacity} players · Host Display needs one more player`
+          : `${room.players.length} of ${room.capacity} players · waiting for at least one more player`
+        : room.hostDisplay && !room.hostDisplayPlayerId
+          ? "Choose the player account the host will answer as in Party Options."
         : `${room.players.length} of ${room.capacity} players · the host can start when ready`
       : room.stage==="setup"?"Quiz selected. Waiting for the host to start…"
       : room.stage==="results"?"Game over. Return to the menu to start another room."
       :"Game in progress.";
-    launchButton.disabled=!allReady;
+    const selectedDisplayPlayer=room.players.find(
+      (player)=>player.id===room.hostDisplayPlayerId && !player.host && player.connected
+    );
+    launchButton.disabled=!allReady || Boolean(
+      room.hostDisplay && !selectedDisplayPlayer
+    );
   }
 
   function renderPartyOptions(){
@@ -115,9 +179,19 @@
 
   function enterQuiz(category,quiz,mixedSources=null){
     if(!room) return;
-    sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(room.players.map((player)=>({
-      id:player.id,name:player.name,color:player.color,photo:player.photo,score:0
-    }))));
+    const players=room.players
+      .filter((player)=>!room.hostDisplay || !player.host)
+      .map((player)=>{
+        const profile=displayProfile(player);
+        return {
+          id:player.id,
+          name:profile.name,
+          color:profile.color,
+          photo:profile.photo,
+          score:0
+        };
+      });
+    sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(players));
     sessionStorage.setItem("quizHubPartyProfile",JSON.stringify(savedProfile||{}));
     const target=new URL("quiz.html",location.href);
     target.searchParams.set("category",category);
@@ -127,6 +201,10 @@
     target.searchParams.set("partyRoom",code);
     target.searchParams.set("partyPlayer",playerId);
     if(isHost) target.searchParams.set("partyHost","true");
+    if(room.hostDisplay){
+      target.searchParams.set("hostDisplay","true");
+      target.searchParams.set("hostDisplayPlayer",room.hostDisplayPlayerId);
+    }
     location.href=target.toString();
   }
 

@@ -17,8 +17,98 @@
   const openButton = document.getElementById("offlineAppButton");
   const downloadButton = document.getElementById("offlineAppDownload");
   const statusMessage = document.getElementById("offlineAppStatus");
+  const onlineModeModal = document.getElementById("onlineModeModal");
+  const onlineModeReload = document.getElementById("onlineModeReload");
 
-  if (!modal || !openButton || !downloadButton || !statusMessage) return;
+  if (!modal || !openButton || !downloadButton || !statusMessage ||
+      !onlineModeModal || !onlineModeReload) return;
+
+  let onlineCheckPending = false;
+  let onlineModePromptDismissed = false;
+  let onlineModePromptShown = false;
+
+  const closeOnlineModePrompt = () => {
+    onlineModeModal.classList.remove("open");
+    onlineModeModal.setAttribute("aria-hidden", "true");
+    onlineModePromptDismissed = true;
+    openButton.focus();
+  };
+
+  const checkForHostedSite = async () => {
+    if (!window.quizHubOfflineApp || onlineCheckPending ||
+        onlineModePromptDismissed || onlineModePromptShown || !navigator.onLine ||
+        !document.body.classList.contains("menu-visible")) {
+      return;
+    }
+
+    onlineCheckPending = true;
+    try {
+      const response = await fetch(
+        `https://a-pinnell.github.io/QuizHub/?connectionCheck=${Date.now()}`,
+        {
+          method: "HEAD",
+          mode: "no-cors",
+          cache: "no-store",
+          signal: AbortSignal.timeout(5000)
+        }
+      );
+      if (response.type === "opaque" || response.ok) {
+        onlineModePromptShown = true;
+        onlineModeModal.classList.add("open");
+        onlineModeModal.setAttribute("aria-hidden", "false");
+        onlineModeReload.focus();
+      }
+    } catch {
+      // The hosted site is unreachable while the app is offline.
+    } finally {
+      onlineCheckPending = false;
+    }
+  };
+
+  if (window.quizHubOfflineApp) {
+    onlineModeModal
+      .querySelectorAll("[data-close-online-mode]")
+      .forEach((element) => {
+        element.addEventListener("click", closeOnlineModePrompt);
+      });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && onlineModeModal.classList.contains("open")) {
+        closeOnlineModePrompt();
+      }
+    });
+    onlineModeReload.addEventListener("click", () => {
+      const appPlatform =
+        window.Capacitor?.getPlatform?.() === "android" ||
+        sessionStorage.getItem("quizhubAndroidApp") === "true"
+          ? "android"
+          : "desktop";
+      location.replace(
+        `https://a-pinnell.github.io/QuizHub/?quizhubApp=${appPlatform}`
+      );
+    });
+    window.addEventListener("online", () => {
+      onlineModePromptDismissed = false;
+      checkForHostedSite();
+    });
+    window.addEventListener("offline", () => {
+      onlineModePromptDismissed = false;
+      onlineModePromptShown = false;
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) checkForHostedSite();
+    });
+    const menuObserver = new MutationObserver(() => {
+      if (document.body.classList.contains("menu-visible")) {
+        menuObserver.disconnect();
+        checkForHostedSite();
+      }
+    });
+    menuObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+    window.setInterval(checkForHostedSite, 30000);
+  }
 
   const setModalOpen = (open) => {
     modal.classList.toggle("open", open);

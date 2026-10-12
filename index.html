@@ -5,6 +5,7 @@
 		<meta
 			name="viewport"
 			content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+		<link rel="icon" type="image/png" href="assets/icon.png" />
 		<title>Quiz Hub</title>
 		<script>
 			let persistedNativeApp = false;
@@ -67,17 +68,17 @@
 				document.documentElement.classList.add("native-app");
 			}
 		</script>
-		<link rel="stylesheet" href="css/title.css" />
+		<link rel="stylesheet" href="css/title.css?v=20261012-3" />
 		<link rel="stylesheet" href="css/preferences.css" />
-		<link rel="stylesheet" href="css/offline-app.css" />
+		<link rel="stylesheet" href="css/offline-app.css?v=20261012-2" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
 		<script src="./js/audio-focus.js" defer></script>
-		<script src="./js/offline-app.js" defer></script>
-		<script src="./js/preferences.js" defer></script>
+		<script src="./js/offline-app.js?v=20261012-2" defer></script>
+		<script src="./js/preferences.js?v=20261012-2" defer></script>
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
-		<script src="./js/index.js" defer></script>
+		<script src="./js/index.js?v=20261012-3" defer></script>
 	</head>
 	<body>
 		<button
@@ -178,6 +179,12 @@
 			<div class="pillar left"></div>
 			<div class="pillar right"></div>
 			<div class="content">
+				<div class="special-spotlights" aria-hidden="true">
+					<span class="special-spotlight special-spotlight-left"></span>
+					<span class="special-spotlight special-spotlight-mid-left"></span>
+					<span class="special-spotlight special-spotlight-mid-right"></span>
+					<span class="special-spotlight special-spotlight-right"></span>
+				</div>
 				<div class="menu-datetime" aria-label="Current date and time">
 					<span class="clock-icon" aria-hidden="true"></span>
 					<div class="menu-datetime-values">
@@ -203,7 +210,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 2.5.2</div>
+						<div class="tagline">Version 2.6</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -540,7 +547,7 @@ Loading patch notes...</pre
 					<label for="quizMusicSetting">Quiz music</label>
 					<div class="music-choice-control">
 						<select id="quizMusicSetting">
-							<option value="run" id="blancQuizMusicOption" hidden>...</option>
+							<option value="run" id="secretQuizMusicOption" hidden>...</option>
 							<option value="default">Default for each course</option>
 							<option value="CompArch">Computer Architecture</option>
 							<option value="Practice1">Binary Practice</option>
@@ -608,12 +615,12 @@ Loading patch notes...</pre
 						></span
 					>
 				</label>
-				<label class="setting-choice" id="blancModeSettingRow" hidden>
-					<input id="blancModeSetting" type="checkbox" />
+				<label class="setting-choice" id="secretModeSettingRow" hidden>
+					<input id="secretModeSetting" type="checkbox" />
 					<span
-						><strong>Blanc Mode</strong
+						><strong>Secret Mode</strong
 						><small
-							>Show Ben Hub, use blanc.png backgrounds, and change quiz
+							>Show Hub, use secret.png backgrounds, and change quiz
 							start/loading sounds.</small
 						></span
 					>
@@ -810,13 +817,13 @@ Loading patch notes...</pre
 					&times;
 				</button>
 				<div class="quiz-menu-kicker">PLAY WITHOUT INTERNET</div>
-				<h2 id="offlineAppTitle">Offline version</h2>
+				<h2 id="offlineAppTitle">QuizHub Offline</h2>
 				<p>
-					Download the full game, including music and media. The download is
-					about 275 MB and needs about 330 MB of storage after installation,
-					plus temporary space while it installs.
+					Download the full experience, including all music and media. The
+					download is about 275 MB and needs about 330 MB of storage after
+					installation, plus temporary space while it installs.
 				</p>
-				<p>Live party games still need an internet connection.</p>
+				<p>Live party games will still require an internet connection.</p>
 				<button
 					class="offline-app-download"
 					id="offlineAppDownload"
@@ -828,6 +835,34 @@ Loading patch notes...</pre
 					id="offlineAppStatus"
 					role="status"
 					aria-live="polite"></p>
+			</section>
+		</div>
+
+		<div
+			class="offline-app-modal online-mode-modal"
+			id="onlineModeModal"
+			aria-hidden="true">
+			<div class="offline-app-backdrop" data-close-online-mode></div>
+			<section
+				class="offline-app-panel"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="onlineModeTitle">
+				<div class="quiz-menu-kicker">INTERNET CONNECTION AVAILABLE</div>
+				<h2 id="onlineModeTitle">Switch to Online Mode?</h2>
+				<p>
+					QuizHub can reload the latest online version. Your current offline
+					page will be replaced.
+				</p>
+				<button
+					class="offline-app-download"
+					id="onlineModeReload"
+					type="button">
+					RELOAD INTO ONLINE MODE
+				</button>
+				<button class="online-mode-stay" type="button" data-close-online-mode>
+					STAY OFFLINE
+				</button>
 			</section>
 		</div>
 

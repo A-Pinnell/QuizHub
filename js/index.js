@@ -52,9 +52,10 @@ function playSound(name, course = null, restart = false) {
 		activeHighlightSound.pause();
 		activeHighlightSound.currentTime = 0;
 	}
-	const blancSubstituteSounds = ["popup", "select", "begin"];
+	const secretSubstituteSounds = ["popup", "select", "begin"];
 	const soundName =
-		window.quizHubPreferences.blancMode && blancSubstituteSounds.includes(name)
+		window.quizHubPreferences.secretMode &&
+		secretSubstituteSounds.includes(name)
 			? "started"
 			: name;
 	const defaultSource = soundFiles[soundName];
@@ -122,7 +123,15 @@ let musicMuted = localStorage.getItem("quizHubMusicMuted") === "true";
 const musicToggle = document.getElementById("musicToggle");
 const menuMusic = new Audio(resolveAssetUrl("music/MenuMusic.wav"));
 const normalMenuMusicSource = resolveAssetUrl("music/MenuMusic.wav");
-const blancMenuMusicSource = resolveAssetUrl("secret/BEN.wav");
+const specialMenuMusicSource = resolveAssetUrl("music/SpecialMenu.wav");
+const secretMenuMusicSource = resolveAssetUrl("secret/HUB.wav");
+const specialMenuMusicDates = new Set([
+	"2026-10-12",
+	"2026-10-13",
+	"2026-10-14",
+	"2026-10-15",
+	"2026-10-16",
+]);
 const quizMusicPreview = document.getElementById("quizMusicPreview");
 const quizPreviewMusic = new Audio();
 quizPreviewMusic.loop = true;
@@ -134,6 +143,40 @@ let menuMusicFadeFrame = null;
 let menuMusicFadePending = false;
 menuMusic.loop = true;
 menuMusic.volume = 0.45;
+function getMenuMusicSource(date = new Date()) {
+	if (window.quizHubPreferences.secretMode) return secretMenuMusicSource;
+	return isSpecialMenuMusicDate(date)
+		? specialMenuMusicSource
+		: normalMenuMusicSource;
+}
+function isSpecialMenuMusicDate(date = new Date()) {
+	const localDate = [
+		date.getFullYear(),
+		String(date.getMonth() + 1).padStart(2, "0"),
+		String(date.getDate()).padStart(2, "0"),
+	].join("-");
+	return specialMenuMusicDates.has(localDate);
+}
+function updateSpecialMenuTheme(date = new Date()) {
+	document.body.classList.toggle(
+		"special-menu-night",
+		isSpecialMenuMusicDate(date),
+	);
+}
+function scheduleMenuMusicDateRefresh() {
+	const now = new Date();
+	const nextMidnight = new Date(
+		now.getFullYear(),
+		now.getMonth(),
+		now.getDate() + 1,
+	);
+	window.setTimeout(() => {
+		updateSpecialMenuTheme();
+		startMenuMusic();
+		scheduleMenuMusicDateRefresh();
+	}, nextMidnight.getTime() - now.getTime());
+}
+updateSpecialMenuTheme();
 function updateMusicToggle() {
 	musicToggle.textContent = musicMuted ? "♫̸" : "♫";
 	musicToggle.setAttribute(
@@ -197,9 +240,7 @@ function startMenuMusic(fadeIn = false) {
 	if (fadeIn) menuMusicFadePending = true;
 	if (!menuVisible || musicMuted || quizPreviewPlaying) return;
 
-	const menuMusicSource = window.quizHubPreferences.blancMode
-		? blancMenuMusicSource
-		: normalMenuMusicSource;
+	const menuMusicSource = getMenuMusicSource();
 	if (menuMusic.src !== menuMusicSource) {
 		menuMusic.src = menuMusicSource;
 		menuMusic.currentTime = 0;
@@ -239,6 +280,7 @@ function startMenuMusic(fadeIn = false) {
 		})
 		.catch(() => {});
 }
+scheduleMenuMusicDateRefresh();
 musicToggle.addEventListener("click", () => {
 	setMusicMuted(!musicMuted);
 });
@@ -457,7 +499,7 @@ function startExternalQuiz(target) {
 		if (welcomeVisible) {
 			if (
 				window.quizHubPreferences.disableLoadingAnimation &&
-				!window.quizHubPreferences.blancMode
+				!window.quizHubPreferences.secretMode
 			)
 				navigateToQuiz();
 			else showLoadingComplete();
@@ -469,7 +511,7 @@ function startExternalQuiz(target) {
 		welcomeVisible = true;
 		if (
 			window.quizHubPreferences.disableLoadingAnimation &&
-			!window.quizHubPreferences.blancMode
+			!window.quizHubPreferences.secretMode
 		) {
 			if (quizLoaded) navigateToQuiz();
 		} else {
@@ -490,12 +532,12 @@ function showLoadingComplete() {
 	loadingCompleteScheduled = true;
 	if (
 		window.quizHubPreferences.disableLoadingAnimation &&
-		!window.quizHubPreferences.blancMode
+		!window.quizHubPreferences.secretMode
 	) {
 		navigateToQuiz();
 		return;
 	}
-	if (window.quizHubPreferences.blancMode) {
+	if (window.quizHubPreferences.secretMode) {
 		setTimeout(navigateToQuiz, 1650);
 		return;
 	}
@@ -509,8 +551,8 @@ function showLoadingComplete() {
 }
 
 function showLoadingScreen() {
-	if (window.quizHubPreferences.blancMode) {
-		document.body.classList.add("blanc-loading");
+	if (window.quizHubPreferences.secretMode) {
+		document.body.classList.add("secret-loading");
 		if (!loadingSoundPlayed) {
 			playSound("loading");
 			loadingSoundPlayed = true;
@@ -595,7 +637,7 @@ function startQuiz(course, quiz, mixedSources = null) {
 		welcomeVisible = true;
 		if (
 			window.quizHubPreferences.disableLoadingAnimation &&
-			!window.quizHubPreferences.blancMode
+			!window.quizHubPreferences.secretMode
 		) {
 			if (quizLoaded) navigateToQuiz();
 		} else {
@@ -1333,13 +1375,13 @@ const fullscreenSetting = document.getElementById("fullscreenSetting");
 const quizMusicSetting = document.getElementById("quizMusicSetting");
 const quizMusicTrackName = document.getElementById("quizMusicTrackName");
 const textSizeSetting = document.getElementById("textSizeSetting");
-const blancQuizMusicOption = document.getElementById("blancQuizMusicOption");
+const secretQuizMusicOption = document.getElementById("secretQuizMusicOption");
 const soundMutedSetting = document.getElementById("soundMutedSetting");
 const musicMutedSetting = document.getElementById("musicMutedSetting");
 const disableLoadingSetting = document.getElementById("disableLoadingSetting");
 const highContrastSetting = document.getElementById("highContrastSetting");
-const blancModeSetting = document.getElementById("blancModeSetting");
-const blancModeSettingRow = document.getElementById("blancModeSettingRow");
+const secretModeSetting = document.getElementById("secretModeSetting");
+const secretModeSettingRow = document.getElementById("secretModeSettingRow");
 const universityName = document.getElementById("universityName");
 const resetSettingsButton = document.getElementById("resetSettings");
 const settingsError = document.getElementById("settingsError");
@@ -1373,9 +1415,9 @@ const quizThemePreviewCaption = document.getElementById(
 );
 const sfxStyleRadios = document.querySelectorAll('input[name="sfxStyle"]');
 let settingsTrigger = null;
-let blancUnlockProgress = 0;
-let blancUnlockSoundPlayed = false;
-let blancModeUnlocked = false;
+let secretUnlockProgress = 0;
+let secretUnlockSoundPlayed = false;
+let secretModeUnlocked = false;
 
 function updateQuizMusicTrackName() {
 	const musicSetting = window.quizHubPreferences.quizMusic;
@@ -1416,7 +1458,7 @@ function syncSettings() {
 	fullscreenSetting.disabled =
 		!document.fullscreenElement &&
 		typeof document.documentElement.requestFullscreen !== "function";
-	blancQuizMusicOption.hidden = !window.quizHubPreferences.blancMode;
+	secretQuizMusicOption.hidden = !window.quizHubPreferences.secretMode;
 	quizMusicSetting.value = window.quizHubPreferences.quizMusic;
 	updateQuizMusicTrackName();
 	textSizeSetting.value = window.quizHubPreferences.textSize;
@@ -1432,9 +1474,9 @@ function syncSettings() {
 	disableLoadingSetting.checked =
 		window.quizHubPreferences.disableLoadingAnimation;
 	highContrastSetting.checked = window.quizHubPreferences.highContrast;
-	blancModeSetting.checked = window.quizHubPreferences.blancMode;
-	blancModeSettingRow.hidden =
-		!window.quizHubPreferences.blancMode && !blancModeUnlocked;
+	secretModeSetting.checked = window.quizHubPreferences.secretMode;
+	secretModeSettingRow.hidden =
+		!window.quizHubPreferences.secretMode && !secretModeUnlocked;
 }
 
 function updateQuizThemePreview(theme) {
@@ -1445,7 +1487,7 @@ function updateQuizThemePreview(theme) {
 }
 
 function closeSettings() {
-	blancUnlockProgress = 0;
+	secretUnlockProgress = 0;
 	const returnFocus = settingsTrigger;
 	document.activeElement?.blur();
 	settingsModal.classList.remove("open");
@@ -1456,7 +1498,7 @@ function closeSettings() {
 }
 
 function openSettings() {
-	blancUnlockProgress = 0;
+	secretUnlockProgress = 0;
 	settingsTrigger = optionsToggle;
 	syncSettings();
 	settingsModal.classList.add("open");
@@ -1469,21 +1511,21 @@ function openSettings() {
 
 document.addEventListener("keydown", (event) => {
 	if (!settingsModal.classList.contains("open")) return;
-	const code = "ben";
-	const key = event.key;
-	if (key === code[blancUnlockProgress]) {
+	const code = "hub";
+	const key = event.key.toLowerCase();
+	if (key === code[secretUnlockProgress]) {
 		event.preventDefault();
-		blancUnlockProgress++;
+		secretUnlockProgress++;
 	} else {
-		blancUnlockProgress = key === "b" ? 1 : 0;
+		secretUnlockProgress = key === code[0] ? 1 : 0;
 	}
-	if (blancUnlockProgress === code.length) {
-		blancUnlockProgress = 0;
-		blancModeUnlocked = true;
-		blancModeSettingRow.hidden = false;
-		if (!blancUnlockSoundPlayed) {
+	if (secretUnlockProgress === code.length) {
+		secretUnlockProgress = 0;
+		secretModeUnlocked = true;
+		secretModeSettingRow.hidden = false;
+		if (!secretUnlockSoundPlayed) {
 			playSound("loading");
-			blancUnlockSoundPlayed = true;
+			secretUnlockSoundPlayed = true;
 		}
 	}
 });
@@ -1538,25 +1580,25 @@ disableLoadingSetting.addEventListener("change", () => {
 highContrastSetting.addEventListener("change", () => {
 	window.quizHubPreferences.setHighContrast(highContrastSetting.checked);
 });
-blancModeSetting.addEventListener("change", () => {
-	window.quizHubPreferences.setBlancMode(blancModeSetting.checked);
-	blancQuizMusicOption.hidden = !blancModeSetting.checked;
+secretModeSetting.addEventListener("change", () => {
+	window.quizHubPreferences.setSecretMode(secretModeSetting.checked);
+	secretQuizMusicOption.hidden = !secretModeSetting.checked;
 	quizMusicSetting.value = window.quizHubPreferences.quizMusic;
 	updateQuizMusicTrackName();
-	if (blancModeSetting.checked) {
+	if (secretModeSetting.checked) {
 		playSound("started");
 	}
 	if (quizPreviewPlaying) startQuizMusicPreview();
-	updateBlancTitle(blancModeSetting.checked);
+	updateSecretTitle(secretModeSetting.checked);
 	if (!quizPreviewPlaying) startMenuMusic(true);
 });
 resetSettingsButton.addEventListener("click", () => {
 	window.quizHubPreferences.reset();
 	setSoundsMuted(false);
 	setMusicMuted(false);
-	updateBlancTitle(false);
-	blancModeUnlocked = false;
-	blancModeSettingRow.hidden = true;
+	updateSecretTitle(false);
+	secretModeUnlocked = false;
+	secretModeSettingRow.hidden = true;
 	if (quizPreviewPlaying) startQuizMusicPreview();
 	syncSettings();
 	settingsError.textContent = "";
@@ -1626,6 +1668,13 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.6.0
+- Host Display has been added as a Party Mode option. This allows the host to display the quiz on a separate screen, while players can answer on their own devices. This is useful for classrooms or group settings where a shared display is available.
+- Party mode will now say default name and color upon joining, but can still be changed afterwards.
+- Mobile interface improvements, including better support for smaller screens and touch interactions.
+- The menu now changes during specific study periods of the year
+- If a connection is detected in Offline Mode, the site will now prompt to switch to Online Mode for a better experience.
+
 Version 2.5.2
 - Now presents probably on a Samsung Galaxy Z Flip 8 cover screen
 
@@ -1918,28 +1967,29 @@ document.addEventListener("pointerdown", () => {
 const stemTitle = document.querySelector("h1");
 const stemLetters = [...stemTitle.querySelectorAll(".stem-letter")];
 const originalStemText = stemLetters.map((letter) => letter.textContent);
-function updateBlancTitle(enabled) {
-	const blancTitle = ["B", "e", "n", " ", "H", "u", "b"];
+function updateSecretTitle(enabled) {
+	const secretTitle = ["H", "u", "b", "?"];
 	universityName.textContent = enabled
-		? "Ben's Domain"
+		? "???"
 		: "Lakehead University - Barrie STEM Hub";
 	stemLetters.forEach((letter, index) => {
 		letter.textContent = enabled
-			? blancTitle[index] || ""
+			? secretTitle[index] || ""
 			: originalStemText[index];
-		letter.hidden = enabled && index >= blancTitle.length;
+		letter.hidden = enabled && index >= secretTitle.length;
 	});
-	stemTitle.setAttribute(
-		"aria-label",
-		enabled ? "Ben Hub" : "Lakehead STEM Hub",
-	);
-	document.title = enabled ? "Ben Hub" : "Quiz Hub";
+	stemTitle.setAttribute("aria-label", enabled ? "Hub?" : "Lakehead STEM Hub");
+	document.title = enabled ? "Hub?" : "Quiz Hub";
 }
-updateBlancTitle(window.quizHubPreferences.blancMode);
+updateSecretTitle(window.quizHubPreferences.secretMode);
 const titleEndSound = new Audio(soundFiles.titleEnd);
 let titleEndPending = false;
 function tryPlayTitleEnd() {
 	if (!titleEndPending || soundsMuted) return;
+	titleEndSound.src = window.quizHubPreferences.resolveSfx(
+		"titleEnd",
+		soundFiles.titleEnd,
+	);
 	titleEndSound.currentTime = 0;
 	titleEndSound
 		.play()

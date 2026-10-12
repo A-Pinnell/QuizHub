@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" type="image/png" href="assets/icon.png">
 <title>Join a QuizHub Party</title>
 <link rel="stylesheet" href="css/party-lobby.css">
 <link rel="stylesheet" href="css/cover-screen.css">
@@ -22,8 +23,8 @@
     <button class="party-primary" id="partyCheckRoom" type="button">CHECK ROOM</button>
     <div id="partyProfileFields" hidden>
     <p id="partyRoomAvailability" class="party-room-availability"></p>
-    <label for="partyPlayerName">Your name</label>
-    <input id="partyPlayerName" name="playerName" type="text" maxlength="24" autocomplete="nickname" required>
+    <label for="partyPlayerName">Your name in this party</label>
+    <input id="partyPlayerName" name="playerName" type="text" maxlength="24" autocomplete="nickname" required readonly>
     <div class="party-profile-row">
       <label for="partyPlayerColor">Player color</label>
       <input id="partyPlayerColor" type="color" value="#3686e8">

@@ -7,9 +7,27 @@
   const checkRoomButton=document.getElementById("partyCheckRoom");
   const profileFields=document.getElementById("partyProfileFields");
   const roomAvailability=document.getElementById("partyRoomAvailability");
+  const joinButton=document.getElementById("partyJoinButton");
   let validRoomCode="";
   let isJoining=false;
   let photo="";
+  const playerNameInput=document.getElementById("partyPlayerName");
+  const playerColorInput=document.getElementById("partyPlayerColor");
+  const playerColors=[
+    "#3686e8","#e84c3d","#27ae60","#9b59b6","#f39c12",
+    "#16a085","#e84393","#34495e","#7f8c8d","#d35400"
+  ];
+
+  function assignSuggestedProfile(profiles){
+    const takenNames=new Set(profiles.map((profile)=>profile.name.toLocaleLowerCase()));
+    let number=1;
+    while(takenNames.has(`player ${number}`)) number++;
+    playerNameInput.value=`Player ${number}`;
+    const takenColors=new Set(profiles.map((profile)=>profile.color.toLowerCase()));
+    const availableColors=playerColors.filter((color)=>!takenColors.has(color));
+    const colorChoices=availableColors.length?availableColors:playerColors;
+    playerColorInput.value=colorChoices[Math.floor(Math.random()*colorChoices.length)];
+  }
 
   photoInput.addEventListener("change",()=>{
     const file=photoInput.files?.[0];
@@ -44,11 +62,9 @@
     reader.readAsDataURL(file);
   });
 
-  form.addEventListener("submit",async(event)=>{
-    event.preventDefault();
-    if(!isJoining) return;
+  async function joinRoom(){
     error.textContent="";
-    const submit=form.querySelector('button[type="submit"]');
+    const submit=joinButton;
     submit.disabled=true;
     const client=new window.QuizHubPartyClient();
     const roomCode=form.elements.roomCode.value.trim().toUpperCase();
@@ -69,6 +85,10 @@
         window.location.href=`party-lobby.html?code=${encodeURIComponent(roomCode)}&playerId=${encodeURIComponent(message.playerId)}`;
       }else{
         error.textContent=message.message;
+        if(/name is already in the room/i.test(message.message)){
+          playerNameInput.focus();
+          playerNameInput.select();
+        }
         submit.disabled=false;
         client.close();
       }
@@ -88,6 +108,11 @@
       submit.disabled=false;
       client.close();
     }
+  }
+
+  form.addEventListener("submit",(event)=>{
+    event.preventDefault();
+    if(isJoining) joinRoom();
   });
 
   checkRoomButton.addEventListener("click",async()=>{
@@ -107,8 +132,9 @@
         validRoomCode=roomCode;
         form.elements.roomCode.value=roomCode;
         form.elements.roomCode.readOnly=true;
+        assignSuggestedProfile(message.room.profiles||[]);
         profileFields.hidden=false;
-        roomAvailability.textContent=`${message.room.players} of ${message.room.capacity} spots are filled. Choose your player profile to join.`;
+        roomAvailability.textContent=`${message.room.players} of ${message.room.capacity} spots are filled. Your name is assigned automatically; choose a color and optional picture.`;
         checkRoomButton.hidden=true;
         document.getElementById("partyPlayerName").focus();
         client.close();

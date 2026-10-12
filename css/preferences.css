@@ -139,32 +139,32 @@ html.high-contrast :is(.quiz-modal-backdrop,.patchnotes-backdrop,.settings-backd
   background:rgba(0,0,0,.92)!important;
   backdrop-filter:none!important;
 }
-html.blanc-mode body{
-  background-image:url("../secret/blanc.png")!important;
+html.secret-mode body{
+  background-image:url("../secret/secret.png")!important;
   background-position:center!important;
   background-size:100% 100%!important;
   background-repeat:no-repeat!important;
   background-attachment:fixed!important;
 }
-html.blanc-mode :is(.quiz-page,.visual,.panel,#app,.screen,.page,.celebration,.quiz-menu,.patchnotes-panel,.settings-panel,.menu .card,.setup-panel,.results-panel,.game-shell,.game-content,.problem-panel,.side-panel){
-  background-image:url("../secret/blanc.png")!important;
+html.secret-mode :is(.quiz-page,.visual,.panel,#app,.screen,.page,.celebration,.quiz-menu,.patchnotes-panel,.settings-panel,.menu .card,.setup-panel,.results-panel,.game-shell,.game-content,.problem-panel,.side-panel){
+  background-image:url("../secret/secret.png")!important;
   background-position:center!important;
   background-size:100% 100%!important;
 }
-html.blanc-mode .visual::before,
-html.blanc-mode .visual::after,
-html.blanc-mode :is(.stars,.sun,.sunset-haze,.horizon,.shore){
+html.secret-mode .visual::before,
+html.secret-mode .visual::after,
+html.secret-mode :is(.stars,.sun,.sunset-haze,.horizon,.shore){
   display:none!important;
 }
-html.blanc-mode .celebration{
+html.secret-mode .celebration{
   background-repeat:no-repeat!important;
 }
-html.blanc-mode .music-preview-toggle{
+html.secret-mode .music-preview-toggle{
   border:2px solid #111;
 }
-html.blanc-mode .card{
-  background:url("../secret/blanc.png") center/cover no-repeat!important;
+html.secret-mode .card{
+  background:url("../secret/secret.png") center/cover no-repeat!important;
 }
-html.blanc-mode :is(.party-avatar img,.party-answer-avatar img,.party-turn-avatar img,.party-player-photo img){
+html.secret-mode :is(.party-avatar img,.party-answer-avatar img,.party-turn-avatar img,.party-player-photo img){
   filter:invert(1);
 }

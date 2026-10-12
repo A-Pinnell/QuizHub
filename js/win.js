@@ -1,18 +1,18 @@
 
 
 const winUrlParams=new URLSearchParams(window.location.search);
-const shouldShowBlancIntro=window.quizHubPreferences.blancMode && winUrlParams.get("blancIntro")!=="1";
-if(shouldShowBlancIntro){
+const shouldShowSecretIntro=window.quizHubPreferences.secretMode && winUrlParams.get("secretIntro")!=="1";
+if(shouldShowSecretIntro){
   const returnTarget=new URL(window.location.href);
-  returnTarget.searchParams.set("blancIntro","1");
-  const introTarget=new URL("blanc-message.html",window.location.href);
+  returnTarget.searchParams.set("secretIntro","1");
+  const introTarget=new URL("secret-message.html",window.location.href);
   introTarget.searchParams.set("returnTo",returnTarget.toString());
   window.location.replace(introTarget.toString());
 }
 
 window.addEventListener("load", function(){
   "use strict";
-  if(shouldShowBlancIntro) return;
+  if(shouldShowSecretIntro) return;
 
   let soundsMuted=localStorage.getItem("quizHubMuted")==="true";
   const winSound=new Audio("sfx/Win.wav");

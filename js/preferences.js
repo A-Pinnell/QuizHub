@@ -20,8 +20,8 @@
     SocIndi: "./music/SocIndiMusic.wav"
   };
   const regularQuizMusicOptions = ["default", ...Object.keys(quizMusicSources).filter((source) => source !== "run")];
-  const blancQuizMusicOptions = ["run", ...regularQuizMusicOptions];
-  const blancMode = storage.getItem("quizHubBlancMode") === "true";
+  const secretQuizMusicOptions = ["run", ...regularQuizMusicOptions];
+  const secretMode = storage.getItem("quizHubSecretMode") === "true";
   const savedQuizMusic = storage.getItem("quizHubQuizMusic");
   const textSizes = ["small", "default", "large"];
   const textSizeScales = { small: 0.8, default: 1, large: 1.25 };
@@ -32,7 +32,10 @@
     incorrect: "./sfx/ps2/incorrect_ps2.wav",
     highlight: "./sfx/ps2/highlight_ps2.wav",
     comboUp: "./sfx/ps2/comboup_ps2.wav",
-    begin: "./sfx/ps2/quizbegin_ps2.wav"
+    begin: "./sfx/ps2/quizbegin_ps2.wav",
+    popup: "./sfx/ps2/popup_ps2.wav",
+    select: "./sfx/ps2/quizselect_ps2.wav",
+    titleEnd: "./sfx/ps2/titleend_ps2.wav"
   };
   const preferences = {
     motionMode: ["default", "minimal", "reduced"].includes(savedMotionMode)
@@ -41,10 +44,10 @@
     answerSide: storage.getItem("quizHubAnswerSide") === "left" ? "left" : "right",
     highContrast: storage.getItem("quizHubHighContrast") === "true",
     disableLoadingAnimation: storage.getItem("quizHubDisableLoadingAnimation") === "true",
-    blancMode,
-    quizMusic: (blancMode ? blancQuizMusicOptions : regularQuizMusicOptions).includes(savedQuizMusic)
+    secretMode,
+    quizMusic: (secretMode ? secretQuizMusicOptions : regularQuizMusicOptions).includes(savedQuizMusic)
       ? savedQuizMusic
-      : blancMode ? "run" : "default",
+      : secretMode ? "run" : "default",
     textSize: textSizes.includes(storage.getItem("quizHubTextSize"))
       ? storage.getItem("quizHubTextSize")
       : "default",
@@ -61,7 +64,7 @@
     root.classList.toggle("motion-minimal", preferences.motionMode === "minimal");
     root.classList.toggle("reduce-motion", preferences.motionMode === "reduced");
     root.classList.toggle("high-contrast", preferences.highContrast);
-    root.classList.toggle("blanc-mode", preferences.blancMode);
+    root.classList.toggle("secret-mode", preferences.secretMode);
     root.dataset.quizAnswerSide = preferences.answerSide;
     root.dataset.quizTextSize = preferences.textSize;
     root.style.setProperty("--quiz-text-scale", String(textSizeScales[preferences.textSize]));
@@ -76,14 +79,14 @@
       preferences.answerSide = value;
       storage.setItem("quizHubAnswerSide", preferences.answerSide);
     }else if(name === "highContrast" || name === "disableLoadingAnimation" ||
-      name === "blancMode" ||
+      name === "secretMode" ||
       name === "soundMuted" || name === "musicMuted"){
       storage.setItem(storageKey(name), String(Boolean(value)));
       if(name === "highContrast") preferences.highContrast = Boolean(value);
       if(name === "disableLoadingAnimation") preferences.disableLoadingAnimation = Boolean(value);
-      if(name === "blancMode"){
-        preferences.blancMode = Boolean(value);
-        if(preferences.blancMode){
+      if(name === "secretMode"){
+        preferences.secretMode = Boolean(value);
+        if(preferences.secretMode){
           preferences.quizMusic = "run";
           storage.setItem("quizHubQuizMusic", "run");
         }else if(preferences.quizMusic === "run"){
@@ -93,7 +96,7 @@
       }
     }else if(name === "quizMusic" &&
       (value === "default" || Object.prototype.hasOwnProperty.call(quizMusicSources, value) &&
-        (value !== "run" || preferences.blancMode))){
+        (value !== "run" || preferences.secretMode))){
       preferences.quizMusic = value;
       storage.setItem("quizHubQuizMusic", value);
     }else if(name === "textSize" && textSizes.includes(value)){
@@ -130,7 +133,7 @@
       "quizHubAnswerSide",
       "quizHubHighContrast",
       "quizHubDisableLoadingAnimation",
-      "quizHubBlancMode",
+      "quizHubSecretMode",
       "quizHubQuizMusic",
       "quizHubTextSize",
       "quizHubQuizTheme",
@@ -143,7 +146,7 @@
     preferences.answerSide = "right";
     preferences.highContrast = false;
     preferences.disableLoadingAnimation = false;
-    preferences.blancMode = false;
+    preferences.secretMode = false;
     preferences.quizMusic = "default";
     preferences.textSize = "default";
     preferences.quizTheme = "default";
@@ -193,7 +196,7 @@
     get answerSide(){ return preferences.answerSide; },
     get highContrast(){ return preferences.highContrast; },
     get disableLoadingAnimation(){ return preferences.disableLoadingAnimation; },
-    get blancMode(){ return preferences.blancMode; },
+    get secretMode(){ return preferences.secretMode; },
     get quizMusic(){ return preferences.quizMusic; },
     get textSize(){ return preferences.textSize; },
     get quizTheme(){ return preferences.quizTheme; },
@@ -205,7 +208,7 @@
     setAnswerSide(value){ update("answerSide", value); },
     setHighContrast(value){ update("highContrast", value); },
     setDisableLoadingAnimation(value){ update("disableLoadingAnimation", value); },
-    setBlancMode(value){ update("blancMode", value); },
+    setSecretMode(value){ update("secretMode", value); },
     setQuizMusic(value){ update("quizMusic", value); },
     setTextSize(value){ update("textSize", value); },
     setQuizTheme(value){ update("quizTheme", value); },

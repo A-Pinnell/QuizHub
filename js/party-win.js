@@ -2,10 +2,10 @@
   "use strict";
 
   const params=new URLSearchParams(window.location.search);
-  if(window.quizHubPreferences.blancMode && params.get("blancIntro")!=="1"){
+  if(window.quizHubPreferences.secretMode && params.get("secretIntro")!=="1"){
     const returnTarget=new URL(window.location.href);
-    returnTarget.searchParams.set("blancIntro","1");
-    const introTarget=new URL("blanc-message.html",window.location.href);
+    returnTarget.searchParams.set("secretIntro","1");
+    const introTarget=new URL("secret-message.html",window.location.href);
     introTarget.searchParams.set("returnTo",returnTarget.toString());
     window.location.replace(introTarget.toString());
     return;
@@ -48,7 +48,9 @@
     }))
     .sort((first,second)=>second.score-first.score);
   const winners=standings.filter((player)=>player.score===standings[0].score);
-  const currentPlayer=standings.find((player)=>player.id===results.partyCurrentPlayerId);
+  const currentPlayer=standings.find((player)=>
+    player.id===results.partyCurrentPlayerId
+  );
   if(currentPlayer){
     const currentPlayerWon=winners.some((player)=>player.id===currentPlayer.id);
     const resultMusic=new Audio(currentPlayerWon?"music/PartyWin.mp3":"music/PartyLose.mp3");
@@ -87,9 +89,9 @@
     placeLabel.textContent=place===1?"1st place":place===2?"2nd place":place===3?"3rd place":`${place}th place`;
     const avatar=document.createElement("div");
     avatar.className="party-player-photo";
-    if(window.quizHubPreferences.blancMode || player.photo){
+    if(window.quizHubPreferences.secretMode || player.photo){
       const image=document.createElement("img");
-      image.src=window.quizHubPreferences.blancMode?"secret/blanc.png":player.photo;
+      image.src=window.quizHubPreferences.secretMode?"secret/secret.png":player.photo;
       image.alt="";
       avatar.appendChild(image);
     }else{
@@ -119,8 +121,27 @@
     }
   }
 
-  function openQuiz(category,quiz,playerId,isHost,mixedSources=null){
-    if(!savePartyPlayers()) return;
+  function openQuiz(category,quiz,playerId,isHost,mixedSources=null,hostDisplayPlayerId=null){
+    if(hostDisplayPlayerId && room){
+      const displayHost=room.players.find((player)=>player.host);
+      if(!displayHost){
+        error.hidden=false;
+        error.textContent="Could not restore the Host Display account for replay.";
+        return;
+      }
+      try{
+        sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(room.players.map((player)=>({
+          id:player.id,
+          name:player.id===hostDisplayPlayerId?displayHost.name:player.name,
+          color:player.id===hostDisplayPlayerId?displayHost.color:player.color,
+          photo:player.id===hostDisplayPlayerId?displayHost.photo:player.photo
+        })).filter((player)=>player.id!==displayHost.id)));
+      }catch(storageError){
+        error.hidden=false;
+        error.textContent=`Could not prepare the Host Display players: ${storageError.message}`;
+        return;
+      }
+    }else if(!savePartyPlayers()) return;
     const target=new URL("quiz.html",window.location.href);
     target.searchParams.set("category",category);
     target.searchParams.set("quiz",quiz);
@@ -129,6 +150,10 @@
     target.searchParams.set("partyRoom",results.partyRoomCode);
     target.searchParams.set("partyPlayer",playerId);
     if(isHost) target.searchParams.set("partyHost","true");
+    if(hostDisplayPlayerId){
+      target.searchParams.set("hostDisplay","true");
+      target.searchParams.set("hostDisplayPlayer",hostDisplayPlayerId);
+    }
     window.location.href=target.toString();
   }
 
@@ -167,12 +192,13 @@
       }else if((room.stage==="setup" || room.stage==="quiz") && room.category && room.quiz){
         openQuiz(room.category,room.quiz,results.partyCurrentPlayerId,
           room.players.some((player)=>player.id===results.partyCurrentPlayerId && player.host),
-          room.mixedSources);
+          room.mixedSources,room.hostDisplay?room.hostDisplayPlayerId:null);
       }
     });
     client.on("replay",(message)=>{
       const current=room?.players.find((player)=>player.id===results.partyCurrentPlayerId);
-      openQuiz(message.category,message.quiz,results.partyCurrentPlayerId,Boolean(current?.host),message.mixedSources);
+      openQuiz(message.category,message.quiz,results.partyCurrentPlayerId,Boolean(current?.host),
+        message.mixedSources,room?.hostDisplay?room.hostDisplayPlayerId:null);
     });
     client.on("choose-new-quiz",()=>{
       const current=room?.players.find((player)=>player.id===results.partyCurrentPlayerId);

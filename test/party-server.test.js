@@ -108,6 +108,16 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.equal(joined.room.players.length, 2);
   assert.equal(joined.room.players.every((player) => player.ready), true);
 
+  const duplicateNameClient=await connect();
+  const duplicateNameError=waitForMessage(duplicateNameClient,"error");
+  send(duplicateNameClient,{
+    type:"join",
+    code:hosted.room.code,
+    player:{name:"gUEST",color:"#ff00ff",photo:""}
+  });
+  assert.match((await duplicateNameError).message,/name is already in the room/i);
+  duplicateNameClient.close();
+
   const hostPartyOptions = waitForMessage(host, "room-state", (message) => !message.room.partyOptions.showPlayerScores);
   const guestPartyOptions = waitForMessage(guest, "room-state", (message) => !message.room.partyOptions.showPlayerScores);
   send(host, {
@@ -145,7 +155,9 @@ test("hosted room auto-readies players, shares locked answers and handles depart
 
   const checkRoomPromise = waitForMessage(guest, "room-found");
   send(guest, { type: "check-room", code: hosted.room.code });
-  assert.equal((await checkRoomPromise).room.players, 2);
+  const checkedRoom=(await checkRoomPromise).room;
+  assert.equal(checkedRoom.players, 2);
+  assert.deepEqual(checkedRoom.profiles.map((profile)=>profile.name).sort(),["Guest","Host"]);
 
   const invalidMixedLaunch = waitForMessage(host, "error");
   send(host, {
@@ -354,4 +366,182 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.equal(ended.reason, "player-left");
   assert.equal(ended.departedPlayerId, joined.playerId);
   assert.equal(updatedRoom.room.players.length, 1);
+
+  const displayHost = await connect();
+  const displayHostedPromise = waitForMessage(displayHost, "hosted");
+  send(displayHost, {
+    type: "host",
+    capacity: 50,
+    player: { name: "Display Host", color: "#ff0000", photo: "" }
+  });
+  const displayHosted = await displayHostedPromise;
+  assert.equal(displayHosted.room.hostDisplay, false);
+
+  const displayGuest = await connect();
+  const displayJoinedPromise = waitForMessage(displayGuest, "joined");
+  send(displayGuest, {
+    type: "join",
+    code: displayHosted.room.code,
+    player: { name: "Answering Player", color: "#0000ff", photo: "" }
+  });
+  const displayJoined = await displayJoinedPromise;
+  const selectionPromise = waitForMessage(displayHost, "room-state", (message) =>
+    message.room.hostDisplay === true &&
+    message.room.hostDisplayPlayerId === displayJoined.playerId
+  );
+  send(displayHost, {
+    type: "host-display-options",
+    code: displayHosted.room.code,
+    enabled: true,
+    playerId: displayJoined.playerId
+  });
+  await selectionPromise;
+  const hostDisplayOff = waitForMessage(displayHost, "room-state", (message) =>
+    message.room.hostDisplay === false && message.room.hostDisplayPlayerId === null
+  );
+  send(displayHost, {
+    type: "host-display-options",
+    code: displayHosted.room.code,
+    enabled: false,
+    playerId: displayJoined.playerId
+  });
+  await hostDisplayOff;
+  const reenabled = waitForMessage(displayHost, "room-state", (message) =>
+    message.room.hostDisplay === true &&
+    message.room.hostDisplayPlayerId === displayJoined.playerId
+  );
+  send(displayHost, {
+    type: "host-display-options",
+    code: displayHosted.room.code,
+    enabled: true,
+    playerId: displayJoined.playerId
+  });
+  await reenabled;
+  const insufficientHostDisplayPlayers = waitForMessage(displayHost, "error");
+  send(displayHost, {
+    type: "launch",
+    code: displayHosted.room.code,
+    category: "CloudComp",
+    quiz: "quiz1"
+  });
+  assert.match((await insufficientHostDisplayPlayers).message, /at least one other player/i);
+
+  const displayOther = await connect();
+  const displayOtherJoinedPromise = waitForMessage(displayOther, "joined");
+  send(displayOther, {
+    type: "join",
+    code: displayHosted.room.code,
+    player: { name: "Other Player", color: "#00ff00", photo: "" }
+  });
+  const displayOtherJoined = await displayOtherJoinedPromise;
+  const displayLaunchPromise = waitForMessage(displayHost, "launch");
+  const displayGuestLaunchPromise = waitForMessage(displayGuest, "launch");
+  const displayOtherLaunchPromise = waitForMessage(displayOther, "launch");
+  send(displayHost, {
+    type: "launch",
+    code: displayHosted.room.code,
+    category: "CloudComp",
+    quiz: "quiz1"
+  });
+  await Promise.all([displayLaunchPromise, displayGuestLaunchPromise, displayOtherLaunchPromise]);
+  const displayStartedPromise = waitForMessage(displayHost, "quiz-start");
+  send(displayHost, {
+    type: "quiz-start",
+    code: displayHosted.room.code,
+    config: { questionSequence: [0, 1] }
+  });
+  await displayStartedPromise;
+  const displayQuestionPromise = waitForMessage(displayGuest, "question");
+  const displayOtherQuestionPromise = waitForMessage(displayOther, "question");
+  send(displayHost, {
+    type: "question",
+    code: displayHosted.room.code,
+    questionNumber: 0,
+    questionIndex: 0,
+    answerOrder: [0, 1, 2, 3],
+    correctIndex: 1
+  });
+  await Promise.all([displayQuestionPromise, displayOtherQuestionPromise]);
+  const displayRevealPromise = waitForMessage(displayGuest, "reveal");
+  const displayOtherRevealPromise = waitForMessage(displayOther, "reveal");
+  const hostAnswerRejected = waitForMessage(displayHost, "error");
+  send(displayHost, {
+    type: "answer",
+    code: displayHosted.room.code,
+    questionNumber: 0,
+    answerIndex: 1
+  });
+  assert.match((await hostAnswerRejected).message, /displaying the quiz/i);
+  send(displayGuest, {
+    type: "answer",
+    code: displayHosted.room.code,
+    questionNumber: 0,
+    answerIndex: 1
+  });
+  send(displayOther, {
+    type: "answer",
+    code: displayHosted.room.code,
+    questionNumber: 0,
+    answerIndex: 0
+  });
+  const [displayReveal] = await Promise.all([displayRevealPromise, displayOtherRevealPromise]);
+  assert.equal(displayReveal.answers.find((answer) => answer.playerId === displayHosted.playerId).selectedIndex, null);
+  assert.equal(displayReveal.answers.find((answer) => answer.playerId === displayJoined.playerId).correct, true);
+
+  const unselectedAdvanceRejected = waitForMessage(displayOther, "error");
+  send(displayOther, { type: "next-question", code: displayHosted.room.code });
+  assert.match((await unselectedAdvanceRejected).message, /selected Host Display player/i);
+
+  const displayHostNext = waitForMessage(displayHost, "next-question");
+  const displayGuestNext = waitForMessage(displayGuest, "next-question");
+  const displayOtherNext = waitForMessage(displayOther, "next-question");
+  send(displayGuest, { type: "next-question", code: displayHosted.room.code });
+  await Promise.all([displayHostNext, displayGuestNext, displayOtherNext]);
+
+  const displayHostSecondQuestion = waitForMessage(displayHost, "question");
+  const displayGuestSecondQuestion = waitForMessage(displayGuest, "question");
+  const displayOtherSecondQuestion = waitForMessage(displayOther, "question");
+  send(displayHost, {
+    type: "question",
+    code: displayHosted.room.code,
+    questionNumber: 1,
+    questionIndex: 1,
+    answerOrder: [0, 1, 2, 3],
+    correctIndex: 0
+  });
+  await Promise.all([displayHostSecondQuestion, displayGuestSecondQuestion, displayOtherSecondQuestion]);
+
+  const displayHostSkipReveal = waitForMessage(displayHost, "reveal");
+  const displayGuestSkipReveal = waitForMessage(displayGuest, "reveal");
+  const displayOtherSkipReveal = waitForMessage(displayOther, "reveal");
+  send(displayGuest, {
+    type: "answer",
+    code: displayHosted.room.code,
+    questionNumber: 1,
+    answerIndex: null
+  });
+  send(displayOther, {
+    type: "answer",
+    code: displayHosted.room.code,
+    questionNumber: 1,
+    answerIndex: 0
+  });
+  const [hostSkippedReveal] = await Promise.all([
+    displayHostSkipReveal,
+    displayGuestSkipReveal,
+    displayOtherSkipReveal
+  ]);
+  assert.equal(
+    hostSkippedReveal.answers.find((answer) => answer.playerId === displayJoined.playerId).selectedIndex,
+    null
+  );
+  assert.equal(
+    hostSkippedReveal.answers.find((answer) => answer.playerId === displayOtherJoined.playerId).selectedIndex,
+    0
+  );
+  const displayHostGameOver = waitForMessage(displayHost, "game-over");
+  const displayGuestGameOver = waitForMessage(displayGuest, "game-over");
+  const displayOtherGameOver = waitForMessage(displayOther, "game-over");
+  send(displayGuest, { type: "end-game", code: displayHosted.room.code, reason: "ended" });
+  await Promise.all([displayHostGameOver, displayGuestGameOver, displayOtherGameOver]);
 });

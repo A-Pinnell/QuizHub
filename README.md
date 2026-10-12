@@ -27,6 +27,10 @@ The Android app injects its native plugin bridge into the hosted QuizHub pages s
 
 Choose **Mixed Study** above the course cards to select question banks from multiple courses, including individual Tech Soc Indi People Can review sets. Use the **None**, **Midterm Reviews**, and **All** presets to quickly change the selection; Midterm Reviews includes the test/midterm practice banks and the Tech Soc Indi People Can exam review sections. Questions identify their course at the start, and the mode uses its own large-answer, game-show-style layout. The Party lobby offers the same bank selection; the host's selection is shared with every player.
 
+### Host Display
+
+In the party lobby, open **Options** and enable **Host Display** to show the question and answer choices on the host screen. Select a player account already in the lobby; that player answers from their own device and gets the **Skip**, **Next**, and **End Quiz** controls as large icons along the left edge. The existing host is labeled **(Display)** and the selected player's existing slot **(Player)** in the lobby only. The selected player's lobby card and quiz roster use the host's name, color, and photo; the display account is excluded from the score roster. No extra room account is added. Host Display needs at least three room accounts. The display keeps the selected quiz theme and plays quiz music; answering devices play sound effects only and do not show a music toggle.
+
 1. Install dependencies with `npm install`.
 2. Build a Windows installer with `npm run package:win` or a Linux AppImage with `npm run package:linux`.
 3. Find desktop builds in the `desktop-dist` directory.

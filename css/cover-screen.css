@@ -916,16 +916,17 @@
 
 @media screen and (orientation: portrait) and (max-width: 760px) {
   body.compgfx-mode .gfx-cube-stage {
-    top: 23%;
+    position: absolute;
+    top: 27dvh;
     left: 50%;
-    width: min(78vw, 36dvh, 300px);
-    --gfx-cube-depth: min(39vw, 18dvh, 150px);
+    width: min(44vw, 22dvh, 220px);
+    --gfx-cube-depth: min(22vw, 11dvh, 110px);
   }
 
   body.compgfx-mode.gfx-quiz-started .gfx-cube-stage {
-    top: 23%;
+    top: 27dvh;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1.05);
+    transform: translate(-50%, -50%);
   }
 
   body.compgfx-mode .quiz-content {
@@ -973,6 +974,15 @@
     margin-top: 6px;
   }
 
+  body.compgfx-mode .quiz-content .controls {
+    top: -60px !important;
+    bottom: auto !important;
+  }
+
+  body.compgfx-mode .quiz-content {
+    overflow: visible;
+  }
+
   body.compgfx-mode .controls .control {
     min-height: 34px;
   }
@@ -980,5 +990,43 @@
   body.compgfx-mode .gfx-axis-gizmo {
     top: 42px;
     right: 8px;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-width: 900px) and (max-height: 500px) {
+  body.compgfx-mode .gfx-cube-stage {
+    position: absolute;
+    top: 40dvh;
+    left: 24vw;
+    width: min(25dvh, 180px);
+    --gfx-cube-depth: min(12.5dvh, 90px);
+  }
+
+  body.compgfx-mode.gfx-quiz-started .gfx-cube-stage {
+    top: 40dvh;
+    left: 24vw;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media screen and (orientation: portrait) and (max-width: 760px) and (max-height: 639px) {
+  body.compgfx-mode .gfx-cube-stage {
+    position: absolute;
+    top: 20dvh;
+    width: min(36vw, 14dvh, 140px);
+    --gfx-cube-depth: min(18vw, 7dvh, 70px);
+  }
+
+  body.compgfx-mode.gfx-quiz-started .gfx-cube-stage {
+    top: 20dvh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media screen and (orientation: portrait) and (min-width: 600px) and (max-width: 900px) and (min-height: 640px) {
+  .quiz-menu-close,
+  .actions .menu {
+    display: none;
   }
 }

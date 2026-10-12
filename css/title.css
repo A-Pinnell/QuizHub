@@ -28,6 +28,92 @@ body{font-family:'TradeGothic',Arial,Helvetica,sans-serif;background:#000;min-he
 .cloud:before{width:90px;height:90px;left:30px;top:-43px}.cloud:after{width:110px;height:110px;right:16px;top:-55px}
 .c1{left:2%;top:5%;transform:scale(.65)}.c2{left:24%;top:8%;transform:scale(.9)}.c3{left:46%;top:18%;transform:scale(1.1)}.c4{left:69%;top:2%;transform:scale(.85)}.c5{left:88%;top:24%;transform:scale(.7)}.c6{left:111%;top:7%;transform:scale(1.15)}.c7{left:139%;top:28%;transform:scale(.75)}.c8{left:165%;top:9%;transform:scale(1)}.c9{left:194%;top:23%;transform:scale(.85)}
 @keyframes cloudScroll{from{transform:translateX(0)}to{transform:translateX(-40%)}}
+body.special-menu-night .sky{background:linear-gradient(180deg,#080d25 0%,#111b3b 58%,#283b5b 100%)}
+body.special-menu-night .sky::before{
+	position:absolute;
+	inset:0;
+	content:"";
+	background:
+		radial-gradient(1.5px 1.5px at 8% 17%,#fff 50%,transparent 100%),
+		radial-gradient(1px 1px at 17% 38%,#d9e5ff 50%,transparent 100%),
+		radial-gradient(1.5px 1.5px at 26% 11%,#fff 50%,transparent 100%),
+		radial-gradient(1px 1px at 35% 29%,#d9e5ff 50%,transparent 100%),
+		radial-gradient(1.5px 1.5px at 46% 8%,#fff 50%,transparent 100%),
+		radial-gradient(1px 1px at 54% 35%,#d9e5ff 50%,transparent 100%),
+		radial-gradient(1.5px 1.5px at 64% 19%,#fff 50%,transparent 100%),
+		radial-gradient(1px 1px at 73% 7%,#d9e5ff 50%,transparent 100%),
+		radial-gradient(1.5px 1.5px at 83% 31%,#fff 50%,transparent 100%),
+		radial-gradient(1px 1px at 92% 14%,#d9e5ff 50%,transparent 100%);
+	opacity:.8;
+	animation:nightStars 4s ease-in-out infinite alternate;
+	pointer-events:none;
+}
+body.special-menu-night .cloud-track{display:none}
+@keyframes nightStars{to{opacity:.5}}
+body.special-menu-night .ground{background:#111827}
+body.special-menu-night .menu-area{background:#26344b}
+body.special-menu-night .special-spotlights{
+	position:absolute;
+	inset:0;
+	z-index:10;
+	overflow:hidden;
+	pointer-events:none;
+}
+.special-spotlights{display:none}
+body.special-menu-night .special-spotlights{display:block;visibility:hidden;opacity:0;transition:opacity 1.2s ease,visibility 0s linear}
+body.special-menu-night.menu-visible .special-spotlights{visibility:visible;opacity:1;transition-delay:2s}
+.special-spotlight{
+	position:absolute;
+	top:-9%;
+	width:min(27vw,340px);
+	height:115%;
+	opacity:0;
+	transform-origin:50% 0;
+	clip-path:polygon(50% 0,50% 0,50% 0,50% 0);
+	background:linear-gradient(180deg,var(--spotlight-color),color-mix(in srgb,var(--spotlight-color) 35%,transparent) 62%,transparent);
+	filter:blur(8px);
+	mix-blend-mode:screen;
+}
+.special-spotlight-left{left:8%;--spotlight-color:rgba(255,220,120,.34)}
+.special-spotlight-mid-left{left:34%;--spotlight-color:rgba(106,211,255,.3)}
+.special-spotlight-mid-right{left:60%;--spotlight-color:rgba(203,137,255,.28)}
+.special-spotlight-right{left:83%;--spotlight-color:rgba(255,126,174,.3)}
+body.special-menu-night.menu-visible .special-spotlight-left{animation:spotlightShoot .45s 2s cubic-bezier(.16,1,.3,1) both,spotlightPulse 10s 2.45s ease-in-out infinite,spotlightSwayLeft 5s 2s ease-in-out infinite alternate}
+body.special-menu-night.menu-visible .special-spotlight-mid-left{animation:spotlightShoot .45s 2.15s cubic-bezier(.16,1,.3,1) both,spotlightPulse 11s 3.3s ease-in-out infinite,spotlightSwayRight 6s 2.15s ease-in-out infinite alternate}
+body.special-menu-night.menu-visible .special-spotlight-mid-right{animation:spotlightShoot .45s 2.3s cubic-bezier(.16,1,.3,1) both,spotlightPulse 9s 4.1s ease-in-out infinite,spotlightSwayWideLeft 5.5s 2.3s ease-in-out infinite alternate}
+body.special-menu-night.menu-visible .special-spotlight-right{animation:spotlightShoot .45s 2.45s cubic-bezier(.16,1,.3,1) both,spotlightPulse 12s 5.2s ease-in-out infinite,spotlightSwayWideRight 6.5s 2.45s ease-in-out infinite alternate}
+@keyframes spotlightShoot{
+	from{clip-path:polygon(50% 0,50% 0,50% 0,50% 0)}
+	to{clip-path:polygon(47% 0,53% 0,100% 100%,0 100%)}
+}
+@keyframes spotlightPulse{0%,100%{opacity:0}30%,70%{opacity:.85}}
+@keyframes spotlightSwayLeft{from{transform:rotate(-17deg)}to{transform:rotate(15deg)}}
+@keyframes spotlightSwayRight{from{transform:rotate(16deg)}to{transform:rotate(-16deg)}}
+@keyframes spotlightSwayWideLeft{from{transform:rotate(-9deg)}to{transform:rotate(22deg)}}
+@keyframes spotlightSwayWideRight{from{transform:rotate(23deg)}to{transform:rotate(-11deg)}}
+body.special-menu-night.menu-visible h1 .stem-letter:nth-child(-n+4){
+	opacity:1;
+	transform:none;
+	animation:specialQuizRainbow 6s linear infinite;
+}
+@keyframes specialQuizRainbow{
+	0%,100%{color:#ff4058}
+	17%{color:#ffad3f}
+	33%{color:#ffe45c}
+	50%{color:#53dd8a}
+	67%{color:#54b8ff}
+	83%{color:#c174ff}
+}
+@media(prefers-reduced-motion:reduce){
+	body.special-menu-night .sky::before{animation:none}
+	body.special-menu-night.menu-visible .special-spotlights{opacity:1;transition:visibility 0s linear 2s}
+	body.special-menu-night.menu-visible .special-spotlight{
+		opacity:.85;
+		clip-path:polygon(47% 0,53% 0,100% 100%,0 100%);
+		animation:none;
+	}
+	body.special-menu-night.menu-visible h1 .stem-letter:nth-child(-n+4){animation:none}
+}
 
 .ground{position:fixed;left:0;right:0;bottom:0;height:17vh;min-height:95px;background:#77787e;z-index:1;opacity:0;transform:translateY(30px);animation:groundIntro 1.0s .55s cubic-bezier(.17,.84,.25,1) forwards}
 @keyframes groundIntro{to{opacity:1;transform:translateY(0)}}
@@ -96,7 +182,7 @@ body.library-leaving{transform-origin:center center;animation:libraryPageExit .2
 .mixed-study-launch{position:absolute;top:10px;left:50%;z-index:2;display:flex;align-items:center;gap:10px;min-height:38px;padding:6px 18px;border:1px solid rgba(255,255,255,.7);border-radius:999px;background:#102a52;color:#fff;font:900 15px/1 Arial,sans-serif;cursor:pointer;transform:translateX(-50%);box-shadow:0 3px 12px rgba(0,0,0,.2)}
 .mixed-study-launch small{padding-left:10px;border-left:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:600;opacity:.8}
 .mixed-study-launch:hover,.mixed-study-launch:focus-visible{background:#1c4479;outline:2px solid #f5c542;outline-offset:3px}
-html.blanc-mode .menu-area{background:url("../secret/blanc.png") center/100% 100% no-repeat!important}
+html.secret-mode .menu-area{background:url("../secret/secret.png") center/100% 100% no-repeat!important}
 .patchnotes-button{position:absolute;left:50%;bottom:8px;z-index:4;border:0;border-radius:4px;background:rgba(0,0,0,.25);color:rgba(255,255,255,.82);padding:6px 12px;font:700 10px/1 Arial,sans-serif;letter-spacing:1.2px;cursor:pointer;transform:translateX(-50%);transition:background .18s ease,color .18s ease,transform .18s ease}
 .patchnotes-button:hover,.patchnotes-button:focus-visible{background:rgba(0,0,0,.45);color:#fff;transform:translateX(-50%) translateY(-2px);outline:2px solid rgba(245,179,53,.9);outline-offset:2px}
 .download-app-button{position:fixed;left:16px;bottom:14px;z-index:30;display:none;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:#102a52;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28);cursor:pointer;transition:background .18s ease}
@@ -164,9 +250,9 @@ body.welcome-out .welcome{animation:welcomeDim .78s ease forwards}
 @keyframes loadingFade{to{opacity:1;transform:translateY(0)}}
 .loading-status.complete{animation:loadingComplete .45s ease forwards}
 @keyframes loadingComplete{0%{opacity:.35;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
-body.blanc-loading .welcome{background:url("../secret/blanc.png") center/100% 100% no-repeat}
-body.blanc-loading .welcome-line,
-body.blanc-loading .loading-status{display:none}
+body.secret-loading .welcome{background:url("../secret/secret.png") center/100% 100% no-repeat}
+body.secret-loading .welcome-line,
+body.secret-loading .loading-status{display:none}
 body.compgfx-loading .welcome{
   background:
     linear-gradient(90deg,#000 0,var(--gfx-loading-bars),transparent var(--gfx-loading-bars),transparent calc(100% - var(--gfx-loading-bars)),#000 calc(100% - var(--gfx-loading-bars)),#000 100%),
@@ -492,9 +578,9 @@ body.skip-title-intro h1.animating .stem-letter{animation:stemIdle 1.25s cubic-b
 body.menu-return-win .menu-area{opacity:1;transition:transform .65s cubic-bezier(.2,.85,.3,1)}
 body.menu-return-setup .building{opacity:1;transform:translateY(0);animation:none}
 body.menu-return-setup .ground{opacity:1;transform:translateY(0);animation:none}
-html.blanc-mode h1 .stem-letter{color:#fff!important}
-html.blanc-mode .sky,
-html.blanc-mode .ground,
-html.blanc-mode .pillar{background:url("../secret/blanc.png") center/100% 100% no-repeat!important}
-html.blanc-mode .cloud-track{display:none}
+html.secret-mode h1 .stem-letter{color:#fff!important}
+html.secret-mode .sky,
+html.secret-mode .ground,
+html.secret-mode .pillar{background:url("../secret/secret.png") center/100% 100% no-repeat!important}
+html.secret-mode .cloud-track{display:none}
 body.menu-return-setup .menu-area{opacity:1;transform:none;transition:none}

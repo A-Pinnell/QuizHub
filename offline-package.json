@@ -2,7 +2,7 @@
   "files": [
     "index.html",
     "binary-quiz.html",
-    "blanc-message.html",
+    "secret-message.html",
     "hexadecimal-quiz.html",
     "party-join.html",
     "party-lobby.html",
@@ -10,7 +10,6 @@
     "perfect-win.html",
     "quiz.html",
     "win.html",
-    "binary-quiz.css",
     "assets",
     "css",
     "fonts",

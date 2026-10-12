@@ -37,6 +37,8 @@ function publicRoom(room) {
     code: room.code,
     capacity: room.capacity,
     stage: room.stage,
+    hostDisplay: room.hostDisplay,
+    hostDisplayPlayerId: room.hostDisplayPlayerId,
     partyOptions: room.partyOptions,
     category: room.category,
     quiz: room.quiz,
@@ -145,6 +147,7 @@ function removePlayer(room, player) {
     newHost.host = true;
     broadcast(room, { type: "host-changed", hostId: newHost.id });
   }
+  if (room.hostDisplayPlayerId === player.id) room.hostDisplayPlayerId = null;
   broadcastRoom(room);
 }
 
@@ -177,9 +180,11 @@ function handleMessage(socket, rawMessage) {
     try {
       const code = generateRoomCode();
       const player = { ...profile, id: randomUUID(), ready: true, host: true, score: 0, socket, expireTimer: null };
+      const hostDisplay = message.hostDisplay === true;
       const room = {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
         question: null, answersLocked: [], reveal: null, quizConfig: null, mixedSources: null,
+        hostDisplay: false, hostDisplayPlayerId: null,
         partyOptions: { showPlayerScores: true, showLockedAnswers: true, earlyPointBonus: true }
       };
       room.expiration = setTimeout(() => {
@@ -208,7 +213,12 @@ function handleMessage(socket, rawMessage) {
     }
     send(socket, {
       type: "room-found",
-      room: { code: room.code, capacity: room.capacity, players: room.players.size }
+      room: {
+        code: room.code,
+        capacity: room.capacity,
+        players: room.players.size,
+        profiles: [...room.players.values()].map(({ name, color }) => ({ name, color }))
+      }
     });
     return;
   }
@@ -247,6 +257,13 @@ function handleMessage(socket, rawMessage) {
       sendError(socket, error.message);
       return;
     }
+    const normalizedName=profile.name.toLocaleLowerCase();
+    if([...room.players.values()].some(
+      (existingPlayer)=>existingPlayer.name.toLocaleLowerCase()===normalizedName
+    )){
+      sendError(socket,"That player name is already in the room. Choose a different name.");
+      return;
+    }
     const player = { ...profile, id: randomUUID(), ready: true, host: false, score: 0, socket, expireTimer: null };
     room.players.set(player.id, player);
     socket.roomCode = code;
@@ -270,7 +287,17 @@ function handleMessage(socket, rawMessage) {
     case "launch": {
       if (!player.host) return sendError(socket, "Only the host can choose the quiz.");
       if (!allReady(room)) return sendError(socket, "Wait until every player is ready.");
+      const hostDisplayPlayer = room.hostDisplayPlayerId
+        ? findPlayer(room, room.hostDisplayPlayerId)
+        : null;
+      if (room.hostDisplay && (!hostDisplayPlayer ||
+          hostDisplayPlayer.socket?.readyState !== WebSocket.OPEN)) {
+        return sendError(socket, "Select a connected player account in Party Options before starting.");
+      }
       if (room.stage !== "lobby") return sendError(socket, "The quiz has already been selected.");
+      if (room.hostDisplay && room.players.size < 3) {
+        return sendError(socket, "Host Display needs at least one other player in addition to the host and selected answering account.");
+      }
       const category = typeof message.category === "string" ? message.category : "";
       const quiz = typeof message.quiz === "string" ? message.quiz : "";
       const validQuizzes = {
@@ -313,6 +340,24 @@ function handleMessage(socket, rawMessage) {
         showLockedAnswers: options.showLockedAnswers,
         earlyPointBonus: options.earlyPointBonus
       };
+      broadcastRoom(room);
+      break;
+    }
+    case "host-display-options": {
+      if (!player.host || room.stage !== "lobby") {
+        return sendError(socket, "Only the host can change Host Display in the lobby.");
+      }
+      if (typeof message.enabled !== "boolean" ||
+          !(message.playerId === "" || typeof message.playerId === "string")) {
+        return sendError(socket, "Invalid Host Display settings.");
+      }
+      const selectedPlayer = message.playerId ? findPlayer(room, message.playerId) : null;
+      if (message.enabled && message.playerId &&
+          (!selectedPlayer || selectedPlayer.host || selectedPlayer.id === player.id)) {
+        return sendError(socket, "Choose an account belonging to another player in the room.");
+      }
+      room.hostDisplay = message.enabled;
+      room.hostDisplayPlayerId = message.enabled ? selectedPlayer?.id || null : null;
       broadcastRoom(room);
       break;
     }
@@ -439,6 +484,10 @@ function handleMessage(socket, rawMessage) {
       room.question = { questionNumber, questionIndex, answerOrder, correctIndex };
       room.answersLocked = [];
       room.answers = new Map();
+      if (room.hostDisplay) {
+        room.answers.set(player.id, null);
+        room.answersLocked.push(player.id);
+      }
       room.firstCorrectPlayerId = null;
       room.reveal = null;
       broadcast(room, {
@@ -451,6 +500,9 @@ function handleMessage(socket, rawMessage) {
     }
     case "answer": {
       if (room.stage !== "quiz" || !room.question) return sendError(socket, "There is no open question.");
+      if (room.hostDisplay && player.host) {
+        return sendError(socket, "The host is displaying the quiz and cannot submit an answer.");
+      }
       if (message.questionNumber !== room.questionNumber) return sendError(socket, "That question is no longer open.");
       if (room.answers.has(player.id)) return sendError(socket, "Your answer is already locked in.");
       if (message.answerIndex !== null &&
@@ -486,7 +538,10 @@ function handleMessage(socket, rawMessage) {
       break;
     }
     case "next-question": {
-      if (!player.host || !room.reveal) return sendError(socket, "Wait for all answers to be revealed.");
+      const isDisplayPlayer=room.hostDisplay && player.id===room.hostDisplayPlayerId;
+      if ((!player.host && !isDisplayPlayer) || !room.reveal) {
+        return sendError(socket, "Only the host or selected Host Display player can advance after answers are revealed.");
+      }
       if (room.questionNumber + 1 >= room.quizConfig.questionSequence.length) {
         room.stage = "results";
         broadcast(room, { type: "game-over", players: publicRoom(room).players });
@@ -498,7 +553,10 @@ function handleMessage(socket, rawMessage) {
       break;
     }
     case "end-game": {
-      if (!player.host || room.stage !== "quiz") return sendError(socket, "Only the host can end the quiz.");
+      const isDisplayPlayer=room.hostDisplay && player.id===room.hostDisplayPlayerId;
+      if ((!player.host && !isDisplayPlayer) || room.stage !== "quiz") {
+        return sendError(socket, "Only the host or selected Host Display player can end the quiz.");
+      }
       room.stage = "results";
       broadcast(room, {
         type: "game-over",

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" type="image/png" href="assets/icon.png">
 <title>QuizHub Party Lobby</title>
 <link rel="stylesheet" href="css/party-lobby.css">
 <link rel="stylesheet" href="css/preferences.css">
@@ -43,6 +44,17 @@
         <input type="checkbox" id="partyEarlyBonus" checked>
         <span>Early point bonus: first correct answer earns 3 points</span>
       </label>
+      <label class="party-option">
+        <input type="checkbox" id="partyHostDisplay">
+        <span>Host Display: show questions and answers on the host screen</span>
+      </label>
+      <div class="party-host-display-option" id="partyHostDisplayOption" hidden>
+        <label for="partyHostDisplayPlayer">Account the host will answer as</label>
+        <select id="partyHostDisplayPlayer">
+          <option value="">Choose a player account</option>
+        </select>
+        <small id="partyHostDisplayAccountStatus">Select a player already in the lobby. That player answers from their device.</small>
+      </div>
       <button type="button" class="party-primary" id="partyOptionsClose">DONE</button>
     </div>
   </section>

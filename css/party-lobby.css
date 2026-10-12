@@ -31,6 +31,11 @@ h2{margin:26px 0 14px;font-size:1.35rem}
 .party-error{min-height:1.2em;color:#ffb3ad}
 .party-host-controls{margin-top:18px;padding-top:8px;border-top:1px solid rgba(255,255,255,.15)}
 .party-host-controls[hidden]{display:none}
+.party-host-display-option{display:grid;gap:7px;margin:0 0 14px;padding:0 12px 12px 38px}
+.party-host-display-option[hidden]{display:none}
+.party-host-display-option label{font-weight:800}
+.party-host-display-option select{width:100%;min-height:42px;padding:8px 10px;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:#142544;color:#fff;font:inherit}
+.party-host-display-option small{color:#cbd4e9;line-height:1.4}
 .party-host-controls label,.party-join-shell form>label{display:block;margin:12px 0 6px;font-weight:800}
 .party-host-controls select,.party-join-shell input:not([type=color]):not([type=file]){width:100%;min-height:44px;padding:8px 12px;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:#142544;color:#fff;font:inherit}
 .party-mixed-study{min-width:0;margin:16px 0 0;padding:16px;border:1px solid rgba(140,231,173,.3);border-radius:14px;background:linear-gradient(145deg,rgba(20,34,61,.9),rgba(10,17,33,.9));box-shadow:inset 0 1px rgba(255,255,255,.04)}

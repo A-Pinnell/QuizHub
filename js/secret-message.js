@@ -7,13 +7,13 @@
   try {
     target = new URL(returnTo, window.location.href);
   } catch (error) {
-    console.error("Invalid Blanc Mode return URL:", error);
+    console.error("Invalid Secret Mode return URL:", error);
     document.querySelector(".message").textContent = "Unable to continue to the quiz results.";
     return;
   }
 
   if (target.origin !== window.location.origin || !["win.html", "perfect-win.html", "party-win.html"].includes(target.pathname.split("/").pop())) {
-    console.error("Rejected invalid Blanc Mode return URL:", target.href);
+    console.error("Rejected invalid Secret Mode return URL:", target.href);
     document.querySelector(".message").textContent = "Unable to continue to the quiz results.";
     return;
   }
@@ -45,10 +45,10 @@
       source.connect(gain);
       gain.connect(context.destination);
       source.addEventListener("ended", () => {
-        context.close().catch(error => console.warn("Could not close Blanc Mode static audio:", error));
+        context.close().catch(error => console.warn("Could not close Secret Mode static audio:", error));
       }, { once: true });
       source.start();
-      context.resume().catch(error => console.warn("Could not play Blanc Mode static:", error));
+      context.resume().catch(error => console.warn("Could not play Secret Mode static:", error));
     }
   }
 
