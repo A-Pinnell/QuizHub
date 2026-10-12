@@ -8,6 +8,11 @@
   src: url("../fonts/TradeGothic-Bold.otf") format('opentype');
 }
 
+@font-face {
+  font-family: 'QuizHub DS';
+  src: url("../fonts/DS.otf") format('opentype');
+}
+
 *{box-sizing:border-box}
 :root{--app-viewport-height:100dvh}
 html,body{width:100%;height:var(--app-viewport-height);min-height:var(--app-viewport-height);margin:0;overflow:hidden}
@@ -160,6 +165,23 @@ h1 .stem-letter{font-weight:700;font-style:italic;text-shadow:3px 3px 0 #000,-1p
 h1 .stem-letter:nth-child(-n+4){color:#f5c542}
 h1 .stem-letter:nth-child(9){color:#fff}
 h1 .stem-letter:nth-child(6),h1 .stem-letter:nth-child(7),h1 .stem-letter:nth-child(8){color:#fff}
+.ds-title{position:relative;display:inline-block;margin-left:.15em;color:#fff;font-family:'QuizHub DS';font-style:normal;font-weight:400;opacity:0;text-shadow:3px 3px 0 #000,-1px -1px 0 #000}
+.ds-title[role="button"]{cursor:pointer}
+.ds-title[role="button"]:focus-visible{outline:2px dashed currentColor;outline-offset:4px}
+.ds-title::before{position:absolute;inset:0;content:"DS";color:#aaa;opacity:0;pointer-events:none;text-shadow:0 0 4px rgba(210,210,210,.7)}
+html.clamshell-branding body.intro-complete h1 .ds-title{animation:dsTitleFade .6s ease 1s both}
+html.clamshell-branding body.intro-complete h1 .ds-title::before{animation:dsTitleGhost 1.8s ease-out 1.6s both}
+@keyframes dsTitleFade{from{opacity:0}to{opacity:1}}
+@keyframes dsTitleGhost{
+	0%{opacity:0;transform:translate(0,0)}
+	18%{opacity:.78;transform:translate(8px,-5px)}
+	52%{opacity:.58;transform:translate(-12px,6px)}
+	100%{opacity:0;transform:translate(17px,-3px)}
+}
+@media(prefers-reduced-motion:reduce){
+	html.clamshell-branding body.intro-complete h1 .ds-title{animation:dsTitleFade .6s ease 1s both}
+	html.clamshell-branding body.intro-complete h1 .ds-title::before{animation:none;opacity:0}
+}
 h1.animating .stem-letter{animation:stemIdle 1.25s cubic-bezier(.2,.85,.3,1) both;}
 h1 .stem-letter:nth-child(1){animation-delay:0s}
 h1 .stem-letter:nth-child(2){animation-delay:.11s}

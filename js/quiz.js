@@ -18,6 +18,16 @@ const soundFiles={
 };
 
 const params=new URLSearchParams(location.search);
+const originalDocumentTitle=document.title;
+const clamshellViewport=window.matchMedia("(max-width: 760px)");
+function syncClamshellDocumentTitle(){
+  document.title=window.quizHubPreferences.clamshellMode && clamshellViewport.matches
+    ? "Quiz Hub DS"
+    : originalDocumentTitle;
+}
+window.addEventListener("quizhub:preferenceschange",syncClamshellDocumentTitle);
+clamshellViewport.addEventListener("change",syncClamshellDocumentTitle);
+syncClamshellDocumentTitle();
 const partyHost=params.get("partyHost")==="true";
 let hostDisplayEnabled=params.get("hostDisplay")==="true";
 const partyHostDisplay=hostDisplayEnabled && partyHost;
@@ -399,7 +409,9 @@ if (isSoftEngi) {
   const softengiComposer = document.querySelector('.softengi-composer');
   const questionHeading = questionTitle.closest('.quiz-heading');
   if (softengiComposer && questionHeading) {
-    softengiComposer.parentElement.insertBefore(questionHeading, softengiComposer);
+    if (!window.quizHubPreferences.clamshellMode || !clamshellViewport.matches) {
+      softengiComposer.parentElement.insertBefore(questionHeading, softengiComposer);
+    }
     softengiComposer.after(feedback);
   }
 }

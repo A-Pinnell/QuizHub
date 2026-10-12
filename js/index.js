@@ -109,6 +109,7 @@ function setSoundsMuted(muted) {
 	soundsMuted = Boolean(muted);
 	window.quizHubPreferences.setSoundMuted(soundsMuted);
 	updateSoundToggle();
+	if (!soundsMuted) tryPlayDSTitleSound();
 }
 window.addEventListener("quizhub:preferenceschange", (event) => {
 	soundsMuted = event.detail.soundMuted;
@@ -1382,6 +1383,7 @@ const disableLoadingSetting = document.getElementById("disableLoadingSetting");
 const highContrastSetting = document.getElementById("highContrastSetting");
 const secretModeSetting = document.getElementById("secretModeSetting");
 const secretModeSettingRow = document.getElementById("secretModeSettingRow");
+const clamshellModeSetting = document.getElementById("clamshellModeSetting");
 const universityName = document.getElementById("universityName");
 const resetSettingsButton = document.getElementById("resetSettings");
 const settingsError = document.getElementById("settingsError");
@@ -1475,6 +1477,7 @@ function syncSettings() {
 		window.quizHubPreferences.disableLoadingAnimation;
 	highContrastSetting.checked = window.quizHubPreferences.highContrast;
 	secretModeSetting.checked = window.quizHubPreferences.secretMode;
+	clamshellModeSetting.checked = window.quizHubPreferences.clamshellMode;
 	secretModeSettingRow.hidden =
 		!window.quizHubPreferences.secretMode && !secretModeUnlocked;
 }
@@ -1589,14 +1592,22 @@ secretModeSetting.addEventListener("change", () => {
 		playSound("started");
 	}
 	if (quizPreviewPlaying) startQuizMusicPreview();
-	updateSecretTitle(secretModeSetting.checked);
+	updateBranding();
 	if (!quizPreviewPlaying) startMenuMusic(true);
+});
+clamshellModeSetting.addEventListener("change", () => {
+	window.quizHubPreferences.setClamshellMode(clamshellModeSetting.checked);
+	if (clamshellModeSetting.checked) {
+		window.location.reload();
+		return;
+	}
+	updateBranding();
 });
 resetSettingsButton.addEventListener("click", () => {
 	window.quizHubPreferences.reset();
 	setSoundsMuted(false);
 	setMusicMuted(false);
-	updateSecretTitle(false);
+	updateBranding();
 	secretModeUnlocked = false;
 	secretModeSettingRow.hidden = true;
 	if (quizPreviewPlaying) startQuizMusicPreview();
@@ -1965,23 +1976,112 @@ document.addEventListener("pointerdown", () => {
 });
 
 const stemTitle = document.querySelector("h1");
-const stemLetters = [...stemTitle.querySelectorAll(".stem-letter")];
-const originalStemText = stemLetters.map((letter) => letter.textContent);
-function updateSecretTitle(enabled) {
-	const secretTitle = ["H", "u", "b", "?"];
-	universityName.textContent = enabled
+const clamshellViewport = window.matchMedia("(max-width: 760px)");
+let currentBrandingKey = null;
+let dsTitleClickCount = 0;
+let dsTitleClickTimeout = null;
+const dsTitleSound = new Audio(resolveAssetUrl("sfx/DS.wav"));
+dsTitleSound.preload = "auto";
+let dsTitleSoundPending = false;
+function tryPlayDSTitleSound() {
+	if (!dsTitleSoundPending || soundsMuted) return;
+	dsTitleSound.currentTime = 0;
+	dsTitleSound.play().then(() => {
+		dsTitleSoundPending = false;
+	}).catch((error) => {
+		if (error.name !== "NotAllowedError") {
+			dsTitleSoundPending = false;
+			console.warn("Could not play the DS title sound:", error);
+		}
+	});
+}
+function handleDSTitleClick(dsTitle) {
+	if (window.quizHubPreferences.dsPuristMode) {
+		dsTitleClickCount = 0;
+		clearTimeout(dsTitleClickTimeout);
+		window.quizHubPreferences.setDSPuristMode(false);
+		dsTitle.setAttribute("aria-pressed", "false");
+		dsTitle.setAttribute(
+			"aria-label",
+			"Enable DS Purist Mode by clicking three times",
+		);
+		dsTitle.title = "Click three times to enable DS Purist Mode";
+		return;
+	}
+	dsTitleClickCount += 1;
+	clearTimeout(dsTitleClickTimeout);
+	dsTitleClickTimeout = setTimeout(() => {
+		dsTitleClickCount = 0;
+	}, 1500);
+	if (dsTitleClickCount < 3) return;
+	dsTitleClickCount = 0;
+	clearTimeout(dsTitleClickTimeout);
+	window.quizHubPreferences.setDSPuristMode(true);
+	dsTitle.setAttribute("aria-pressed", "true");
+	dsTitle.setAttribute("aria-label", "DS Purist Mode enabled");
+	dsTitle.title = "Click once to disable DS Purist Mode";
+}
+function updateBranding() {
+	const secretMode = window.quizHubPreferences.secretMode;
+	const clamshellMode =
+		window.quizHubPreferences.clamshellMode && clamshellViewport.matches;
+	const brandingKey = `${secretMode}:${clamshellMode}`;
+	if (brandingKey === currentBrandingKey) return;
+	currentBrandingKey = brandingKey;
+	const title = secretMode ? "Hub?" : clamshellMode ? "Quiz Hub " : "QUIZ Hub!";
+	const titleLetters = [...title].map((character) => {
+		const letter = document.createElement("span");
+		letter.className = "stem-letter";
+		letter.textContent = character;
+		return letter;
+	});
+	if (clamshellMode) {
+		const dsTitle = document.createElement("span");
+		dsTitle.className = "ds-title";
+		dsTitle.textContent = "DS";
+		dsTitle.setAttribute("role", "button");
+		dsTitle.setAttribute("tabindex", "0");
+		dsTitle.title = window.quizHubPreferences.dsPuristMode
+			? "Click once to disable DS Purist Mode"
+			: "Click three times to enable DS Purist Mode";
+		dsTitle.setAttribute("aria-pressed", String(window.quizHubPreferences.dsPuristMode));
+		dsTitle.setAttribute(
+			"aria-label",
+			window.quizHubPreferences.dsPuristMode
+				? "DS Purist Mode enabled"
+				: "Enable DS Purist Mode by clicking three times",
+		);
+		dsTitle.addEventListener("click", () => handleDSTitleClick(dsTitle));
+		dsTitle.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter" && event.key !== " ") return;
+			event.preventDefault();
+			handleDSTitleClick(dsTitle);
+		});
+		dsTitle.addEventListener("animationstart", (event) => {
+			if (event.animationName === "dsTitleFade") {
+				dsTitleSoundPending = true;
+				tryPlayDSTitleSound();
+			}
+		});
+		titleLetters.push(dsTitle);
+	}
+	stemTitle.replaceChildren(...titleLetters);
+	universityName.textContent = secretMode
 		? "???"
 		: "Lakehead University - Barrie STEM Hub";
-	stemLetters.forEach((letter, index) => {
-		letter.textContent = enabled
-			? secretTitle[index] || ""
-			: originalStemText[index];
-		letter.hidden = enabled && index >= secretTitle.length;
-	});
-	stemTitle.setAttribute("aria-label", enabled ? "Hub?" : "Lakehead STEM Hub");
-	document.title = enabled ? "Hub?" : "Quiz Hub";
+	stemTitle.setAttribute(
+		"aria-label",
+		secretMode ? "Hub?" : clamshellMode ? "Quiz Hub DS" : "Lakehead STEM Hub",
+	);
+	document.documentElement.classList.toggle(
+		"clamshell-branding",
+		clamshellMode && !secretMode,
+	);
+	document.title = secretMode ? "Hub?" : clamshellMode ? "Quiz Hub DS" : "Quiz Hub";
 }
-updateSecretTitle(window.quizHubPreferences.secretMode);
+window.addEventListener("quizhub:preferenceschange", updateBranding);
+clamshellViewport.addEventListener("change", updateBranding);
+updateBranding();
 const titleEndSound = new Audio(soundFiles.titleEnd);
 let titleEndPending = false;
 function tryPlayTitleEnd() {
@@ -1998,19 +2098,20 @@ function tryPlayTitleEnd() {
 		})
 		.catch(() => {});
 }
-stemLetters.forEach((letter) =>
-	letter.addEventListener("animationstart", (event) => {
-		const lastVisibleLetter = stemLetters.filter((item) => !item.hidden).at(-1);
-		if (
-			event.animationName === "titleEntrance" &&
-			event.currentTarget === lastVisibleLetter
-		) {
-			titleEndPending = true;
-			tryPlayTitleEnd();
-		}
-	}),
-);
+stemTitle.addEventListener("animationstart", (event) => {
+	const lastVisibleLetter = [
+		...stemTitle.querySelectorAll(".stem-letter"),
+	].at(-1);
+	if (
+		event.animationName === "titleEntrance" &&
+		event.target === lastVisibleLetter
+	) {
+		titleEndPending = true;
+		tryPlayTitleEnd();
+	}
+});
 document.addEventListener("pointerdown", tryPlayTitleEnd);
+document.addEventListener("pointerdown", tryPlayDSTitleSound);
 function pulseStem() {
 	if (leaving) return;
 	stemTitle.classList.remove("animating");

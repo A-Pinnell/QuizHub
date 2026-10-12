@@ -42,6 +42,8 @@
       ? savedMotionMode
       : storage.getItem("quizHubReduceMotion") === "true" ? "reduced" : "default",
     answerSide: storage.getItem("quizHubAnswerSide") === "left" ? "left" : "right",
+    clamshellMode: storage.getItem("quizHubClamshellMode") === "true",
+    dsPuristMode: storage.getItem("quizHubDSPuristMode") === "true",
     highContrast: storage.getItem("quizHubHighContrast") === "true",
     disableLoadingAnimation: storage.getItem("quizHubDisableLoadingAnimation") === "true",
     secretMode,
@@ -60,11 +62,106 @@
     fullscreen: storage.getItem("quizHubFullscreen") === "true"
   };
 
+  let puristAudioContext = null;
+  const puristRoutedMedia = new Map();
+
+  function getPuristAudioContext(){
+    if(puristAudioContext) return puristAudioContext;
+    const AudioContextType = window.AudioContext || window.webkitAudioContext;
+    if(!AudioContextType){
+      console.warn("DS Purist Mode audio processing is unavailable in this browser.");
+      return null;
+    }
+    try{
+      puristAudioContext = new AudioContextType({ latencyHint: "interactive" });
+      return puristAudioContext;
+    }catch(error){
+      console.warn("Could not initialize DS Purist Mode audio processing:", error);
+      puristAudioContext = null;
+      return null;
+    }
+  }
+
+  function updatePuristAudioRoutes(){
+    const now = puristAudioContext?.currentTime ?? 0;
+    puristRoutedMedia.forEach(({ dry, loFi })=>{
+      const puristEnabled = preferences.dsPuristMode;
+      dry.gain.setTargetAtTime(puristEnabled ? 0 : 1, now, 0.015);
+      loFi.gain.setTargetAtTime(puristEnabled ? 1 : 0, now, 0.015);
+    });
+  }
+
+  function resumePuristAudioContext(context){
+    if(context?.state !== "suspended") return;
+    context.resume().catch((error)=>{
+      console.warn("Could not resume DS Purist Mode audio processing:", error);
+    });
+  }
+
+  function routePuristMedia(media){
+    if(puristRoutedMedia.has(media)){
+      resumePuristAudioContext(puristAudioContext);
+      return;
+    }
+    const mediaUrl = media.currentSrc || media.src;
+    if(!mediaUrl) return;
+    let sourceUrl;
+    try{
+      sourceUrl = new URL(mediaUrl, window.location.href);
+    }catch(error){
+      console.warn("Could not inspect media source for DS Purist Mode:", error);
+      return;
+    }
+    if(sourceUrl.origin !== window.location.origin) return;
+    const context = getPuristAudioContext();
+    if(!context) return;
+    try{
+      const source = context.createMediaElementSource(media);
+      const dry = context.createGain();
+      const lowPass = context.createBiquadFilter();
+      const quantizer = context.createWaveShaper();
+      const loFi = context.createGain();
+      const curve = new Float32Array(257);
+      for(let index = 0; index < curve.length; index++){
+        const sample = index * 2 / (curve.length - 1) - 1;
+        curve[index] = Math.round(sample * 15) / 15;
+      }
+      lowPass.type = "lowpass";
+      lowPass.frequency.value = 3200;
+      lowPass.Q.value = 0.7;
+      quantizer.curve = curve;
+      quantizer.oversample = "none";
+      source.connect(dry);
+      dry.connect(context.destination);
+      source.connect(lowPass);
+      lowPass.connect(quantizer);
+      quantizer.connect(loFi);
+      loFi.connect(context.destination);
+      puristRoutedMedia.set(media, { dry, loFi });
+      media.addEventListener("ended", ()=>{
+        puristRoutedMedia.delete(media);
+      }, { once: true });
+      updatePuristAudioRoutes();
+    }catch(error){
+      console.warn("Could not route media through DS Purist Mode:", error);
+    }
+    resumePuristAudioContext(context);
+  }
+
+  const nativeMediaPlay = window.HTMLMediaElement.prototype.play;
+  window.HTMLMediaElement.prototype.play = function(...args){
+    if(root.classList.contains("ds-purist-mode")) routePuristMedia(this);
+    return nativeMediaPlay.apply(this, args);
+  };
+
   function apply(){
     root.classList.toggle("motion-minimal", preferences.motionMode === "minimal");
     root.classList.toggle("reduce-motion", preferences.motionMode === "reduced");
     root.classList.toggle("high-contrast", preferences.highContrast);
     root.classList.toggle("secret-mode", preferences.secretMode);
+    root.classList.toggle("clamshell-mode", preferences.clamshellMode);
+    root.classList.toggle("ds-purist-mode", preferences.dsPuristMode);
+    updatePuristAudioRoutes();
     root.dataset.quizAnswerSide = preferences.answerSide;
     root.dataset.quizTextSize = preferences.textSize;
     root.style.setProperty("--quiz-text-scale", String(textSizeScales[preferences.textSize]));
@@ -78,6 +175,14 @@
     }else if(name === "answerSide" && (value === "left" || value === "right")){
       preferences.answerSide = value;
       storage.setItem("quizHubAnswerSide", preferences.answerSide);
+    }else if(name === "clamshellMode" && typeof value === "boolean"){
+      preferences.clamshellMode = value;
+      storage.setItem("quizHubClamshellMode", String(value));
+    }else if(name === "dsPuristMode" && typeof value === "boolean"){
+      preferences.dsPuristMode = value;
+      storage.setItem("quizHubDSPuristMode", String(value));
+      resumePuristAudioContext(puristAudioContext);
+      updatePuristAudioRoutes();
     }else if(name === "highContrast" || name === "disableLoadingAnimation" ||
       name === "secretMode" ||
       name === "soundMuted" || name === "musicMuted"){
@@ -131,6 +236,8 @@
       "quizHubMotionMode",
       "quizHubReduceMotion",
       "quizHubAnswerSide",
+      "quizHubClamshellMode",
+      "quizHubDSPuristMode",
       "quizHubHighContrast",
       "quizHubDisableLoadingAnimation",
       "quizHubSecretMode",
@@ -144,6 +251,8 @@
     ].forEach((key)=>storage.removeItem(key));
     preferences.motionMode = "default";
     preferences.answerSide = "right";
+    preferences.clamshellMode = false;
+    preferences.dsPuristMode = false;
     preferences.highContrast = false;
     preferences.disableLoadingAnimation = false;
     preferences.secretMode = false;
@@ -194,6 +303,8 @@
     get motionMode(){ return preferences.motionMode; },
     get reduceMotion(){ return preferences.motionMode === "reduced"; },
     get answerSide(){ return preferences.answerSide; },
+    get clamshellMode(){ return preferences.clamshellMode; },
+    get dsPuristMode(){ return preferences.dsPuristMode; },
     get highContrast(){ return preferences.highContrast; },
     get disableLoadingAnimation(){ return preferences.disableLoadingAnimation; },
     get secretMode(){ return preferences.secretMode; },
@@ -206,6 +317,8 @@
     get musicMuted(){ return storage.getItem(storageKey("musicMuted")) === "true"; },
     setMotionMode(value){ update("motionMode", value); },
     setAnswerSide(value){ update("answerSide", value); },
+    setClamshellMode(value){ update("clamshellMode", value); },
+    setDSPuristMode(value){ update("dsPuristMode", value); },
     setHighContrast(value){ update("highContrast", value); },
     setDisableLoadingAnimation(value){ update("disableLoadingAnimation", value); },
     setSecretMode(value){ update("secretMode", value); },

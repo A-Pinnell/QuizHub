@@ -68,17 +68,17 @@
 				document.documentElement.classList.add("native-app");
 			}
 		</script>
-		<link rel="stylesheet" href="css/title.css?v=20261012-3" />
+		<link rel="stylesheet" href="css/title.css?v=20261012-10" />
 		<link rel="stylesheet" href="css/preferences.css" />
 		<link rel="stylesheet" href="css/offline-app.css?v=20261012-2" />
-		<link rel="stylesheet" href="css/cover-screen.css" />
+		<link rel="stylesheet" href="css/cover-screen.css?v=20261012-6" />
 		<script src="./js/audio-focus.js" defer></script>
 		<script src="./js/offline-app.js?v=20261012-2" defer></script>
-		<script src="./js/preferences.js?v=20261012-2" defer></script>
+		<script src="./js/preferences.js?v=20261012-5" defer></script>
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
-		<script src="./js/index.js?v=20261012-3" defer></script>
+		<script src="./js/index.js?v=20261012-8" defer></script>
 	</head>
 	<body>
 		<button
@@ -409,6 +409,16 @@ Loading patch notes...</pre
 				</button>
 				<div class="quiz-menu-kicker">PREFERENCES</div>
 				<h2 id="settingsTitle">Options</h2>
+				<label class="setting-choice mobile-only-setting">
+					<input id="clamshellModeSetting" type="checkbox" />
+					<span
+						><strong>Clamshell Mode</strong
+						><small
+							>Split the menu and quizzes into top and bottom screens. The app
+							name becomes Quiz Hub DS.</small
+						></span
+					>
+				</label>
 				<section class="keyboard-guide" aria-labelledby="keyboardGuideTitle">
 					<h3 id="keyboardGuideTitle">Keyboard guide</h3>
 					<dl>

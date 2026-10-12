@@ -1,8 +1,264 @@
+html.ds-purist-mode {
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  text-rendering: optimizeSpeed;
+}
+
+html.ds-purist-mode::after {
+  position: fixed;
+  z-index: 2147483647;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(0, 0, 0, .22) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 3px, rgba(0, 0, 0, .12) 3px 4px);
+  content: "";
+  pointer-events: none;
+}
+
+html.ds-purist-mode :is(img, canvas, video) {
+  image-rendering: pixelated;
+}
+
+html.ds-purist-mode :is(button, input, select, textarea, [role="dialog"], .card, .panel) {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transition-timing-function: steps(4, end) !important;
+}
+
 @media screen and (orientation: portrait) and (max-width: 900px) and (min-height: 640px) {
   * {
     scrollbar-width: none !important;
   }
+}
 
+@media (min-width: 761px) {
+    .mobile-only-setting {
+      display: none !important;
+    }
+}
+
+@media (max-width: 760px) {
+    html.clamshell-branding h1 {
+      font-size: clamp(30px, 8vw, 48px);
+      letter-spacing: -1px;
+    }
+
+    html.clamshell-mode body:has(.building) .building,
+    html.clamshell-mode body:has(.building) .content {
+      height: var(--app-viewport-height, 100dvh);
+      min-height: var(--app-viewport-height);
+    }
+
+    html.clamshell-mode body:has(.building) .ground {
+      display: none;
+    }
+
+    html.clamshell-mode body:has(.building) header {
+      flex: 0 0 50%;
+      height: 50%;
+      padding: max(44px, env(safe-area-inset-top)) 12px 12px;
+    }
+
+    html.clamshell-mode body:has(.building) .title-wrap {
+      transform: none;
+    }
+
+    html.clamshell-mode body:has(.building) .menu-area {
+      flex: 0 0 50%;
+      height: 50%;
+      min-height: 0;
+      padding: 42px 8px max(8px, env(safe-area-inset-bottom));
+    }
+
+    html.clamshell-mode body:has(.building) .menu-viewport {
+      width: calc(100% - 16px);
+      max-height: none;
+    }
+
+    html.clamshell-mode body:has(.building) .menu {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    html.clamshell-mode body:has(.building) .card {
+      min-width: 0;
+      min-height: 0;
+    }
+
+    html.clamshell-mode body .quiz-page {
+      position: relative !important;
+      display: grid !important;
+      width: 100vw;
+      height: var(--app-viewport-height, 100dvh);
+      min-height: 0;
+      grid-template-columns: minmax(0, 1fr) !important;
+      grid-template-rows: 50% 50% !important;
+      overflow: hidden;
+    }
+
+    html.clamshell-mode body .quiz-page .visual {
+      position: relative !important;
+      inset: auto !important;
+      grid-column: 1;
+      grid-row: 1;
+      width: 100%;
+      height: 100% !important;
+      min-height: 0;
+    }
+
+    html.clamshell-mode body .quiz-page .panel {
+      position: relative !important;
+      inset: auto !important;
+      grid-column: 1;
+      grid-row: 2;
+      width: 100%;
+      height: 100% !important;
+      min-height: 0;
+      max-height: none;
+      padding: 10px 12px max(8px, env(safe-area-inset-bottom));
+      overflow: hidden;
+      border: 0;
+      border-top: 6px solid var(--quiz-panel-border);
+    }
+
+    html.clamshell-mode body .quiz-page:has(.quiz-setup:not([hidden])) .panel {
+      padding-top: 12px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    html.clamshell-mode body .quiz-page:has(.quiz-setup:not([hidden])) .quiz-setup {
+      position: relative !important;
+      inset: auto !important;
+      width: 100%;
+      max-width: 560px;
+      max-height: none;
+      margin: 0 auto;
+      padding: 0 0 8px;
+      overflow: visible;
+    }
+
+    html.clamshell-mode body .quiz-page .quiz-heading {
+      top: 8%;
+      left: 5%;
+      width: 90%;
+    }
+
+    html.clamshell-mode body .quiz-page .course-code {
+      font-size: clamp(13px, 4vw, 18px);
+    }
+
+    html.clamshell-mode body .quiz-page .question-title {
+      margin-top: 5px;
+      font-size: clamp(18px, 5vw, 28px);
+      line-height: 1.1;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .panel {
+      padding-top: 38px !important;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .quiz-content {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .softengi-composer {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .answers {
+      flex: 1 1 0 !important;
+      min-height: 0;
+      gap: 6px;
+      margin: 0;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .answer {
+      flex: 1 1 0 !important;
+      min-height: 0;
+      padding: 6px 8px;
+      font-size: clamp(14px, 4vw, 20px);
+      line-height: 1.12;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .controls {
+      flex: 0 0 38px;
+      position: relative !important;
+      top: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      width: 100% !important;
+      height: 38px !important;
+      min-height: 38px !important;
+      gap: 8px !important;
+      margin: 6px 0 0;
+      padding: 0;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      grid-template-rows: 38px !important;
+      transform: none !important;
+      animation: none !important;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .controls .control {
+      height: 100% !important;
+      min-height: 0 !important;
+      padding: 4px 2px !important;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .control {
+      font-size: clamp(13px, 3.8vw, 18px);
+    }
+
+    html.clamshell-mode body:not(.host-display-active) .quiz-hud {
+      top: calc(50% + 5px) !important;
+      right: 12px;
+      bottom: auto !important;
+      left: 12px;
+      z-index: 110;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      max-width: calc(100vw - 24px);
+      font-size: 11px;
+    }
+
+    html.clamshell-mode body .quiz-page:has(#quizSetup[hidden]) .motivation {
+      position: relative;
+      inset: auto;
+      z-index: 3;
+      min-height: 0;
+      margin: 5px 0;
+      font-size: clamp(14px, 3.8vw, 20px);
+    }
+
+    html.clamshell-mode body.softengi-mode .quiz-page .visual {
+      display: block;
+    }
+
+    html.clamshell-mode body.softengi-mode .quiz-page:has(#quizSetup[hidden]) .quiz-heading {
+      position: fixed;
+      top: 6%;
+      left: 5%;
+      width: 90%;
+    }
+
+    html.clamshell-mode body.host-display-active .quiz-heading {
+      position: fixed;
+      top: 6%;
+      left: 5%;
+      width: 90%;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 900px) and (min-height: 640px) {
   *::-webkit-scrollbar {
     display: none;
   }
