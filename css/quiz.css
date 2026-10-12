@@ -842,19 +842,23 @@ body.mixed-study-mode .answer.incorrect{border-color:#ff8989;background:#542a39;
 @media(max-width:760px){
   body .sound-toggle{position:fixed;top:14px;right:64px;bottom:auto;left:auto;z-index:120}
   body .music-toggle{position:fixed;top:14px;right:14px;bottom:auto;left:auto;z-index:120}
-  .quiz-page:has(#quizSetup[hidden]){grid-template-rows:35vh 65vh}
-  .quiz-page:has(#quizSetup[hidden]) .visual{height:35vh}
-  .quiz-page:has(#quizSetup[hidden]) .panel{padding-top:18px}
-  .quiz-page:has(#quizSetup[hidden]) .panel{height:65vh;min-height:0;padding-bottom:12px}
-  .quiz-page:has(#quizSetup[hidden]) .answers{gap:7px;margin-top:-12px}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]){grid-template-rows:32dvh 68dvh}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]) .visual{height:32dvh}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]) .panel{height:68dvh;min-height:0;padding:8px 12px max(8px,env(safe-area-inset-bottom));overflow:hidden}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]) .question-title{font-size:clamp(28px,4.6vw,34px);line-height:1.08}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]) .quiz-content{display:flex;flex:1 1 auto;flex-direction:column;min-height:0}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]) .softengi-composer{display:flex;flex:1 1 auto;flex-direction:column;min-height:0}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]) .answers{flex:1 1 auto;min-height:0;gap:7px;margin:0}
   .quiz-page:has(#quizSetup[hidden]) .answer{min-height:52px;padding:10px 12px;font-size:clamp(calc(16px * var(--quiz-text-scale)),calc(4.2vw * var(--quiz-text-scale)),calc(24px * var(--quiz-text-scale)));line-height:1.12}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]) .answer{flex:0 0 clamp(68px,11.5dvh,88px)}
   body:has(#quizSetup[hidden]) .quiz-page .answer:has(.party-answer-voters:not([hidden])){padding-right:132px}
   body:has(#quizSetup[hidden]) .party-answer-avatar{width:20px;height:20px;font-size:11px}
   body:has(#quizSetup[hidden]) .party-answer-voters{gap:3px}
-  .quiz-page:has(#quizSetup[hidden]) .controls{height:58px;min-height:58px;margin-top:8px}
+  .quiz-page:has(#quizSetup[hidden]) .controls{height:58px;min-height:58px}
+  body:not(.softengi-mode):not(.compgfx-mode) .quiz-page:has(#quizSetup[hidden]) .controls{margin-top:14px}
   .quiz-page:has(#quizSetup[hidden]) .control{font-size:clamp(15px,4.2vw,22px)}
   .quiz-page:has(#quizSetup[hidden]) .motivation{bottom:5.5%;left:7%;right:7%}
-  body:has(#quizSetup[hidden]) .quiz-hud{position:fixed;left:14px;top:calc(31vh + 4px);bottom:auto;z-index:120;max-width:calc(100vw - 150px);font-size:12px;gap:1px}
+  body:not(.softengi-mode):not(.compgfx-mode):has(#quizSetup[hidden]) .quiz-hud{position:fixed;left:14px;top:auto;right:auto;bottom:calc(68dvh + 8px);z-index:120;display:flex;flex-direction:row;align-items:center;gap:8px;max-width:calc(100vw - 28px);font-size:12px}
   html[data-quiz-answer-side="left"] body:not(.softengi-mode):has(#quizSetup[hidden]) .quiz-hud{right:14px;left:auto;align-items:flex-end;text-align:right}
   body.softengi-mode .quiz-hud:has(.question-timer:not([hidden])){top:12px;left:50%;right:auto;align-items:center}
   body:has(#quizSetup[hidden]) .quiz-hud .score-display{font-size:calc(13px * var(--quiz-text-scale))}
