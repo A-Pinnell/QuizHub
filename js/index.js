@@ -405,10 +405,6 @@ function renderQuizOptions(course) {
 		container.appendChild(button);
 	});
 
-	const firstButton = container.querySelector(".quiz-option");
-	if (isMixedStudy) {
-		document.querySelector("#mixedStudySources input")?.focus();
-	} else if (firstButton) firstButton.focus();
 }
 
 function preloadQuiz(category, quiz, mixedSources = null) {
@@ -559,7 +555,13 @@ function openQuizMenu(course) {
 	modal.classList.add("open");
 	modal.setAttribute("aria-hidden", "false");
 	attachSwipeToModal(modal, closeQuizMenu);
-	requestAnimationFrame(() => modal.querySelector(".quiz-option")?.focus());
+	if (course === "MixedStudy") {
+		modal
+			.querySelector("#mixedStudyOptions:not([hidden]) input")
+			?.focus({ preventScroll: true });
+	} else {
+		requestAnimationFrame(() => modal.querySelector(".quiz-option")?.focus());
+	}
 }
 
 function startQuiz(course, quiz, mixedSources = null) {
@@ -1202,6 +1204,7 @@ function attachSwipeToModal(modal, onClose) {
 	let startX = 0;
 	let startTop = 0;
 	let touching = false;
+	let touchingScrollable = false;
 
 	panel.addEventListener(
 		"touchstart",
@@ -1210,6 +1213,20 @@ function attachSwipeToModal(modal, onClose) {
 			startY = touch.clientY;
 			startX = touch.clientX;
 			startTop = panel.scrollTop;
+			touchingScrollable = false;
+			let target =
+				event.target instanceof Element ? event.target : null;
+			while (target && target !== panel) {
+				const style = window.getComputedStyle(target);
+				if (
+					/(auto|scroll)/.test(style.overflowY) &&
+					target.scrollHeight > target.clientHeight
+				) {
+					touchingScrollable = true;
+					break;
+				}
+				target = target.parentElement;
+			}
 			touching = true;
 		},
 		{ passive: true },
@@ -1218,7 +1235,7 @@ function attachSwipeToModal(modal, onClose) {
 	panel.addEventListener(
 		"touchmove",
 		(event) => {
-			if (!touching || panel.scrollTop > 0) return;
+			if (!touching || touchingScrollable || panel.scrollTop > 0) return;
 			const touch = event.changedTouches[0];
 			const deltaY = touch.clientY - startY;
 			const deltaX = touch.clientX - startX;
@@ -1236,6 +1253,10 @@ function attachSwipeToModal(modal, onClose) {
 			if (!touching) return;
 			touching = false;
 			panel.style.transform = "";
+			if (touchingScrollable) {
+				touchingScrollable = false;
+				return;
+			}
 			const touch = event.changedTouches[0];
 			const deltaY = touch.clientY - startY;
 			const deltaX = touch.clientX - startX;

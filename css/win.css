@@ -216,7 +216,11 @@ body::after{
 @media(max-width:600px){
   .page{padding:14px}
   .card{height:calc(100dvh - 28px);max-height:calc(100dvh - 28px);padding:25px 19px}
-  .actions .btn{flex:1;min-width:145px}
+  .actions .btn{flex:0 1 min(100%,320px);width:min(100%,320px);min-width:0}
+}
+@media(max-width:760px) and (orientation:portrait){
+  .card>:is(.kicker,.title,.score,.longest-combo,.summary){text-align:center}
+  .review-toolbar,.review-filters,.actions{justify-content:center}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}

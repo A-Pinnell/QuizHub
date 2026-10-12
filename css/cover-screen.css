@@ -108,6 +108,7 @@
   body:has(.building) .menu-track {
     width: 600%;
     height: 100%;
+    align-items: center;
   }
 
   body:has(.building) .menu {
@@ -239,6 +240,53 @@
   .mixed-source-choice {
     min-height: 48px;
     padding: 8px;
+  }
+
+  .quiz-modal:has(#mixedStudyOptions:not([hidden])) {
+    align-items: stretch;
+  }
+
+  .quiz-menu:has(#mixedStudyOptions:not([hidden])) {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .quiz-menu:has(#mixedStudyOptions:not([hidden])) > p {
+    margin-bottom: 12px;
+  }
+
+  .mixed-study-options:not([hidden]) {
+    flex: 1 1 auto;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .mixed-study-options > p:first-child {
+    margin-bottom: 2px;
+  }
+
+  .mixed-source-list {
+    min-height: 0;
+  }
+
+  .mixed-source-options {
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: none;
+    grid-template-columns: 1fr;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+
+  .mixed-study-start {
+    flex: 0 0 auto;
   }
 
   .quiz-theme-options,
