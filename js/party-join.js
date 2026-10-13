@@ -134,7 +134,7 @@
         form.elements.roomCode.readOnly=true;
         assignSuggestedProfile(message.room.profiles||[]);
         profileFields.hidden=false;
-        roomAvailability.textContent=`${message.room.players} of ${message.room.capacity} spots are filled. Your name is assigned automatically; choose a color and optional picture.`;
+        roomAvailability.textContent=`${message.room.players} of ${message.room.capacity} spots are filled. Your suggested name is editable; choose a color and optional picture.`;
         checkRoomButton.hidden=true;
         document.getElementById("partyPlayerName").focus();
         client.close();

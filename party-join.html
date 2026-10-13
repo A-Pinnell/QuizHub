@@ -7,7 +7,7 @@
 <title>Join a QuizHub Party</title>
 <link rel="stylesheet" href="css/party-lobby.css">
 <link rel="stylesheet" href="css/cover-screen.css?v=20261012-6">
-<script src="js/preferences.js?v=20261013-1" defer></script>
+<script src="js/load-preferences.js"></script>
 <script src="js/audio-focus.js" defer></script>
 <script src="js/party-config.js" defer></script>
 <script src="js/party-client.js" defer></script>
@@ -25,7 +25,7 @@
     <div id="partyProfileFields" hidden>
     <p id="partyRoomAvailability" class="party-room-availability"></p>
     <label for="partyPlayerName">Your name in this party</label>
-    <input id="partyPlayerName" name="playerName" type="text" maxlength="24" autocomplete="nickname" required readonly>
+    <input id="partyPlayerName" name="playerName" type="text" maxlength="24" autocomplete="nickname" required>
     <div class="party-profile-row">
       <label for="partyPlayerColor">Player color</label>
       <input id="partyPlayerColor" type="color" value="#3686e8">

@@ -1562,6 +1562,130 @@ body.compgfx-mode .party-score-display{color:#eee}
   body.compgfx-mode .quiz-content{max-height:calc(60vh - 36px)}
 }
 
+body.host-display-active.compgfx-mode .visual{
+  inset:0;
+  height:100vh;
+  background:
+    radial-gradient(ellipse at 35% 48%,rgba(111,76,50,.2),transparent 43%),
+    linear-gradient(180deg,#32302f 0%,#292725 100%);
+}
+body.host-display-active.compgfx-mode .visual>*:not(.quiz-heading):not(.gfx-workspace-bar):not(.gfx-viewport-grid):not(.gfx-cube-stage):not(.gfx-axis-gizmo):not(.gfx-status-bar){
+  display:none!important;
+}
+body.host-display-active.compgfx-mode .gfx-workspace-bar,
+body.host-display-active.compgfx-mode .gfx-viewport-grid,
+body.host-display-active.compgfx-mode .gfx-cube-stage,
+body.host-display-active.compgfx-mode .gfx-axis-gizmo,
+body.host-display-active.compgfx-mode .gfx-status-bar{
+  display:block!important;
+}
+body.host-display-active.compgfx-mode .gfx-workspace-bar{display:flex!important}
+body.host-display-active.compgfx-mode .gfx-cube-stage{
+  top:50%;
+  left:34%;
+  width:clamp(260px,34vw,540px);
+  --gfx-cube-depth:clamp(130px,17vw,270px);
+}
+body.host-display-active.compgfx-mode.gfx-quiz-started .gfx-cube-stage{
+  left:34%;
+  transform:translate(-50%,-50%) scale(1.05);
+}
+body.host-display-active.compgfx-mode .gfx-status-bar{display:flex!important}
+body.host-display-active.compgfx-mode .panel{
+  inset:0 0 0 auto;
+  width:min(44vw,700px);
+  height:100vh;
+  padding:4vh 3vw;
+  border:0;
+  background:rgba(24,25,28,.72);
+}
+body.host-display-active.compgfx-mode .quiz-content{
+  top:50%;
+  right:0;
+  bottom:auto;
+  display:flex;
+  width:100%;
+  height:min(78vh,780px);
+  max-height:calc(100% - 32px);
+  flex-direction:column;
+  padding:clamp(16px,2vw,30px);
+  transform:translateY(-50%);
+  animation:none;
+}
+body.host-display-active.compgfx-mode .quiz-content>.softengi-composer{
+  display:flex;
+  flex:1;
+  min-height:0;
+  flex-direction:column;
+}
+body.host-display-answerer.compgfx-mode:has(#quizSetup[hidden]) .quiz-page{
+  display:block;
+  background:#202225;
+}
+body.host-display-answerer.compgfx-mode:has(#quizSetup[hidden]) .visual{
+  display:none!important;
+}
+body.host-display-answerer.compgfx-mode:has(#quizSetup[hidden]) .panel{
+  position:fixed;
+  inset:0;
+  display:grid;
+  width:100vw;
+  height:100dvh;
+  place-items:center;
+  padding:16px;
+  overflow:auto;
+  border:0;
+  background:#202225;
+  pointer-events:auto;
+}
+body.host-display-answerer.compgfx-mode:has(#quizSetup[hidden]) .quiz-content{
+  position:relative;
+  inset:auto;
+  width:min(720px,100%);
+  height:min(760px,calc(100dvh - 32px));
+  max-height:calc(100dvh - 32px);
+  margin:auto;
+  transform:none;
+  animation:none;
+}
+body.host-display-answerer.compgfx-mode:has(#quizSetup[hidden]) .quiz-content>.softengi-composer{
+  display:flex;
+  flex:1;
+  min-height:0;
+  flex-direction:column;
+}
+@media(max-width:760px){
+  body.host-display-active.compgfx-mode .visual{height:100dvh}
+  body.host-display-active.compgfx-mode .gfx-cube-stage{
+    top:25%;
+    left:50%;
+    width:min(60vw,34vh,340px);
+    --gfx-cube-depth:min(30vw,17vh,170px);
+  }
+  body.host-display-active.compgfx-mode.gfx-quiz-started .gfx-cube-stage{
+    top:25%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(1.05);
+  }
+  body.host-display-active.compgfx-mode .panel{
+    inset:auto 0 0;
+    width:100%;
+    height:52vh;
+    padding:10px 5vw 16px;
+    background:rgba(24,25,28,.86);
+  }
+  body.host-display-active.compgfx-mode .quiz-content{
+    top:auto;
+    height:100%;
+    max-height:100%;
+    padding:10px;
+    transform:none;
+  }
+  body.host-display-answerer.compgfx-mode:has(#quizSetup[hidden]) .quiz-content{
+    height:min(760px,calc(100dvh - 32px));
+  }
+}
+
 body.compgfx-mode #feedback{
   position:fixed;
   right:24px;

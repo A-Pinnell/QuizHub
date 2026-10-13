@@ -31,6 +31,7 @@
   const hostDisplayAccountStatus=document.getElementById("partyHostDisplayAccountStatus");
   const quizCatalog={
     CompArch:[["quiz1","First Slides Practice"]],
+    CompGFX:[["test1","Midterm Practice"]],
     CloudComp:[["quiz1","First Slides Practice"],["quiz2","Week 4 Slides Practice"]],
     SocIndi:[["reviewQuiz","Exam 1 Quiz"],["textbookQuiz","Textbook Quiz"]],
     DataSci:[["test1","Test 1 Practice"]],

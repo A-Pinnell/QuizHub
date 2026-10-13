@@ -302,6 +302,7 @@ function handleMessage(socket, rawMessage) {
       const quiz = typeof message.quiz === "string" ? message.quiz : "";
       const validQuizzes = {
         CompArch: ["quiz1"],
+        CompGFX: ["test1"],
         CloudComp: ["quiz1", "quiz2"],
         SocIndi: ["reviewQuiz", "textbookQuiz"],
         DataSci: ["test1"],
@@ -523,6 +524,23 @@ function handleMessage(socket, rawMessage) {
         });
         return;
       }
+      revealRoomAnswers(room);
+      break;
+    }
+    case "skip-question": {
+      if (!room.hostDisplay || player.id !== room.hostDisplayPlayerId) {
+        return sendError(socket, "Only the selected Host Display player can skip the question for everyone.");
+      }
+      if (room.stage !== "quiz" || !room.question || room.reveal) {
+        return sendError(socket, "There is no open question to skip.");
+      }
+      if (message.questionNumber !== room.questionNumber) {
+        return sendError(socket, "That question is no longer open.");
+      }
+      room.players.forEach((member) => {
+        if (!room.answers.has(member.id)) room.answers.set(member.id, null);
+      });
+      room.answersLocked = [...room.answers.keys()];
       revealRoomAnswers(room);
       break;
     }

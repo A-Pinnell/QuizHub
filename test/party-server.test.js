@@ -421,8 +421,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   send(displayHost, {
     type: "launch",
     code: displayHosted.room.code,
-    category: "CloudComp",
-    quiz: "quiz1"
+    category: "CompGFX",
+    quiz: "test1"
   });
   assert.match((await insufficientHostDisplayPlayers).message, /at least one other player/i);
 
@@ -440,8 +440,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   send(displayHost, {
     type: "launch",
     code: displayHosted.room.code,
-    category: "CloudComp",
-    quiz: "quiz1"
+    category: "CompGFX",
+    quiz: "test1"
   });
   await Promise.all([displayLaunchPromise, displayGuestLaunchPromise, displayOtherLaunchPromise]);
   const displayStartedPromise = waitForMessage(displayHost, "quiz-start");
@@ -514,17 +514,23 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   const displayHostSkipReveal = waitForMessage(displayHost, "reveal");
   const displayGuestSkipReveal = waitForMessage(displayGuest, "reveal");
   const displayOtherSkipReveal = waitForMessage(displayOther, "reveal");
-  send(displayGuest, {
-    type: "answer",
+  const unselectedSkipRejected = waitForMessage(displayOther, "error");
+  send(displayOther, {
+    type: "skip-question",
     code: displayHosted.room.code,
-    questionNumber: 1,
-    answerIndex: null
+    questionNumber: 1
   });
+  assert.match((await unselectedSkipRejected).message, /selected Host Display player/i);
   send(displayOther, {
     type: "answer",
     code: displayHosted.room.code,
     questionNumber: 1,
     answerIndex: 0
+  });
+  send(displayGuest, {
+    type: "skip-question",
+    code: displayHosted.room.code,
+    questionNumber: 1
   });
   const [hostSkippedReveal] = await Promise.all([
     displayHostSkipReveal,

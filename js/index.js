@@ -1431,6 +1431,7 @@ function updateQuizMusicTrackName() {
 		Practice1: "Blue Spheres ... from Sonic Mania [QuizHub Mix]",
 		Practice2: "Special Stage ... from Sonic 3D Blast (Genesis) [QuizHub Mix]",
 		CompGFX: "Craterscape ... from Wild 9",
+		SocIndi: "Society, Individuals and Technology course music",
 		CloudComp: "A Lone Prayer ... from Persona [QuizHub Mix]",
 		DataSci:
 			"Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]",
@@ -1679,6 +1680,16 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.6.3
+- Various improvements and bug fixes
+
+Version 2.6.2
+- Various improvements and bug fixes
+
+Version 2.6.1
+- Clamshell mode has been added to the mobile version, which allows the site to be used in a more compact layout for devices with limited screen space. This mode can be toggled in the settings menu.
+- Various improvements and bug fixes
+
 Version 2.6.0
 - Host Display has been added as a Party Mode option. This allows the host to display the quiz on a separate screen, while players can answer on their own devices. This is useful for classrooms or group settings where a shared display is available.
 - Party mode will now say default name and color upon joining, but can still be changed afterwards.
@@ -1986,14 +1997,17 @@ let dsTitleSoundPending = false;
 function tryPlayDSTitleSound() {
 	if (!dsTitleSoundPending || soundsMuted) return;
 	dsTitleSound.currentTime = 0;
-	dsTitleSound.play().then(() => {
-		dsTitleSoundPending = false;
-	}).catch((error) => {
-		if (error.name !== "NotAllowedError") {
+	dsTitleSound
+		.play()
+		.then(() => {
 			dsTitleSoundPending = false;
-			console.warn("Could not play the DS title sound:", error);
-		}
-	});
+		})
+		.catch((error) => {
+			if (error.name !== "NotAllowedError") {
+				dsTitleSoundPending = false;
+				console.warn("Could not play the DS title sound:", error);
+			}
+		});
 }
 function handleDSTitleClick(dsTitle) {
 	if (window.quizHubPreferences.dsPuristMode) {
@@ -2044,7 +2058,10 @@ function updateBranding() {
 		dsTitle.title = window.quizHubPreferences.dsPuristMode
 			? "Click once to disable DS Purist Mode"
 			: "Click three times to enable DS Purist Mode";
-		dsTitle.setAttribute("aria-pressed", String(window.quizHubPreferences.dsPuristMode));
+		dsTitle.setAttribute(
+			"aria-pressed",
+			String(window.quizHubPreferences.dsPuristMode),
+		);
 		dsTitle.setAttribute(
 			"aria-label",
 			window.quizHubPreferences.dsPuristMode
@@ -2077,7 +2094,11 @@ function updateBranding() {
 		"clamshell-branding",
 		clamshellMode && !secretMode,
 	);
-	document.title = secretMode ? "Hub?" : clamshellMode ? "Quiz Hub DS" : "Quiz Hub";
+	document.title = secretMode
+		? "Hub?"
+		: clamshellMode
+			? "Quiz Hub DS"
+			: "Quiz Hub";
 }
 window.addEventListener("quizhub:preferenceschange", updateBranding);
 clamshellViewport.addEventListener("change", updateBranding);
@@ -2099,9 +2120,9 @@ function tryPlayTitleEnd() {
 		.catch(() => {});
 }
 stemTitle.addEventListener("animationstart", (event) => {
-	const lastVisibleLetter = [
-		...stemTitle.querySelectorAll(".stem-letter"),
-	].at(-1);
+	const lastVisibleLetter = [...stemTitle.querySelectorAll(".stem-letter")].at(
+		-1,
+	);
 	if (
 		event.animationName === "titleEntrance" &&
 		event.target === lastVisibleLetter

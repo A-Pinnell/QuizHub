@@ -320,6 +320,7 @@ let partyTurnToken=0;
 const partyConnection=networkPartyActive?new window.QuizHubPartyClient():null;
 let partyConnectionReady=false;
 let partyStartPending=false;
+let skipQuestionPending=false;
 
 const theme = themes[category] || themes.CompArch || {
   pageBg: "#6f7d86",
@@ -526,7 +527,7 @@ function animateCompGFXCursor(reduceMotion){
 
 function transitionCompGFXIntoQuiz(){
   if(!isCompGFX || !compGfxCube) return;
-  if(partyHostDisplay){
+  if(hostDisplayAnswerer){
     document.body.classList.add('gfx-quiz-started');
     return;
   }
@@ -563,7 +564,7 @@ function transitionCompGFXIntoQuiz(){
 }
 
 function animateCompGFXCube(){
-  if(!isCompGFX || !compGfxCube || partyHostDisplay) return 0;
+  if(!isCompGFX || !compGfxCube || hostDisplayAnswerer) return 0;
 
   const motionMode = window.quizHubPreferences.motionMode;
   const reduceMotion = motionMode === 'reduced' ||
@@ -954,7 +955,7 @@ function startNetworkQuiz(config,roomSnapshot=null){
   quizStarted=true;
   if(partyHostDisplay){
     const hostDisplayHeading=questionTitle.closest(".quiz-heading");
-    if(hostDisplayHeading) document.body.append(hostDisplayHeading);
+    if(hostDisplayHeading && !isCompGFX) document.body.append(hostDisplayHeading);
     document.body.classList.add("host-display-active");
   }
   setup.classList.remove("party-network-guest");
@@ -1051,8 +1052,36 @@ function submitNetworkAnswer(selectedIndex){
   });
 }
 
+function skipNetworkQuestion(){
+  if(!quizStarted || quizEnded || answered || skipQuestionPending || !hostDisplayAnswerer) return;
+  skipQuestionPending=true;
+  answered=true;
+  stopQuestionTimer();
+  answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=true;});
+  skipButton.disabled=true;
+  nextButton.disabled=true;
+  feedback.textContent="Skipping this question for everyone…";
+  feedback.className="motivation visible";
+  partyConnection.send({
+    type:"skip-question",
+    code:partyRoomCode,
+    questionNumber:questionNumber-1
+  }).catch((error)=>{
+    if(!skipQuestionPending) return;
+    skipQuestionPending=false;
+    answered=false;
+    answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=false;});
+    skipButton.disabled=false;
+    feedback.textContent="";
+    feedback.className="feedback";
+    startQuestionTimer();
+    setupError.textContent=`Could not skip the shared question: ${error.message}`;
+  });
+}
+
 function revealNetworkQuestion(message){
   if(!current || !Array.isArray(message.answers)) return;
+  skipQuestionPending=false;
   stopQuestionTimer();
   answered=true;
   partyChoices=message.answers.map((entry)=>({
@@ -1407,14 +1436,17 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
   const answerPanelExitTransform = window.matchMedia('(max-width: 760px)').matches
     ? 'translateY(calc(100dvh + 40px))'
     : 'translateX(calc(100vw + 40px))';
-  compGFXAnswerPanelAnimation?.cancel();
-  compGFXAnswerPanelAnimation = content.animate(
-    [
-      {transform:'translateX(0)',opacity:1},
-      {transform:answerPanelExitTransform,opacity:0}
-    ],
-    {duration:220,easing:'cubic-bezier(.55,0,1,.45)',fill:'forwards'}
-  );
+  const animateAnswerPanel = !partyHostDisplay;
+  if(animateAnswerPanel){
+    compGFXAnswerPanelAnimation?.cancel();
+    compGFXAnswerPanelAnimation = content.animate(
+      [
+        {transform:'translateX(0)',opacity:1},
+        {transform:answerPanelExitTransform,opacity:0}
+      ],
+      {duration:220,easing:'cubic-bezier(.55,0,1,.45)',fill:'forwards'}
+    );
+  }
   compGfxQuestionAnimation?.cancel();
   compGfxQuestionAnimation = compGfxQuestion.animate(
     [{opacity:1},{opacity:0}],
@@ -1447,16 +1479,18 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
     );
     await compGfxQuestionAnimation.finished.catch(()=>{});
     compGfxQuestionAnimation = null;
-    compGFXAnswerPanelAnimation?.cancel();
-    compGFXAnswerPanelAnimation = content.animate(
-      [
-        {transform:answerPanelExitTransform,opacity:0},
-        {transform:'translateX(0)',opacity:1}
-      ],
-      {duration:260,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'}
-    );
-    await compGFXAnswerPanelAnimation.finished.catch(()=>{});
-    compGFXAnswerPanelAnimation = null;
+    if(animateAnswerPanel){
+      compGFXAnswerPanelAnimation?.cancel();
+      compGFXAnswerPanelAnimation = content.animate(
+        [
+          {transform:answerPanelExitTransform,opacity:0},
+          {transform:'translateX(0)',opacity:1}
+        ],
+        {duration:260,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'}
+      );
+      await compGFXAnswerPanelAnimation.finished.catch(()=>{});
+      compGFXAnswerPanelAnimation = null;
+    }
   })();
 }
 
@@ -1682,7 +1716,7 @@ comboPopup.addEventListener('animationend', (event) => {
 
 function renderQuestion(forcedAnswerOrder=null){
   if (!current) return;
-  const fadeCompGFXQuestion = isCompGFX && !partyHostDisplay && compGfxQuestionLoaded;
+  const fadeCompGFXQuestion = isCompGFX && !hostDisplayAnswerer && compGfxQuestionLoaded;
   const compGfxTurnDuration = animateCompGFXCube();
   if (feedbackTypingTimer !== null) {
     clearInterval(feedbackTypingTimer);
@@ -1973,6 +2007,10 @@ function goNext(){
 function skip(){
   if (!quizStarted || quizEnded || answered) return;
   if(networkPartyActive && !canControlPartyQuiz) return;
+  if(networkPartyActive && hostDisplayAnswerer){
+    skipNetworkQuestion();
+    return;
+  }
   if(partyHostDisplay){
     submitNetworkAnswer(null);
     return;
@@ -2241,6 +2279,15 @@ if(networkPartyActive){
     updatePartySettingsSummary(message.room.quizConfig);
   });
   partyConnection.on("error",(message)=>{
+    if(skipQuestionPending){
+      skipQuestionPending=false;
+      answered=false;
+      answersEl.querySelectorAll(".answer").forEach((button)=>{button.disabled=false;});
+      skipButton.disabled=false;
+      feedback.textContent="";
+      feedback.className="feedback";
+      startQuestionTimer();
+    }
     setupError.textContent=message.message;
     if(!quizStarted && partyHost){
       partyStartPending=false;
