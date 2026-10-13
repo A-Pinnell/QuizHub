@@ -1372,7 +1372,6 @@ document.querySelectorAll("[data-download-platform]").forEach((button) => {
 const settingsModal = document.getElementById("settingsModal");
 const optionsToggle = document.getElementById("optionsToggle");
 const motionModeSlider = document.getElementById("motionModeSlider");
-const fullscreenSetting = document.getElementById("fullscreenSetting");
 const quizMusicSetting = document.getElementById("quizMusicSetting");
 const quizMusicTrackName = document.getElementById("quizMusicTrackName");
 const textSizeSetting = document.getElementById("textSizeSetting");
@@ -1457,10 +1456,6 @@ function syncSettings() {
 	document.querySelectorAll('input[name="answerSide"]').forEach((input) => {
 		input.checked = input.value === window.quizHubPreferences.answerSide;
 	});
-	fullscreenSetting.checked = window.quizHubPreferences.fullscreen;
-	fullscreenSetting.disabled =
-		!document.fullscreenElement &&
-		typeof document.documentElement.requestFullscreen !== "function";
 	secretQuizMusicOption.hidden = !window.quizHubPreferences.secretMode;
 	quizMusicSetting.value = window.quizHubPreferences.quizMusic;
 	updateQuizMusicTrackName();
@@ -1614,47 +1609,11 @@ resetSettingsButton.addEventListener("click", () => {
 	if (quizPreviewPlaying) startQuizMusicPreview();
 	syncSettings();
 	settingsError.textContent = "";
-	if (document.fullscreenElement) {
-		document.exitFullscreen().catch((error) => {
-			settingsError.textContent = `Could not exit fullscreen: ${error.message}`;
-		});
-	}
-	window.quizHubPreferences.setFullscreen(false);
 });
 document.querySelectorAll('input[name="answerSide"]').forEach((input) => {
 	input.addEventListener("change", () => {
 		if (input.checked) window.quizHubPreferences.setAnswerSide(input.value);
 	});
-});
-fullscreenSetting.addEventListener("change", () => {
-	settingsError.textContent = "";
-	if (fullscreenSetting.checked) {
-		window.quizHubPreferences.setFullscreen(true);
-		if (typeof document.documentElement.requestFullscreen !== "function") {
-			fullscreenSetting.checked = false;
-			window.quizHubPreferences.setFullscreen(false);
-			settingsError.textContent =
-				"Fullscreen is not available in this browser.";
-			return;
-		}
-		document.documentElement.requestFullscreen().catch((error) => {
-			fullscreenSetting.checked =
-				document.fullscreenElement === document.documentElement;
-			window.quizHubPreferences.setFullscreen(false);
-			settingsError.textContent = `Could not enter fullscreen: ${error.message}`;
-		});
-	} else {
-		window.quizHubPreferences.setFullscreen(false);
-		if (!document.fullscreenElement) return;
-		document.exitFullscreen().catch((error) => {
-			fullscreenSetting.checked =
-				document.fullscreenElement === document.documentElement;
-			settingsError.textContent = `Could not exit fullscreen: ${error.message}`;
-		});
-	}
-});
-document.addEventListener("fullscreenchange", () => {
-	fullscreenSetting.checked = window.quizHubPreferences.fullscreen;
 });
 document.querySelectorAll("[data-close-settings]").forEach((el) => {
 	el.addEventListener("click", closeSettings);
@@ -1680,6 +1639,10 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.6.4
+- Various improvements and bug fixes
+- Host Display mode actually works
+
 Version 2.6.3
 - Various improvements and bug fixes
 

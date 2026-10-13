@@ -367,7 +367,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.equal(ended.departedPlayerId, joined.playerId);
   assert.equal(updatedRoom.room.players.length, 1);
 
-  const displayHost = await connect();
+  let displayHost = await connect();
   const displayHostedPromise = waitForMessage(displayHost, "hosted");
   send(displayHost, {
     type: "host",
@@ -444,6 +444,21 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     quiz: "test1"
   });
   await Promise.all([displayLaunchPromise, displayGuestLaunchPromise, displayOtherLaunchPromise]);
+
+  displayHost.close();
+  await once(displayHost, "close");
+  displayHost = await connect();
+  const displayHostRejoined = waitForMessage(displayHost, "joined");
+  send(displayHost, {
+    type: "join",
+    code: displayHosted.room.code,
+    playerId: displayHosted.playerId
+  });
+  const rejoinedDisplayHost = await displayHostRejoined;
+  assert.equal(rejoinedDisplayHost.room.stage, "setup");
+  assert.equal(rejoinedDisplayHost.room.hostDisplay, true);
+  assert.equal(rejoinedDisplayHost.room.players.find((player) => player.host).connected, true);
+
   const displayStartedPromise = waitForMessage(displayHost, "quiz-start");
   send(displayHost, {
     type: "quiz-start",

@@ -323,6 +323,7 @@ function handleMessage(socket, rawMessage) {
       room.quiz = quiz;
       room.mixedSources = mixedSources;
       room.quizConfig = null;
+      room.players.forEach((member) => { member.handoff = true; });
       broadcast(room, { type: "launch", category, quiz, mixedSources });
       break;
     }

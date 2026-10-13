@@ -1,9 +1,14 @@
 (function () {
 	"use strict";
 
-	const isNativeApp = window.quizHubNativeApp === true;
 	const storage = window.localStorage;
 	const root = document.documentElement;
+	storage.removeItem("quizHubFullscreen");
+	if (document.fullscreenElement) {
+		document.exitFullscreen().catch((error) => {
+			console.warn("Could not exit the retired site fullscreen mode:", error);
+		});
+	}
 	const savedMotionMode = storage.getItem("quizHubMotionMode");
 	const storageKey = (name) =>
 		name === "soundMuted"
@@ -72,7 +77,6 @@
 		sfxStyle: sfxStyles.includes(storage.getItem("quizHubSfxStyle"))
 			? storage.getItem("quizHubSfxStyle")
 			: "default",
-		fullscreen: storage.getItem("quizHubFullscreen") === "true",
 	};
 
 	let puristAudioContext = null;
@@ -259,10 +263,6 @@
 		} else if (name === "sfxStyle" && sfxStyles.includes(value)) {
 			preferences.sfxStyle = value;
 			storage.setItem("quizHubSfxStyle", value);
-		} else if (name === "fullscreen" && typeof value === "boolean") {
-			preferences.fullscreen = value;
-			storage.setItem("quizHubFullscreen", String(value));
-			if (!value) removeFullscreenRetry();
 		} else {
 			throw new TypeError(`Invalid QuizHub preference: ${name}`);
 		}
@@ -295,7 +295,6 @@
 			"quizHubSfxStyle",
 			"quizHubMuted",
 			"quizHubMusicMuted",
-			"quizHubFullscreen",
 		].forEach((key) => storage.removeItem(key));
 		preferences.motionMode = "default";
 		preferences.answerSide = "right";
@@ -308,8 +307,6 @@
 		preferences.textSize = "default";
 		preferences.quizTheme = "default";
 		preferences.sfxStyle = "default";
-		preferences.fullscreen = false;
-		removeFullscreenRetry();
 		apply();
 		window.dispatchEvent(
 			new CustomEvent("quizhub:preferenceschange", {
@@ -323,39 +320,6 @@
 	}
 
 	apply();
-	let fullscreenRetryPending = false;
-	let fullscreenRequestPending = false;
-	function removeFullscreenRetry() {
-		document.removeEventListener("pointerdown", retryFullscreen, true);
-		document.removeEventListener("keydown", retryFullscreen, true);
-		fullscreenRetryPending = false;
-	}
-	function retryFullscreen() {
-		if (
-			isNativeApp ||
-			!preferences.fullscreen ||
-			fullscreenRequestPending ||
-			typeof document.documentElement.requestFullscreen !== "function"
-		)
-			return;
-		fullscreenRequestPending = true;
-		document.documentElement
-			.requestFullscreen()
-			.then(() => {
-				fullscreenRequestPending = false;
-				removeFullscreenRetry();
-			})
-			.catch((error) => {
-				fullscreenRequestPending = false;
-				console.warn("Could not restore site fullscreen:", error);
-			});
-	}
-	function scheduleFullscreenRetry() {
-		if (fullscreenRetryPending) return;
-		fullscreenRetryPending = true;
-		document.addEventListener("pointerdown", retryFullscreen, true);
-		document.addEventListener("keydown", retryFullscreen, true);
-	}
 
 	window.quizHubPreferences = {
 		get motionMode() {
@@ -393,9 +357,6 @@
 		},
 		get sfxStyle() {
 			return preferences.sfxStyle;
-		},
-		get fullscreen() {
-			return preferences.fullscreen;
 		},
 		get soundMuted() {
 			return storage.getItem(storageKey("soundMuted")) === "true";
@@ -436,9 +397,6 @@
 		setSfxStyle(value) {
 			update("sfxStyle", value);
 		},
-		setFullscreen(value) {
-			update("fullscreen", value);
-		},
 		resolveSfx(name, defaultSource, course = null) {
 			const usePs2 =
 				preferences.sfxStyle === "ps2" ||
@@ -465,17 +423,4 @@
 		reset,
 	};
 
-	window.addEventListener("pageshow", () => {
-		if (
-			isNativeApp ||
-			!preferences.fullscreen ||
-			document.fullscreenElement ||
-			typeof document.documentElement.requestFullscreen !== "function"
-		)
-			return;
-		document.documentElement.requestFullscreen().catch((error) => {
-			console.warn("Could not automatically restore site fullscreen:", error);
-			scheduleFullscreenRetry();
-		});
-	});
 })();
