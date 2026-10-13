@@ -1593,11 +1593,6 @@ secretModeSetting.addEventListener("change", () => {
 });
 clamshellModeSetting.addEventListener("change", () => {
 	window.quizHubPreferences.setClamshellMode(clamshellModeSetting.checked);
-	if (clamshellModeSetting.checked) {
-		window.location.reload();
-		return;
-	}
-	updateBranding();
 });
 resetSettingsButton.addEventListener("click", () => {
 	window.quizHubPreferences.reset();
@@ -1639,6 +1634,14 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.6.5
+- If playing again with the same people in Party Mode, it will now show the overall score as well as the current score
+- All quizzes and courses are now properly available in Party Mode
+- The new quiz and play again buttons in Host Display mode now work properly
+- The host's selected style is now seen on all other players
+- Host Display have been visually redesigned
+- True/False questions now display correctly in party mode
+
 Version 2.6.4
 - Various improvements and bug fixes
 - Host Display mode actually works

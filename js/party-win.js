@@ -36,6 +36,10 @@
     chooseQuizButton.hidden=true;
     return;
   }
+  const partyActionPlayerId=typeof results.partyActionPlayerId==="string" &&
+    results.partyActionPlayerId
+    ? results.partyActionPlayerId
+    : results.partyCurrentPlayerId;
 
   const standings=results.partyPlayers
     .map((player,index)=>({
@@ -153,6 +157,9 @@
     if(hostDisplayPlayerId){
       target.searchParams.set("hostDisplay","true");
       target.searchParams.set("hostDisplayPlayer",hostDisplayPlayerId);
+      if(room?.quizTheme){
+        target.searchParams.set("partyQuizTheme",room.quizTheme);
+      }
     }
     window.location.href=target.toString();
   }
@@ -176,7 +183,7 @@
     partyClient=client;
     let room=null;
     function syncControls(){
-      const current=room?.players.find((player)=>player.id===results.partyCurrentPlayerId);
+      const current=room?.players.find((player)=>player.id===partyActionPlayerId);
       const canHost=Boolean(current?.host);
       playAgainButton.disabled=!canHost;
       chooseQuizButton.disabled=!canHost;
@@ -188,21 +195,21 @@
       room=message.room;
       syncControls();
       if(room.stage==="lobby"){
-        openLobby(results.partyCurrentPlayerId,room.players.some((player)=>player.id===results.partyCurrentPlayerId && player.host));
+        openLobby(partyActionPlayerId,room.players.some((player)=>player.id===partyActionPlayerId && player.host));
       }else if((room.stage==="setup" || room.stage==="quiz") && room.category && room.quiz){
-        openQuiz(room.category,room.quiz,results.partyCurrentPlayerId,
-          room.players.some((player)=>player.id===results.partyCurrentPlayerId && player.host),
+        openQuiz(room.category,room.quiz,partyActionPlayerId,
+          room.players.some((player)=>player.id===partyActionPlayerId && player.host),
           room.mixedSources,room.hostDisplay?room.hostDisplayPlayerId:null);
       }
     });
     client.on("replay",(message)=>{
-      const current=room?.players.find((player)=>player.id===results.partyCurrentPlayerId);
-      openQuiz(message.category,message.quiz,results.partyCurrentPlayerId,Boolean(current?.host),
+      const current=room?.players.find((player)=>player.id===partyActionPlayerId);
+      openQuiz(message.category,message.quiz,partyActionPlayerId,Boolean(current?.host),
         message.mixedSources,room?.hostDisplay?room.hostDisplayPlayerId:null);
     });
     client.on("choose-new-quiz",()=>{
-      const current=room?.players.find((player)=>player.id===results.partyCurrentPlayerId);
-      openLobby(results.partyCurrentPlayerId,Boolean(current?.host));
+      const current=room?.players.find((player)=>player.id===partyActionPlayerId);
+      openLobby(partyActionPlayerId,Boolean(current?.host));
     });
     client.on("room-state",(message)=>{
       room=message.room;
@@ -216,7 +223,7 @@
     client.send({
       type:"join",
       code:results.partyRoomCode,
-      playerId:results.partyCurrentPlayerId
+      playerId:partyActionPlayerId
     }).catch((connectionError)=>{
       status.textContent=`Could not reconnect to the party: ${connectionError.message}`;
       playAgainButton.disabled=true;

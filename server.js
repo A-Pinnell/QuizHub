@@ -27,6 +27,7 @@ const mimeTypes = {
   ".wav": "audio/wav"
 };
 const rooms = new Map();
+const quizThemes = new Set(["default", "quizhub", "ai-model", "blended"]);
 
 function send(socket, message) {
   if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(message));
@@ -42,6 +43,7 @@ function publicRoom(room) {
     partyOptions: room.partyOptions,
     category: room.category,
     quiz: room.quiz,
+    quizTheme: room.quizTheme,
     mixedSources: room.mixedSources,
     quizConfig: room.quizConfig,
     question: room.question && {
@@ -51,8 +53,8 @@ function publicRoom(room) {
     },
     answersLocked: room.answersLocked,
     reveal: room.reveal,
-    players: [...room.players.values()].map(({ id, name, color, photo, ready, host, score, socket }) => ({
-      id, name, color, photo, ready, host, score, connected: socket?.readyState === WebSocket.OPEN
+    players: [...room.players.values()].map(({ id, name, color, photo, ready, host, score, overallScore, socket }) => ({
+      id, name, color, photo, ready, host, score, overallScore, connected: socket?.readyState === WebSocket.OPEN
     }))
   };
 }
@@ -126,7 +128,15 @@ function revealRoomAnswers(room) {
       ? room.partyOptions.earlyPointBonus && member.id === firstCorrectPlayerId ? 3 : 1
       : 0;
     member.score += pointsEarned;
-    return { playerId: member.id, selectedIndex: selected, correct, pointsEarned, score: member.score };
+    member.overallScore += pointsEarned;
+    return {
+      playerId: member.id,
+      selectedIndex: selected,
+      correct,
+      pointsEarned,
+      score: member.score,
+      overallScore: member.overallScore
+    };
   });
   room.reveal = { correctIndex, answers: answerDetails };
   broadcast(room, { type: "reveal", ...room.reveal });
@@ -179,12 +189,21 @@ function handleMessage(socket, rawMessage) {
     }
     try {
       const code = generateRoomCode();
-      const player = { ...profile, id: randomUUID(), ready: true, host: true, score: 0, socket, expireTimer: null };
+      const player = {
+        ...profile,
+        id: randomUUID(),
+        ready: true,
+        host: true,
+        score: 0,
+        overallScore: 0,
+        socket,
+        expireTimer: null
+      };
       const hostDisplay = message.hostDisplay === true;
       const room = {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
         question: null, answersLocked: [], reveal: null, quizConfig: null, mixedSources: null,
-        hostDisplay: false, hostDisplayPlayerId: null,
+        hostDisplay: false, hostDisplayPlayerId: null, quizTheme: null,
         partyOptions: { showPlayerScores: true, showLockedAnswers: true, earlyPointBonus: true }
       };
       room.expiration = setTimeout(() => {
@@ -264,7 +283,16 @@ function handleMessage(socket, rawMessage) {
       sendError(socket,"That player name is already in the room. Choose a different name.");
       return;
     }
-    const player = { ...profile, id: randomUUID(), ready: true, host: false, score: 0, socket, expireTimer: null };
+    const player = {
+      ...profile,
+      id: randomUUID(),
+      ready: true,
+      host: false,
+      score: 0,
+      overallScore: 0,
+      socket,
+      expireTimer: null
+    };
     room.players.set(player.id, player);
     socket.roomCode = code;
     socket.playerId = player.id;
@@ -300,10 +328,13 @@ function handleMessage(socket, rawMessage) {
       }
       const category = typeof message.category === "string" ? message.category : "";
       const quiz = typeof message.quiz === "string" ? message.quiz : "";
+      if (message.quizTheme !== undefined && !quizThemes.has(message.quizTheme)) {
+        return sendError(socket, "Select a valid quiz style.");
+      }
       const validQuizzes = {
-        CompArch: ["quiz1"],
+        CompArch: ["quiz1", "test1"],
         CompGFX: ["test1"],
-        CloudComp: ["quiz1", "quiz2"],
+        CloudComp: ["quiz1", "quiz2", "test1"],
         SocIndi: ["reviewQuiz", "textbookQuiz"],
         DataSci: ["test1"],
         SoftEngi: ["test1"]
@@ -321,10 +352,17 @@ function handleMessage(socket, rawMessage) {
       room.stage = "setup";
       room.category = category;
       room.quiz = quiz;
+      room.quizTheme = message.quizTheme || "default";
       room.mixedSources = mixedSources;
       room.quizConfig = null;
       room.players.forEach((member) => { member.handoff = true; });
-      broadcast(room, { type: "launch", category, quiz, mixedSources });
+      broadcast(room, {
+        type: "launch",
+        category,
+        quiz,
+        quizTheme: room.quizTheme,
+        mixedSources
+      });
       break;
     }
     case "party-options": {
@@ -390,6 +428,7 @@ function handleMessage(socket, rawMessage) {
         type: "replay",
         category: room.category,
         quiz: room.quiz,
+        quizTheme: room.quizTheme,
         mixedSources: room.mixedSources
       });
       break;
@@ -404,6 +443,7 @@ function handleMessage(socket, rawMessage) {
       room.stage = "lobby";
       room.category = null;
       room.quiz = null;
+      room.quizTheme = null;
       room.mixedSources = null;
       room.quizConfig = null;
       room.question = null;

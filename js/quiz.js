@@ -181,6 +181,10 @@ function syncHostDisplayControls(room){
   hostDisplayAnswerer=hostDisplayEnabled && partyPlayerId===hostDisplayPlayerId;
   canControlPartyQuiz=partyHost || (networkPartyActive && hostDisplayAnswerer);
   document.body.classList.toggle("host-display-answerer",hostDisplayEnabled && !partyHost);
+  document.body.classList.toggle(
+    "host-display-player-screen",
+    hostDisplayEnabled && !partyHost,
+  );
   document.body.classList.toggle("host-display-player",hostDisplayAnswerer);
   if(networkPartyActive && !partyHost){
     skipButton.hidden=!hostDisplayAnswerer;
@@ -201,7 +205,11 @@ function syncHostDisplayControls(room){
 }
 const defaultCategory = Object.keys(questionBank)[0] || "CompArch";
 const category = requestedCategory && (questionBank[requestedCategory] || codes[requestedCategory] || mixedStudyActive) ? requestedCategory : defaultCategory;
-const selectedQuizTheme=window.quizHubPreferences.quizTheme;
+const requestedPartyQuizTheme=params.get("partyQuizTheme");
+const selectedQuizTheme=hostDisplayEnabled &&
+  ["default","quizhub","ai-model","blended"].includes(requestedPartyQuizTheme)
+  ? requestedPartyQuizTheme
+  : window.quizHubPreferences.quizTheme;
 const activeQuizTheme=mixedStudyActive
   ? "quizhub"
   : selectedQuizTheme==="default"
@@ -291,7 +299,8 @@ if(partyModeRequested){
       name:typeof player.name==="string" && player.name.trim() ? player.name.trim().slice(0,48) : `Player ${index+1}`,
       color:typeof player.color==="string" && /^#[0-9a-f]{6}$/i.test(player.color) ? player.color : "#4688e8",
       photo:typeof player.photo==="string" && player.photo.startsWith("data:image/") ? player.photo : "",
-      score:0
+      score:0,
+      overallScore:0
     }));
     const partySetup=JSON.parse(sessionStorage.getItem("quizHubPartySetup") || "null");
     partyHideLockedAnswers=partySetup?.hideLockedAnswers===true;
@@ -302,6 +311,7 @@ if(partyModeRequested){
 const partyModeActive=partyModeRequested && (partyPlayers.length>=2 || networkPartyActive);
 if(networkPartyActive && hostDisplayEnabled && !partyHost){
   document.body.classList.add("host-display-answerer");
+  document.body.classList.add("host-display-player-screen");
 }
 if(networkPartyActive && hostDisplayAnswerer){
   document.body.classList.add("host-display-player");
@@ -882,46 +892,15 @@ function buildNetworkAnswerOrder(question,questionNumberIndex,questionIndex){
   return indexes;
 }
 
-function getNetworkQuestion(question,questionIndex){
-  const answerEntries=question.a
-    .map((answer,index)=>({answer,index}))
-    .filter((entry)=>entry.answer!=="BLANK");
-  const correctPosition=answerEntries.findIndex((entry)=>entry.index===question.c);
-  if(correctPosition<0) throw new Error("Could not locate the correct answer for an online party question.");
-  const answers=answerEntries.map((entry)=>entry.answer);
-  if(answers.length>4) throw new Error("Online party questions cannot have more than four answer choices.");
-  if(answers.length===4) return {...question,a:answers,c:correctPosition};
-  const seen=new Set(answers.map((answer)=>String(answer).trim().toLowerCase()));
-  const candidates=[];
-  bank.forEach((entry)=>{
-    if(!entry || !Array.isArray(entry.a)) return;
-    entry.a.forEach((answer)=>{
-      if(typeof answer!=="string" || answer==="BLANK") return;
-      const key=answer.trim().toLowerCase();
-      if(key && !seen.has(key)){
-        seen.add(key);
-        candidates.push(answer);
-      }
-    });
-  });
-  if(candidates.length<4-answers.length){
-    throw new Error("Could not find enough answer choices to build an A–D question.");
-  }
-  let seed=Array.from(`${partyRoomCode}:${questionIndex}`)
-    .reduce((value,character)=>Math.imul(value^character.charCodeAt(0),16777619)>>>0,2166136261);
-  for(let index=candidates.length-1;index>0;index--){
-    seed=(Math.imul(seed,1664525)+1013904223)>>>0;
-    const swap=seed%(index+1);
-    [candidates[index],candidates[swap]]=[candidates[swap],candidates[index]];
-  }
-  return {...question,a:[...answers,...candidates.slice(0,4-answers.length)],c:correctPosition};
-}
-
 function updateNetworkPlayers(players){
   if(!Array.isArray(players)) return;
   players.forEach((updated)=>{
     const player=partyPlayers.find((candidate)=>candidate.id===updated.id);
-    if(player && Number.isFinite(Number(updated.score))) player.score=Number(updated.score);
+    if(!player) return;
+    if(Number.isFinite(Number(updated.score))) player.score=Number(updated.score);
+    if(Number.isFinite(Number(updated.overallScore))) {
+      player.overallScore=Number(updated.overallScore);
+    }
   });
   updatePartyScoreDisplay();
 }
@@ -987,7 +966,6 @@ function startNetworkQuiz(config,roomSnapshot=null){
 }
 
 function displayNetworkQuestion(message){
-  if(!Array.isArray(message.answerOrder) || message.answerOrder.length!==4) return;
   if(message.questionNumber<0 || message.questionNumber>=questionSequence.length ||
       questionSequence[message.questionNumber]!==message.questionIndex || !bank[message.questionIndex]){
     setupError.textContent="The host sent a question that does not match this quiz.";
@@ -998,9 +976,18 @@ function displayNetworkQuestion(message){
   currentQuestionIndex=message.questionIndex;
   partyChoices=[];
   try{
-    current=getNetworkQuestion(bank[currentQuestionIndex],currentQuestionIndex);
+    current=window.QuizHubPartyQuestion.getNetworkQuestion(
+      bank[currentQuestionIndex],
+      bank,
+      currentQuestionIndex,
+      partyRoomCode,
+    );
   }catch(error){
     setupError.textContent=error.message;
+    return;
+  }
+  if(!window.QuizHubPartyQuestion.isValidAnswerOrder(current,message.answerOrder)){
+    setupError.textContent="The host sent an invalid answer order for this question.";
     return;
   }
   questionNumber=sequencePosition+1;
@@ -1090,7 +1077,11 @@ function revealNetworkQuestion(message){
   }));
   message.answers.forEach((entry)=>{
     const player=partyPlayers.find((candidate)=>candidate.id===entry.playerId);
-    if(player && Number.isFinite(Number(entry.score))) player.score=Number(entry.score);
+    if(!player) return;
+    if(Number.isFinite(Number(entry.score))) player.score=Number(entry.score);
+    if(Number.isFinite(Number(entry.overallScore))) {
+      player.overallScore=Number(entry.overallScore);
+    }
   });
   const buttons=[...answersEl.querySelectorAll(".answer")];
   buttons.forEach((button)=>{
@@ -1751,18 +1742,43 @@ function renderQuestion(forcedAnswerOrder=null){
     button.className = 'answer';
     button.dataset.originalIndex = String(originalIndex);
     const answerLabel = answerLabels[displayIndex] || String(displayIndex + 1);
+    const hideHostDisplayAnswerText =
+      networkPartyActive && hostDisplayEnabled && !partyHostDisplay;
+    const isPartyTrueFalse = partyModeActive &&
+      window.QuizHubPartyQuestion.isTrueFalseQuestion(current) &&
+      !partyHostDisplay;
+    const answerButtonText = isPartyTrueFalse
+      ? formatPowerText(answer)
+      : window.QuizHubPartyQuestion.getAnswerButtonText(
+          answerLabel,
+          formatPowerText(answer),
+          hideHostDisplayAnswerText,
+        );
     if (isSoftEngi) {
       button.classList.add('softengi-answer');
-      button.setAttribute('aria-label', `${answerLabel}. ${formatPowerText(answer)}`);
+      button.setAttribute('aria-label', answerButtonText);
       const marker = document.createElement('span');
       marker.className = 'softengi-answer-marker';
-      marker.textContent = answerLabel;
-      const answerText = document.createElement('span');
-      answerText.className = 'softengi-answer-text';
-      answerText.textContent = formatPowerText(answer);
-      button.append(marker, answerText);
+      marker.textContent = isPartyTrueFalse
+        ? formatPowerText(answer)
+        : answerLabel;
+      button.appendChild(marker);
+      if (!hideHostDisplayAnswerText && !isPartyTrueFalse) {
+        const answerText = document.createElement('span');
+        answerText.className = 'softengi-answer-text';
+        answerText.textContent = formatPowerText(answer);
+        button.appendChild(answerText);
+      }
     } else {
-      button.textContent = `${answerLabel}. ${formatPowerText(answer)}`;
+      if (hideHostDisplayAnswerText) {
+        button.setAttribute('aria-label', answerButtonText);
+        const answerLabelElement = document.createElement('span');
+        answerLabelElement.className = 'host-display-answer-label';
+        answerLabelElement.textContent = answerButtonText;
+        button.appendChild(answerLabelElement);
+      } else {
+        button.textContent = answerButtonText;
+      }
     }
     button.addEventListener('click', () => chooseAnswer(originalIndex));
     answersEl.appendChild(button);
@@ -1793,7 +1809,12 @@ function loadQuestion(){
   currentQuestionIndex = questionIndex;
   try{
     current = networkPartyActive
-      ? getNetworkQuestion(bank[questionIndex],questionIndex)
+      ? window.QuizHubPartyQuestion.getNetworkQuestion(
+          bank[questionIndex],
+          bank,
+          questionIndex,
+          partyRoomCode,
+        )
       : bank[questionIndex];
   }catch(error){
     setupError.textContent=error.message;
@@ -2089,7 +2110,11 @@ function handleNetworkGameOver(message){
     if(message.players){
       message.players.forEach((updated)=>{
         const player=partyPlayers.find((candidate)=>candidate.id===updated.id);
-        if(player && Number.isFinite(Number(updated.score))) player.score=Number(updated.score);
+        if(!player) return;
+        if(Number.isFinite(Number(updated.score))) player.score=Number(updated.score);
+        if(Number.isFinite(Number(updated.overallScore))) {
+          player.overallScore=Number(updated.overallScore);
+        }
       });
     }
     quizEnded=true;
@@ -2110,10 +2135,12 @@ function handleNetworkGameOver(message){
       partyRoomCode,
       partyHost,
       partyCurrentPlayerId:currentResultPlayerId,
+      partyActionPlayerId:partyPlayerId,
       partyPlayers:partyPlayers.map((player)=>({
         ...player,
         longestCombo:partyLongestComboStreaks.get(player.id)||0
       })),
+      overallPartyPlayers:partyPlayers.map((player)=>({...player})),
       partyHistory,
       history,
       seen:history.length,

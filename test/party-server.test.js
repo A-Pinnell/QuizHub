@@ -66,6 +66,47 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     return socket;
   }
 
+  async function verifyPartyQuizLaunch(category, quiz) {
+    const quizHost = await connect();
+    const hostedPromise = waitForMessage(quizHost, "hosted");
+    send(quizHost, {
+      type: "host",
+      capacity: 2,
+      player: { name: `${category} Host`, color: "#ff0000" }
+    });
+    const hostedRoom = await hostedPromise;
+    const quizGuest = await connect();
+    const joinedPromise = waitForMessage(quizGuest, "joined");
+    send(quizGuest, {
+      type: "join",
+      code: hostedRoom.room.code,
+      player: { name: `${category} Guest`, color: "#0000ff" }
+    });
+    await joinedPromise;
+
+    const hostLaunchPromise = waitForMessage(quizHost, "launch");
+    const guestLaunchPromise = waitForMessage(quizGuest, "launch");
+    send(quizHost, {
+      type: "launch",
+      code: hostedRoom.room.code,
+      category,
+      quiz
+    });
+    const [hostLaunchMessage, guestLaunchMessage] = await Promise.all([
+      hostLaunchPromise,
+      guestLaunchPromise
+    ]);
+    for (const launch of [hostLaunchMessage, guestLaunchMessage]) {
+      assert.equal(launch.category, category);
+      assert.equal(launch.quiz, quiz);
+    }
+    quizHost.close();
+    quizGuest.close();
+  }
+
+  await verifyPartyQuizLaunch("CompArch", "test1");
+  await verifyPartyQuizLaunch("CloudComp", "test1");
+
   const host = await connect();
   const missingRoomError = waitForMessage(host, "error");
   send(host, { type: "check-room", code: "ZZZZ" });
@@ -434,6 +475,15 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     player: { name: "Other Player", color: "#00ff00", photo: "" }
   });
   const displayOtherJoined = await displayOtherJoinedPromise;
+  const invalidDisplayTheme = waitForMessage(displayHost, "error");
+  send(displayHost, {
+    type: "launch",
+    code: displayHosted.room.code,
+    category: "CompGFX",
+    quiz: "test1",
+    quizTheme: "not-a-theme"
+  });
+  assert.match((await invalidDisplayTheme).message, /valid quiz style/i);
   const displayLaunchPromise = waitForMessage(displayHost, "launch");
   const displayGuestLaunchPromise = waitForMessage(displayGuest, "launch");
   const displayOtherLaunchPromise = waitForMessage(displayOther, "launch");
@@ -441,9 +491,17 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     type: "launch",
     code: displayHosted.room.code,
     category: "CompGFX",
-    quiz: "test1"
+    quiz: "test1",
+    quizTheme: "blended"
   });
-  await Promise.all([displayLaunchPromise, displayGuestLaunchPromise, displayOtherLaunchPromise]);
+  const [displayLaunch, displayGuestLaunch, displayOtherLaunch] = await Promise.all([
+    displayLaunchPromise,
+    displayGuestLaunchPromise,
+    displayOtherLaunchPromise
+  ]);
+  assert.equal(displayLaunch.quizTheme, "blended");
+  assert.equal(displayGuestLaunch.quizTheme, "blended");
+  assert.equal(displayOtherLaunch.quizTheme, "blended");
 
   displayHost.close();
   await once(displayHost, "close");
@@ -457,6 +515,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   const rejoinedDisplayHost = await displayHostRejoined;
   assert.equal(rejoinedDisplayHost.room.stage, "setup");
   assert.equal(rejoinedDisplayHost.room.hostDisplay, true);
+  assert.equal(rejoinedDisplayHost.room.quizTheme, "blended");
   assert.equal(rejoinedDisplayHost.room.players.find((player) => player.host).connected, true);
 
   const displayStartedPromise = waitForMessage(displayHost, "quiz-start");
@@ -565,4 +624,39 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   const displayOtherGameOver = waitForMessage(displayOther, "game-over");
   send(displayGuest, { type: "end-game", code: displayHosted.room.code, reason: "ended" });
   await Promise.all([displayHostGameOver, displayGuestGameOver, displayOtherGameOver]);
+
+  const displayReplayRejected = waitForMessage(displayGuest, "error");
+  send(displayGuest, { type: "replay", code: displayHosted.room.code });
+  assert.match((await displayReplayRejected).message, /only the host/i);
+  const displayHostReplay = waitForMessage(displayHost, "replay");
+  const displayGuestReplay = waitForMessage(displayGuest, "replay");
+  const displayOtherReplay = waitForMessage(displayOther, "replay");
+  send(displayHost, { type: "replay", code: displayHosted.room.code });
+  const [hostDisplayReplayMessage, guestDisplayReplayMessage, otherDisplayReplayMessage] = await Promise.all([
+    displayHostReplay,
+    displayGuestReplay,
+    displayOtherReplay
+  ]);
+  assert.equal(hostDisplayReplayMessage.quizTheme, "blended");
+  assert.deepEqual(guestDisplayReplayMessage, hostDisplayReplayMessage);
+  assert.deepEqual(otherDisplayReplayMessage, hostDisplayReplayMessage);
+
+  const displayReplayStarted = waitForMessage(displayHost, "quiz-start");
+  send(displayHost, {
+    type: "quiz-start",
+    code: displayHosted.room.code,
+    config: { questionSequence: [0] }
+  });
+  await displayReplayStarted;
+  const displayReplayGameOver = waitForMessage(displayHost, "game-over");
+  send(displayHost, { type: "end-game", code: displayHosted.room.code, reason: "ended" });
+  await displayReplayGameOver;
+  const chooseQuizRejected = waitForMessage(displayGuest, "error");
+  send(displayGuest, { type: "choose-new-quiz", code: displayHosted.room.code });
+  assert.match((await chooseQuizRejected).message, /only the host/i);
+  const displayHostChooseQuiz = waitForMessage(displayHost, "choose-new-quiz");
+  const displayGuestChooseQuiz = waitForMessage(displayGuest, "choose-new-quiz");
+  const displayOtherChooseQuiz = waitForMessage(displayOther, "choose-new-quiz");
+  send(displayHost, { type: "choose-new-quiz", code: displayHosted.room.code });
+  await Promise.all([displayHostChooseQuiz, displayGuestChooseQuiz, displayOtherChooseQuiz]);
 });

@@ -30,9 +30,13 @@
   const hostDisplayPlayerSelect=document.getElementById("partyHostDisplayPlayer");
   const hostDisplayAccountStatus=document.getElementById("partyHostDisplayAccountStatus");
   const quizCatalog={
-    CompArch:[["quiz1","First Slides Practice"]],
+    CompArch:[["quiz1","First Slides Practice"],["test1","Midterm Practice"]],
     CompGFX:[["test1","Midterm Practice"]],
-    CloudComp:[["quiz1","First Slides Practice"],["quiz2","Week 4 Slides Practice"]],
+    CloudComp:[
+      ["quiz1","First Slides Practice"],
+      ["quiz2","Week 4 Slides Practice"],
+      ["test1","Midterm Practice"]
+    ],
     SocIndi:[["reviewQuiz","Exam 1 Quiz"],["textbookQuiz","Textbook Quiz"]],
     DataSci:[["test1","Test 1 Practice"]],
     SoftEngi:[["test1","Lectures 1–6 Practice"]]
@@ -178,7 +182,7 @@
       :"Only the host can change these settings.";
   }
 
-  function enterQuiz(category,quiz,mixedSources=null){
+  function enterQuiz(category,quiz,mixedSources=null,quizTheme=room?.quizTheme){
     if(!room) return;
     const players=room.players
       .filter((player)=>!room.hostDisplay || !player.host)
@@ -201,6 +205,9 @@
     target.searchParams.set("partyMode","true");
     target.searchParams.set("partyRoom",code);
     target.searchParams.set("partyPlayer",playerId);
+    if(room.hostDisplay && quizTheme){
+      target.searchParams.set("partyQuizTheme",quizTheme);
+    }
     if(isHost) target.searchParams.set("partyHost","true");
     if(room.hostDisplay){
       target.searchParams.set("hostDisplay","true");
@@ -244,10 +251,21 @@
     try{
       if(quizModeSelect.value==="mixed"){
         const mixedSources=window.QuizHubMixedStudy.readSourceChoices(mixedStudyChoices);
-        await client.send({type:"launch",code,category:"MixedStudy",quiz:"mixed",mixedSources});
+        await client.send({
+          type:"launch",
+          code,
+          category:"MixedStudy",
+          quiz:"mixed",
+          mixedSources,
+          quizTheme:window.quizHubPreferences.quizTheme
+        });
       }else{
         await client.send({
-          type:"launch",code,category:categorySelect.value,quiz:quizSelect.value
+          type:"launch",
+          code,
+          category:categorySelect.value,
+          quiz:quizSelect.value,
+          quizTheme:window.quizHubPreferences.quizTheme
         });
       }
     }catch(sendError){
@@ -308,7 +326,7 @@
     room=message.room;
     renderPlayers();
     if(room.stage==="setup" || room.stage==="quiz"){
-      enterQuiz(room.category,room.quiz,room.mixedSources);
+      enterQuiz(room.category,room.quiz,room.mixedSources,room.quizTheme);
     }
   });
   client.on("room-state",(message)=>{
@@ -316,7 +334,12 @@
     renderPlayers();
   });
   client.on("all-ready",()=>{status.textContent="Everyone is ready.";});
-  client.on("launch",(message)=>enterQuiz(message.category,message.quiz,message.mixedSources));
+  client.on("launch",(message)=>enterQuiz(
+    message.category,
+    message.quiz,
+    message.mixedSources,
+    message.quizTheme,
+  ));
   client.on("left",()=>location.replace("index.html"));
   client.on("host-changed",(message)=>{
     if(message.hostId===playerId){

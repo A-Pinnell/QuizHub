@@ -1,0 +1,2 @@
+If playing again with the same party of people in Party Mode, keep track of the player's scores throughout and show overall placements as well as the current quiz (via buttons to toggle between each)
+Return to Menu should always work regardless if party server connection is closed
