@@ -94,6 +94,22 @@
 		return hideAnswerText ? answerLabel : `${answerLabel}. ${answer}`;
 	}
 
+	function getPlayerStanding(players, playerId) {
+		if (!Array.isArray(players)) return null;
+		const player = players.find((entry) => entry?.id === playerId);
+		if (!player) return null;
+		const score = Number.isFinite(Number(player.score))
+			? Number(player.score)
+			: 0;
+		const playersAhead = players.filter(
+			(entry) =>
+				entry?.id !== playerId &&
+				Number.isFinite(Number(entry?.score)) &&
+				Number(entry.score) > score,
+		).length;
+		return { score, place: playersAhead + 1 };
+	}
+
 	function isTrueFalseQuestion(question) {
 		if (!question || !Array.isArray(question.a)) return false;
 		const answers = question.a.filter((answer) => answer !== "BLANK");
@@ -108,6 +124,7 @@
 		getNetworkQuestion,
 		isValidAnswerOrder,
 		getAnswerButtonText,
+		getPlayerStanding,
 		isTrueFalseQuestion,
 	};
 });

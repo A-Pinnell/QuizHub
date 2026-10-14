@@ -387,6 +387,7 @@ const scoreDisplay = document.getElementById('scoreDisplay');
 const comboDisplay = document.getElementById('comboDisplay');
 const comboPopup = document.getElementById('comboPopup');
 const questionDisplay = document.getElementById('questionDisplay');
+const hostDisplayPlayerScore=document.getElementById("hostDisplayPlayerScore");
 
 const partyScoreDisplay=document.getElementById("partyScoreDisplay");
 const partyScoreToggle=document.getElementById("partyScoreToggle");
@@ -759,6 +760,7 @@ function updatePartyScoreDisplay(){
   if(!partyScoreDisplay) return;
   partyScoreDisplay.hidden=!partyModeActive;
   partyScoreToggle.hidden=!partyModeActive;
+  updateHostDisplayPlayerScore();
   if(!partyModeActive) return;
   const visiblePlayers=networkPartyActive && !partyShowPlayerScores
     ? partyPlayers.filter((player)=>player.id===partyPlayerId)
@@ -771,6 +773,20 @@ function updatePartyScoreDisplay(){
     score.setAttribute("aria-label",`${networkPartyActive && !partyShowPlayerScores?"Your score":player.name}: ${player.score} points`);
     return score;
   }));
+}
+
+function updateHostDisplayPlayerScore(){
+  if(!hostDisplayPlayerScore) return;
+  const standing=networkPartyActive && hostDisplayEnabled && !partyHost
+    ? window.QuizHubPartyQuestion.getPlayerStanding(partyPlayers,partyPlayerId)
+    : null;
+  hostDisplayPlayerScore.hidden=!standing;
+  if(!standing) return;
+  const suffix=standing.place%100>=11 && standing.place%100<=13
+    ? "th"
+    : ({1:"st",2:"nd",3:"rd"}[standing.place%10]||"th");
+  hostDisplayPlayerScore.textContent=
+    `Score: ${standing.score} · Place: ${standing.place}${suffix}`;
 }
 
 function updatePartySettingsSummary(config){

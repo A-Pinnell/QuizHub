@@ -72,6 +72,24 @@ test("Host Display players see labels only while the display keeps answer text",
 	assert.equal(partyQuestion.getAnswerButtonText("B", "False", false), "B. False");
 });
 
+test("Host Display player standing ranks current scores and shares tied places", () => {
+	const players = [
+		{ id: "first", score: 5 },
+		{ id: "tied", score: 5 },
+		{ id: "third", score: 2 },
+	];
+
+	assert.deepEqual(partyQuestion.getPlayerStanding(players, "first"), {
+		score: 5,
+		place: 1,
+	});
+	assert.deepEqual(partyQuestion.getPlayerStanding(players, "third"), {
+		score: 2,
+		place: 3,
+	});
+	assert.equal(partyQuestion.getPlayerStanding(players, "missing"), null);
+});
+
 test("true/false Party Mode is recognized for answer-button labels", () => {
 	assert.equal(partyQuestion.isTrueFalseQuestion({ a: ["True", "False"] }), true);
 	assert.equal(
