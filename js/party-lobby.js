@@ -168,10 +168,10 @@
   function renderPartyOptions(){
     if(!room) return;
     const options=room.partyOptions||{
-      showPlayerScores:true,showLockedAnswers:true,earlyPointBonus:true
+      showPlayerScores:true,showLockedAnswers:false,earlyPointBonus:true
     };
     showScoresInput.checked=options.showPlayerScores;
-    showLockedAnswersInput.checked=options.showLockedAnswers!==false;
+    showLockedAnswersInput.checked=options.showLockedAnswers===true;
     earlyBonusInput.checked=options.earlyPointBonus;
     const canEdit=isHost && room.stage==="lobby";
     showScoresInput.disabled=!canEdit;

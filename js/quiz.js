@@ -2150,6 +2150,7 @@ function handleNetworkGameOver(message){
       onlineParty:true,
       partyRoomCode,
       partyHost,
+      partyHostDisplay,
       partyCurrentPlayerId:currentResultPlayerId,
       partyActionPlayerId:partyPlayerId,
       partyPlayers:partyPlayers.map((player)=>({

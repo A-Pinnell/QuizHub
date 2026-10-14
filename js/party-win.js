@@ -55,7 +55,7 @@
   const currentPlayer=standings.find((player)=>
     player.id===results.partyCurrentPlayerId
   );
-  if(currentPlayer){
+  if(currentPlayer && results.partyHostDisplay!==true){
     const currentPlayerWon=winners.some((player)=>player.id===currentPlayer.id);
     const resultMusic=new Audio(currentPlayerWon?"music/PartyWin.mp3":"music/PartyLose.mp3");
     resultMusic.play().catch((playError)=>{

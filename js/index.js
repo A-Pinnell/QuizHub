@@ -838,6 +838,25 @@ function createPartyProfile(index, profile = {}) {
 		partyModeError.textContent = "";
 		const reader = new FileReader();
 		reader.onload = () => {
+			const imageData = String(reader.result);
+			if (file.type === "image/gif") {
+				if (imageData.length > 450_000) {
+					partyModeError.textContent =
+						"Choose a GIF smaller than about 330 KB to preserve its animation.";
+				} else {
+					avatar.replaceChildren(
+						Object.assign(document.createElement("img"), {
+							src: imageData,
+							alt: "",
+						}),
+					);
+					card.dataset.photo = imageData;
+					capturePartyDrafts();
+					partyModeError.textContent = "";
+				}
+				delete card.dataset.photoPending;
+				return;
+			}
 			const image = new Image();
 			image.onload = () => {
 				const canvas = document.createElement("canvas");
@@ -868,7 +887,7 @@ function createPartyProfile(index, profile = {}) {
 				delete card.dataset.photoPending;
 				partyModeError.textContent = "Could not load that player picture.";
 			};
-			image.src = String(reader.result);
+			image.src = imageData;
 		};
 		reader.onerror = () => {
 			delete card.dataset.photoPending;

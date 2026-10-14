@@ -39,6 +39,17 @@
     }
     const reader=new FileReader();
     reader.onload=()=>{
+      const imageData=String(reader.result);
+      if(file.type==="image/gif"){
+        if(imageData.length>450_000){
+          error.textContent="Choose a GIF smaller than about 330 KB to preserve its animation.";
+          return;
+        }
+        photo=imageData;
+        preview.replaceChildren(Object.assign(document.createElement("img"),{src:photo,alt:""}));
+        error.textContent="";
+        return;
+      }
       const image=new Image();
       image.onload=()=>{
         const scale=Math.min(1,256/Math.max(image.naturalWidth,image.naturalHeight));
@@ -56,7 +67,7 @@
         error.textContent="";
       };
       image.onerror=()=>{error.textContent="Could not load that picture.";};
-      image.src=String(reader.result);
+      image.src=imageData;
     };
     reader.onerror=()=>{error.textContent="Could not read that picture.";};
     reader.readAsDataURL(file);

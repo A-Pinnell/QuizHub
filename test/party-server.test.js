@@ -112,17 +112,19 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   send(host, { type: "check-room", code: "ZZZZ" });
   assert.match((await missingRoomError).message, /No active lobby/);
   const hostedPromise = waitForMessage(host, "hosted");
+  const gifProfile = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
   send(host, {
     type: "host",
     capacity: 50,
-    player: { name: "Host", color: "#ff0000", photo: "" }
+    player: { name: "Host", color: "#ff0000", photo: gifProfile }
   });
   const hosted = await hostedPromise;
   assert.match(hosted.room.code, /^[A-Z]{4}$/);
   assert.equal(hosted.room.capacity, 50);
+  assert.equal(hosted.room.players[0].photo, gifProfile);
   assert.deepEqual(hosted.room.partyOptions, {
     showPlayerScores: true,
-    showLockedAnswers: true,
+    showLockedAnswers: false,
     earlyPointBonus: true
   });
 
@@ -159,20 +161,46 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.match((await duplicateNameError).message,/name is already in the room/i);
   duplicateNameClient.close();
 
-  const hostPartyOptions = waitForMessage(host, "room-state", (message) => !message.room.partyOptions.showPlayerScores);
-  const guestPartyOptions = waitForMessage(guest, "room-state", (message) => !message.room.partyOptions.showPlayerScores);
+  const hostPartyOptions = waitForMessage(host, "room-state", (message) => message.room.partyOptions.showLockedAnswers);
+  const guestPartyOptions = waitForMessage(guest, "room-state", (message) => message.room.partyOptions.showLockedAnswers);
+  send(host, {
+    type: "party-options",
+    code: hosted.room.code,
+    options: { showPlayerScores: false, showLockedAnswers: true, earlyPointBonus: true }
+  });
+  const [hostPartyOptionsMessage, guestPartyOptionsMessage] = await Promise.all([hostPartyOptions, guestPartyOptions]);
+  assert.deepEqual(hostPartyOptionsMessage.room.partyOptions, {
+    showPlayerScores: false,
+    showLockedAnswers: true,
+    earlyPointBonus: true
+  });
+  assert.deepEqual(guestPartyOptionsMessage.room.partyOptions, hostPartyOptionsMessage.room.partyOptions);
+
+  const hostOptionsDisabled = waitForMessage(host, "room-state", (message) => !message.room.partyOptions.showLockedAnswers);
+  const guestOptionsDisabled = waitForMessage(guest, "room-state", (message) => !message.room.partyOptions.showLockedAnswers);
   send(host, {
     type: "party-options",
     code: hosted.room.code,
     options: { showPlayerScores: false, showLockedAnswers: false, earlyPointBonus: true }
   });
-  const [hostPartyOptionsMessage, guestPartyOptionsMessage] = await Promise.all([hostPartyOptions, guestPartyOptions]);
-  assert.deepEqual(hostPartyOptionsMessage.room.partyOptions, {
-    showPlayerScores: false,
-    showLockedAnswers: false,
-    earlyPointBonus: true
+  const [hostOptionsDisabledMessage, guestOptionsDisabledMessage] = await Promise.all([
+    hostOptionsDisabled,
+    guestOptionsDisabled
+  ]);
+  assert.deepEqual(guestOptionsDisabledMessage.room.partyOptions, hostOptionsDisabledMessage.room.partyOptions);
+
+  const hostOptionsEnabledAgain = waitForMessage(host, "room-state", (message) => message.room.partyOptions.showLockedAnswers);
+  const guestOptionsEnabledAgain = waitForMessage(guest, "room-state", (message) => message.room.partyOptions.showLockedAnswers);
+  send(host, {
+    type: "party-options",
+    code: hosted.room.code,
+    options: { showPlayerScores: false, showLockedAnswers: true, earlyPointBonus: true }
   });
-  assert.deepEqual(guestPartyOptionsMessage.room.partyOptions, hostPartyOptionsMessage.room.partyOptions);
+  const [hostOptionsEnabledMessage, guestOptionsEnabledMessage] = await Promise.all([
+    hostOptionsEnabledAgain,
+    guestOptionsEnabledAgain
+  ]);
+  assert.deepEqual(guestOptionsEnabledMessage.room.partyOptions, hostOptionsEnabledMessage.room.partyOptions);
 
   const lobbyLeaveUpdate = waitForMessage(host, "room-state");
   const lobbyLeft = waitForMessage(guest, "left");
@@ -254,7 +282,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.equal(guestStartMessage.hideLockedAnswers, undefined);
   assert.deepEqual(hostStartMessage.config.partyOptions, {
     showPlayerScores: false,
-    showLockedAnswers: false,
+    showLockedAnswers: true,
     earlyPointBonus: true
   });
   assert.deepEqual(guestStartMessage.config.partyOptions, hostStartMessage.config.partyOptions);
@@ -280,7 +308,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   });
   const lockedMessage = await lockedPromise;
   assert.equal(lockedMessage.playerId, joined.playerId);
-  assert.equal(lockedMessage.answerIndex, undefined);
+  assert.equal(lockedMessage.answerIndex, 1);
 
   const hostReveal = waitForMessage(host, "reveal");
   const guestReveal = waitForMessage(guest, "reveal");

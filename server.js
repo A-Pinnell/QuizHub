@@ -101,7 +101,8 @@ function cleanProfile(profile) {
   const color = typeof profile.color === "string" && /^#[0-9a-f]{6}$/i.test(profile.color)
     ? profile.color
     : "#4688e8";
-  const photo = typeof profile.photo === "string" && /^data:image\/jpeg;base64,[a-z0-9+/=]+$/i.test(profile.photo)
+  const photo = typeof profile.photo === "string" &&
+    /^data:image\/(?:jpeg|gif);base64,[a-z0-9+/=]+$/i.test(profile.photo)
     ? profile.photo
     : "";
   if (!name) throw new TypeError("Enter a player name.");
@@ -204,7 +205,7 @@ function handleMessage(socket, rawMessage) {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
         question: null, answersLocked: [], reveal: null, quizConfig: null, mixedSources: null,
         hostDisplay: false, hostDisplayPlayerId: null, quizTheme: null,
-        partyOptions: { showPlayerScores: true, showLockedAnswers: true, earlyPointBonus: true }
+        partyOptions: { showPlayerScores: true, showLockedAnswers: false, earlyPointBonus: true }
       };
       room.expiration = setTimeout(() => {
         broadcast(room, { type: "error", message: "This room expired." });

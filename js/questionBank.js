@@ -16017,17 +16017,6 @@ window.questionBank = {
 			],
 			c: 0,
 		},
-
-		{
-			q: "What is the main topic of Unit/Week 04a?",
-			a: [
-				"Supervised Learning",
-				"Unsupervised Learning",
-				"Data Preparation",
-				"Clustering",
-			],
-			c: 0,
-		},
 		{
 			q: "Which topics are covered in Week 04 according to the schedule?",
 			a: [
@@ -16609,27 +16598,6 @@ window.questionBank = {
 			c: 0,
 		},
 		{
-			q: "What is the exercise at the end of Unit 04a asking students to find?",
-			a: [
-				"Data where logistic regression could be used to make predictions",
-				"A new programming language",
-				"A clustering algorithm",
-				"A new distance metric",
-			],
-			c: 0,
-		},
-
-		{
-			q: "What is the main topic of Unit/Week 04b?",
-			a: [
-				"Supervised Learning, Linear Regression, and Model Evaluations",
-				"Unsupervised Learning and Clustering",
-				"Python and R basics",
-				"Data Preparation",
-			],
-			c: 0,
-		},
-		{
 			q: "What can logistic regression predict before the output is converted to a category?",
 			a: [
 				"A value between 0 and 1",
@@ -17172,17 +17140,6 @@ window.questionBank = {
 		{
 			q: "In the confusion matrix example, how many samples are classified as no?",
 			a: ["4", "8", "12", "6"],
-			c: 0,
-		},
-
-		{
-			q: "What is the main topic of Unit/Week 05a?",
-			a: [
-				"Unsupervised Learning and Clustering",
-				"Supervised Learning and Regression",
-				"Python and R Programming",
-				"Data Preparation",
-			],
 			c: 0,
 		},
 		{
