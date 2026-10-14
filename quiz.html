@@ -27,9 +27,9 @@
     document.documentElement.classList.add("native-app");
   }
 </script>
-<link rel="stylesheet" href="css/quiz.css?v=20261013-17" >
+<link rel="stylesheet" href="css/quiz.css?v=20261014-9" >
 <link rel="stylesheet" href="css/preferences.css">
-<link rel="stylesheet" href="css/cover-screen.css?v=20261012-6">
+<link rel="stylesheet" href="css/cover-screen.css?v=20261014-2">
 <script src="./js/audio-focus.js" defer></script>
 <script src="./js/load-preferences.js"></script>
 <script src="./js/questionBank.js" defer></script>
@@ -37,7 +37,7 @@
 <script src="./js/party-question.js" defer></script>
 <script src="./js/party-config.js" defer></script>
 <script src="./js/party-client.js" defer></script>
-<script src="./js/quiz.js?v=20261013-4" defer></script>
+<script src="./js/quiz.js?v=20261014-20" defer></script>
 </head>
 <body>
 <div class="quiz-page" id="quizPage">
@@ -108,7 +108,15 @@
     <div class="gfx-status-bar" aria-hidden="true"><span>Collection | Cube</span><span>Verts: 8 &nbsp; Edges: 12 &nbsp; Faces: 6</span></div>
     <div class="quiz-heading">
       <p class="course-code" id="courseCode">COURSE CODE - QUIZ</p>
-      <p class="question-title" id="questionTitle">Setup Menu</p>
+      <div class="question-content-row">
+        <p class="question-title" id="questionTitle">Setup Menu</p>
+        <button class="question-image-trigger" id="questionImageTrigger" type="button"
+          aria-label="View question image" aria-haspopup="dialog" hidden>
+          <img id="questionImage" alt="">
+        </button>
+        <button class="question-image-view" id="questionImageView" type="button"
+          aria-haspopup="dialog" hidden>View Image</button>
+      </div>
     </div>
   </section>
     <div class="quiz-hud">
@@ -181,6 +189,22 @@
 
     <section class="quiz-content" id="quizContent" hidden>
       <div class="softengi-composer">
+        <section class="table-answer-builder" id="tableAnswerBuilder" aria-label="Mesh table answer" hidden>
+          <div class="table-answer-scroll" id="tableAnswerScroll"></div>
+          <p class="table-answer-status" id="tableAnswerStatus" aria-live="polite"></p>
+          <button class="control table-answer-submit" id="tableAnswerSubmit" type="button">Check table</button>
+        </section>
+        <section class="opengl-builder" id="openglBuilder" aria-label="OpenGL transformation answer" hidden>
+          <div class="opengl-function-buttons" aria-label="Add a transformation">
+            <button class="opengl-function-button" type="button" data-transform-add="translate">glTranslatef(tx, ty, 0.0);</button>
+            <button class="opengl-function-button" type="button" data-transform-add="rotate">glRotatef(angle, 0.0, 0.0, 1.0);</button>
+            <button class="opengl-function-button" type="button" data-transform-add="scale">glScalef(sx, sy, 1.0);</button>
+          </div>
+          <ol class="opengl-sequence" id="openglSequence" aria-label="Transformation sequence"></ol>
+          <p class="opengl-attempts" id="openglAttempts" aria-live="polite"></p>
+          <pre class="opengl-solution" id="openglSolution" hidden><code></code></pre>
+          <button class="control opengl-submit" id="openglSubmit" type="button">Check answer</button>
+        </section>
         <section class="answers" id="answers">
           <button class="answer"></button>
           <button class="answer"></button>
@@ -219,6 +243,11 @@
   </div>
   <div class="review-section-choices" id="reviewSectionChoices"></div>
   <button class="control review-section-done" id="reviewSectionDone" type="button">DONE</button>
+</dialog>
+
+<dialog class="question-image-dialog" id="questionImageDialog" aria-label="Question image">
+  <button class="question-image-close" id="questionImageClose" type="button" aria-label="Close image">×</button>
+  <img id="questionImageExpanded" alt="">
 </dialog>
 
 <div class="combo-popup" id="comboPopup" aria-live="polite" aria-atomic="true" hidden></div>

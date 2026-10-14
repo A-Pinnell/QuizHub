@@ -18,6 +18,9 @@ const soundFiles={
 };
 
 const params=new URLSearchParams(location.search);
+const requestedQuiz=params.get("quiz");
+const requestedCategory=canonicalCategory(params.get("category"));
+const forceStaticQuestionOrder=requestedCategory==="CompGFX" && requestedQuiz==="lautest";
 const originalDocumentTitle=document.title;
 const clamshellViewport=window.matchMedia("(max-width: 760px)");
 function syncClamshellDocumentTitle(){
@@ -112,7 +115,8 @@ let musicMuted=localStorage.getItem('quizHubMusicMuted')==='true';
 const musicToggle=document.getElementById('musicToggle');
 const requestedMusicCategory=canonicalCategory(new URLSearchParams(location.search).get('category'));
 const quizMusicFile=
-requestedMusicCategory==='DataSci' ? resolveAssetUrl('./music/DataSciMusic.wav') 
+forceStaticQuestionOrder ? resolveAssetUrl('./music/Challenge_Intro.mp3')
+: requestedMusicCategory==='DataSci' ? resolveAssetUrl('./music/DataSciMusic.wav')
 : requestedMusicCategory==='Practice1' ? resolveAssetUrl('./music/BinaryTrack.wav') 
 : requestedMusicCategory==='Practice2' ? resolveAssetUrl('./music/HexadecimalTrack.wav') 
 : requestedMusicCategory==='CloudComp' ? resolveAssetUrl('./music/CloudCompMusic.wav') 
@@ -120,28 +124,123 @@ requestedMusicCategory==='DataSci' ? resolveAssetUrl('./music/DataSciMusic.wav')
 : requestedMusicCategory==='CompGFX' ? resolveAssetUrl('./music/CompGFXMusic.wav')
 : requestedMusicCategory==='SocIndi' ? resolveAssetUrl('./music/SocIndiMusic.wav')
 : resolveAssetUrl('./music/QuizMusic.wav');
-const quizMusic=new Audio(window.quizHubPreferences.resolveQuizMusic(quizMusicFile));
+const quizMusic=new Audio(forceStaticQuestionOrder
+  ? quizMusicFile
+  : window.quizHubPreferences.resolveQuizMusic(quizMusicFile));
 const isPreloadedQuiz=window.self!==window.top;
 let quizMusicPending=false;
+let lautestQuizMusicStarted=false;
+let lautestLoopContext=null;
+const lautestLoopBuffers=new Map();
+let lautestLoopSource=null;
+let lautestLoopSourceUrl="";
+let lautestLoopGeneration=0;
 quizMusic.loop=true;
 quizMusic.volume=.45;
 function updateMusicToggle(){
   musicToggle.textContent=musicMuted?'♫̸':'♫';
+  musicToggle.disabled=false;
   musicToggle.setAttribute('aria-label',musicMuted?'Unmute music':'Mute music');
   musicToggle.setAttribute('aria-pressed',String(musicMuted));
 }
 function startQuizMusic(){
   if(isPreloadedQuiz || musicMuted || !hostDisplayMusicAllowed) return;
+  if(forceStaticQuestionOrder){
+    startLautestLoopingMusic();
+    return;
+  }
   quizMusic.play()
     .then(()=>{quizMusicPending=false;})
     .catch(()=>{quizMusicPending=true;});
+}
+async function startLautestLoopingMusic(){
+  if(musicMuted || !hostDisplayMusicAllowed) return;
+  const AudioContextClass=window.AudioContext || window.webkitAudioContext;
+  if(!AudioContextClass){
+    quizMusic.play().catch((error)=>{
+      console.error("Could not play Dr. Lau's Practice music:",error);
+      quizMusicPending=true;
+    });
+    return;
+  }
+
+  const sourceUrl=quizMusic.src;
+  if(!lautestLoopSource || lautestLoopSourceUrl!==sourceUrl){
+    quizMusic.play()
+      .then(()=>{quizMusicPending=false;})
+      .catch(()=>{quizMusicPending=true;});
+  }
+
+  try{
+    const generation=++lautestLoopGeneration;
+    lautestLoopContext ||= new AudioContextClass();
+    const resume=lautestLoopContext.resume();
+    let bufferPromise=lautestLoopBuffers.get(sourceUrl);
+    if(!bufferPromise){
+      bufferPromise=fetch(sourceUrl)
+      .then((response)=>{
+        if(!response.ok) throw new Error(`Music request failed with status ${response.status}`);
+        return response.arrayBuffer();
+      })
+      .then((data)=>lautestLoopContext.decodeAudioData(data));
+      lautestLoopBuffers.set(sourceUrl,bufferPromise);
+    }
+    const [buffer]=await Promise.all([bufferPromise,resume]);
+    if(generation!==lautestLoopGeneration || musicMuted || sourceUrl!==quizMusic.src) return;
+    if(lautestLoopSource && lautestLoopSourceUrl===sourceUrl) return;
+    if(lautestLoopSource) lautestLoopSource.stop();
+
+    const source=lautestLoopContext.createBufferSource();
+    const gain=lautestLoopContext.createGain();
+    source.buffer=buffer;
+    source.loop=true;
+    gain.gain.value=quizMusic.volume;
+    source.connect(gain);
+    gain.connect(lautestLoopContext.destination);
+    const offset=quizMusic.paused ? 0 : quizMusic.currentTime % buffer.duration;
+    source.start(0,offset);
+    lautestLoopSource=source;
+    lautestLoopSourceUrl=sourceUrl;
+    quizMusic.pause();
+    quizMusicPending=false;
+  }catch(error){
+    if(musicMuted) return;
+    console.error("Could not start seamless Dr. Lau's Practice music:",error);
+    quizMusicPending=true;
+    quizMusic.play().catch((fallbackError)=>{
+      console.error("Could not play Dr. Lau's Practice music:",fallbackError);
+    });
+  }
+}
+function stopLautestLoopingMusic(){
+  lautestLoopGeneration++;
+  if(lautestLoopSource){
+    lautestLoopSource.stop();
+    lautestLoopSource=null;
+    lautestLoopSourceUrl="";
+  }
+  quizMusic.pause();
+  quizMusicPending=false;
+}
+function startLautestQuizMusic(){
+  if(!forceStaticQuestionOrder || lautestQuizMusicStarted) return;
+  lautestQuizMusicStarted=true;
+  stopLautestLoopingMusic();
+  quizMusic.src=resolveAssetUrl('./music/Challenge.mp3');
+  quizMusic.load();
+  quizMusicPending=true;
+  startQuizMusic();
 }
 musicToggle.addEventListener('click',()=>{
   musicMuted=!musicMuted;
   localStorage.setItem('quizHubMusicMuted',String(musicMuted));
   unlockQuizAudio();
-  if(musicMuted) quizMusic.pause();
-  else if(quizStarted) startQuizMusic();
+  if(musicMuted){
+    if(forceStaticQuestionOrder) stopLautestLoopingMusic();
+    else quizMusic.pause();
+  }else{
+    startQuizMusic();
+  }
   updateMusicToggle();
 });
 updateMusicToggle();
@@ -155,8 +254,6 @@ document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible') startQuizMusic();
 });
 
-const requestedCategory = canonicalCategory(params.get("category"));
-const requestedQuiz = params.get("quiz");
 const mixedStudyActive = requestedCategory === "MixedStudy" && requestedQuiz === "mixed";
 let mixedStudyConfigError = "";
 let requestedMixedSources = null;
@@ -360,6 +457,15 @@ root.style.setProperty("--quiz-danger-color", theme.danger);
 
 const courseCode = document.getElementById("courseCode");
 const answersEl = document.getElementById("answers");
+const tableAnswerBuilder=document.getElementById("tableAnswerBuilder");
+const tableAnswerScroll=document.getElementById("tableAnswerScroll");
+const tableAnswerStatus=document.getElementById("tableAnswerStatus");
+const tableAnswerSubmit=document.getElementById("tableAnswerSubmit");
+const openglBuilder=document.getElementById("openglBuilder");
+const openglSequence=document.getElementById("openglSequence");
+const openglAttempts=document.getElementById("openglAttempts");
+const openglSolution=document.getElementById("openglSolution");
+const openglSubmit=document.getElementById("openglSubmit");
 const feedback = document.getElementById("feedback");
 const skipButton = document.getElementById("skip");
 const nextButton = document.getElementById("next");
@@ -395,6 +501,13 @@ const partySettingsSummary=document.getElementById("partySettingsSummary");
 const partyPlayerLeftDialog=document.getElementById("partyPlayerLeftDialog");
 const partyPlayerLeftMessage=document.getElementById("partyPlayerLeftMessage");
 const questionTitle = document.getElementById('questionTitle');
+const questionContentRow=document.querySelector(".question-content-row");
+const questionImageTrigger=document.getElementById("questionImageTrigger");
+const questionImage=document.getElementById("questionImage");
+const questionImageView=document.getElementById("questionImageView");
+const questionImageDialog=document.getElementById("questionImageDialog");
+const questionImageExpanded=document.getElementById("questionImageExpanded");
+const questionImageClose=document.getElementById("questionImageClose");
 const isSoftEngi = activeQuizTheme === "ai-model";
 const isCompGFX = category === "CompGFX" && activeQuizTheme === "blended";
 const softengiSidebar = document.getElementById('softengiSidebar');
@@ -429,6 +542,7 @@ if (isSoftEngi) {
 }
 if (isCompGFX) {
   document.body.classList.add('compgfx-mode');
+  if(forceStaticQuestionOrder) document.body.classList.add('lautest-mode');
   document.body.append(feedback);
   setupTitle.textContent = 'New Quiz';
   setup.querySelector('.setup-kicker').textContent = 'QUIZ WORKSPACE';
@@ -477,6 +591,11 @@ countMax.textContent = `of ${totalAvailable}`;
 setupCount.textContent = `${totalAvailable} question${totalAvailable === 1 ? "" : "s"} available in this quiz.`;
 
 let orderMode = "random";
+const randomOrderInput=document.querySelector('input[name="order"][value="random"]');
+if(forceStaticQuestionOrder){
+  randomOrderInput.closest('fieldset').remove();
+  orderMode="static";
+}
 let timeLimitMinutes = null;
 let perQuestionTimeMinutes = initialQuestionTimeLimit;
 let selectedQuestionCount = totalAvailable;
@@ -484,6 +603,7 @@ let questionSequence = [];
 let sequencePosition = 0;
 let current = null;
 let currentQuestionIndex = null;
+let lastLautestCorrectAnswerPosition = null;
 let questionNumber = 0;
 let score = 0;
 let combo = 0;
@@ -491,6 +611,8 @@ let longestCombo = 0;
 const partyComboStreaks=new Map();
 const partyLongestComboStreaks=new Map();
 let answered = false;
+let openglAttemptCount = 0;
+let meshTableAttemptCount = 0;
 let history = [];
 let quizStarted = false;
 let remainingSeconds = null;
@@ -507,6 +629,8 @@ const compGfxCube = document.getElementById('gfxCube');
 const compGfxQuestion = document.querySelector('.gfx-cube-face > .quiz-heading');
 const compGfxCursor = document.getElementById('gfxSelectionCursor');
 let compGfxQuestionAnimation = null;
+let compGfxImageAnimation = null;
+let compGfxTransitionId = 0;
 const compGfxFaceOrder = ['front','left','back','right'];
 
 function placeCompGFXQuestionOnFace(rotation, selectFace=true){
@@ -680,10 +804,25 @@ function shuffleWithoutConsecutiveDuplicates(array){
   return copy;
 }
 
+function avoidRepeatedLautestCorrectAnswerPosition(answerOrder,correctIndex){
+  if(!forceStaticQuestionOrder) return answerOrder;
+  let correctPosition=answerOrder.indexOf(correctIndex);
+  if(correctPosition===-1) return answerOrder;
+  if(answerOrder.length>1 && correctPosition===lastLautestCorrectAnswerPosition){
+    let swapPosition=Math.floor(Math.random()*(answerOrder.length-1));
+    if(swapPosition>=correctPosition) swapPosition++;
+    [answerOrder[correctPosition],answerOrder[swapPosition]]=
+      [answerOrder[swapPosition],answerOrder[correctPosition]];
+    correctPosition=swapPosition;
+  }
+  lastLautestCorrectAnswerPosition=correctPosition;
+  return answerOrder;
+}
+
 function buildQuestionSequence(){
   const originalSequence = bank.map((_, index) => index);
 
-  if (orderMode === 'random') {
+  if (!forceStaticQuestionOrder && orderMode === 'random') {
     questionSequence = shuffle(originalSequence);
     if (originalSequence.length > 1 && questionSequence.every((value, index) => value === originalSequence[index])) {
       questionSequence = buildQuestionSequence();
@@ -809,8 +948,11 @@ function updatePartySettingsSummary(config){
     ? config.questionCount
     : config.questionSequence?.length;
   if(!Number.isInteger(questionCount)) return;
+  const selectedOrder=forceStaticQuestionOrder
+    ? "Static question order · Randomized A-D choices"
+    : `${config.orderMode==="static"?"Static":"Random"} order`;
   partySettingsSummary.textContent=
-    `Host settings: ${questionCount} questions · ${config.orderMode==="static"?"Static":"Random"} order · ${quizTime} · ${questionTime}${reviewSections}`;
+    `Host settings: ${questionCount} questions · ${selectedOrder} · ${quizTime} · ${questionTime}${reviewSections}`;
 }
 
 function publishPartySettings(){
@@ -824,7 +966,7 @@ function publishPartySettings(){
     : Number.parseInt(perQuestionTimeLimit.value,10);
   const config={
     questionCount,
-    orderMode:selectedOrder?.value==="static"?"static":"random",
+    orderMode:forceStaticQuestionOrder || selectedOrder?.value==="static"?"static":"random",
     timeLimitMinutes:selectedTime && selectedTime.value!=="none"
       ? Number(selectedTime.value)
       : null,
@@ -932,7 +1074,8 @@ function startNetworkQuiz(config,roomSnapshot=null){
   questionSequence=config.questionSequence.slice();
   selectedQuestionCount=questionSequence.length;
   countInput.value=String(selectedQuestionCount);
-  orderMode=config.orderMode==="static"?"static":"random";
+  orderMode=forceStaticQuestionOrder || config.orderMode==="static"?"static":"random";
+  lastLautestCorrectAnswerPosition=null;
   timeLimitMinutes=Number.isFinite(config.timeLimitMinutes)?config.timeLimitMinutes:null;
   perQuestionTimeMinutes=Number.isFinite(config.perQuestionTimeMinutes)?config.perQuestionTimeMinutes:null;
   partyShowPlayerScores=config.partyOptions?.showPlayerScores!==false;
@@ -957,7 +1100,8 @@ function startNetworkQuiz(config,roomSnapshot=null){
   if(isSoftEngi) document.body.classList.add("softengi-active");
   if(isCompGFX) transitionCompGFXIntoQuiz();
   playSound("begin");
-  startQuizMusic();
+  if(forceStaticQuestionOrder) startLautestQuizMusic();
+  else startQuizMusic();
   setup.hidden=true;
   content.hidden=false;
   startTimer();
@@ -1328,6 +1472,452 @@ function formatPowerText(value){
   });
 }
 
+function getQuestionImageSource(question){
+  const imagePath=typeof question?.image==="string"
+    ? question.image
+    : typeof question?.i==="string" ? question.i : "";
+  if(!imagePath) return "";
+  return resolveAssetUrl(imagePath);
+}
+
+function openQuestionImage(){
+  if(questionImageTrigger.hidden) return;
+  questionImageExpanded.src=questionImage.src;
+  questionImageExpanded.alt=questionImage.alt;
+  questionImageDialog.showModal();
+}
+
+questionImageTrigger.addEventListener("click",openQuestionImage);
+questionImageView.addEventListener("click",openQuestionImage);
+questionImageClose.addEventListener("click",()=>questionImageDialog.close());
+questionImageDialog.addEventListener("click",(event)=>{
+  if(event.target===questionImageDialog) questionImageDialog.close();
+});
+
+function updateQuestionImage(){
+  const imageSource=getQuestionImageSource(current);
+  const hasImage=Boolean(imageSource);
+  questionImageTrigger.hidden=!hasImage;
+  questionImageView.hidden=!hasImage;
+  if(isCompGFX){
+    const faceIndex=((Math.round(compGfxRotation/90)%compGfxFaceOrder.length)+
+      compGfxFaceOrder.length)%compGfxFaceOrder.length;
+    const rightFaceIndex=(faceIndex-1+compGfxFaceOrder.length)%compGfxFaceOrder.length;
+    const rightFace=compGfxCube?.querySelector(
+      `.gfx-cube-${compGfxFaceOrder[rightFaceIndex]}`,
+    );
+    if(hasImage && rightFace){
+      rightFace.removeAttribute("aria-hidden");
+      rightFace.appendChild(questionImageTrigger);
+    }
+    else if(questionContentRow && questionImageTrigger.parentElement!==questionContentRow){
+      questionContentRow.appendChild(questionImageTrigger);
+    }
+  }else if(questionContentRow && questionImageTrigger.parentElement!==questionContentRow){
+    questionContentRow.appendChild(questionImageTrigger);
+  }
+  if(!hasImage){
+    questionImage.removeAttribute("src");
+    questionImageExpanded.removeAttribute("src");
+    return;
+  }
+  const altText=`Question image: ${current.q}`;
+  questionImage.src=imageSource;
+  questionImage.alt=altText;
+  questionImageExpanded.src=imageSource;
+  questionImageExpanded.alt=altText;
+}
+
+function isOpenGLBuilderQuestion(){
+  return current?.interaction?.type==="opengl-transform-sequence" &&
+    !partyModeActive && !networkPartyActive;
+}
+
+function isMeshTableQuestion(){
+  return current?.interaction?.type==="mesh-table" &&
+    !partyModeActive && !networkPartyActive;
+}
+
+function resetMeshTableBuilder(){
+  const interaction=current.interaction;
+  const isVertexTable=interaction.table==="vertices";
+  meshTableAttemptCount=0;
+  const table=document.createElement("table");
+  table.className="mesh-answer-table";
+  const caption=document.createElement("caption");
+  caption.textContent=isVertexTable
+    ? "Vertex table — enter each vertex's coordinates."
+    : "Face table — enter the vertex IDs separated by commas (for example, V1, V2, V3).";
+  table.appendChild(caption);
+
+  const head=document.createElement("thead");
+  const headerRow=document.createElement("tr");
+  const rowHeader=document.createElement("th");
+  rowHeader.scope="col";
+  rowHeader.textContent=isVertexTable?"Vertex ID":"Face ID";
+  headerRow.appendChild(rowHeader);
+  interaction.columnHeaders.forEach((label)=>{
+    const header=document.createElement("th");
+    header.scope="col";
+    header.textContent=label;
+    headerRow.appendChild(header);
+  });
+  head.appendChild(headerRow);
+  table.appendChild(head);
+
+  const body=document.createElement("tbody");
+  interaction.correctTable.forEach((values,rowIndex)=>{
+    const row=document.createElement("tr");
+    const idHeader=document.createElement("th");
+    idHeader.scope="row";
+    idHeader.textContent=`${interaction.rowPrefix}${rowIndex}`;
+    row.appendChild(idHeader);
+    values.forEach((_,columnIndex)=>{
+      const cell=document.createElement("td");
+      const input=document.createElement("input");
+      input.type="text";
+      input.inputMode=isVertexTable?"decimal":"text";
+      input.placeholder=isVertexTable?"0":"V?, V?, ...";
+      input.autocomplete="off";
+      input.spellcheck=false;
+      input.dataset.row=String(rowIndex);
+      input.dataset.column=String(columnIndex);
+      input.setAttribute(
+        "aria-label",
+        isVertexTable
+          ? `Vertex ${interaction.rowPrefix}${rowIndex}, ${interaction.columnHeaders[columnIndex]}`
+          : `Face ${interaction.rowPrefix}${rowIndex}, comma-separated vertex IDs`,
+      );
+      cell.appendChild(input);
+      row.appendChild(cell);
+    });
+    body.appendChild(row);
+  });
+  table.appendChild(body);
+  tableAnswerScroll.replaceChildren(table);
+  tableAnswerStatus.textContent="Fill in every cell, then check your table. You have 3 attempts.";
+  tableAnswerSubmit.disabled=false;
+}
+
+function showMeshTableSolution(){
+  const {table,correctTable,columnHeaders,rowPrefix}=current.interaction;
+  const solution=document.createElement("table");
+  solution.className="mesh-answer-table mesh-answer-solution";
+  const caption=document.createElement("caption");
+  caption.textContent="Correct answer";
+  solution.appendChild(caption);
+
+  const head=document.createElement("thead");
+  const headerRow=document.createElement("tr");
+  [table==="vertices"?"Vertex ID":"Face ID",...columnHeaders].forEach((label)=>{
+    const header=document.createElement("th");
+    header.scope="col";
+    header.textContent=label;
+    headerRow.appendChild(header);
+  });
+  head.appendChild(headerRow);
+  solution.appendChild(head);
+
+  const body=document.createElement("tbody");
+  correctTable.forEach((values,rowIndex)=>{
+    const row=document.createElement("tr");
+    const idHeader=document.createElement("th");
+    idHeader.scope="row";
+    idHeader.textContent=`${rowPrefix}${rowIndex}`;
+    row.appendChild(idHeader);
+    values.forEach((value)=>{
+      const cell=document.createElement("td");
+      cell.textContent=value;
+      row.appendChild(cell);
+    });
+    body.appendChild(row);
+  });
+  solution.appendChild(body);
+  tableAnswerScroll.appendChild(solution);
+  tableAnswerScroll.scrollTop=tableAnswerScroll.scrollHeight;
+}
+
+function readMeshTableAnswer(){
+  return [...tableAnswerScroll.querySelectorAll("tbody tr")].map((row)=>
+    [...row.querySelectorAll("input")].map((input)=>input.value.trim())
+  );
+}
+
+function isMeshTableAnswerCorrect(values){
+  const {table,correctTable}=current.interaction;
+  if(values.length!==correctTable.length) return false;
+  return values.every((row,rowIndex)=>
+    row.length===correctTable[rowIndex].length &&
+    row.every((value,columnIndex)=>{
+      const expected=correctTable[rowIndex][columnIndex];
+      if(table==="vertices"){
+        return value!=="" && Number.isFinite(Number(value)) &&
+          Number(value)===Number(expected);
+      }
+      const submittedReferences=value.split(",").map((reference)=>reference.trim());
+      const expectedReferences=String(expected).split(",").map((reference)=>reference.trim());
+      return submittedReferences.length===expectedReferences.length &&
+        submittedReferences.every((reference,index)=>
+          /^v?\d+$/i.test(reference) &&
+          /^v?\d+$/i.test(expectedReferences[index]) &&
+          Number(reference.replace(/^v/i,""))===
+            Number(expectedReferences[index].replace(/^v/i,""))
+        );
+    })
+  );
+}
+
+function finishMeshTableResponse(resultType,isCorrect,submitted=""){
+  stopQuestionTimer();
+  answered=true;
+  if(isCorrect){
+    combo++;
+    longestCombo=Math.max(longestCombo,combo);
+    if(combo>1) showComboPopup();
+    score++;
+    playSound("correct");
+    feedback.textContent="Correct! Your table matches the answer.";
+    feedback.className="motivation visible right";
+    tableAnswerStatus.textContent="Correct table.";
+  }else{
+    combo=0;
+    if(resultType==="answer") playSound("incorrect");
+    feedback.textContent=resultType==="skip"
+      ? "Skipped. The correct answer is shown below."
+      : resultType==="timeout"
+        ? "Time expired. The correct answer is shown below."
+        : "No attempts remaining. The correct answer is shown below.";
+    feedback.className="motivation visible wrong";
+    tableAnswerStatus.textContent=feedback.textContent;
+    showMeshTableSolution();
+  }
+  history.push({
+    question:current.q,
+    questionIndex:currentQuestionIndex,
+    selected:resultType==="answer"?submitted:"",
+    correctAnswer:JSON.stringify(current.interaction.correctTable),
+    correct:isCorrect,
+    skipped:resultType==="skip",
+    timedOut:resultType==="timeout"
+  });
+  tableAnswerBuilder.querySelectorAll("input,button").forEach((control)=>{
+    control.disabled=true;
+  });
+  nextButton.disabled=false;
+  skipButton.disabled=true;
+  skipButton.classList.remove("skip-show");
+  skipButton.classList.add("skip-hidden","animate-hide");
+  skipButton.style.setProperty("opacity","0","important");
+  skipButton.style.setProperty("visibility","hidden","important");
+  skipButton.style.setProperty("pointer-events","none","important");
+  updateMeta();
+}
+
+function formatOpenGLNumber(value){
+  if(typeof value==="string" && value.trim()==="") return "?";
+  return Number(value).toFixed(1);
+}
+
+function getOpenGLSolutionText(){
+  return current.interaction.solution.map((step)=>{
+    if(step.function==="translate"){
+      return `glTranslatef(${formatOpenGLNumber(step.tx)}, ${formatOpenGLNumber(step.ty)}, 0.0);`;
+    }
+    if(step.function==="rotate"){
+      return `glRotatef(${formatOpenGLNumber(step.angle)}, 0.0, 0.0, 1.0);`;
+    }
+    return `glScalef(${formatOpenGLNumber(step.sx)}, ${formatOpenGLNumber(step.sy)}, 1.0);`;
+  }).join("\n");
+}
+
+function resetOpenGLBuilder(){
+  openglAttemptCount=0;
+  openglSequence.replaceChildren();
+  openglSolution.hidden=true;
+  openglSolution.querySelector("code").textContent="";
+  openglAttempts.textContent="3 attempts remaining";
+  openglSubmit.disabled=false;
+  openglBuilder.querySelectorAll("[data-transform-add]").forEach((button)=>{
+    button.disabled=false;
+  });
+}
+
+function appendOpenGLCode(row,text){
+  const code=document.createElement("span");
+  code.textContent=text;
+  row.appendChild(code);
+}
+
+function appendOpenGLInput(row,parameter,label){
+  const input=document.createElement("input");
+  input.type="number";
+  input.step="any";
+  input.inputMode="decimal";
+  input.required=true;
+  input.dataset.parameter=parameter;
+  input.setAttribute("aria-label",label);
+  input.placeholder=parameter;
+  row.appendChild(input);
+}
+
+function addOpenGLTransform(type){
+  if(!isOpenGLBuilderQuestion() || answered ||
+      openglSequence.querySelector(`[data-transform="${type}"]`)) return;
+
+  const row=document.createElement("li");
+  row.className="opengl-sequence-row";
+  row.dataset.transform=type;
+  row.setAttribute("aria-label",`${type} transformation`);
+  if(type==="translate"){
+    appendOpenGLCode(row,"glTranslatef(");
+    appendOpenGLInput(row,"tx","Translation x (tx)");
+    appendOpenGLCode(row,", ");
+    appendOpenGLInput(row,"ty","Translation y (ty)");
+    appendOpenGLCode(row,", 0.0);");
+  }else if(type==="rotate"){
+    appendOpenGLCode(row,"glRotatef(");
+    appendOpenGLInput(row,"angle","Rotation angle");
+    appendOpenGLCode(row,", 0.0, 0.0, 1.0);");
+  }else{
+    appendOpenGLCode(row,"glScalef(");
+    appendOpenGLInput(row,"sx","Scale x (sx)");
+    appendOpenGLCode(row,", ");
+    appendOpenGLInput(row,"sy","Scale y (sy)");
+    appendOpenGLCode(row,", 1.0);");
+  }
+  const removeButton=document.createElement("button");
+  removeButton.type="button";
+  removeButton.className="opengl-remove-transform";
+  removeButton.setAttribute("aria-label",`Remove ${type} transformation`);
+  removeButton.textContent="×";
+  removeButton.addEventListener("click",()=>{
+    if(answered) return;
+    row.remove();
+    const addButton=openglBuilder.querySelector(`[data-transform-add="${type}"]`);
+    addButton.disabled=false;
+  });
+  row.appendChild(removeButton);
+  openglSequence.appendChild(row);
+  openglBuilder.querySelector(`[data-transform-add="${type}"]`).disabled=true;
+}
+
+function getOpenGLSubmittedText(){
+  return [...openglSequence.querySelectorAll(".opengl-sequence-row")].map((row)=>{
+    const type=row.dataset.transform;
+    const fields=[...row.querySelectorAll("input")];
+    if(type==="translate"){
+      return `glTranslatef(${formatOpenGLNumber(fields[0].value)}, ${formatOpenGLNumber(fields[1].value)}, 0.0);`;
+    }
+    if(type==="rotate"){
+      return `glRotatef(${formatOpenGLNumber(fields[0].value)}, 0.0, 0.0, 1.0);`;
+    }
+    return `glScalef(${formatOpenGLNumber(fields[0].value)}, ${formatOpenGLNumber(fields[1].value)}, 1.0);`;
+  }).join("\n");
+}
+
+function isOpenGLSubmittedAnswerCorrect(){
+  const rows=[...openglSequence.querySelectorAll(".opengl-sequence-row")];
+  const solution=current.interaction.solution;
+  if(rows.length!==solution.length) return false;
+  return rows.every((row,index)=>{
+    const expected=solution[index];
+    if(row.dataset.transform!==expected.function) return false;
+    const values=[...row.querySelectorAll("input")].map(input=>input.value);
+    if(values.some(value=>value.trim()==="" || !Number.isFinite(Number(value)))) return false;
+    if(expected.function==="translate"){
+      return Number(values[0])===expected.tx && Number(values[1])===expected.ty;
+    }
+    if(expected.function==="scale"){
+      return Number(values[0])===expected.sx && Number(values[1])===expected.sy;
+    }
+    return Number(values[0])===expected.angle;
+  });
+}
+
+function finishOpenGLResponse(resultType,isCorrect,submitted=""){
+  stopQuestionTimer();
+  answered=true;
+  if(isCorrect){
+    combo++;
+    longestCombo=Math.max(longestCombo,combo);
+    if(combo>1) showComboPopup();
+    score++;
+    playSound("correct");
+    feedback.textContent="Correct! You built the right transformation sequence.";
+    feedback.className="motivation visible right";
+  }else{
+    combo=0;
+    if(resultType==="answer") playSound("incorrect");
+    feedback.textContent=resultType==="timeout"
+      ? "Time expired."
+      : resultType==="skip" ? "Skipped." : "No attempts remaining.";
+    feedback.className="motivation visible wrong";
+    openglSolution.querySelector("code").textContent=getOpenGLSolutionText();
+    openglSolution.hidden=false;
+  }
+  history.push({
+    question:current.q,
+    questionIndex:currentQuestionIndex,
+    selected:resultType==="answer"?submitted:"",
+    correctAnswer:getOpenGLSolutionText(),
+    correct:isCorrect,
+    skipped:resultType==="skip",
+    timedOut:resultType==="timeout"
+  });
+  openglBuilder.querySelectorAll("button,input").forEach((control)=>{control.disabled=true;});
+  openglAttempts.textContent=`${openglAttemptCount} of 3 attempts used`;
+  nextButton.disabled=false;
+  skipButton.disabled=true;
+  skipButton.classList.remove("skip-show");
+  skipButton.classList.add("skip-hidden","animate-hide");
+  skipButton.style.setProperty("opacity","0","important");
+  skipButton.style.setProperty("visibility","hidden","important");
+  skipButton.style.setProperty("pointer-events","none","important");
+  updateMeta();
+}
+
+openglBuilder.querySelectorAll("[data-transform-add]").forEach((button)=>{
+  button.addEventListener("click",()=>addOpenGLTransform(button.dataset.transformAdd));
+});
+openglSubmit.addEventListener("click",()=>{
+  if(!isOpenGLBuilderQuestion() || answered) return;
+  if(openglSequence.querySelectorAll(".opengl-sequence-row").length!==3){
+    openglAttempts.textContent="Add all three transformations before checking your answer.";
+    return;
+  }
+  openglAttemptCount++;
+  const isCorrect=isOpenGLSubmittedAnswerCorrect();
+  if(isCorrect || openglAttemptCount>=3){
+    finishOpenGLResponse("answer",isCorrect,getOpenGLSubmittedText());
+    return;
+  }
+  playSound("incorrect");
+  const remaining=3-openglAttemptCount;
+  openglAttempts.textContent=`Not quite. ${remaining} ${remaining===1?"try":"tries"} remaining. Edit the values or remove and re-add functions to change the order.`;
+});
+tableAnswerSubmit.addEventListener("click",()=>{
+  if(!isMeshTableQuestion() || answered) return;
+  const values=readMeshTableAnswer();
+  if(values.some((row)=>row.some((value)=>value===""))){
+    tableAnswerStatus.textContent="Fill in every cell before checking your table.";
+    [...tableAnswerScroll.querySelectorAll("input")]
+      .find((input)=>input.value.trim()==="")?.focus();
+    return;
+  }
+  if(isMeshTableAnswerCorrect(values)){
+    finishMeshTableResponse("answer",true,JSON.stringify(values));
+    return;
+  }
+  meshTableAttemptCount++;
+  if(meshTableAttemptCount>=3){
+    finishMeshTableResponse("answer",false,JSON.stringify(values));
+    return;
+  }
+  playSound("incorrect");
+  const remaining=3-meshTableAttemptCount;
+  tableAnswerStatus.textContent=`Not quite. ${remaining} ${remaining===1?"attempt":"attempts"} remaining. Edit your entries and try again.`;
+});
+
 function fitCompGFXQuestionTitle(){
   if(!isCompGFX || !questionTitle) return;
 
@@ -1366,6 +1956,7 @@ function fitCompGFXQuestionTitle(){
 
 function showQuestionTitle(){
   if (!questionTitle || !current) return;
+  updateQuestionImage();
   if (questionTypingTimer !== null) {
     clearInterval(questionTypingTimer);
     questionTypingTimer = null;
@@ -1422,6 +2013,13 @@ function showQuestionTitle(){
 window.addEventListener('resize', fitCompGFXQuestionTitle);
 
 function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
+  const transitionId=++compGfxTransitionId;
+  compGfxQuestionAnimation?.cancel();
+  compGfxImageAnimation?.cancel();
+  compGFXAnswerPanelAnimation?.cancel();
+  compGfxQuestionAnimation=null;
+  compGfxImageAnimation=null;
+  compGFXAnswerPanelAnimation=null;
   if(!shouldFade || !compGfxQuestion){
     showQuestionTitle();
     return;
@@ -1445,7 +2043,6 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
     : 'translateX(calc(100vw + 40px))';
   const animateAnswerPanel = !partyHostDisplay;
   if(animateAnswerPanel){
-    compGFXAnswerPanelAnimation?.cancel();
     compGFXAnswerPanelAnimation = content.animate(
       [
         {transform:'translateX(0)',opacity:1},
@@ -1454,14 +2051,21 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
       {duration:220,easing:'cubic-bezier(.55,0,1,.45)',fill:'forwards'}
     );
   }
-  compGfxQuestionAnimation?.cancel();
   compGfxQuestionAnimation = compGfxQuestion.animate(
     [{opacity:1},{opacity:0}],
     {duration:80,easing:'ease-in',fill:'forwards'}
   );
+  compGfxImageAnimation?.cancel();
+  if(!questionImageTrigger.hidden){
+    compGfxImageAnimation = questionImageTrigger.animate(
+      [{opacity:1},{opacity:0}],
+      {duration:80,easing:'ease-in',fill:'forwards'}
+    );
+  }
   animateCompGFXCursor(false);
   void (async()=>{
-    await Promise.all([compGfxQuestionAnimation.finished.catch(()=>{}),wait(clickDuration)]);
+    await wait(clickDuration);
+    if(transitionId!==compGfxTransitionId) return;
     compGfxCube.querySelector('.active-question-face')?.classList.remove('active-question-face');
 
     if(turnDuration > 0){
@@ -1470,6 +2074,7 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
       compGfxCube.style.setProperty('--gfx-cube-angle', `${compGfxRotation}deg`);
       compGfxCube.classList.add('turning');
       await wait(turnDuration);
+      if(transitionId!==compGfxTransitionId) return;
       compGfxCube.classList.remove('turning');
       compGfxCube.style.setProperty('--gfx-cube-angle', `${compGfxRotation}deg`);
     }
@@ -1478,16 +2083,23 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
     showQuestionTitle();
     animateCompGFXCursor(false);
     await wait(clickDuration);
+    if(transitionId!==compGfxTransitionId) return;
     selectedFace?.classList.add('active-question-face');
-    compGfxQuestionAnimation?.cancel();
     compGfxQuestionAnimation = compGfxQuestion.animate(
       [{opacity:0},{opacity:1}],
       {duration:150,easing:'ease-out',fill:'forwards'}
     );
-    await compGfxQuestionAnimation.finished.catch(()=>{});
+    if(!questionImageTrigger.hidden){
+      compGfxImageAnimation = questionImageTrigger.animate(
+        [{opacity:0},{opacity:1}],
+        {duration:150,easing:'ease-out',fill:'forwards'}
+      );
+    }
+    await wait(150);
+    if(transitionId!==compGfxTransitionId) return;
     compGfxQuestionAnimation = null;
+    compGfxImageAnimation = null;
     if(animateAnswerPanel){
-      compGFXAnswerPanelAnimation?.cancel();
       compGFXAnswerPanelAnimation = content.animate(
         [
           {transform:answerPanelExitTransform,opacity:0},
@@ -1495,8 +2107,12 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
         ],
         {duration:260,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'}
       );
-      await compGFXAnswerPanelAnimation.finished.catch(()=>{});
-      compGFXAnswerPanelAnimation = null;
+      const answerPanelAnimation=compGFXAnswerPanelAnimation;
+      void answerPanelAnimation.finished.then(()=>{
+        if(compGFXAnswerPanelAnimation===answerPanelAnimation){
+          compGFXAnswerPanelAnimation=null;
+        }
+      }).catch(()=>{});
     }
   })();
 }
@@ -1746,8 +2362,18 @@ function renderQuestion(forcedAnswerOrder=null){
   const answerIndices = current.a
     .map((_, index) => index)
     .filter(index => current.a[index] !== 'BLANK');
-  const randomizedAnswerOrder = forcedAnswerOrder || shuffleWithoutConsecutiveDuplicates(answerIndices);
+  const randomizedAnswerOrder = avoidRepeatedLautestCorrectAnswerPosition(
+    forcedAnswerOrder || shuffleWithoutConsecutiveDuplicates(answerIndices),
+    current.c,
+  );
 
+  const useOpenGLBuilder=isOpenGLBuilderQuestion();
+  const useMeshTableBuilder=isMeshTableQuestion();
+  openglBuilder.hidden=!useOpenGLBuilder;
+  tableAnswerBuilder.hidden=!useMeshTableBuilder;
+  answersEl.hidden=useOpenGLBuilder || useMeshTableBuilder;
+  if(useOpenGLBuilder) resetOpenGLBuilder();
+  if(useMeshTableBuilder) resetMeshTableBuilder();
   answersEl.innerHTML = '';
   const answerLabels = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 
@@ -1801,7 +2427,13 @@ function renderQuestion(forcedAnswerOrder=null){
   });
 
   const firstAnswer=answersEl.querySelector('.answer');
-  if(firstAnswer) firstAnswer.focus();
+  if(useOpenGLBuilder){
+    openglBuilder.querySelector("[data-transform-add]:not(:disabled)")?.focus();
+  }else if(useMeshTableBuilder){
+    tableAnswerScroll.querySelector("input")?.focus();
+  }else if(firstAnswer){
+    firstAnswer.focus();
+  }
 
   feedback.textContent = '';
   feedback.className = 'feedback';
@@ -1924,6 +2556,14 @@ function endQuiz(reason="ended"){
 
 function revealQuestion(resultType, selectedIndex=null){
   if(answered || quizEnded)return;
+  if(isOpenGLBuilderQuestion()){
+    finishOpenGLResponse(resultType,false);
+    return;
+  }
+  if(isMeshTableQuestion()){
+    finishMeshTableResponse(resultType,false);
+    return;
+  }
   stopQuestionTimer();
   answered = true;
 
@@ -2210,7 +2850,9 @@ function validateSetup(){
 
   selectedQuestionCount = requested;
   const selectedOrder = document.querySelector('input[name="order"]:checked');
-  orderMode = selectedOrder ? selectedOrder.value : "random";
+  orderMode = forceStaticQuestionOrder
+    ? "static"
+    : selectedOrder ? selectedOrder.value : "random";
   readTimingSettings();
   setupError.textContent = "";
   return true;
@@ -2236,6 +2878,7 @@ function beginQuiz(){
   } else {
     buildQuestionSequence();
   }
+  lastLautestCorrectAnswerPosition=null;
 
   if(networkPartyActive){
     partyStartPending=true;
@@ -2264,7 +2907,8 @@ function beginQuiz(){
   quizStarted = true;
   if (isSoftEngi) document.body.classList.add('softengi-active');
   if (isCompGFX) transitionCompGFXIntoQuiz();
-  startQuizMusic();
+  if(forceStaticQuestionOrder) startLautestQuizMusic();
+  else startQuizMusic();
   setup.hidden = true;
   content.hidden = false;
   startTimer();
@@ -2372,6 +3016,12 @@ answersEl.addEventListener("pointerover",event=>{
 document.addEventListener("keydown",event=>{
   if(event.key.toLowerCase()==="m" && event.target.tagName !== "INPUT"){
     event.preventDefault();
+    if(forceStaticQuestionOrder){
+      soundsMuted=!soundsMuted;
+      localStorage.setItem('quizHubMuted',String(soundsMuted));
+      updateSoundToggle();
+      return;
+    }
     if(!hostDisplayMusicAllowed){
       soundsMuted=!soundsMuted;
       localStorage.setItem('quizHubMuted',String(soundsMuted));

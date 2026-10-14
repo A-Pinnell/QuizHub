@@ -395,7 +395,10 @@ const courseQuizCatalog = {
 			detail: "Based on Textbook contents",
 		},
 	],
-	CompGFX: [{ id: "test1", label: "Midterm Practice", detail: "for Oct 21" }],
+	CompGFX: [
+		{ id: "test1", label: "Midterm Practice", detail: "for Oct 21" },
+		{ id: "lautest", label: "Dr. Lau's Practice", detail: "for Midterm" },
+	],
 	DataSci: [{ id: "test1", label: "Midterm Practice", detail: "for Oct 22" }],
 	SoftEngi: [
 		{ id: "test1", label: "Lectures 1–6 Practice", detail: "for Oct 8" },
@@ -1653,6 +1656,13 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.6.7
+- GIFS are now properly supported in Party Mode
+- Dr. Lau's Practice for CompGFX has been added. Including new music, images for some questions, and new types of questions! Can you beat his questions? (Note this quiz is not available in Party Mode)
+
+Version 2.6.6
+- Various improvements and bug fixes
+
 Version 2.6.5
 - If playing again with the same people in Party Mode, it will now show the overall score as well as the current score
 - All quizzes and courses are now properly available in Party Mode

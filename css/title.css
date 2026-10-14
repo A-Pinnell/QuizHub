@@ -482,6 +482,8 @@ html.motion-minimal .party-mode-toggle.party-rainbow{animation:none;color:#bf5af
 .mixed-study-start{width:100%;min-height:46px;border:1px solid #8ce7ad;border-radius:10px;background:#8ce7ad;color:#10231a;font-weight:900;cursor:pointer}
 .quiz-option{min-height:72px;text-align:left;padding:15px 17px;border:1px solid rgba(255,255,255,.16);border-radius:14px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer;transition:transform .15s ease,background .15s ease,border-color .15s ease}
 .quiz-option:hover,.quiz-option:focus-visible{transform:translateY(-2px);background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);outline:none}
+.quiz-option[data-quiz="lautest"]{border-color:rgba(255,190,190,.48);background:linear-gradient(135deg,#a51225 0%,#d52d3d 52%,#7f0c1d 100%);box-shadow:inset 0 1px rgba(255,255,255,.14),0 5px 14px rgba(110,0,14,.24)}
+.quiz-option[data-quiz="lautest"]:hover,.quiz-option[data-quiz="lautest"]:focus-visible{border-color:rgba(255,220,220,.8);background:linear-gradient(135deg,#bd1b30 0%,#eb3d4e 52%,#991428 100%);box-shadow:inset 0 1px rgba(255,255,255,.2),0 8px 20px rgba(110,0,14,.35)}
 .quiz-option span{display:block;font-size:1.05rem;font-weight:800}
 .quiz-option small{display:block;margin-top:4px;opacity:.65}
 .patchnotes-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility .22s ease}
