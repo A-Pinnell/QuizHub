@@ -21995,16 +21995,6 @@ window.questionBank = {
 				c: 0,
 			},
 			{
-				q: "Which visual features are demonstrated in the coloured OpenGL examples?",
-				a: [
-					"Colour, lighting, shadows, and textures",
-					"Only wireframe edges and coordinate labels",
-					"Only object translations and rotation angles",
-					"Only untextured polygons with no lighting effects",
-				],
-				c: 0,
-			},
-			{
 				q: "In which year does the slideshow state that OpenGL was developed?",
 				a: ["1992", "1982", "2002", "2012"],
 				c: 0,
