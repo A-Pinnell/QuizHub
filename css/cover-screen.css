@@ -38,6 +38,10 @@ html.ds-purist-mode :is(button, input, select, textarea, [role="dialog"], .card,
 }
 
 @media (max-width: 760px) {
+    .keyboard-guide {
+      display: none !important;
+    }
+
     html.clamshell-branding h1 {
       font-size: clamp(30px, 8vw, 48px);
       letter-spacing: -1px;

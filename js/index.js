@@ -1405,6 +1405,9 @@ const highContrastSetting = document.getElementById("highContrastSetting");
 const secretModeSetting = document.getElementById("secretModeSetting");
 const secretModeSettingRow = document.getElementById("secretModeSettingRow");
 const clamshellModeSetting = document.getElementById("clamshellModeSetting");
+const clamshellDisabledMedia = window.matchMedia(
+	"(max-width: 720px) and (max-height: 748px)",
+);
 const universityName = document.getElementById("universityName");
 const resetSettingsButton = document.getElementById("resetSettings");
 const settingsError = document.getElementById("settingsError");
@@ -1501,17 +1504,18 @@ function syncSettings() {
 }
 
 function syncClamshellModeSetting() {
-	const coverScreenMode = coverMenuMedia.matches;
-	clamshellModeSetting.disabled = coverScreenMode;
+	const clamshellDisabled = clamshellDisabledMedia.matches;
+	clamshellModeSetting.disabled = clamshellDisabled;
 	clamshellModeSetting.checked =
-		!coverScreenMode && window.quizHubPreferences.clamshellMode;
+		!clamshellDisabled && window.quizHubPreferences.clamshellMode;
 	clamshellModeSetting
 		.closest(".setting-choice")
-		.classList.toggle("is-disabled", coverScreenMode);
-	document.getElementById("clamshellModeUnavailable").hidden = !coverScreenMode;
+		.classList.toggle("is-disabled", clamshellDisabled);
+	document.getElementById("clamshellModeUnavailable").hidden =
+		!clamshellDisabled;
 }
 
-coverMenuMedia.addEventListener("change", syncClamshellModeSetting);
+clamshellDisabledMedia.addEventListener("change", syncClamshellModeSetting);
 
 function updateQuizThemePreview(theme) {
 	const details = quizThemeDetails[theme] || quizThemeDetails.default;
@@ -1669,6 +1673,12 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.7.0
+- Various improvements and bug fixes
+
+Version 2.6.9
+- Various improvements and bug fixes
+
 Version 2.6.8
 - Fixed various bugs throughout the site, including issues with Images and Offline Mode 
 - You can now uninstall the Offline Version if you want to or if there is a corrupted file

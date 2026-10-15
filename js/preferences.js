@@ -3,8 +3,8 @@
 
 	const storage = window.localStorage;
 	const root = document.documentElement;
-	const coverScreenModeMedia = window.matchMedia(
-		"(orientation: portrait) and (max-width: 900px) and (min-height: 640px)",
+	const clamshellDisabledMedia = window.matchMedia(
+		"(max-width: 720px) and (max-height: 748px)",
 	);
 	storage.removeItem("quizHubFullscreen");
 	if (document.fullscreenElement) {
@@ -58,7 +58,7 @@
 		answerSide:
 			storage.getItem("quizHubAnswerSide") === "left" ? "left" : "right",
 		clamshellMode:
-			!coverScreenModeMedia.matches &&
+			!clamshellDisabledMedia.matches &&
 			storage.getItem("quizHubClamshellMode") === "true",
 		dsPuristMode: storage.getItem("quizHubDSPuristMode") === "true",
 		highContrast: storage.getItem("quizHubHighContrast") === "true",
@@ -284,10 +284,10 @@
 		);
 	}
 
-	if (coverScreenModeMedia.matches) {
+	if (clamshellDisabledMedia.matches) {
 		storage.setItem("quizHubClamshellMode", "false");
 	}
-	coverScreenModeMedia.addEventListener("change", (event) => {
+	clamshellDisabledMedia.addEventListener("change", (event) => {
 		if (event.matches && preferences.clamshellMode) {
 			update("clamshellMode", false);
 		}
@@ -385,7 +385,7 @@
 			update("answerSide", value);
 		},
 		setClamshellMode(value) {
-			const enabled = Boolean(value) && !coverScreenModeMedia.matches;
+			const enabled = Boolean(value) && !clamshellDisabledMedia.matches;
 			if (preferences.clamshellMode === enabled) return;
 			update("clamshellMode", enabled);
 			window.location.reload();

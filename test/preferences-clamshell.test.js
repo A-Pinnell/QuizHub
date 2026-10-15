@@ -8,16 +8,18 @@ const preferencesScript = readFileSync(
 	join(__dirname, "..", "js", "preferences.js"),
 	"utf8",
 );
+const clamshellDisabledQuery = "(max-width: 720px) and (max-height: 748px)";
 
-function loadPreferences({ coverScreen = false, savedClamshell = false } = {}) {
+function loadPreferences({ disabled = false, savedClamshell = false } = {}) {
 	const values = new Map([
 		["quizHubClamshellMode", String(savedClamshell)],
 	]);
 	const classes = new Map();
 	const mediaListeners = [];
 	let reloadCount = 0;
+	let requestedMediaQuery = "";
 	const media = {
-		matches: coverScreen,
+		matches: disabled,
 		addEventListener(type, listener) {
 			if (type === "change") mediaListeners.push(listener);
 		},
@@ -34,7 +36,8 @@ function loadPreferences({ coverScreen = false, savedClamshell = false } = {}) {
 				values.delete(key);
 			},
 		},
-		matchMedia() {
+		matchMedia(query) {
+			requestedMediaQuery = query;
 			return media;
 		},
 		location: {
@@ -72,6 +75,7 @@ function loadPreferences({ coverScreen = false, savedClamshell = false } = {}) {
 		classes,
 		media,
 		mediaListeners,
+		requestedMediaQuery: () => requestedMediaQuery,
 		preferences: window.quizHubPreferences,
 		reloadCount: () => reloadCount,
 		values,
@@ -92,9 +96,10 @@ test("Clamshell changes persist and reload when enabled or disabled", () => {
 	assert.equal(state.reloadCount(), 2);
 });
 
-test("cover screen mode forces Clamshell off and prevents enabling it", () => {
-	const state = loadPreferences({ coverScreen: true, savedClamshell: true });
+test("small displays force Clamshell off and prevent enabling it", () => {
+	const state = loadPreferences({ disabled: true, savedClamshell: true });
 
+	assert.equal(state.requestedMediaQuery(), clamshellDisabledQuery);
 	assert.equal(state.preferences.clamshellMode, false);
 	assert.equal(state.values.get("quizHubClamshellMode"), "false");
 	state.preferences.setClamshellMode(true);
@@ -102,7 +107,7 @@ test("cover screen mode forces Clamshell off and prevents enabling it", () => {
 	assert.equal(state.reloadCount(), 0);
 });
 
-test("entering cover screen mode turns off an active Clamshell preference", () => {
+test("entering the disabled display size turns off active Clamshell mode", () => {
 	const state = loadPreferences();
 	state.preferences.setClamshellMode(true);
 
@@ -112,4 +117,13 @@ test("entering cover screen mode turns off an active Clamshell preference", () =
 	assert.equal(state.preferences.clamshellMode, false);
 	assert.equal(state.values.get("quizHubClamshellMode"), "false");
 	assert.equal(state.classes.get("clamshell-mode"), false);
+});
+
+test("larger mobile displays do not disable Clamshell mode", () => {
+	const state = loadPreferences({ disabled: false, savedClamshell: true });
+
+	assert.equal(state.requestedMediaQuery(), clamshellDisabledQuery);
+	assert.equal(state.preferences.clamshellMode, true);
+	state.preferences.setClamshellMode(false);
+	assert.equal(state.reloadCount(), 1);
 });
