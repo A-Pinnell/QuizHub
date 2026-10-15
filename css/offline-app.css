@@ -168,6 +168,10 @@ html.offline-mode .textbook-library-link {
   opacity: 0.65;
 }
 
+.offline-app-uninstall[hidden] {
+  display: none;
+}
+
 .offline-app-status {
   min-height: 1.5em;
   margin: 12px 0 0 !important;

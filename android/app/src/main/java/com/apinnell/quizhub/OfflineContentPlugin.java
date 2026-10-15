@@ -44,6 +44,19 @@ public class OfflineContentPlugin extends Plugin {
     }
 
     @PluginMethod
+    public void uninstallOffline(PluginCall call) {
+        executor.execute(() -> {
+            File directory = new File(getContext().getFilesDir(), "offline-content");
+            try {
+                deleteTreeStrict(directory);
+                call.resolve(new JSObject().put("installed", false));
+            } catch (Exception error) {
+                call.reject("Unable to uninstall offline files.", error);
+            }
+        });
+    }
+
+    @PluginMethod
     public void checkForUpdates(PluginCall call) {
         executor.execute(() -> {
             try {
@@ -74,8 +87,9 @@ public class OfflineContentPlugin extends Plugin {
                 if (!release.getString("tag_name").equals(metadata.getString("version"))) {
                     throw new IOException("Downloaded offline version does not match the release.");
                 }
-                if (!new File(pending, "index.html").isFile()) {
-                    throw new IOException("Offline package is missing index.html.");
+                if (!new File(pending, "index.html").isFile()
+                    || !new File(pending, "assets").isDirectory()) {
+                    throw new IOException("Offline package is missing index.html or assets.");
                 }
                 replaceOfflineDirectory(pending, target, previous);
                 call.resolve(new JSObject().put("installed", true));
@@ -94,7 +108,9 @@ public class OfflineContentPlugin extends Plugin {
         File directory = new File(getContext().getFilesDir(), "offline-content");
         File index = new File(directory, "index.html");
         File metadataFile = new File(directory, "version.json");
-        if (!index.isFile() || !metadataFile.isFile()) return null;
+        if (!index.isFile()
+            || !new File(directory, "assets").isDirectory()
+            || !metadataFile.isFile()) return null;
         return readMetadata(metadataFile);
     }
 
@@ -236,6 +252,20 @@ public class OfflineContentPlugin extends Plugin {
         }
         if (!file.delete()) {
             android.util.Log.w("QuizHub", "Unable to remove temporary offline file: " + file);
+        }
+    }
+
+    private void deleteTreeStrict(File file) throws IOException {
+        if (!file.exists()) return;
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            if (children == null) {
+                throw new IOException("Unable to read offline directory.");
+            }
+            for (File child : children) deleteTreeStrict(child);
+        }
+        if (!file.delete() && file.exists()) {
+            throw new IOException("Unable to remove offline file: " + file.getName());
         }
     }
 

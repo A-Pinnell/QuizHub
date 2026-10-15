@@ -512,7 +512,9 @@ html.motion-minimal .party-mode-toggle.party-rainbow{animation:none;color:#bf5af
 .settings-close{position:absolute;right:14px;top:10px;width:42px;height:42px;border:0;background:transparent;color:#fff;font-size:30px;line-height:1;cursor:pointer;border-radius:50%}
 .settings-close:hover,.settings-close:focus-visible{background:rgba(255,255,255,.12);outline:none}
 .setting-choice{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid rgba(255,255,255,.15);cursor:pointer}
+.setting-choice.is-disabled{cursor:not-allowed;opacity:.65}
 .setting-choice[hidden]{display:none}
+.setting-choice small[hidden]{display:none}
 .setting-choice input,.setting-radio input{width:18px;height:18px;accent-color:#8ce7ad}
 .setting-choice strong,.setting-choice small{display:block}
 .setting-choice small{margin-top:4px;opacity:.7;font-weight:400}

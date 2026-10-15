@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld("QuizHubDesktop", {
   getOfflineStatus: () => ipcRenderer.invoke("offline:get-status"),
   checkForUpdates: () => ipcRenderer.invoke("offline:check-updates"),
   downloadOffline: () => ipcRenderer.invoke("offline:download"),
+  uninstallOffline: () => ipcRenderer.invoke("offline:uninstall"),
   onDownloadProgress(callback) {
     const listener = (_event, progress) => callback(progress);
     ipcRenderer.on("offline:download-progress", listener);

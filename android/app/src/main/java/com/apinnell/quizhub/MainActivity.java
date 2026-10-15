@@ -35,6 +35,7 @@ public class MainActivity extends BridgeActivity {
         File offlineDirectory = new File(getFilesDir(), "offline-content");
         boolean offlineVersionInstalled =
             new File(offlineDirectory, "index.html").isFile()
+                && new File(offlineDirectory, "assets").isDirectory()
                 && new File(offlineDirectory, "version.json").isFile();
         SharedPreferences preferences = getSharedPreferences(
             WebView.WEBVIEW_PREFS_NAME, MODE_PRIVATE);

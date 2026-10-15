@@ -40,3 +40,18 @@ test("Lautest has editable ten-vertex and seven-face table questions", () => {
       .every((references) => /^v?\d+(?:,\s*v?\d+){2,}$/i.test(references)),
   );
 });
+
+test("Lautest mesh-table questions use the existing diagram asset", () => {
+  const vertexQuestion = lautest.find(
+    (question) => question.interaction?.table === "vertices",
+  );
+  const faceQuestion = lautest.find(
+    (question) => question.interaction?.table === "faces",
+  );
+
+  assert.ok(vertexQuestion?.i);
+  assert.ok(faceQuestion?.i);
+  assert.equal(vertexQuestion.i, "./assets/quizimages/lau-gfxmidtermpractice/Image20.png");
+  assert.equal(faceQuestion.i, "./assets/quizimages/lau-gfxmidtermpractice/Image20.png");
+  assert.ok(fs.existsSync("assets/quizimages/lau-gfxmidtermpractice/Image20.png"));
+});

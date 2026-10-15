@@ -264,7 +264,7 @@ html.ds-purist-mode :is(button, input, select, textarea, [role="dialog"], .card,
     width: 100%;
   }
 
-  body .quiz-page .question-image-trigger {
+  body:not(.compgfx-mode) .quiz-page .question-image-trigger {
     display: none;
   }
 

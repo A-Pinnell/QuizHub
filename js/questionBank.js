@@ -22733,7 +22733,7 @@ window.questionBank = {
 					"Enter the face normals in place of vertex coordinates",
 				],
 				c: 0,
-				i: false,
+				i: "./assets/quizimages/lau-gfxmidtermpractice/Image20.png",
 				interaction: {
 					type: "mesh-table",
 					table: "vertices",
@@ -22762,7 +22762,7 @@ window.questionBank = {
 					"Enter one camera position for each face",
 				],
 				c: 0,
-				i: "./assets/quizimages/lau-gfxmidtermpractice/image20.png",
+				i: "./assets/quizimages/lau-gfxmidtermpractice/Image20.png",
 				interaction: {
 					type: "mesh-table",
 					table: "faces",

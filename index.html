@@ -68,17 +68,17 @@
 				document.documentElement.classList.add("native-app");
 			}
 		</script>
-		<link rel="stylesheet" href="css/title.css?v=20261014-1" />
+		<link rel="stylesheet" href="css/title.css?v=20261014-3" />
 		<link rel="stylesheet" href="css/preferences.css" />
-		<link rel="stylesheet" href="css/offline-app.css?v=20261012-2" />
+		<link rel="stylesheet" href="css/offline-app.css?v=20261014-1" />
 		<link rel="stylesheet" href="css/cover-screen.css?v=20261012-6" />
 		<script src="./js/audio-focus.js" defer></script>
-		<script src="./js/offline-app.js?v=20261012-2" defer></script>
+		<script src="./js/offline-app.js?v=20261014-1" defer></script>
 		<script src="./js/load-preferences.js"></script>
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
-		<script src="./js/index.js?v=20261012-8" defer></script>
+		<script src="./js/index.js?v=20261014-9" defer></script>
 	</head>
 	<body>
 		<button
@@ -416,6 +416,8 @@ Loading patch notes...</pre
 						><small
 							>Split the menu and quizzes into top and bottom screens. The app
 							name becomes Quiz Hub DS.</small
+						><small id="clamshellModeUnavailable" hidden
+							>Unavailable while using cover screen mode.</small
 						></span
 					>
 				</label>
@@ -737,9 +739,9 @@ Loading patch notes...</pre
 						Get QuizHub as a standalone application. The initial download will
 						be the online version, but once booted up with an internet
 						connection, you have the option to download the offline version for
-						use without an internet connection. The offline version is about 275
-						MB and needs about 330 MB of storage after installation, plus
-						temporary space while it installs.
+						use without an internet connection. The offline version is about
+						321 MB to download and needs about 380 MB of storage after
+						installation, plus temporary space while it installs.
 					</p>
 					<div class="download-app-actions">
 						<button
@@ -823,7 +825,7 @@ Loading patch notes...</pre
 				<h2 id="offlineAppTitle">QuizHub Offline</h2>
 				<p>
 					Download the full experience, including all music and media. The
-					download is about 275 MB and needs about 330 MB of storage after
+					download is about 321 MB and needs about 380 MB of storage after
 					installation, plus temporary space while it installs.
 				</p>
 				<p>Live party games will still require an internet connection.</p>
@@ -832,6 +834,13 @@ Loading patch notes...</pre
 					id="offlineAppDownload"
 					type="button">
 					Download offline version
+				</button>
+				<button
+					class="online-mode-stay offline-app-uninstall"
+					id="offlineAppUninstall"
+					type="button"
+					hidden>
+					Uninstall offline version
 				</button>
 				<p
 					class="offline-app-status"

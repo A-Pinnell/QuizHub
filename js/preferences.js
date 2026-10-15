@@ -3,6 +3,9 @@
 
 	const storage = window.localStorage;
 	const root = document.documentElement;
+	const coverScreenModeMedia = window.matchMedia(
+		"(orientation: portrait) and (max-width: 900px) and (min-height: 640px)",
+	);
 	storage.removeItem("quizHubFullscreen");
 	if (document.fullscreenElement) {
 		document.exitFullscreen().catch((error) => {
@@ -54,7 +57,9 @@
 				: "default",
 		answerSide:
 			storage.getItem("quizHubAnswerSide") === "left" ? "left" : "right",
-		clamshellMode: storage.getItem("quizHubClamshellMode") === "true",
+		clamshellMode:
+			!coverScreenModeMedia.matches &&
+			storage.getItem("quizHubClamshellMode") === "true",
 		dsPuristMode: storage.getItem("quizHubDSPuristMode") === "true",
 		highContrast: storage.getItem("quizHubHighContrast") === "true",
 		disableLoadingAnimation:
@@ -279,6 +284,15 @@
 		);
 	}
 
+	if (coverScreenModeMedia.matches) {
+		storage.setItem("quizHubClamshellMode", "false");
+	}
+	coverScreenModeMedia.addEventListener("change", (event) => {
+		if (event.matches && preferences.clamshellMode) {
+			update("clamshellMode", false);
+		}
+	});
+
 	function reset() {
 		[
 			"quizHubMotionMode",
@@ -371,7 +385,10 @@
 			update("answerSide", value);
 		},
 		setClamshellMode(value) {
-			update("clamshellMode", value);
+			const enabled = Boolean(value) && !coverScreenModeMedia.matches;
+			if (preferences.clamshellMode === enabled) return;
+			update("clamshellMode", enabled);
+			window.location.reload();
 		},
 		setDSPuristMode(value) {
 			update("dsPuristMode", value);

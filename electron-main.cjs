@@ -32,6 +32,8 @@ async function getOfflineStatus() {
       await fs.readFile(path.join(offlineDirectory, "version.json"), "utf8")
     );
     await fs.access(path.join(offlineDirectory, "index.html"));
+    const assets = await fs.stat(path.join(offlineDirectory, "assets"));
+    if (!assets.isDirectory()) return { installed: false, version: null };
     return { installed: true, version: metadata.version };
   } catch (error) {
     if (error.code === "ENOENT") {
@@ -99,6 +101,10 @@ async function downloadOffline(event) {
       throw new Error("The offline package version does not match the release.");
     }
     await fs.access(path.join(pendingDirectory, "index.html"));
+    const assets = await fs.stat(path.join(pendingDirectory, "assets"));
+    if (!assets.isDirectory()) {
+      throw new Error("The offline package is missing its assets directory.");
+    }
     await fs.rm(oldDirectory, { recursive: true, force: true });
     try {
       await fs.rename(offlineDirectory, oldDirectory);
@@ -139,6 +145,11 @@ function registerOfflineHandlers() {
   ipcMain.handle("offline:download", async (event) => {
     if (!isTrustedSender(event.senderFrame)) throw new Error("Untrusted app frame.");
     return downloadOffline(event);
+  });
+  ipcMain.handle("offline:uninstall", async ({ senderFrame }) => {
+    if (!isTrustedSender(senderFrame)) throw new Error("Untrusted app frame.");
+    await fs.rm(offlineDirectory, { recursive: true, force: true });
+    return { installed: false };
   });
 }
 

@@ -1495,10 +1495,23 @@ function syncSettings() {
 		window.quizHubPreferences.disableLoadingAnimation;
 	highContrastSetting.checked = window.quizHubPreferences.highContrast;
 	secretModeSetting.checked = window.quizHubPreferences.secretMode;
-	clamshellModeSetting.checked = window.quizHubPreferences.clamshellMode;
+	syncClamshellModeSetting();
 	secretModeSettingRow.hidden =
 		!window.quizHubPreferences.secretMode && !secretModeUnlocked;
 }
+
+function syncClamshellModeSetting() {
+	const coverScreenMode = coverMenuMedia.matches;
+	clamshellModeSetting.disabled = coverScreenMode;
+	clamshellModeSetting.checked =
+		!coverScreenMode && window.quizHubPreferences.clamshellMode;
+	clamshellModeSetting
+		.closest(".setting-choice")
+		.classList.toggle("is-disabled", coverScreenMode);
+	document.getElementById("clamshellModeUnavailable").hidden = !coverScreenMode;
+}
+
+coverMenuMedia.addEventListener("change", syncClamshellModeSetting);
 
 function updateQuizThemePreview(theme) {
 	const details = quizThemeDetails[theme] || quizThemeDetails.default;
@@ -1656,6 +1669,10 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.6.8
+- Fixed various bugs throughout the site, including issues with Images and Offline Mode 
+- You can now uninstall the Offline Version if you want to or if there is a corrupted file
+
 Version 2.6.7
 - GIFS are now properly supported in Party Mode
 - Dr. Lau's Practice for CompGFX has been added. Including new music, images for some questions, and new types of questions! Can you beat his questions? (Note this quiz is not available in Party Mode)

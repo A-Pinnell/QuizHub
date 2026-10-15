@@ -484,6 +484,9 @@ const reviewSectionTrigger=document.getElementById("reviewSectionTrigger");
 const reviewSectionClose=document.getElementById("reviewSectionClose");
 const reviewSectionDone=document.getElementById("reviewSectionDone");
 const reviewSectionChoices=document.getElementById("reviewSectionChoices");
+const questionJumpDialog=document.getElementById("questionJumpDialog");
+const questionJumpClose=document.getElementById("questionJumpClose");
+const questionJumpList=document.getElementById("questionJumpList");
 const beginButton = document.getElementById("beginQuiz");
 const setupTitle=document.getElementById("setupTitle");
 const exitSetupButton = document.getElementById("exitSetup");
@@ -603,6 +606,7 @@ let questionSequence = [];
 let sequencePosition = 0;
 let current = null;
 let currentQuestionIndex = null;
+let spongeTypingBuffer = "";
 let lastLautestCorrectAnswerPosition = null;
 let questionNumber = 0;
 let score = 0;
@@ -834,6 +838,35 @@ function buildQuestionSequence(){
 
   questionSequence = questionSequence.slice(0, selectedQuestionCount);
   sequencePosition = 0;
+}
+
+function showQuestionJumpDialog(){
+  if(!quizStarted || quizEnded || partyModeActive || !questionSequence.length) return;
+  questionJumpList.replaceChildren();
+  questionSequence.forEach((bankIndex,position)=>{
+    const question=bank[bankIndex];
+    if(!question) return;
+    const button=document.createElement("button");
+    button.type="button";
+    button.className="question-jump-choice";
+    button.setAttribute("aria-current",String(position===sequencePosition));
+    const number=document.createElement("span");
+    number.className="question-jump-number";
+    number.textContent=String(position+1);
+    const text=document.createElement("span");
+    text.className="question-jump-text";
+    text.textContent=question.q;
+    button.append(number,text);
+    button.addEventListener("click",()=>{
+      questionJumpDialog.close();
+      if(position===sequencePosition) return;
+      sequencePosition=position;
+      slideComboPopupOut();
+      loadQuestion();
+    });
+    questionJumpList.appendChild(button);
+  });
+  questionJumpDialog.showModal();
 }
 
 function updateMeta(){
@@ -1498,7 +1531,7 @@ function updateQuestionImage(){
   const imageSource=getQuestionImageSource(current);
   const hasImage=Boolean(imageSource);
   questionImageTrigger.hidden=!hasImage;
-  questionImageView.hidden=!hasImage;
+  questionImageView.hidden=isCompGFX || !hasImage;
   if(isCompGFX){
     const faceIndex=((Math.round(compGfxRotation/90)%compGfxFaceOrder.length)+
       compGfxFaceOrder.length)%compGfxFaceOrder.length;
@@ -1526,6 +1559,22 @@ function updateQuestionImage(){
   questionImage.alt=altText;
   questionImageExpanded.src=imageSource;
   questionImageExpanded.alt=altText;
+  if(isCompGFX && document.body.classList.contains("gfx-quiz-started")){
+    compGfxImageAnimation?.cancel();
+    compGfxImageAnimation=null;
+    const motionMode=window.quizHubPreferences.motionMode;
+    const reduceMotion=motionMode==="reduced" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduceMotion){
+      questionImageTrigger.style.opacity="1";
+    }else{
+      questionImageTrigger.style.removeProperty("opacity");
+      compGfxImageAnimation=questionImageTrigger.animate(
+        [{opacity:0},{opacity:1}],
+        {duration:450,delay:120,easing:"ease-out",fill:"both"},
+      );
+    }
+  }
 }
 
 function isOpenGLBuilderQuestion(){
@@ -2089,16 +2138,9 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration){
       [{opacity:0},{opacity:1}],
       {duration:150,easing:'ease-out',fill:'forwards'}
     );
-    if(!questionImageTrigger.hidden){
-      compGfxImageAnimation = questionImageTrigger.animate(
-        [{opacity:0},{opacity:1}],
-        {duration:150,easing:'ease-out',fill:'forwards'}
-      );
-    }
     await wait(150);
     if(transitionId!==compGfxTransitionId) return;
     compGfxQuestionAnimation = null;
-    compGfxImageAnimation = null;
     if(animateAnswerPanel){
       compGFXAnswerPanelAnimation = content.animate(
         [
@@ -3014,6 +3056,24 @@ answersEl.addEventListener("pointerover",event=>{
 });
 
 document.addEventListener("keydown",event=>{
+  const target=event.target;
+  const editableTarget=target instanceof Element &&
+    target.closest("input, textarea, select, [contenteditable='true']");
+  if(quizStarted && !quizEnded && !partyModeActive && !editableTarget &&
+      !document.querySelector("dialog[open]") &&
+      !event.ctrlKey && !event.metaKey && !event.altKey &&
+      /^[a-z]$/i.test(event.key)){
+    spongeTypingBuffer=(spongeTypingBuffer+event.key.toLowerCase()).slice(-"sponge".length);
+    if(spongeTypingBuffer==="sponge"){
+      spongeTypingBuffer="";
+      event.preventDefault();
+      showQuestionJumpDialog();
+      return;
+    }
+  }else{
+    spongeTypingBuffer="";
+  }
+
   if(event.key.toLowerCase()==="m" && event.target.tagName !== "INPUT"){
     event.preventDefault();
     if(forceStaticQuestionOrder){
@@ -3090,6 +3150,11 @@ document.addEventListener("keydown",event=>{
     event.preventDefault();
     focusAnswer(answerButtons[event.key.toLowerCase().charCodeAt(0)-97]);
   }
+});
+
+questionJumpClose.addEventListener("click",()=>questionJumpDialog.close());
+questionJumpDialog.addEventListener("click",event=>{
+  if(event.target===questionJumpDialog) questionJumpDialog.close();
 });
 
 countInput.addEventListener("input",()=>{

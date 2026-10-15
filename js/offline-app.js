@@ -16,11 +16,12 @@
   const modal = document.getElementById("offlineAppModal");
   const openButton = document.getElementById("offlineAppButton");
   const downloadButton = document.getElementById("offlineAppDownload");
+  const uninstallButton = document.getElementById("offlineAppUninstall");
   const statusMessage = document.getElementById("offlineAppStatus");
   const onlineModeModal = document.getElementById("onlineModeModal");
   const onlineModeReload = document.getElementById("onlineModeReload");
 
-  if (!modal || !openButton || !downloadButton || !statusMessage ||
+  if (!modal || !openButton || !downloadButton || !uninstallButton || !statusMessage ||
       !onlineModeModal || !onlineModeReload) return;
 
   let onlineCheckPending = false;
@@ -120,7 +121,10 @@
 
   const closeModal = () => setModalOpen(false);
 
-  openButton.addEventListener("click", () => setModalOpen(true));
+  openButton.addEventListener("click", () => {
+    setModalOpen(true);
+    refreshOfflineStatus();
+  });
   modal.querySelectorAll("[data-close-offline-app]").forEach((element) => {
     element.addEventListener("click", closeModal);
   });
@@ -172,7 +176,11 @@
       const result = await offline.getOfflineStatus();
       if (result.installed) {
         downloadButton.textContent = "Update offline version";
+        uninstallButton.hidden = false;
         statusMessage.textContent = `Offline version ${result.version} is installed.`;
+      } else {
+        downloadButton.textContent = "Download offline version";
+        uninstallButton.hidden = true;
       }
     } catch (error) {
       statusMessage.textContent = `Unable to check offline files: ${error.message || error}`;
@@ -181,6 +189,7 @@
 
   downloadButton.addEventListener("click", async () => {
     downloadButton.disabled = true;
+    uninstallButton.disabled = true;
     statusMessage.textContent = "Preparing offline download...";
     try {
       const result = await offline.downloadOffline();
@@ -193,6 +202,32 @@
       statusMessage.textContent = `Download failed: ${error.message || error}`;
     } finally {
       downloadButton.disabled = false;
+      uninstallButton.disabled = false;
+      refreshOfflineStatus();
+    }
+  });
+
+  uninstallButton.addEventListener("click", async () => {
+    if (!window.confirm(
+      "Uninstall the downloaded offline files? QuizHub will still work online, and you can download them again later.",
+    )) {
+      return;
+    }
+
+    downloadButton.disabled = true;
+    uninstallButton.disabled = true;
+    statusMessage.textContent = "Uninstalling offline files...";
+    try {
+      await offline.uninstallOffline();
+      downloadButton.textContent = "Download offline version";
+      uninstallButton.hidden = true;
+      statusMessage.textContent =
+        "Offline files uninstalled. You can download them again at any time.";
+    } catch (error) {
+      statusMessage.textContent = `Unable to uninstall offline files: ${error.message || error}`;
+    } finally {
+      downloadButton.disabled = false;
+      uninstallButton.disabled = false;
     }
   });
 
