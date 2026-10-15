@@ -16,6 +16,20 @@ const offlineDirectory = path.join(app.getPath("userData"), "offline-content");
 const offlineArchive = path.join(app.getPath("userData"), "offline-site.zip");
 const runFile = promisify(execFile);
 const releaseApiUrl = "https://api.github.com/repos/A-Pinnell/QuizHub/releases/latest";
+const offlineNetworkErrors = new Set([
+  -21,  // ERR_NETWORK_CHANGED
+  -100, // ERR_CONNECTION_CLOSED
+  -101, // ERR_CONNECTION_RESET
+  -102, // ERR_CONNECTION_REFUSED
+  -105, // ERR_NAME_NOT_RESOLVED
+  -106, // ERR_INTERNET_DISCONNECTED
+  -109, // ERR_ADDRESS_UNREACHABLE
+  -118, // ERR_CONNECTION_TIMED_OUT
+  -130, // ERR_PROXY_CONNECTION_FAILED
+  -137, // ERR_NAME_RESOLUTION_FAILED
+  -138, // ERR_NETWORK_ACCESS_DENIED
+  -803  // ERR_DNS_TIMED_OUT
+]);
 
 async function getLatestRelease() {
   const response = await fetch(releaseApiUrl, {
@@ -199,6 +213,33 @@ function createWindow() {
       openExternalUrl(rawUrl);
     }
   });
+
+  window.webContents.on(
+    "did-fail-load",
+    (_event, errorCode, errorDescription, failedUrl, isMainFrame) => {
+      if (!isMainFrame || !offlineNetworkErrors.has(errorCode)) return;
+      let failedOrigin;
+      try {
+        failedOrigin = new URL(failedUrl).origin;
+      } catch (error) {
+        console.error("Unable to validate failed QuizHub navigation:", error);
+        return;
+      }
+      if (failedOrigin !== siteUrl.origin) return;
+      void (async () => {
+        try {
+          const status = await getOfflineStatus();
+          if (!status.installed || window.isDestroyed()) return;
+          console.info(
+            `Hosted QuizHub navigation failed (${errorDescription}); loading installed offline content.`
+          );
+          await window.loadFile(installedIndex);
+        } catch (error) {
+          console.error("Unable to fall back to installed offline content:", error);
+        }
+      })();
+    }
+  );
 
   (async () => {
     let hostedSiteAvailable = false;
