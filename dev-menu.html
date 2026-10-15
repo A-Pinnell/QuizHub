@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+		<title>QuizHub Developer Menu</title>
+		<link rel="stylesheet" href="./css/dev.css" />
+		<style>
+			html,
+			body {
+				width: 100%;
+				min-height: 100%;
+				margin: 0;
+				background: transparent;
+			}
+		</style>
+		<script src="./js/dev-scenes.js" defer></script>
+		<script src="./js/dev-menu.js" defer></script>
+	</head>
+	<body>
+		<main class="dev-menu-modal open" id="devMenu" aria-hidden="false">
+			<section
+				class="dev-menu-panel"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="devMenuTitle">
+				<button
+					class="dev-menu-close"
+					id="devMenuClose"
+					type="button"
+					aria-label="Close developer menu">
+					×
+				</button>
+				<h1 id="devMenuTitle">Developer Menu</h1>
+				<p class="dev-menu-description" id="devMenuDescription">
+					Testing controls for this screen.
+				</p>
+				<div class="dev-menu-controls">
+					<section data-dev-page="any">
+						<label class="dev-menu-row" for="devDisplayMode">
+							<div>
+								<strong>Force display mode</strong>
+								<small>Preview desktop, mobile, or Cover Screen layouts</small>
+							</div>
+							<select id="devDisplayMode" aria-label="Force display mode">
+								<option value="desktop">Desktop</option>
+								<option value="mobile">Mobile (412 × 924)</option>
+								<option value="cover">Cover Screen (720 × 748)</option>
+							</select>
+						</label>
+						<label class="dev-menu-row" for="devMobileGestures">
+							<div>
+								<strong>Mobile gestures</strong>
+								<small>Enable swipe navigation in the Mobile preview</small>
+							</div>
+							<input id="devMobileGestures" type="checkbox" />
+						</label>
+						<label class="dev-menu-row" for="devSceneSelect">
+							<div>
+								<strong>Scene Select</strong>
+								<small>Open any quiz, menu, results screen, or HTML page</small>
+							</div>
+							<select id="devSceneSelect" aria-label="Scene Select">
+								<option value="">Choose a scene</option>
+							</select>
+						</label>
+						<div class="dev-menu-actions">
+							<button class="dev-menu-action" id="devOpenScene" type="button">
+								Open Scene
+							</button>
+						</div>
+					</section>
+
+					<section class="dev-page-controls" data-dev-page="index" hidden>
+						<div class="dev-menu-row">
+							<div>
+								<strong>Active sessions</strong>
+								<small>Anonymous sessions active in the last 90 seconds</small>
+							</div>
+							<output id="devActiveUsers" aria-live="polite">Checking…</output>
+						</div>
+						<label class="dev-menu-row" for="devSpecialEvent">
+							<div>
+								<strong>Special event visuals</strong>
+								<small>Force the seasonal main-menu appearance</small>
+							</div>
+							<input id="devSpecialEvent" type="checkbox" />
+						</label>
+						<label class="dev-menu-row" for="devOfflineTest">
+							<div>
+								<strong>Offline Test Mode</strong>
+								<small>Disable online party and active-session requests</small>
+							</div>
+							<input id="devOfflineTest" type="checkbox" />
+						</label>
+						<label class="dev-menu-row" for="devSlowLoading">
+							<div>
+								<strong>Simulate slow loading</strong>
+								<small>Hold the loading screen for at least 8 seconds</small>
+							</div>
+							<input id="devSlowLoading" type="checkbox" />
+						</label>
+						<label class="dev-menu-row" for="devShowLoadingPercentage">
+							<div>
+								<strong>Show loading percentage</strong>
+								<small
+									>Display the red loading bar and progress percentage</small
+								>
+							</div>
+							<input id="devShowLoadingPercentage" type="checkbox" />
+						</label>
+					</section>
+
+					<section class="dev-page-controls" data-dev-page="quiz" hidden>
+						<div class="dev-menu-actions">
+							<button class="dev-menu-action" id="devQuizJump" type="button">
+								Jump to a question
+							</button>
+							<button
+								class="dev-menu-action"
+								id="devQuizSetup"
+								type="button"
+								hidden>
+								Return to quiz setup
+							</button>
+						</div>
+						<div class="cheat-options" id="devQuizModifiers">
+							<label class="cheat-option">
+								<input id="devAlwaysRight" type="checkbox" />
+								<span>Emma Mode (Always Right)</span>
+							</label>
+							<label class="cheat-option">
+								<input id="devPerfectScore" type="checkbox" />
+								<span>Perfect Score</span>
+							</label>
+							<label class="cheat-option">
+								<input id="devDisableComboLoss" type="checkbox" />
+								<span>No Combo Loss</span>
+							</label>
+							<label class="cheat-option">
+								<input id="devRotation" type="checkbox" />
+								<span>Rotation</span>
+							</label>
+						</div>
+					</section>
+
+					<section class="dev-page-controls" data-dev-page="party-lobby" hidden>
+						<label class="dev-menu-row" for="devFakePlayerCount">
+							<div>
+								<strong>Fake players</strong>
+								<small id="devFakePlayerLimit">
+									Available to the lobby host · maximum 50 players total
+								</small>
+							</div>
+							<input
+								id="devFakePlayerCount"
+								type="number"
+								min="1"
+								max="49"
+								value="1"
+								inputmode="numeric" />
+						</label>
+						<label class="dev-menu-row" for="devEnableExcludedQuizzes">
+							<div>
+								<strong>Enable excluded quizzes</strong>
+								<small
+									>Make Dr. Lau’s Lautest available to everyone in this
+									room</small
+								>
+							</div>
+							<input id="devEnableExcludedQuizzes" type="checkbox" />
+						</label>
+						<div class="dev-menu-actions">
+							<button
+								class="dev-menu-action"
+								id="devAddFakePlayers"
+								type="button">
+								Add players
+							</button>
+							<button
+								class="dev-menu-action"
+								id="devRemoveFakePlayers"
+								type="button">
+								Remove all fakes
+							</button>
+						</div>
+					</section>
+				</div>
+				<p
+					class="dev-menu-status"
+					id="devMenuStatus"
+					role="status"
+					aria-live="polite"></p>
+			</section>
+		</main>
+	</body>
+</html>

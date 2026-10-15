@@ -1,267 +1,629 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<link rel="icon" type="image/png" href="assets/icon.png">
-<title>Quiz Hub - Quiz</title>
-<script>
-  let persistedNativeApp = false;
-  try {
-    persistedNativeApp = sessionStorage.getItem("quizhubNativeApp") === "true";
-  } catch (error) {
-    console.warn("Could not restore the native app marker:", error);
-  }
-  window.quizHubNativeApp = Boolean(
-    ["android", "desktop"].includes(new URLSearchParams(location.search).get("quizhubApp")) ||
-    window.Capacitor?.isNativePlatform?.() ||
-    /Electron\//.test(navigator.userAgent) ||
-    persistedNativeApp
-  );
-  if (window.quizHubNativeApp) {
-    try {
-      sessionStorage.setItem("quizhubNativeApp", "true");
-    } catch (error) {
-      console.warn("Could not persist the native app marker:", error);
-    }
-    document.documentElement.classList.add("native-app");
-  }
-</script>
-<link rel="stylesheet" href="css/quiz.css?v=20261014-11" >
-<link rel="stylesheet" href="css/preferences.css">
-<link rel="stylesheet" href="css/cover-screen.css?v=20261014-3">
-<script src="./js/audio-focus.js" defer></script>
-<script src="./js/load-preferences.js"></script>
-<script src="./js/questionBank.js" defer></script>
-<script src="./js/mixed-study.js" defer></script>
-<script src="./js/party-question.js" defer></script>
-<script src="./js/party-config.js" defer></script>
-<script src="./js/party-client.js" defer></script>
-<script src="./js/quiz.js?v=20261014-22" defer></script>
-</head>
-<body>
-<div class="quiz-page" id="quizPage">
-  <aside class="softengi-sidebar" id="softengiSidebar" aria-label="Quiz statistics" hidden>
-    <div class="softengi-brand">
-     
-      <span><strong>BarrieGPT</strong></span>
-    </div>
-    <div class="softengi-sidebar-stats">
-      <p class="softengi-sidebar-label">YOUR STATS</p>
-      <div class="softengi-stat"><span>Score</span><strong id="softengiScore">0 / 0</strong></div>
-      <div class="softengi-stat"><span>Combo</span><strong id="softengiCombo">0</strong></div>
-      <div class="softengi-stat"><span>Accuracy</span><strong id="softengiAccuracy">0%</strong></div>
-      <div class="softengi-stat"><span>Progress</span><strong id="softengiProgress">Ready</strong></div>
-      <div class="softengi-progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <span id="softengiProgressBar"></span>
-      </div>
-      <div class="softengi-stat"><span>Time</span><strong id="softengiTime">No limit</strong></div>
-    </div>
-  </aside>
-  <section class="visual">
-    <div class="gfx-workspace-bar">
-      <span class="gfx-app-mark">◈</span>
-      <strong>Quiz</strong>
-      <span class="gfx-workspace-spacer"></span>
-      <span class="gfx-workspace-status">Object Mode</span>
-    </div>
-    <div class="quiz-audio-controls">
-      <button class="music-toggle" id="musicToggle" type="button" aria-label="Mute music" aria-pressed="false">♫</button>
-      <button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sounds" aria-pressed="false">🔊</button>
-    </div>
-    <div class="gfx-toolbar" aria-hidden="true"><span>↖</span><span>✥</span><span>⟳</span><span>□</span><span>⌁</span></div>
-    <div class="gfx-viewport-grid" aria-hidden="true">
-      <div class="gfx-ground-plane"></div>
-    </div>
-    <div class="gfx-cube-stage">
-      <div class="gfx-cube-rotator">
-        <div class="gfx-cube-object" id="gfxCube">
-          <div class="gfx-cube-face gfx-cube-front"></div>
-          <div class="gfx-cube-face gfx-cube-back" aria-hidden="true"></div>
-          <div class="gfx-cube-face gfx-cube-right" aria-hidden="true"></div>
-          <div class="gfx-cube-face gfx-cube-left" aria-hidden="true"></div>
-          <div class="gfx-cube-face gfx-cube-top" aria-hidden="true"></div>
-          <div class="gfx-cube-face gfx-cube-bottom" aria-hidden="true"></div>
-          <div class="gfx-cube-edges" aria-hidden="true">
-            <span class="gfx-edge gfx-edge-front-top"></span>
-            <span class="gfx-edge gfx-edge-front-bottom"></span>
-            <span class="gfx-edge gfx-edge-back-top"></span>
-            <span class="gfx-edge gfx-edge-back-bottom"></span>
-            <span class="gfx-edge gfx-edge-front-left"></span>
-            <span class="gfx-edge gfx-edge-front-right"></span>
-            <span class="gfx-edge gfx-edge-back-left"></span>
-            <span class="gfx-edge gfx-edge-back-right"></span>
-            <span class="gfx-edge gfx-edge-connector gfx-edge-connector-tl"></span>
-            <span class="gfx-edge gfx-edge-connector gfx-edge-connector-tr"></span>
-            <span class="gfx-edge gfx-edge-connector gfx-edge-connector-bl"></span>
-            <span class="gfx-edge gfx-edge-connector gfx-edge-connector-br"></span>
-          </div>
-        </div>
-      </div>
-      <div class="gfx-selection-cursor" id="gfxSelectionCursor" aria-hidden="true">
-        <svg viewBox="0 0 20 25" focusable="false">
-          <path d="M2 1.5V20l4.5-4.5 3.2 7 3-1.4-3.2-7H18L2 1.5Z"/>
-        </svg>
-      </div>
-    </div>
-    <div class="gfx-axis-gizmo" aria-hidden="true"><span class="gfx-axis-x">X</span><span class="gfx-axis-y">Y</span><span class="gfx-axis-z">Z</span></div>
-    <div class="gfx-status-bar" aria-hidden="true"><span>Collection | Cube</span><span>Verts: 8 &nbsp; Edges: 12 &nbsp; Faces: 6</span></div>
-    <div class="quiz-heading">
-      <p class="course-code" id="courseCode">COURSE CODE - QUIZ</p>
-      <div class="question-content-row">
-        <p class="question-title" id="questionTitle">Setup Menu</p>
-        <button class="question-image-trigger" id="questionImageTrigger" type="button"
-          aria-label="View question image" aria-haspopup="dialog" hidden>
-          <img id="questionImage" alt="">
-        </button>
-        <button class="question-image-view" id="questionImageView" type="button"
-          aria-haspopup="dialog" hidden>View Image</button>
-      </div>
-    </div>
-  </section>
-    <div class="quiz-hud">
-        <div class="party-turn" id="partyTurn" hidden></div>
-        <div class="question-timer" id="questionTimer" aria-live="off" hidden></div>
-        <div class="timer" id="timer" hidden>00:00</div>
-      <div class="party-score-display" id="partyScoreDisplay" aria-label="Player scores" hidden></div>
-      <div class="score-display" id="scoreDisplay">Score: 0</div>
-      <div class="combo-display" id="comboDisplay">Combo: 0</div>
-      <div class="host-display-player-score" id="hostDisplayPlayerScore" aria-live="polite" hidden></div>
-      <div class="question-display" id="questionDisplay"></div>
-    </div>
-    <button class="party-score-toggle" id="partyScoreToggle" type="button"
-      aria-label="View player scores" aria-controls="partyScoreDisplay" aria-expanded="false" hidden>
-      <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-        <path d="M8 4.5h8a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 16 20.5H8A1.5 1.5 0 0 1 6.5 19V6A1.5 1.5 0 0 1 8 4.5Z"/>
-        <path d="M9 4V3.5A1.5 1.5 0 0 1 10.5 2h3A1.5 1.5 0 0 1 15 3.5V4M9.5 10h5m-5 3h5m-5 3h3"/>
-      </svg>
-    </button>
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+		<link rel="icon" type="image/png" href="assets/icon.png" />
+		<title>Quiz Hub - Quiz</title>
+		<script>
+			let persistedNativeApp = false;
+			try {
+				persistedNativeApp =
+					sessionStorage.getItem("quizhubNativeApp") === "true";
+			} catch (error) {
+				console.warn("Could not restore the native app marker:", error);
+			}
+			window.quizHubNativeApp = Boolean(
+				["android", "desktop"].includes(
+					new URLSearchParams(location.search).get("quizhubApp"),
+				) ||
+				window.Capacitor?.isNativePlatform?.() ||
+				/Electron\//.test(navigator.userAgent) ||
+				persistedNativeApp,
+			);
+			const developerDisplayMode = localStorage.getItem(
+				"quizHubDeveloperDisplayMode",
+			);
+			if (["mobile", "cover"].includes(developerDisplayMode)) {
+				document.documentElement.classList.add(
+					`dev-display-${developerDisplayMode}`,
+				);
+				document.documentElement.classList.add(
+					`cheat-display-${developerDisplayMode}`,
+				);
+			}
+			window.quizHubOfflineTestMode =
+				localStorage.getItem("quizHubOfflineTestMode") === "true";
+			if (window.quizHubOfflineTestMode) {
+				document.documentElement.classList.add("offline-test-mode");
+				document.documentElement.classList.add("offline-mode");
+				window.quizHubOfflineApp = true;
+			} else {
+				window.quizHubOfflineApp = false;
+			}
+			if (window.quizHubNativeApp) {
+				try {
+					sessionStorage.setItem("quizhubNativeApp", "true");
+				} catch (error) {
+					console.warn("Could not persist the native app marker:", error);
+				}
+				document.documentElement.classList.add("native-app");
+			}
+		</script>
+		<link rel="stylesheet" href="css/quiz.css" />
+		<link rel="stylesheet" href="css/preferences.css" />
+		<link rel="stylesheet" href="css/cover-screen.css" />
+		<link rel="stylesheet" href="css/dev.css" />
+		<script src="./js/audio-focus.js" defer></script>
+		<script src="./js/load-preferences.js"></script>
+		<script src="./js/dev-scenes.js" defer></script>
+		<script src="./js/dev.js" defer></script>
+		<script src="./js/questionBank.js" defer></script>
+		<script src="./js/mixed-study.js" defer></script>
+		<script src="./js/party-question.js" defer></script>
+		<script src="./js/party-config.js" defer></script>
+		<script src="./js/party-client.js" defer></script>
+		<script src="./js/quiz.js" defer></script>
+		<script src="./js/active-presence.js" defer></script>
+	</head>
+	<body>
+		<div class="quiz-page" id="quizPage">
+			<aside
+				class="softengi-sidebar"
+				id="softengiSidebar"
+				aria-label="Quiz statistics"
+				hidden>
+				<div class="softengi-brand">
+					<span><strong>BarrieGPT</strong></span>
+				</div>
+				<div class="softengi-sidebar-stats">
+					<p class="softengi-sidebar-label">YOUR STATS</p>
+					<div class="softengi-stat">
+						<span>Score</span><strong id="softengiScore">0 / 0</strong>
+					</div>
+					<div class="softengi-stat">
+						<span>Combo</span><strong id="softengiCombo">0</strong>
+					</div>
+					<div class="softengi-stat">
+						<span>Accuracy</span><strong id="softengiAccuracy">0%</strong>
+					</div>
+					<div class="softengi-stat">
+						<span>Progress</span><strong id="softengiProgress">Ready</strong>
+					</div>
+					<div
+						class="softengi-progress-track"
+						role="progressbar"
+						aria-label="Quiz progress"
+						aria-valuemin="0"
+						aria-valuemax="100"
+						aria-valuenow="0">
+						<span id="softengiProgressBar"></span>
+					</div>
+					<div class="softengi-stat">
+						<span>Time</span><strong id="softengiTime">No limit</strong>
+					</div>
+				</div>
+			</aside>
+			<section class="visual">
+				<div class="gfx-workspace-bar">
+					<span class="gfx-app-mark">◈</span>
+					<strong>Quiz</strong>
+					<span class="gfx-workspace-spacer"></span>
+					<span class="gfx-workspace-status">Object Mode</span>
+				</div>
+				<div class="quiz-audio-controls">
+					<button
+						class="music-toggle"
+						id="musicToggle"
+						type="button"
+						aria-label="Mute music"
+						aria-pressed="false">
+						♫
+					</button>
+					<button
+						class="sound-toggle"
+						id="soundToggle"
+						type="button"
+						aria-label="Mute sounds"
+						aria-pressed="false">
+						🔊
+					</button>
+				</div>
+				<div class="gfx-toolbar" aria-hidden="true">
+					<span>↖</span><span>✥</span><span>⟳</span><span>□</span><span>⌁</span>
+				</div>
+				<div class="gfx-viewport-grid" aria-hidden="true">
+					<div class="gfx-ground-plane"></div>
+				</div>
+				<div class="gfx-cube-stage">
+					<div class="gfx-cube-rotator">
+						<div class="gfx-cube-object" id="gfxCube">
+							<div class="gfx-cube-face gfx-cube-front"></div>
+							<div class="gfx-cube-face gfx-cube-back" aria-hidden="true"></div>
+							<div
+								class="gfx-cube-face gfx-cube-right"
+								aria-hidden="true"></div>
+							<div class="gfx-cube-face gfx-cube-left" aria-hidden="true"></div>
+							<div class="gfx-cube-face gfx-cube-top" aria-hidden="true"></div>
+							<div
+								class="gfx-cube-face gfx-cube-bottom"
+								aria-hidden="true"></div>
+							<div class="gfx-cube-edges" aria-hidden="true">
+								<span class="gfx-edge gfx-edge-front-top"></span>
+								<span class="gfx-edge gfx-edge-front-bottom"></span>
+								<span class="gfx-edge gfx-edge-back-top"></span>
+								<span class="gfx-edge gfx-edge-back-bottom"></span>
+								<span class="gfx-edge gfx-edge-front-left"></span>
+								<span class="gfx-edge gfx-edge-front-right"></span>
+								<span class="gfx-edge gfx-edge-back-left"></span>
+								<span class="gfx-edge gfx-edge-back-right"></span>
+								<span
+									class="gfx-edge gfx-edge-connector gfx-edge-connector-tl"></span>
+								<span
+									class="gfx-edge gfx-edge-connector gfx-edge-connector-tr"></span>
+								<span
+									class="gfx-edge gfx-edge-connector gfx-edge-connector-bl"></span>
+								<span
+									class="gfx-edge gfx-edge-connector gfx-edge-connector-br"></span>
+							</div>
+						</div>
+					</div>
+					<div
+						class="gfx-selection-cursor"
+						id="gfxSelectionCursor"
+						aria-hidden="true">
+						<svg viewBox="0 0 20 25" focusable="false">
+							<path d="M2 1.5V20l4.5-4.5 3.2 7 3-1.4-3.2-7H18L2 1.5Z" />
+						</svg>
+					</div>
+				</div>
+				<div class="gfx-axis-gizmo" aria-hidden="true">
+					<span class="gfx-axis-x">X</span><span class="gfx-axis-y">Y</span
+					><span class="gfx-axis-z">Z</span>
+				</div>
+				<div class="gfx-status-bar" aria-hidden="true">
+					<span>Collection | Cube</span
+					><span>Verts: 8 &nbsp; Edges: 12 &nbsp; Faces: 6</span>
+				</div>
+				<div class="quiz-heading">
+					<p class="course-code" id="courseCode">COURSE CODE</p>
+					<div class="question-content-row">
+						<p class="question-title" id="questionTitle">Setup Menu</p>
+						<button
+							class="question-image-trigger"
+							id="questionImageTrigger"
+							type="button"
+							aria-label="View question image"
+							aria-haspopup="dialog"
+							hidden>
+							<img id="questionImage" alt="" />
+						</button>
+						<button
+							class="question-image-view"
+							id="questionImageView"
+							type="button"
+							aria-haspopup="dialog"
+							hidden>
+							View Image
+						</button>
+					</div>
+				</div>
+			</section>
+			<div class="quiz-hud">
+				<div class="party-turn" id="partyTurn" hidden></div>
+				<div
+					class="question-timer"
+					id="questionTimer"
+					aria-live="off"
+					hidden></div>
+				<div class="timer" id="timer" hidden>00:00</div>
+				<div
+					class="party-score-display"
+					id="partyScoreDisplay"
+					aria-label="Player scores"
+					hidden></div>
+				<div class="score-display" id="scoreDisplay">Score: 0</div>
+				<div class="combo-display" id="comboDisplay">Combo: 0</div>
+				<div
+					class="host-display-player-score"
+					id="hostDisplayPlayerScore"
+					aria-live="polite"
+					hidden></div>
+				<div class="question-display" id="questionDisplay"></div>
+			</div>
+			<button
+				class="party-score-toggle"
+				id="partyScoreToggle"
+				type="button"
+				aria-label="View player scores"
+				aria-controls="partyScoreDisplay"
+				aria-expanded="false"
+				hidden>
+				<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+					<path
+						d="M8 4.5h8a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 16 20.5H8A1.5 1.5 0 0 1 6.5 19V6A1.5 1.5 0 0 1 8 4.5Z" />
+					<path
+						d="M9 4V3.5A1.5 1.5 0 0 1 10.5 2h3A1.5 1.5 0 0 1 15 3.5V4M9.5 10h5m-5 3h5m-5 3h3" />
+				</svg>
+			</button>
 
-  <main class="panel">
-    <section class="quiz-setup" id="quizSetup" aria-labelledby="setupTitle">
-      <div class="setup-kicker">QUIZ SETUP</div>
-      <h1 id="setupTitle">Customize Your Quiz</h1>
-      <p class="setup-subtitle" id="setupCount">Loading question count…</p>
-      <p class="party-settings-summary" id="partySettingsSummary" aria-live="polite" hidden></p>
+			<main class="panel">
+				<section class="quiz-setup" id="quizSetup" aria-labelledby="setupTitle">
+					<div class="setup-kicker">QUIZ SETUP</div>
+					<h1 id="setupTitle">Customize Your Quiz</h1>
+					<p class="setup-subtitle" id="setupCount">Loading question count…</p>
+					<p
+						class="party-settings-summary"
+						id="partySettingsSummary"
+						aria-live="polite"
+						hidden></p>
 
-      <button class="control review-section-trigger" id="reviewSectionTrigger" type="button" hidden>
-        Choose review sections
-      </button>
+					<button
+						class="control review-section-trigger"
+						id="reviewSectionTrigger"
+						type="button"
+						hidden>
+						Choose review sections
+					</button>
 
-      <label class="setup-label" for="questionCount">Number of questions</label>
-      <div class="count-row">
-        <input id="questionCount" type="number" min="1" value="6" inputmode="numeric">
-        <span id="countMax">of 6</span>
-      </div>
+					<label class="setup-label" for="questionCount"
+						>Number of questions</label
+					>
+					<div class="count-row">
+						<input
+							id="questionCount"
+							type="number"
+							min="1"
+							value="6"
+							inputmode="numeric" />
+						<span id="countMax">of 6</span>
+					</div>
 
-      <fieldset class="setup-group">
-        <legend>Question order</legend>
-        <label class="choice"><input type="radio" name="order" value="random" checked><span>Random order</span></label>
-        <label class="choice"><input type="radio" name="order" value="static"><span>Static order</span></label>
-      </fieldset>
+					<fieldset class="setup-group">
+						<legend>Question order</legend>
+						<label class="choice"
+							><input type="radio" name="order" value="random" checked /><span
+								>Random order</span
+							></label
+						>
+						<label class="choice"
+							><input type="radio" name="order" value="static" /><span
+								>Static order</span
+							></label
+						>
+					</fieldset>
 
-      <fieldset class="setup-group">
-        <legend>Time limit</legend>
-        <label class="choice"><input type="radio" name="timeLimit" value="none" checked><span>No time limit</span></label>
-        <label class="choice"><input type="radio" name="timeLimit" value="10"><span>10 minutes</span></label>
-        <label class="choice"><input type="radio" name="timeLimit" value="20"><span>20 minutes</span></label>
-        <label class="choice"><input type="radio" name="timeLimit" value="30"><span>30 minutes</span></label>
-        <label class="choice"><input type="radio" name="timeLimit" value="60"><span>60 minutes</span></label>
-      </fieldset>
-      <fieldset class="setup-group" id="socIndiTimeLimits" hidden>
-        <legend>SocIndi review time limit</legend>
-        <label class="choice"><input type="radio" name="timeLimit" value="100"><span>100 minutes</span></label>
-        <label class="choice"><input type="radio" name="timeLimit" value="150"><span>150 minutes</span></label>
-      </fieldset>
-      <label class="setup-label" for="perQuestionTimeLimit">Time limit per question</label>
-      <div class="count-row">
-        <select id="perQuestionTimeLimit">
-          <option value="none">No per-question limit</option>
-        </select>
-      </div>
+					<fieldset class="setup-group">
+						<legend>Time limit</legend>
+						<label class="choice"
+							><input type="radio" name="timeLimit" value="none" checked /><span
+								>No time limit</span
+							></label
+						>
+						<label class="choice"
+							><input type="radio" name="timeLimit" value="10" /><span
+								>10 minutes</span
+							></label
+						>
+						<label class="choice"
+							><input type="radio" name="timeLimit" value="20" /><span
+								>20 minutes</span
+							></label
+						>
+						<label class="choice"
+							><input type="radio" name="timeLimit" value="30" /><span
+								>30 minutes</span
+							></label
+						>
+						<label class="choice"
+							><input type="radio" name="timeLimit" value="60" /><span
+								>60 minutes</span
+							></label
+						>
+					</fieldset>
+					<fieldset class="setup-group" id="socIndiTimeLimits" hidden>
+						<legend>SocIndi review time limit</legend>
+						<label class="choice"
+							><input type="radio" name="timeLimit" value="100" /><span
+								>100 minutes</span
+							></label
+						>
+						<label class="choice"
+							><input type="radio" name="timeLimit" value="150" /><span
+								>150 minutes</span
+							></label
+						>
+					</fieldset>
+					<label class="setup-label" for="perQuestionTimeLimit"
+						>Time limit per question</label
+					>
+					<div class="count-row">
+						<select id="perQuestionTimeLimit">
+							<option value="none">No per-question limit</option>
+						</select>
+					</div>
 
-      <p class="setup-error" id="setupError" aria-live="polite"></p>
-      <div class="setup-actions">
-        <button class="control setup-start" id="beginQuiz" type="button">BEGIN QUIZ</button>
-        <button class="control setup-exit" id="exitSetup" type="button">EXIT TO MENU</button>
-      </div>
-    </section>
+					<p class="setup-error" id="setupError" aria-live="polite"></p>
+					<div class="setup-actions">
+						<button class="control setup-start" id="beginQuiz" type="button">
+							BEGIN QUIZ
+						</button>
+						<button class="control setup-exit" id="exitSetup" type="button">
+							EXIT TO MENU
+						</button>
+					</div>
+				</section>
 
-    <section class="quiz-content" id="quizContent" hidden>
-      <div class="softengi-composer">
-        <section class="table-answer-builder" id="tableAnswerBuilder" aria-label="Mesh table answer" hidden>
-          <div class="table-answer-scroll" id="tableAnswerScroll"></div>
-          <p class="table-answer-status" id="tableAnswerStatus" aria-live="polite"></p>
-          <button class="control table-answer-submit" id="tableAnswerSubmit" type="button">Check table</button>
-        </section>
-        <section class="opengl-builder" id="openglBuilder" aria-label="OpenGL transformation answer" hidden>
-          <div class="opengl-function-buttons" aria-label="Add a transformation">
-            <button class="opengl-function-button" type="button" data-transform-add="translate">glTranslatef(tx, ty, 0.0);</button>
-            <button class="opengl-function-button" type="button" data-transform-add="rotate">glRotatef(angle, 0.0, 0.0, 1.0);</button>
-            <button class="opengl-function-button" type="button" data-transform-add="scale">glScalef(sx, sy, 1.0);</button>
-          </div>
-          <ol class="opengl-sequence" id="openglSequence" aria-label="Transformation sequence"></ol>
-          <p class="opengl-attempts" id="openglAttempts" aria-live="polite"></p>
-          <pre class="opengl-solution" id="openglSolution" hidden><code></code></pre>
-          <button class="control opengl-submit" id="openglSubmit" type="button">Check answer</button>
-        </section>
-        <section class="answers" id="answers">
-          <button class="answer"></button>
-          <button class="answer"></button>
-          <button class="answer"></button>
-          <button class="answer"></button>
-        </section>
+				<section class="quiz-content" id="quizContent" hidden>
+					<div class="softengi-composer">
+						<section
+							class="statistics-set-builder"
+							id="statisticsSetBuilder"
+							aria-label="Enter a set of five integers"
+							hidden>
+							<p class="statistics-set-instructions">
+								Enter five integers. Your mean and mode will be shown after you
+								check your set.
+							</p>
+							<fieldset class="statistics-set-inputs">
+								<legend>Your five integers</legend>
+								<label
+									>Integer 1<input
+										type="number"
+										step="1"
+										inputmode="numeric"
+										data-statistics-value
+										aria-label="Integer 1"
+								/></label>
+								<label
+									>Integer 2<input
+										type="number"
+										step="1"
+										inputmode="numeric"
+										data-statistics-value
+										aria-label="Integer 2"
+								/></label>
+								<label
+									>Integer 3<input
+										type="number"
+										step="1"
+										inputmode="numeric"
+										data-statistics-value
+										aria-label="Integer 3"
+								/></label>
+								<label
+									>Integer 4<input
+										type="number"
+										step="1"
+										inputmode="numeric"
+										data-statistics-value
+										aria-label="Integer 4"
+								/></label>
+								<label
+									>Integer 5<input
+										type="number"
+										step="1"
+										inputmode="numeric"
+										data-statistics-value
+										aria-label="Integer 5"
+								/></label>
+							</fieldset>
+							<p
+								class="statistics-set-result"
+								id="statisticsSetResult"
+								aria-live="polite"
+								hidden></p>
+							<p
+								class="statistics-set-solution"
+								id="statisticsSetSolution"
+								aria-live="polite"
+								hidden></p>
+							<p
+								class="statistics-set-status"
+								id="statisticsSetStatus"
+								aria-live="polite"></p>
+							<button
+								class="control statistics-set-submit"
+								id="statisticsSetSubmit"
+								type="button">
+								Check set
+							</button>
+						</section>
+						<section
+							class="table-answer-builder"
+							id="tableAnswerBuilder"
+							aria-label="Mesh table answer"
+							hidden>
+							<div class="table-answer-scroll" id="tableAnswerScroll"></div>
+							<p
+								class="table-answer-status"
+								id="tableAnswerStatus"
+								aria-live="polite"></p>
+							<button
+								class="control table-answer-submit"
+								id="tableAnswerSubmit"
+								type="button">
+								Check table
+							</button>
+						</section>
+						<section
+							class="opengl-builder"
+							id="openglBuilder"
+							aria-label="OpenGL transformation answer"
+							hidden>
+							<div
+								class="opengl-function-buttons"
+								aria-label="Add a transformation">
+								<button
+									class="opengl-function-button"
+									type="button"
+									data-transform-add="translate">
+									glTranslatef(tx, ty, 0.0);
+								</button>
+								<button
+									class="opengl-function-button"
+									type="button"
+									data-transform-add="rotate">
+									glRotatef(angle, 0.0, 0.0, 1.0);
+								</button>
+								<button
+									class="opengl-function-button"
+									type="button"
+									data-transform-add="scale">
+									glScalef(sx, sy, 1.0);
+								</button>
+							</div>
+							<ol
+								class="opengl-sequence"
+								id="openglSequence"
+								aria-label="Transformation sequence"></ol>
+							<p
+								class="opengl-attempts"
+								id="openglAttempts"
+								aria-live="polite"></p>
+							<pre
+								class="opengl-solution"
+								id="openglSolution"
+								hidden><code></code></pre>
+							<button
+								class="control opengl-submit"
+								id="openglSubmit"
+								type="button">
+								Check answer
+							</button>
+						</section>
+						<section class="answers" id="answers">
+							<button class="answer"></button>
+							<button class="answer"></button>
+							<button class="answer"></button>
+							<button class="answer"></button>
+						</section>
 
-        <div class="motivation" id="feedback" aria-live="polite"></div>
+						<div class="motivation" id="feedback" aria-live="polite"></div>
 
-        <nav class="controls">
-          <button class="control" id="skip" type="button" aria-label="Skip question" title="Skip question"><span class="control-visible-label">SKIP</span><span class="softengi-control-icon" aria-hidden="true">»</span></button>
-          <button class="control" id="next" type="button" aria-label="Next question" title="Next question" disabled><span class="control-visible-label">NEXT</span><span class="softengi-control-icon" aria-hidden="true">→</span></button>
-          <button class="control" id="quit" type="button" aria-label="End quiz">END QUIZ</button>
-        </nav>
-      </div>
-    </section>
-  </main>
-</div>
+						<nav class="controls">
+							<button
+								class="control"
+								id="skip"
+								type="button"
+								aria-label="Skip question"
+								title="Skip question">
+								<span class="control-visible-label">SKIP</span
+								><span class="softengi-control-icon" aria-hidden="true">»</span>
+							</button>
+							<button
+								class="control"
+								id="next"
+								type="button"
+								aria-label="Next question"
+								title="Next question"
+								disabled>
+								<span class="control-visible-label">NEXT</span
+								><span class="softengi-control-icon" aria-hidden="true">→</span>
+							</button>
+							<button
+								class="control"
+								id="quit"
+								type="button"
+								aria-label="End quiz">
+								END QUIZ
+							</button>
+						</nav>
+					</div>
+				</section>
+			</main>
+		</div>
 
-<dialog class="party-player-left-dialog" id="partyPlayerLeftDialog" aria-labelledby="partyPlayerLeftTitle" aria-describedby="partyPlayerLeftMessage">
-  <div class="party-player-left-content">
-    <p class="party-player-left-kicker">PARTY UPDATE</p>
-    <h2 id="partyPlayerLeftTitle">A player left the game</h2>
-    <p id="partyPlayerLeftMessage">The shared quiz has ended because a player left.</p>
-    <button class="party-player-left-return" id="partyPlayerLeftReturn" type="button">BACK TO MENU</button>
-  </div>
-</dialog>
+		<dialog
+			class="party-player-left-dialog"
+			id="partyPlayerLeftDialog"
+			aria-labelledby="partyPlayerLeftTitle"
+			aria-describedby="partyPlayerLeftMessage">
+			<div class="party-player-left-content">
+				<p class="party-player-left-kicker">PARTY UPDATE</p>
+				<h2 id="partyPlayerLeftTitle">A player left the game</h2>
+				<p id="partyPlayerLeftMessage">
+					The shared quiz has ended because a player left.
+				</p>
+				<button
+					class="party-player-left-return"
+					id="partyPlayerLeftReturn"
+					type="button">
+					BACK TO MENU
+				</button>
+			</div>
+		</dialog>
 
-<dialog class="review-section-dialog" id="reviewSectionDialog" aria-labelledby="reviewSectionTitle">
-  <div class="review-section-dialog-header">
-    <div>
-      <h2 id="reviewSectionTitle">Choose review sections</h2>
-      <p class="review-section-description">Choose one or more sections to include.</p>
-    </div>
-    <button class="review-section-close" id="reviewSectionClose" type="button" aria-label="Close section menu">×</button>
-  </div>
-  <div class="review-section-choices" id="reviewSectionChoices"></div>
-  <button class="control review-section-done" id="reviewSectionDone" type="button">DONE</button>
-</dialog>
+		<dialog
+			class="review-section-dialog"
+			id="reviewSectionDialog"
+			aria-labelledby="reviewSectionTitle">
+			<div class="review-section-dialog-header">
+				<div>
+					<h2 id="reviewSectionTitle">Choose review sections</h2>
+					<p class="review-section-description">
+						Choose one or more sections to include.
+					</p>
+				</div>
+				<button
+					class="review-section-close"
+					id="reviewSectionClose"
+					type="button"
+					aria-label="Close section menu">
+					×
+				</button>
+			</div>
+			<div class="review-section-choices" id="reviewSectionChoices"></div>
+			<button
+				class="control review-section-done"
+				id="reviewSectionDone"
+				type="button">
+				DONE
+			</button>
+		</dialog>
 
-<dialog class="question-image-dialog" id="questionImageDialog" aria-label="Question image">
-  <button class="question-image-close" id="questionImageClose" type="button" aria-label="Close image">×</button>
-  <img id="questionImageExpanded" alt="">
-</dialog>
+		<dialog
+			class="question-image-dialog"
+			id="questionImageDialog"
+			aria-label="Question image">
+			<button
+				class="question-image-close"
+				id="questionImageClose"
+				type="button"
+				aria-label="Close image">
+				×
+			</button>
+			<img id="questionImageExpanded" alt="" />
+		</dialog>
 
-<dialog class="question-jump-dialog" id="questionJumpDialog" aria-labelledby="questionJumpTitle">
-  <div class="question-jump-header">
-    <div>
-      <h2 id="questionJumpTitle">Jump to a question</h2>
-      <p>Choose a question from this quiz.</p>
-    </div>
-    <button class="review-section-close" id="questionJumpClose" type="button" aria-label="Close question list">×</button>
-  </div>
-  <div class="question-jump-list" id="questionJumpList"></div>
-</dialog>
+		<dialog
+			class="question-jump-dialog dev-question-jump"
+			id="questionJumpDialog"
+			aria-labelledby="questionJumpTitle">
+			<div class="question-jump-header">
+				<div>
+					<h2 id="questionJumpTitle">Jump to a question</h2>
+					<p>Choose a question from this quiz.</p>
+				</div>
+				<button
+					class="review-section-close"
+					id="questionJumpClose"
+					type="button"
+					aria-label="Close question list">
+					×
+				</button>
+			</div>
+			<div class="question-jump-list" id="questionJumpList"></div>
+		</dialog>
 
-<div class="combo-popup" id="comboPopup" aria-live="polite" aria-atomic="true" hidden></div>
-<div class="fade" id="fade"></div>
-</body>
+		<div
+			class="combo-popup"
+			id="comboPopup"
+			aria-live="polite"
+			aria-atomic="true"
+			hidden></div>
+		<div class="fade" id="fade"></div>
+	</body>
 </html>

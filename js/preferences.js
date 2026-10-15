@@ -6,6 +6,11 @@
 	const clamshellDisabledMedia = window.matchMedia(
 		"(max-width: 720px) and (max-height: 748px)",
 	);
+	function isClamshellModeAvailable() {
+		if (root.classList.contains("dev-display-cover")) return false;
+		if (root.classList.contains("dev-display-mobile")) return true;
+		return !clamshellDisabledMedia.matches;
+	}
 	storage.removeItem("quizHubFullscreen");
 	if (document.fullscreenElement) {
 		document.exitFullscreen().catch((error) => {
@@ -58,7 +63,7 @@
 		answerSide:
 			storage.getItem("quizHubAnswerSide") === "left" ? "left" : "right",
 		clamshellMode:
-			!clamshellDisabledMedia.matches &&
+			isClamshellModeAvailable() &&
 			storage.getItem("quizHubClamshellMode") === "true",
 		dsPuristMode: storage.getItem("quizHubDSPuristMode") === "true",
 		highContrast: storage.getItem("quizHubHighContrast") === "true",
@@ -284,11 +289,11 @@
 		);
 	}
 
-	if (clamshellDisabledMedia.matches) {
+	if (!isClamshellModeAvailable()) {
 		storage.setItem("quizHubClamshellMode", "false");
 	}
 	clamshellDisabledMedia.addEventListener("change", (event) => {
-		if (event.matches && preferences.clamshellMode) {
+		if (!isClamshellModeAvailable() && preferences.clamshellMode) {
 			update("clamshellMode", false);
 		}
 	});
@@ -348,6 +353,9 @@
 		get clamshellMode() {
 			return preferences.clamshellMode;
 		},
+		get clamshellModeAvailable() {
+			return isClamshellModeAvailable();
+		},
 		get dsPuristMode() {
 			return preferences.dsPuristMode;
 		},
@@ -385,7 +393,7 @@
 			update("answerSide", value);
 		},
 		setClamshellMode(value) {
-			const enabled = Boolean(value) && !clamshellDisabledMedia.matches;
+			const enabled = Boolean(value) && isClamshellModeAvailable();
 			if (preferences.clamshellMode === enabled) return;
 			update("clamshellMode", enabled);
 			window.location.reload();

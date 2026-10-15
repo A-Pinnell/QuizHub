@@ -10,11 +10,17 @@ const preferencesScript = readFileSync(
 );
 const clamshellDisabledQuery = "(max-width: 720px) and (max-height: 748px)";
 
-function loadPreferences({ disabled = false, savedClamshell = false } = {}) {
+function loadPreferences({
+	disabled = false,
+	savedClamshell = false,
+	displayMode = "desktop",
+} = {}) {
 	const values = new Map([
 		["quizHubClamshellMode", String(savedClamshell)],
 	]);
-	const classes = new Map();
+	const classes = new Map([
+		[`dev-display-${displayMode}`, displayMode !== "desktop"],
+	]);
 	const mediaListeners = [];
 	let reloadCount = 0;
 	let requestedMediaQuery = "";
@@ -56,6 +62,9 @@ function loadPreferences({ disabled = false, savedClamshell = false } = {}) {
 			classList: {
 				toggle(name, enabled) {
 					classes.set(name, enabled);
+				},
+				contains(name) {
+					return classes.get(name) === true;
 				},
 			},
 			dataset: {},
@@ -126,4 +135,28 @@ test("larger mobile displays do not disable Clamshell mode", () => {
 	assert.equal(state.preferences.clamshellMode, true);
 	state.preferences.setClamshellMode(false);
 	assert.equal(state.reloadCount(), 1);
+});
+
+test("developer mobile preview allows Clamshell mode on a desktop-sized window", () => {
+	const state = loadPreferences({
+		disabled: true,
+		displayMode: "mobile",
+	});
+
+	assert.equal(state.preferences.clamshellModeAvailable, true);
+	state.preferences.setClamshellMode(true);
+	assert.equal(state.preferences.clamshellMode, true);
+	assert.equal(state.values.get("quizHubClamshellMode"), "true");
+	assert.equal(state.reloadCount(), 1);
+});
+
+test("developer Cover Screen preview keeps Clamshell mode unavailable", () => {
+	const state = loadPreferences({
+		displayMode: "cover",
+		savedClamshell: true,
+	});
+
+	assert.equal(state.preferences.clamshellModeAvailable, false);
+	assert.equal(state.preferences.clamshellMode, false);
+	assert.equal(state.values.get("quizHubClamshellMode"), "false");
 });

@@ -29,8 +29,10 @@
 		["SocIndi", "reviewQuiz", "Chapter 1 and 4 Review", "Chapters 1 and 4 Review", true],
 		["SocIndi", "reviewQuiz", "Chapter 2 and 10 Review", "Chapters 2 and 10 Review", true],
 		["DataSci", "test1", null, "Test 1 Practice", true],
+		["DataSci", "lautest", null, "Dr. Lau's Practice", true],
 		["SoftEngi", "quiz1", null, "Lectures 1–6 Practice"],
 		["CompGFX", "test1", null, "Midterm Practice", true],
+		["CompGFX", "lautest", null, "Dr. Lau's Practice", true],
 	].map(([category, quiz, section, label, midtermReview = false]) => ({
 		category,
 		quiz,

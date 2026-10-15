@@ -66,8 +66,10 @@ test("Mixed Study presets select no sources, midterm review sources, or the comp
   const midterms = mixedStudy.getPresetSources("midterm");
   const all = mixedStudy.getPresetSources("all");
   assert.equal(none.length, 0);
-  assert.equal(midterms.length, 12);
+  assert.equal(midterms.length, 14);
   assert.ok(midterms.some((source) => source.category === "CompArch" && source.quiz === "test1"));
+  assert.ok(midterms.some((source) => source.category === "CompGFX" && source.quiz === "lautest"));
+  assert.ok(midterms.some((source) => source.category === "DataSci" && source.quiz === "lautest"));
   assert.ok(midterms.some((source) => source.category === "SocIndi" && source.section === "CHAPTER 1"));
   assert.ok(all.length > midterms.length);
   assert.throws(() => mixedStudy.getPresetSources("unknown"), /valid Mixed Study preset/i);

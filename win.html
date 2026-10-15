@@ -7,14 +7,17 @@
 <title>Quiz Hub - Complete</title>
 <link rel="stylesheet" href="css/win.css" >
 <link rel="stylesheet" href="css/preferences.css">
-<link rel="stylesheet" href="css/cover-screen.css?v=20261012-6">
+<link rel="stylesheet" href="css/cover-screen.css">
 <script src="./js/audio-focus.js" defer></script>
 <script src="./js/load-preferences.js"></script>
+<script src="./js/dev-scenes.js" defer></script>
+<script src="./js/dev.js" defer></script>
 <script src="./js/win.js" defer></script>
 <script src="./js/questionBank.js" defer></script>
 </head>
 <body>
 <button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sounds" aria-pressed="false">🔊</button>
+<button class="music-toggle" id="musicToggle" type="button" aria-label="Mute music" aria-pressed="false">♫</button>
 <div class="stars"></div>
 <div class="sun"></div>
 <div class="sunset-haze"></div>
@@ -26,7 +29,7 @@
 <section class="card">
   <button class="win-close" id="winClose" type="button" aria-label="Return to main menu">&times;</button>
   <div class="kicker">QUIZ COMPLETE</div>
-  <h1 class="title">Great work!</h1>
+  <h1 class="title" id="resultsTitle">Great work!</h1>
   <div class="score" id="score">0 / 0</div>
   <p class="longest-combo" id="longestCombo">Longest combo: 0</p>
   <p class="summary" id="summary">Loading your results...</p>

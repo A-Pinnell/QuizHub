@@ -12,9 +12,11 @@
 html,body{width:100%;height:100%;margin:0;overflow:hidden;font-family:'TradeGothic';color:#111}
 .sound-toggle{position:fixed;top:14px;left:14px;z-index:20;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.86);color:#111;font-size:20px;line-height:1;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.22)}
 .sound-toggle:hover{background:#fff;transform:scale(1.06)}
+.music-toggle{position:fixed;top:14px;left:64px;z-index:20;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.86);color:#111;font-size:21px;line-height:1;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.22)}
+.music-toggle:hover{background:#fff;transform:scale(1.06)}
 .win-close{position:absolute;top:14px;right:14px;z-index:6;width:46px;height:46px;border:0;border-radius:50%;background:rgba(17,17,17,.12);color:#111;font-size:32px;line-height:1;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.16)}
 .win-close:hover{background:rgba(17,17,17,.2);transform:scale(1.06)}
-@media(max-width:600px){.sound-toggle{top:auto;left:auto;right:14px;bottom:14px}}
+@media(max-width:600px){.sound-toggle{top:auto;left:auto;right:14px;bottom:14px}.music-toggle{top:auto;left:auto;right:64px;bottom:14px}}
 body{
   min-height:0;
   background:

@@ -25,6 +25,129 @@ html.ds-purist-mode :is(button, input, select, textarea, [role="dialog"], .card,
   transition-timing-function: steps(4, end) !important;
 }
 
+html.dev-display-mobile {
+  --app-viewport-height: 924px;
+  overflow: hidden;
+}
+
+html.dev-display-mobile body {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 412px !important;
+  height: 924px !important;
+  min-height: 924px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  transform: translate(-50%, -50%) scale(var(--dev-display-scale, 1)) !important;
+  transform-origin: center;
+}
+
+html.dev-display-mobile body:has(.building) .building {
+  width: 412px !important;
+  height: 924px !important;
+}
+
+html.dev-display-mobile body:has(.building) .content {
+  width: 376px !important;
+  height: 924px !important;
+}
+
+html.dev-display-mobile body .quiz-page {
+  position: absolute !important;
+  inset: 0 auto auto 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  transform: none !important;
+}
+
+html.dev-display-mobile.clamshell-mode body:has(.building) .building,
+html.dev-display-mobile.clamshell-mode body:has(.building) .content {
+  height: 924px;
+  min-height: 924px;
+}
+
+html.dev-display-mobile.clamshell-mode body:has(.building) .ground {
+  display: none;
+}
+
+html.dev-display-mobile.clamshell-mode body:has(.building) header {
+  flex: 0 0 50%;
+  height: 50%;
+  padding: 44px 12px 12px;
+}
+
+html.dev-display-mobile.clamshell-mode body:has(.building) .title-wrap {
+  transform: none;
+}
+
+html.dev-display-mobile.clamshell-mode body:has(.building) .menu-area {
+  flex: 0 0 50%;
+  height: 50%;
+  min-height: 0;
+  padding: 42px 8px 8px;
+}
+
+html.dev-display-mobile.clamshell-mode body:has(.building) .menu-viewport {
+  width: calc(100% - 16px);
+  max-height: none;
+}
+
+html.dev-display-mobile.clamshell-mode body:has(.building) .menu {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+html.dev-display-mobile.clamshell-mode body:has(.building) .card {
+  min-width: 0;
+  min-height: 0;
+}
+
+html.dev-display-mobile.clamshell-mode body .quiz-page {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: 50% 50% !important;
+}
+
+html.dev-display-mobile.clamshell-mode body .quiz-page .visual {
+  position: relative !important;
+  inset: auto !important;
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  height: 100% !important;
+  min-height: 0;
+}
+
+html.dev-display-mobile.clamshell-mode body .quiz-page .panel {
+  position: relative !important;
+  inset: auto !important;
+  grid-column: 1;
+  grid-row: 2;
+  width: 100%;
+  height: 100% !important;
+  min-height: 0;
+  max-height: none;
+  padding: 10px 12px 8px;
+  overflow: hidden;
+  border: 0;
+  border-top: 6px solid var(--quiz-panel-border);
+}
+
+html.dev-display-mobile.clamshell-mode body:not(.host-display-active) .quiz-hud {
+  top: calc(50% + 5px) !important;
+  right: 12px;
+  bottom: auto !important;
+  left: 12px;
+  z-index: 110;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+  font-size: 11px;
+}
+
 @media screen and (orientation: portrait) and (max-width: 900px) and (min-height: 640px) {
   * {
     scrollbar-width: none !important;
@@ -34,6 +157,10 @@ html.ds-purist-mode :is(button, input, select, textarea, [role="dialog"], .card,
 @media (min-width: 761px) {
     .mobile-only-setting {
       display: none !important;
+    }
+
+    html.dev-display-mobile .mobile-only-setting {
+      display: flex !important;
     }
 }
 

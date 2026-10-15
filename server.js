@@ -27,7 +27,82 @@ const mimeTypes = {
   ".wav": "audio/wav"
 };
 const rooms = new Map();
+const presenceSessions = new Map();
+const presenceLifetimeMs = 90_000;
 const quizThemes = new Set(["default", "quizhub", "ai-model", "blended"]);
+
+function removeExpiredPresenceSessions(now = Date.now()) {
+  for (const [sessionId, lastSeen] of presenceSessions) {
+    if (now - lastSeen >= presenceLifetimeMs) presenceSessions.delete(sessionId);
+  }
+}
+const presenceCleanupTimer = setInterval(removeExpiredPresenceSessions, 30_000);
+presenceCleanupTimer.unref();
+
+function presenceResponse(response, status, body) {
+  response.writeHead(status, {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Cache-Control": "no-store",
+    "Content-Type": "application/json; charset=utf-8"
+  });
+  response.end(body === null ? undefined : JSON.stringify(body));
+}
+
+function servePresence(request, response) {
+  if (request.method === "OPTIONS") {
+    presenceResponse(response, 204, null);
+    return;
+  }
+  if (request.method === "GET") {
+    removeExpiredPresenceSessions();
+    presenceResponse(response, 200, { activeSessions: presenceSessions.size });
+    return;
+  }
+  if (request.method !== "POST" && request.method !== "DELETE") {
+    response.writeHead(405, { Allow: "GET, POST, DELETE, OPTIONS" }).end("Method not allowed");
+    return;
+  }
+
+  let requestBody = "";
+  let bodyTooLarge = false;
+  request.on("data", (chunk) => {
+    requestBody += chunk.toString();
+    if (requestBody.length > 1024) {
+      bodyTooLarge = true;
+      requestBody = "";
+    }
+  });
+  request.on("end", () => {
+    if (bodyTooLarge) {
+      presenceResponse(response, 413, { error: "Request body is too large." });
+      return;
+    }
+    let payload;
+    try {
+      payload = JSON.parse(requestBody);
+    } catch {
+      presenceResponse(response, 400, { error: "Invalid JSON body." });
+      return;
+    }
+    if (
+      !payload ||
+      typeof payload.sessionId !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(payload.sessionId)
+    ) {
+      presenceResponse(response, 400, { error: "A valid anonymous session ID is required." });
+      return;
+    }
+    if (request.method === "POST") {
+      presenceSessions.set(payload.sessionId, Date.now());
+    } else {
+      presenceSessions.delete(payload.sessionId);
+    }
+    removeExpiredPresenceSessions();
+    presenceResponse(response, 200, { activeSessions: presenceSessions.size });
+  });
+}
 
 function send(socket, message) {
   if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(message));
@@ -38,6 +113,7 @@ function publicRoom(room) {
     code: room.code,
     capacity: room.capacity,
     stage: room.stage,
+    excludedQuizzesEnabled: room.excludedQuizzesEnabled === true,
     hostDisplay: room.hostDisplay,
     hostDisplayPlayerId: room.hostDisplayPlayerId,
     partyOptions: room.partyOptions,
@@ -53,8 +129,9 @@ function publicRoom(room) {
     },
     answersLocked: room.answersLocked,
     reveal: room.reveal,
-    players: [...room.players.values()].map(({ id, name, color, photo, ready, host, score, overallScore, socket }) => ({
-      id, name, color, photo, ready, host, score, overallScore, connected: socket?.readyState === WebSocket.OPEN
+    players: [...room.players.values()].map(({ id, name, color, photo, ready, host, score, overallScore, fakePlayer, socket }) => ({
+      id, name, color, photo, ready, host, score, overallScore, fakePlayer: fakePlayer === true,
+      connected: socket?.readyState === WebSocket.OPEN
     }))
   };
 }
@@ -81,7 +158,9 @@ function broadcastRoom(room) {
 
 function allReady(room) {
   return room.players.size >= 2 && room.players.size <= room.capacity &&
-    [...room.players.values()].every((player) => player.ready && player.socket?.readyState === WebSocket.OPEN);
+    [...room.players.values()].every((player) =>
+      player.ready && (player.fakePlayer || player.socket?.readyState === WebSocket.OPEN)
+    );
 }
 
 function generateRoomCode() {
@@ -148,18 +227,33 @@ function removePlayer(room, player) {
   if (room.players.get(player.id) !== player) return;
   if (player.expireTimer) clearTimeout(player.expireTimer);
   room.players.delete(player.id);
+  room.answers?.delete(player.id);
+  if (player.host) {
+    for (const [playerId, member] of room.players) {
+      if (!member.fakePlayer) continue;
+      room.players.delete(playerId);
+      room.answers?.delete(playerId);
+    }
+  }
+  room.answersLocked = room.answersLocked.filter((playerId) => room.players.has(playerId));
   if (room.players.size === 0) {
     clearTimeout(room.expiration);
     rooms.delete(room.code);
     return;
   }
   if (player.host) {
-    const newHost = room.players.values().next().value;
+    const newHost = [...room.players.values()].find((member) => !member.fakePlayer);
+    if (!newHost) {
+      clearTimeout(room.expiration);
+      rooms.delete(room.code);
+      return;
+    }
     newHost.host = true;
     broadcast(room, { type: "host-changed", hostId: newHost.id });
   }
   if (room.hostDisplayPlayerId === player.id) room.hostDisplayPlayerId = null;
   broadcastRoom(room);
+  if (room.question && !room.reveal) revealRoomAnswers(room);
 }
 
 function handleMessage(socket, rawMessage) {
@@ -203,6 +297,7 @@ function handleMessage(socket, rawMessage) {
       const hostDisplay = message.hostDisplay === true;
       const room = {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
+        excludedQuizzesEnabled: false,
         question: null, answersLocked: [], reveal: null, quizConfig: null, mixedSources: null,
         hostDisplay: false, hostDisplayPlayerId: null, quizTheme: null,
         partyOptions: { showPlayerScores: true, showLockedAnswers: false, earlyPointBonus: true }
@@ -313,6 +408,68 @@ function handleMessage(socket, rawMessage) {
   }
 
   switch (message.type) {
+    case "dev-excluded-quizzes": {
+      if (!player.host || room.stage !== "lobby") {
+        return sendError(socket, "Only the host can change excluded quiz availability in the lobby.");
+      }
+      if (typeof message.enabled !== "boolean") {
+        return sendError(socket, "Choose whether excluded quizzes are enabled.");
+      }
+      room.excludedQuizzesEnabled = message.enabled;
+      broadcastRoom(room);
+      break;
+    }
+    case "dev-add-fake-players": {
+      if (!player.host || room.stage !== "lobby") {
+        return sendError(socket, "Only the host can add fake players in the lobby.");
+      }
+      const count = Number(message.count);
+      const availableSlots = room.capacity - room.players.size;
+      if (!Number.isInteger(count) || count < 1 || count > availableSlots) {
+        return sendError(socket, `Add between 1 and ${Math.max(0, availableSlots)} fake players.`);
+      }
+      const colors = ["#e85d75", "#f2a541", "#54b9a8", "#8d7be8", "#4b9de0"];
+      const names = new Set(
+        [...room.players.values()].map((member) => member.name.toLocaleLowerCase())
+      );
+      let nextNameIndex = 1;
+      for (let index = 0; index < count; index++) {
+        let name;
+        do {
+          name = `Test Player ${nextNameIndex++}`;
+        } while (names.has(name.toLocaleLowerCase()));
+        names.add(name.toLocaleLowerCase());
+        const fakePlayer = {
+          id: randomUUID(),
+          name,
+          color: colors[(nextNameIndex - 2) % colors.length],
+          photo: "",
+          ready: true,
+          host: false,
+          fakePlayer: true,
+          score: 0,
+          overallScore: 0,
+          socket: null,
+          expireTimer: null
+        };
+        room.players.set(fakePlayer.id, fakePlayer);
+      }
+      broadcastRoom(room);
+      break;
+    }
+    case "dev-clear-fake-players": {
+      if (!player.host || room.stage !== "lobby") {
+        return sendError(socket, "Only the host can remove fake players in the lobby.");
+      }
+      for (const [playerId, member] of room.players) {
+        if (member.fakePlayer) room.players.delete(playerId);
+      }
+      room.hostDisplayPlayerId = room.players.has(room.hostDisplayPlayerId)
+        ? room.hostDisplayPlayerId
+        : null;
+      broadcastRoom(room);
+      break;
+    }
     case "launch": {
       if (!player.host) return sendError(socket, "Only the host can choose the quiz.");
       if (!allReady(room)) return sendError(socket, "Wait until every player is ready.");
@@ -334,10 +491,10 @@ function handleMessage(socket, rawMessage) {
       }
       const validQuizzes = {
         CompArch: ["quiz1", "test1"],
-        CompGFX: ["test1"],
+        CompGFX: ["test1", ...(room.excludedQuizzesEnabled ? ["lautest"] : [])],
         CloudComp: ["quiz1", "quiz2", "test1"],
         SocIndi: ["reviewQuiz", "textbookQuiz"],
-        DataSci: ["test1"],
+        DataSci: ["test1", ...(room.excludedQuizzesEnabled ? ["lautest"] : [])],
         SoftEngi: ["test1"]
       };
       let mixedSources = null;
@@ -394,7 +551,8 @@ function handleMessage(socket, rawMessage) {
       }
       const selectedPlayer = message.playerId ? findPlayer(room, message.playerId) : null;
       if (message.enabled && message.playerId &&
-          (!selectedPlayer || selectedPlayer.host || selectedPlayer.id === player.id)) {
+          (!selectedPlayer || selectedPlayer.host || selectedPlayer.fakePlayer ||
+            selectedPlayer.id === player.id)) {
         return sendError(socket, "Choose an account belonging to another player in the room.");
       }
       room.hostDisplay = message.enabled;
@@ -508,6 +666,25 @@ function handleMessage(socket, rawMessage) {
       });
       break;
     }
+    case "dev-jump-question": {
+      if (!player.host || room.stage !== "quiz") {
+        return sendError(socket, "Only the host can jump to a question during the quiz.");
+      }
+      const questionNumber = message.questionNumber;
+      if (!Number.isInteger(questionNumber) ||
+          questionNumber < 0 ||
+          questionNumber >= room.quizConfig.questionSequence.length) {
+        return sendError(socket, "Choose a question in the active quiz.");
+      }
+      room.questionNumber = questionNumber - 1;
+      room.question = null;
+      room.answers = new Map();
+      room.answersLocked = [];
+      room.firstCorrectPlayerId = null;
+      room.reveal = null;
+      broadcast(room, { type: "dev-jump-question", questionNumber });
+      break;
+    }
     case "question": {
       if (!player.host || room.stage !== "quiz") return sendError(socket, "Only the host can advance questions.");
       const { questionNumber, questionIndex, answerOrder } = message;
@@ -533,12 +710,38 @@ function handleMessage(socket, rawMessage) {
       }
       room.firstCorrectPlayerId = null;
       room.reveal = null;
+      const fakePlayers = [...room.players.values()].filter((member) => member.fakePlayer);
+      for (const fakePlayer of fakePlayers) {
+        const wrongAnswers = room.question.answerOrder.filter(
+          (answerIndex) => answerIndex !== correctIndex
+        );
+        const answerIndex = randomInt(100) < 65
+          ? correctIndex
+          : wrongAnswers[randomInt(wrongAnswers.length)];
+        room.answers.set(fakePlayer.id, answerIndex);
+        room.answersLocked.push(fakePlayer.id);
+      }
       broadcast(room, {
         type: "question",
         questionNumber: room.question.questionNumber,
         questionIndex: room.question.questionIndex,
         answerOrder: room.question.answerOrder
       });
+      if (room.answers.size === room.players.size) {
+        revealRoomAnswers(room);
+      } else if (fakePlayers.length > 0) {
+        const startingLockedCount = room.answers.size - fakePlayers.length;
+        fakePlayers.forEach((fakePlayer, index) => {
+          broadcast(room, {
+            type: "answer-locked",
+            playerId: fakePlayer.id,
+            lockedCount: startingLockedCount + index + 1,
+            ...(room.partyOptions.showLockedAnswers
+              ? { answerIndex: room.answers.get(fakePlayer.id) }
+              : {})
+          });
+        });
+      }
       break;
     }
     case "answer": {
@@ -646,6 +849,10 @@ function handleMessage(socket, rawMessage) {
 
 function serveStatic(request, response) {
   const url = new URL(request.url, "http://localhost");
+  if (url.pathname === "/presence") {
+    servePresence(request, response);
+    return;
+  }
   if (url.pathname === "/healthz") {
     response.writeHead(200, {
       "Content-Type": "application/json; charset=utf-8",
@@ -686,6 +893,11 @@ function serveStatic(request, response) {
 }
 
 const server = http.createServer((request, response) => {
+  const pathname = new URL(request.url, "http://localhost").pathname;
+  if (pathname === "/presence") {
+    serveStatic(request, response);
+    return;
+  }
   if (request.method !== "GET" && request.method !== "HEAD") {
     response.writeHead(405, { Allow: "GET, HEAD" }).end("Method not allowed");
     return;

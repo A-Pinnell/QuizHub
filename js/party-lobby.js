@@ -70,13 +70,42 @@
     return room.players.find((candidate)=>candidate.host)||player;
   }
 
+  function updateDevMenuContext(statusMessage){
+    const fakePlayers=room?.players.filter((player)=>player.fakePlayer) || [];
+    const availableFakeSlots=room ? Math.max(0,room.capacity-room.players.length) : 0;
+    window.quizHubDevMenu?.updateContext({
+      isHost,
+      lobbyStage:room?.stage || "",
+      excludedQuizzesEnabled:room?.excludedQuizzesEnabled===true,
+      fakePlayerLimit:availableFakeSlots,
+      fakePlayerEnabled:Boolean(
+        room && isHost && room.stage==="lobby" && availableFakeSlots>0
+      ),
+      removeFakePlayersEnabled:Boolean(
+        room && isHost && room.stage==="lobby" && fakePlayers.length>0
+      ),
+      fakePlayerSummary:room
+        ? isHost
+          ? `${fakePlayers.length} fake ${fakePlayers.length===1?"player":"players"} · ${availableFakeSlots} open lobby slots`
+          : "Only the lobby host can add fake players."
+        : "Waiting for lobby state.",
+      status:statusMessage || (room
+        ? isHost
+          ? `${fakePlayers.length} fake ${fakePlayers.length===1?"player":"players"} in this lobby. Lautest is ${room.excludedQuizzesEnabled?"enabled":"disabled"} for everyone here.`
+          : "Only the lobby host can change developer options."
+        : "Waiting for lobby state.")
+    });
+  }
+
   function renderPlayers(){
     if(!room) return;
+    isHost=room.players.some((player)=>player.id===playerId && player.host);
+    hostControls.hidden=!isHost;
     renderPartyOptions();
     playerList.replaceChildren(...room.players.map((player)=>{
       const profile=displayProfile(player);
       const card=document.createElement("article");
-      card.className="party-player-card";
+      card.className=`party-player-card${player.fakePlayer?" fake-player":""}`;
       card.style.setProperty("--player-color",profile.color);
       const avatar=document.createElement("div");
       avatar.className="party-avatar";
@@ -98,9 +127,11 @@
         : player.host?" (Host)":"";
       name.textContent=profile.name+hostDisplayLabel;
       const ready=document.createElement("span");
-      ready.className=`party-ready-status${player.ready?" ready":""}`;
-      ready.textContent=player.connected?"Ready":"Disconnected";
-      ready.classList.toggle("ready",player.connected);
+      ready.className=`party-ready-status${player.ready?" ready":""}${player.fakePlayer?" fake-player-status":""}`;
+      ready.textContent=player.fakePlayer
+        ?"Fake player"
+        :player.connected?"Ready":"Disconnected";
+      ready.classList.toggle("ready",player.connected || player.fakePlayer);
       card.append(avatar,name,ready);
       return card;
     }));
@@ -132,7 +163,7 @@
         value:"",
         textContent:"Choose a player account"
       }),
-      ...room.players.filter((player)=>!player.host).map((player)=>{
+      ...room.players.filter((player)=>!player.host && !player.fakePlayer).map((player)=>{
         const option=document.createElement("option");
         option.value=player.id;
         option.textContent=player.name+(player.connected?"":" (disconnected)");
@@ -145,7 +176,8 @@
       "Select a player already in the lobby. That player answers from their device.";
     const minimumPlayers=room.hostDisplay?3:2;
     const allReady=room.players.length>=minimumPlayers && room.players.length<=room.capacity &&
-      room.players.every((player)=>player.ready && player.connected);
+      room.players.every((player)=>player.ready && (player.connected || player.fakePlayer));
+    if(room.stage==="lobby") renderQuizOptions();
     status.textContent=room.stage==="lobby"
       ? room.players.length<minimumPlayers
         ? room.hostDisplay
@@ -163,7 +195,37 @@
     launchButton.disabled=!allReady || Boolean(
       room.hostDisplay && !selectedDisplayPlayer
     );
+    updateDevMenuContext();
   }
+
+  window.addEventListener("quizhub:dev-menu-action",async(event)=>{
+    const {action,count,value}=event.detail;
+    if(!["add-fake-players","remove-fake-players","excluded-quizzes"].includes(action)) return;
+    if(!room || !isHost || room.stage!=="lobby"){
+      updateDevMenuContext("These developer controls are available to the host in the lobby.");
+      return;
+    }
+    try{
+      if(action==="add-fake-players"){
+        await client.send({type:"dev-add-fake-players",code,count});
+        updateDevMenuContext("Fake players added.");
+      }else if(action==="remove-fake-players"){
+        await client.send({type:"dev-clear-fake-players",code});
+        updateDevMenuContext("Fake players removed.");
+      }else{
+        await client.send({
+          type:"dev-excluded-quizzes",
+          code,
+          enabled:value
+        });
+        updateDevMenuContext(value
+          ?"Dr. Lau’s Lautest quizzes are enabled for everyone in this room."
+          :"Dr. Lau’s Lautest quizzes are disabled for this room.");
+      }
+    }catch(sendError){
+      updateDevMenuContext(sendError.message);
+    }
+  });
 
   function renderPartyOptions(){
     if(!room) return;
@@ -217,13 +279,22 @@
   }
 
   function renderQuizOptions(){
-    const options=quizCatalog[categorySelect.value]||[];
+    const previousSelection=quizSelect.value;
+    const options=[...(quizCatalog[categorySelect.value]||[])];
+    if(room?.excludedQuizzesEnabled){
+      if(categorySelect.value==="CompGFX"){
+        options.push(["lautest","Dr. Lau’s Practice"]);
+      }else if(categorySelect.value==="DataSci"){
+        options.push(["lautest","Dr. Lau’s Practice"]);
+      }
+    }
     quizSelect.replaceChildren(...options.map(([id,label])=>{
       const option=document.createElement("option");
       option.value=id;
       option.textContent=label;
       return option;
     }));
+    if(options.some(([id])=>id===previousSelection)) quizSelect.value=previousSelection;
   }
   function renderQuizMode(){
     const mixed=quizModeSelect.value==="mixed";
@@ -350,8 +421,12 @@
       isHost=false;
       hostControls.hidden=true;
     }
+    updateDevMenuContext();
   });
-  client.on("error",(message)=>{error.textContent=message.message;});
+  client.on("error",(message)=>{
+    error.textContent=message.message;
+    updateDevMenuContext(message.message);
+  });
   client.on("close",()=>{
     if(room && room.stage==="lobby") status.textContent="Disconnected. Reload this page to reconnect.";
   });

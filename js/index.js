@@ -1,7 +1,7 @@
 const syncViewportHeight = () => {
-	const viewportHeight = window.visualViewport
-		? window.visualViewport.height
-		: window.innerHeight;
+	const viewportHeight =
+		window.quizHubDisplayViewport?.height ??
+		(window.visualViewport ? window.visualViewport.height : window.innerHeight);
 	document.documentElement.style.setProperty(
 		"--app-viewport-height",
 		`${viewportHeight}px`,
@@ -159,9 +159,11 @@ function isSpecialMenuMusicDate(date = new Date()) {
 	return specialMenuMusicDates.has(localDate);
 }
 function updateSpecialMenuTheme(date = new Date()) {
+	const override = localStorage.getItem("quizHubSpecialEventMode");
 	document.body.classList.toggle(
 		"special-menu-night",
-		isSpecialMenuMusicDate(date),
+		override === "true" ||
+			(override !== "false" && isSpecialMenuMusicDate(date)),
 	);
 }
 function scheduleMenuMusicDateRefresh() {
@@ -346,11 +348,49 @@ let welcomeVisible = false;
 let navigationStarted = false;
 let loadingSoundPlayed = false;
 let loadingCompleteScheduled = false;
+let loadingStartedAt = 0;
+let loadingCompletionTimer = null;
+let loadingProgressTimer = null;
+let slowLoadingEnabled = localStorage.getItem("quizHubSlowLoading") === "true";
+let showLoadingPercentage =
+	localStorage.getItem("quizHubShowLoadingPercentage") === "true";
 let navigationTarget = "";
 let selectedCourse = "";
 let quizMenuTrigger = null;
 let partyModeActive = false;
 let partyPlayers = [];
+const loadingProgressPanel = document.getElementById("loadingProgressPanel");
+const loadingProgressPercent = document.getElementById(
+	"loadingProgressPercent",
+);
+const loadingProgressTrack = document.querySelector(".loading-progress-track");
+const loadingProgressFill = document.getElementById("loadingProgressFill");
+
+function updateLoadingProgress(percent) {
+	const clampedPercent = Math.max(0, Math.min(100, Math.round(percent)));
+	loadingProgressPercent.textContent = `${clampedPercent}%`;
+	loadingProgressTrack.setAttribute("aria-valuenow", String(clampedPercent));
+	loadingProgressFill.style.width = `${clampedPercent}%`;
+}
+
+function tickLoadingProgress() {
+	const simulatedDuration = slowLoadingEnabled ? 8000 : 2800;
+	const elapsed = Date.now() - loadingStartedAt;
+	updateLoadingProgress(Math.min(94, (elapsed / simulatedDuration) * 94));
+}
+
+function beginLoadingProgress() {
+	if (loadingProgressTimer !== null) clearInterval(loadingProgressTimer);
+	if (loadingCompletionTimer !== null) clearTimeout(loadingCompletionTimer);
+	loadingProgressTimer = null;
+	loadingCompletionTimer = null;
+	loadingStartedAt = Date.now();
+	loadingProgressPanel.hidden = true;
+	updateLoadingProgress(0);
+	if (showLoadingPercentage) {
+		loadingProgressTimer = window.setInterval(tickLoadingProgress, 100);
+	}
+}
 
 const courseCodes = {
 	CompArch: "COMP-2453",
@@ -361,49 +401,7 @@ const courseCodes = {
 	CompGFX: "COMP-4471",
 };
 
-const courseQuizCatalog = {
-	CompArch: [
-		{ id: "quiz1", label: "First Slides Practice", detail: "for Sept 23" },
-		{ id: "test1", label: "Midterm Practice", detail: "for Oct 21" },
-		{
-			id: "binary-quiz",
-			label: "Binary Practice",
-			detail: "Standalone binary practice",
-			external: "binary-quiz.html",
-		},
-		{
-			id: "hexadecimal-quiz",
-			label: "Hexadecimal Practice",
-			detail: "Standalone hexadecimal practice",
-			external: "hexadecimal-quiz.html",
-		},
-	],
-	CloudComp: [
-		{ id: "quiz1", label: "First Slides Practice", detail: "for Sept 24" },
-		{ id: "quiz2", label: "Week 4 Slides Practice", detail: "for Oct 8" },
-		{ id: "test1", label: "Midterm Practice", detail: "for Oct 22" },
-	],
-	SocIndi: [
-		{
-			id: "reviewQuiz",
-			label: "Exam 1 Quiz",
-			detail: "Based on expected Exam 1 material",
-		},
-		{
-			id: "textbookQuiz",
-			label: "Textbook Quiz",
-			detail: "Based on Textbook contents",
-		},
-	],
-	CompGFX: [
-		{ id: "test1", label: "Midterm Practice", detail: "for Oct 21" },
-		{ id: "lautest", label: "Dr. Lau's Practice", detail: "for Midterm" },
-	],
-	DataSci: [{ id: "test1", label: "Midterm Practice", detail: "for Oct 22" }],
-	SoftEngi: [
-		{ id: "test1", label: "Lectures 1–6 Practice", detail: "for Oct 8" },
-	],
-};
+const courseQuizCatalog = window.QuizHubDevScenes.quizCatalog;
 
 function renderQuizOptions(course) {
 	const container = document.querySelector(".quiz-options");
@@ -494,6 +492,7 @@ function startExternalQuiz(target) {
 	loadingCompleteScheduled = false;
 	document.querySelectorAll(".card").forEach((c) => (c.disabled = true));
 	quizLoaded = false;
+	beginLoadingProgress();
 	preloadFrame = document.createElement("iframe");
 	preloadFrame.className = "preload-frame";
 	navigationTarget = target;
@@ -503,7 +502,9 @@ function startExternalQuiz(target) {
 		if (welcomeVisible) {
 			if (
 				window.quizHubPreferences.disableLoadingAnimation &&
-				!window.quizHubPreferences.secretMode
+				!window.quizHubPreferences.secretMode &&
+				!slowLoadingEnabled &&
+				!showLoadingPercentage
 			)
 				navigateToQuiz();
 			else showLoadingComplete();
@@ -515,7 +516,9 @@ function startExternalQuiz(target) {
 		welcomeVisible = true;
 		if (
 			window.quizHubPreferences.disableLoadingAnimation &&
-			!window.quizHubPreferences.secretMode
+			!window.quizHubPreferences.secretMode &&
+			!slowLoadingEnabled &&
+			!showLoadingPercentage
 		) {
 			if (quizLoaded) navigateToQuiz();
 		} else {
@@ -532,8 +535,29 @@ function startExternalQuiz(target) {
 }
 
 function showLoadingComplete() {
-	if (loadingCompleteScheduled) return;
+	if (loadingCompletionTimer !== null || loadingCompleteScheduled) return;
+	const minimumDisplayDuration = slowLoadingEnabled
+		? 8000
+		: showLoadingPercentage
+			? 1600
+			: 0;
+	const remainingDuration =
+		minimumDisplayDuration - (Date.now() - loadingStartedAt);
+	if (remainingDuration > 0) {
+		loadingCompletionTimer = window.setTimeout(() => {
+			loadingCompletionTimer = null;
+			showLoadingComplete();
+		}, remainingDuration);
+		return;
+	}
 	loadingCompleteScheduled = true;
+	if (showLoadingPercentage) {
+		updateLoadingProgress(100);
+		if (loadingProgressTimer !== null) {
+			clearInterval(loadingProgressTimer);
+			loadingProgressTimer = null;
+		}
+	}
 	if (
 		window.quizHubPreferences.disableLoadingAnimation &&
 		!window.quizHubPreferences.secretMode
@@ -555,6 +579,7 @@ function showLoadingComplete() {
 }
 
 function showLoadingScreen() {
+	loadingProgressPanel.hidden = !showLoadingPercentage;
 	if (window.quizHubPreferences.secretMode) {
 		document.body.classList.add("secret-loading");
 		if (!loadingSoundPlayed) {
@@ -568,6 +593,14 @@ function showLoadingScreen() {
 function navigateToQuiz() {
 	if (navigationStarted) return;
 	navigationStarted = true;
+	if (loadingProgressTimer !== null) {
+		clearInterval(loadingProgressTimer);
+		loadingProgressTimer = null;
+	}
+	if (loadingCompletionTimer !== null) {
+		clearTimeout(loadingCompletionTimer);
+		loadingCompletionTimer = null;
+	}
 	window.location.href = navigationTarget;
 }
 
@@ -635,13 +668,16 @@ function startQuiz(course, quiz, mixedSources = null) {
 	loadingCompleteScheduled = false;
 	document.querySelectorAll(".card").forEach((c) => (c.disabled = true));
 	quizLoaded = false;
+	beginLoadingProgress();
 	preloadQuiz(course, quiz, mixedSources);
 	setTimeout(startMenuExit, 520);
 	setTimeout(() => {
 		welcomeVisible = true;
 		if (
 			window.quizHubPreferences.disableLoadingAnimation &&
-			!window.quizHubPreferences.secretMode
+			!window.quizHubPreferences.secretMode &&
+			!slowLoadingEnabled &&
+			!showLoadingPercentage
 		) {
 			if (quizLoaded) navigateToQuiz();
 		} else {
@@ -1053,18 +1089,99 @@ const coverMenuMedia = window.matchMedia(
 const coverMenuPageSize = 2;
 let menuPage = 0;
 
+function isForcedMobileDisplay() {
+	return (
+		document.documentElement.classList.contains("dev-display-mobile") ||
+		document.documentElement.classList.contains("dev-display-cover")
+	);
+}
+
+function isCoverMenuDisplay() {
+	return coverMenuMedia.matches || isForcedMobileDisplay();
+}
+
+function isDeveloperMobileMenu() {
+	return document.documentElement.classList.contains("dev-display-mobile");
+}
+
 function getCurrentMenuCards(page = menuPage) {
-	if (coverMenuMedia.matches) {
+	if (isCoverMenuDisplay()) {
 		const start = page * coverMenuPageSize;
 		return menuCards.slice(start, start + coverMenuPageSize);
 	}
 	return [...menuPages[page].querySelectorAll(".course-card")];
 }
 
+function resetDeveloperMobileMenu() {
+	menuTrack.style.display = "";
+	menuTrack.style.gridTemplateColumns = "";
+	menuTrack.style.gridTemplateRows = "";
+	menuPages.forEach((menu) => {
+		menu.style.display = "";
+	});
+	menuCards.forEach((card) => {
+		card.style.display = "";
+	});
+	const menuArea = document.querySelector(".menu-area");
+	const viewport = document.querySelector(".menu-viewport");
+	menuArea.style.flexDirection = "";
+	menuArea.style.alignItems = "";
+	menuArea.style.justifyContent = "";
+	menuArea.style.gap = "";
+	viewport.style.flex = "";
+	viewport.style.width = "";
+	viewport.style.height = "";
+	viewport.style.maxHeight = "";
+	const content = document.querySelector(".content");
+	if (content) content.style.marginInline = "";
+	document.querySelectorAll(".menu-arrow").forEach((arrow) => {
+		arrow.style.display = "";
+		arrow.style.flex = "";
+		arrow.style.width = "";
+	});
+}
+
 function showMenuPage(page) {
-	if (coverMenuMedia.matches) {
+	if (isCoverMenuDisplay()) {
 		const pageCount = Math.ceil(menuCards.length / coverMenuPageSize);
 		menuPage = (page + pageCount) % pageCount;
+		if (isDeveloperMobileMenu()) {
+			menuTrack.style.display = "grid";
+			menuTrack.style.width = "100%";
+			menuTrack.style.gridTemplateColumns = "minmax(0, 1fr)";
+			menuTrack.style.gridTemplateRows = "repeat(2, minmax(0, 1fr))";
+			menuTrack.style.transform = "none";
+			menuTrack.style.transition = "none";
+			menuPages.forEach((menu) => {
+				menu.style.display = "contents";
+			});
+			menuCards.forEach((card, index) => {
+				card.style.display =
+					index >= menuPage * coverMenuPageSize &&
+					index < (menuPage + 1) * coverMenuPageSize
+						? "flex"
+						: "none";
+			});
+			const menuArea = document.querySelector(".menu-area");
+			const viewport = document.querySelector(".menu-viewport");
+			menuArea.style.flexDirection = "row";
+			menuArea.style.alignItems = "center";
+			menuArea.style.justifyContent = "center";
+			menuArea.style.gap = "7px";
+			const content = document.querySelector(".content");
+			if (content) content.style.marginInline = "auto";
+			viewport.style.flex = "1 1 0";
+			viewport.style.width = "calc(100% - 68px)";
+			viewport.style.height = "100%";
+			viewport.style.maxHeight = "none";
+			document.querySelectorAll(".menu-arrow").forEach((arrow) => {
+				arrow.style.display = "block";
+				arrow.style.flex = "0 0 30px";
+				arrow.style.width = "30px";
+			});
+			return;
+		}
+		resetDeveloperMobileMenu();
 		menuTrack.style.width = `${pageCount * 100}%`;
 		menuTrack.style.transform = `translateX(-${(menuPage * 100) / pageCount}%)`;
 		menuTrack.style.transition =
@@ -1072,6 +1189,7 @@ function showMenuPage(page) {
 		return;
 	}
 
+	resetDeveloperMobileMenu();
 	menuTrack.style.width = "";
 	const pageCount = menuPages.length;
 	menuPage = (page + pageCount) % pageCount;
@@ -1092,10 +1210,12 @@ function attachCoverMenuSwipe() {
 	let horizontalDrag = false;
 	let startTranslateX = 0;
 	let suppressClickUntil = 0;
+	let mouseSwipeStart = null;
 
 	viewport.addEventListener(
 		"touchstart",
 		(event) => {
+			if (!canUseMobileMenuGestures()) return;
 			const touch = event.changedTouches[0];
 			startX = touch.clientX;
 			startY = touch.clientY;
@@ -1111,7 +1231,8 @@ function attachCoverMenuSwipe() {
 	viewport.addEventListener(
 		"touchmove",
 		(event) => {
-			if (!isTouching || !coverMenuMedia.matches) return;
+			if (!isTouching || !isCoverMenuDisplay() || !canUseMobileMenuGestures())
+				return;
 			const touch = event.changedTouches[0];
 			const deltaX = touch.clientX - startX;
 			const deltaY = touch.clientY - startY;
@@ -1130,10 +1251,14 @@ function attachCoverMenuSwipe() {
 		(event) => {
 			if (!isTouching) return;
 			isTouching = false;
+			if (!canUseMobileMenuGestures()) {
+				showMenuPage(menuPage);
+				return;
+			}
 			const touch = event.changedTouches[0];
 			const deltaX = touch.clientX - startX;
 			const deltaY = touch.clientY - startY;
-			if (coverMenuMedia.matches && horizontalDrag) {
+			if (isCoverMenuDisplay() && horizontalDrag) {
 				event.preventDefault();
 				suppressClickUntil = Date.now() + 500;
 				showMenuPage(
@@ -1156,6 +1281,57 @@ function attachCoverMenuSwipe() {
 		{ passive: false },
 	);
 
+	viewport.addEventListener("pointerdown", (event) => {
+		if (
+			event.pointerType !== "mouse" ||
+			!isDeveloperMobileMenu() ||
+			!canUseMobileMenuGestures()
+		)
+			return;
+		mouseSwipeStart = {
+			x: event.clientX,
+			y: event.clientY,
+			translateX:
+				menuTrack.getBoundingClientRect().left -
+				viewport.getBoundingClientRect().left,
+			moved: false,
+		};
+		viewport.setPointerCapture(event.pointerId);
+	});
+	viewport.addEventListener("pointermove", (event) => {
+		if (!mouseSwipeStart || !canUseMobileMenuGestures()) return;
+		const deltaX = event.clientX - mouseSwipeStart.x;
+		const deltaY = event.clientY - mouseSwipeStart.y;
+		if (Math.abs(deltaX) <= 12 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+		mouseSwipeStart.moved = true;
+		menuTrack.style.transition = "none";
+		menuTrack.style.transform = `translateX(${mouseSwipeStart.translateX + deltaX}px)`;
+	});
+	viewport.addEventListener("pointerup", (event) => {
+		if (!mouseSwipeStart) return;
+		const start = mouseSwipeStart;
+		mouseSwipeStart = null;
+		if (!start.moved) return;
+		if (!canUseMobileMenuGestures()) {
+			showMenuPage(menuPage);
+			return;
+		}
+		const deltaX = event.clientX - start.x;
+		const deltaY = event.clientY - start.y;
+		suppressClickUntil = Date.now() + 500;
+		if (Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY)) {
+			showMenuPage(menuPage + (deltaX < 0 ? 1 : -1));
+			playSound("arrow");
+		} else {
+			showMenuPage(menuPage);
+		}
+	});
+	viewport.addEventListener("pointercancel", () => {
+		if (!mouseSwipeStart) return;
+		mouseSwipeStart = null;
+		showMenuPage(menuPage);
+	});
+
 	viewport.addEventListener(
 		"click",
 		(event) => {
@@ -1167,8 +1343,20 @@ function attachCoverMenuSwipe() {
 	);
 }
 
+function canUseMobileMenuGestures() {
+	return (
+		!isDeveloperMobileMenu() ||
+		window.matchMedia("(pointer: coarse)").matches ||
+		document.documentElement.classList.contains("dev-mobile-gestures")
+	);
+}
+
 showMenuPage(menuPage);
 coverMenuMedia.addEventListener("change", () => showMenuPage(menuPage));
+window.addEventListener("quizhub:display-modechange", () => {
+	showMenuPage(menuPage);
+	updateBranding();
+});
 attachCoverMenuSwipe();
 
 document.querySelectorAll(".menu-arrow").forEach((arrow) => {
@@ -1269,6 +1457,7 @@ function attachSwipeToModal(modal, onClose) {
 	panel.addEventListener(
 		"touchstart",
 		(event) => {
+			if (!canUseMobileMenuGestures()) return;
 			const touch = event.changedTouches[0];
 			startY = touch.clientY;
 			startX = touch.clientX;
@@ -1294,7 +1483,13 @@ function attachSwipeToModal(modal, onClose) {
 	panel.addEventListener(
 		"touchmove",
 		(event) => {
-			if (!touching || touchingScrollable || panel.scrollTop > 0) return;
+			if (
+				!touching ||
+				!canUseMobileMenuGestures() ||
+				touchingScrollable ||
+				panel.scrollTop > 0
+			)
+				return;
 			const touch = event.changedTouches[0];
 			const deltaY = touch.clientY - startY;
 			const deltaX = touch.clientX - startX;
@@ -1312,6 +1507,10 @@ function attachSwipeToModal(modal, onClose) {
 			if (!touching) return;
 			touching = false;
 			panel.style.transform = "";
+			if (!canUseMobileMenuGestures()) {
+				touchingScrollable = false;
+				return;
+			}
 			if (touchingScrollable) {
 				touchingScrollable = false;
 				return;
@@ -1411,6 +1610,87 @@ const clamshellDisabledMedia = window.matchMedia(
 const universityName = document.getElementById("universityName");
 const resetSettingsButton = document.getElementById("resetSettings");
 const settingsError = document.getElementById("settingsError");
+function updateOfflineTestMode(enabled) {
+	window.quizHubOfflineTestMode = Boolean(enabled);
+	localStorage.setItem(
+		"quizHubOfflineTestMode",
+		String(window.quizHubOfflineTestMode),
+	);
+	document.documentElement.classList.toggle(
+		"offline-test-mode",
+		window.quizHubOfflineTestMode,
+	);
+	const offlineAppMode =
+		window.quizHubOfflineTestMode || window.quizHubNativeOfflineApp;
+	window.quizHubOfflineApp = offlineAppMode;
+	document.documentElement.classList.toggle("offline-mode", offlineAppMode);
+	const version = document.querySelector(".tagline");
+	if (version) {
+		version.textContent = version.textContent
+			.replace(/^Offline\s+/, "")
+			.replace(/^/, offlineAppMode ? "Offline " : "");
+	}
+	const partyModeToggle = document.getElementById("partyModeToggle");
+	partyModeToggle.disabled = window.quizHubOfflineTestMode;
+	window.dispatchEvent(
+		new CustomEvent("quizhub:offline-test-modechange", {
+			detail: { enabled: window.quizHubOfflineTestMode },
+		}),
+	);
+}
+window.addEventListener("quizhub:dev-menu-context-request", (event) => {
+	event.detail.specialEvent =
+		document.body.classList.contains("special-menu-night");
+	event.detail.offlineTestMode = window.quizHubOfflineTestMode;
+	event.detail.slowLoading = slowLoadingEnabled;
+	event.detail.showLoadingPercentage = showLoadingPercentage;
+});
+window.addEventListener("quizhub:dev-menu-action", (event) => {
+	if (event.detail.action === "special-event") {
+		localStorage.setItem("quizHubSpecialEventMode", String(event.detail.value));
+		updateSpecialMenuTheme();
+		window.quizHubDevMenu.updateContext({
+			specialEvent: event.detail.value,
+		});
+	} else if (event.detail.action === "offline-test") {
+		updateOfflineTestMode(event.detail.value);
+		window.quizHubDevMenu.updateContext({
+			offlineTestMode: window.quizHubOfflineTestMode,
+			status: window.quizHubOfflineTestMode
+				? "Offline Test Mode is on. Online party and active-session requests are disabled."
+				: "",
+		});
+	} else if (event.detail.action === "slow-loading") {
+		slowLoadingEnabled = Boolean(event.detail.value);
+		localStorage.setItem("quizHubSlowLoading", String(slowLoadingEnabled));
+		window.quizHubDevMenu.updateContext({
+			slowLoading: slowLoadingEnabled,
+		});
+	} else if (event.detail.action === "loading-percentage") {
+		showLoadingPercentage = Boolean(event.detail.value);
+		localStorage.setItem(
+			"quizHubShowLoadingPercentage",
+			String(showLoadingPercentage),
+		);
+		window.quizHubDevMenu.updateContext({
+			showLoadingPercentage,
+		});
+	}
+});
+updateOfflineTestMode(window.quizHubOfflineTestMode);
+window.addEventListener("resize", () => {
+	if (document.documentElement.classList.contains("dev-display-cover")) {
+		const scale = Math.min(
+			1,
+			window.quizHubDisplayViewport.width / 720,
+			window.quizHubDisplayViewport.height / 748,
+		);
+		document.documentElement.style.setProperty(
+			"--dev-display-scale",
+			String(scale),
+		);
+	}
+});
 const motionModeNames = ["default", "minimal", "reduced"];
 const motionModeLabels = ["Default", "Minimal", "Reduced"];
 const quizThemeDetails = {
@@ -1504,7 +1784,7 @@ function syncSettings() {
 }
 
 function syncClamshellModeSetting() {
-	const clamshellDisabled = clamshellDisabledMedia.matches;
+	const clamshellDisabled = !window.quizHubPreferences.clamshellModeAvailable;
 	clamshellModeSetting.disabled = clamshellDisabled;
 	clamshellModeSetting.checked =
 		!clamshellDisabled && window.quizHubPreferences.clamshellMode;
@@ -1516,6 +1796,7 @@ function syncClamshellModeSetting() {
 }
 
 clamshellDisabledMedia.addEventListener("change", syncClamshellModeSetting);
+window.addEventListener("quizhub:display-modechange", syncClamshellModeSetting);
 
 function updateQuizThemePreview(theme) {
 	const details = quizThemeDetails[theme] || quizThemeDetails.default;
@@ -1673,6 +1954,11 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.7.1
+- Dr. Lau's Practice for Data Science has been updated with new questions and images, including a new question type! Can you beat his questions? (Note this quiz is not available in Party Mode)
+- The win screen will now change if you fail a quiz.
+- Various other changes and improvements
+
 Version 2.7.0
 - Various improvements and bug fixes
 
@@ -1839,6 +2125,10 @@ document.addEventListener("keydown", (event) => {
 		partyNoConnectionModal,
 		downloadAppModal,
 	].find((modal) => modal.classList.contains("open"));
+	const target = event.target instanceof Element ? event.target : document.body;
+	const editableTarget = target.closest(
+		'input,textarea,select,[contenteditable="true"]',
+	);
 
 	if (
 		event.key.toLowerCase() === "o" &&
@@ -1867,7 +2157,9 @@ document.addEventListener("keydown", (event) => {
 	}
 
 	if (event.key === "Tab" && openModal) {
-		const dialog = openModal.querySelector('[role="dialog"]');
+		const dialog = openModal.matches('[role="dialog"]')
+			? openModal
+			: openModal.querySelector('[role="dialog"]');
 		const focusable = [
 			...dialog.querySelectorAll(
 				'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
@@ -1945,7 +2237,7 @@ document.addEventListener("keydown", (event) => {
 	event.preventDefault();
 	keyboardNavigation = true;
 	if (event.key === "PageUp" || event.key === "PageDown") {
-		if (coverMenuMedia.matches) {
+		if (isCoverMenuDisplay()) {
 			const cards = getCurrentMenuCards();
 			cards[event.key === "PageUp" ? 0 : cards.length - 1]?.focus();
 			return;
@@ -1962,7 +2254,7 @@ document.addEventListener("keydown", (event) => {
 		return;
 	}
 
-	if (coverMenuMedia.matches) {
+	if (isCoverMenuDisplay()) {
 		const column = activeIndex % 2;
 		let nextIndex = activeIndex;
 		if (event.key === "ArrowLeft" && column > 0) nextIndex--;
@@ -2060,7 +2352,8 @@ function handleDSTitleClick(dsTitle) {
 function updateBranding() {
 	const secretMode = window.quizHubPreferences.secretMode;
 	const clamshellMode =
-		window.quizHubPreferences.clamshellMode && clamshellViewport.matches;
+		window.quizHubPreferences.clamshellMode &&
+		(clamshellViewport.matches || isForcedMobileDisplay());
 	const brandingKey = `${secretMode}:${clamshellMode}`;
 	if (brandingKey === currentBrandingKey) return;
 	currentBrandingKey = brandingKey;
@@ -2124,6 +2417,7 @@ function updateBranding() {
 }
 window.addEventListener("quizhub:preferenceschange", updateBranding);
 clamshellViewport.addEventListener("change", updateBranding);
+window.addEventListener("quizhub:display-modechange", updateBranding);
 updateBranding();
 const titleEndSound = new Audio(soundFiles.titleEnd);
 let titleEndPending = false;
@@ -2230,6 +2524,10 @@ if (returningFromSetup) {
 		document.body.classList.add("menu-visible");
 		startMenuMusic();
 	}, 2550);
+}
+
+if (new URLSearchParams(window.location.search).get("devScene") === "options") {
+	openSettings();
 }
 
 // First title bounce occurs 15 seconds after the initial menu reveal, then every 15 seconds.

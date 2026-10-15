@@ -15,13 +15,28 @@ window.addEventListener("load", function(){
   if(shouldShowSecretIntro) return;
 
   let soundsMuted=localStorage.getItem("quizHubMuted")==="true";
-  const winSound=new Audio("sfx/Win.wav");
+  let musicMuted=localStorage.getItem("quizHubMusicMuted")==="true";
+  let resultMusic=null;
 
   const soundToggle=document.getElementById("soundToggle");
+  const musicToggle=document.getElementById("musicToggle");
   function updateSoundToggle(){
     soundToggle.textContent=soundsMuted?"🔇":"🔊";
     soundToggle.setAttribute("aria-label",soundsMuted?"Unmute sounds":"Mute sounds");
     soundToggle.setAttribute("aria-pressed",String(soundsMuted));
+  }
+  function updateMusicToggle(){
+    musicToggle.textContent=musicMuted?"♫̸":"♫";
+    musicToggle.setAttribute("aria-label",musicMuted?"Unmute music":"Mute music");
+    musicToggle.setAttribute("aria-pressed",String(musicMuted));
+  }
+  function playResultMusic(){
+    if(musicMuted || !resultMusic) return;
+    resultMusic.play().catch((error)=>{
+      if(error.name!=="NotAllowedError"){
+        console.error("Could not play quiz failure music:",error);
+      }
+    });
   }
   soundToggle.addEventListener("click",function(){
     soundsMuted=!soundsMuted;
@@ -29,14 +44,26 @@ window.addEventListener("load", function(){
     updateSoundToggle();
   });
   updateSoundToggle();
+  musicToggle.addEventListener("click",function(){
+    musicMuted=!musicMuted;
+    localStorage.setItem("quizHubMusicMuted",String(musicMuted));
+    if(musicMuted) resultMusic?.pause();
+    else playResultMusic();
+    updateMusicToggle();
+  });
+  updateMusicToggle();
 
   document.addEventListener("keydown",function(event){
     if(event.key.toLowerCase()!=="m" || event.target.tagName==="INPUT") return;
     event.preventDefault();
     soundsMuted=!(soundsMuted && localStorage.getItem("quizHubMusicMuted")==="true");
+    musicMuted=soundsMuted;
     localStorage.setItem("quizHubMuted",String(soundsMuted));
     localStorage.setItem("quizHubMusicMuted",String(soundsMuted));
     updateSoundToggle();
+    if(musicMuted) resultMusic?.pause();
+    else playResultMusic();
+    updateMusicToggle();
   });
 
   const highlightSoundPath="sfx/highlight.wav";
@@ -72,6 +99,7 @@ window.addEventListener("load", function(){
   }
 
   const scoreEl = document.getElementById("score");
+  const resultsTitle = document.getElementById("resultsTitle");
   const longestComboEl = document.getElementById("longestCombo");
   const summaryEl = document.getElementById("summary");
   const reviewEl = document.getElementById("review");
@@ -133,8 +161,6 @@ window.addEventListener("load", function(){
     return;
   }
 
-  if(!soundsMuted) winSound.play().catch(()=>{});
-
   const correctCount = data.history.filter((item) => item && item.correct === true).length;
   const incorrectCount = data.history.filter((item) => item && item.correct !== true).length;
 
@@ -143,6 +169,14 @@ window.addEventListener("load", function(){
 
   // Passing = at least 50%.
   const passed = total > 0 && score / total >= 0.5;
+  resultsTitle.textContent = passed ? "Great work!" : "TRY AGAIN!";
+
+  const resultSound=new Audio(passed?"sfx/Win.wav":"sfx/Lose.mp3");
+  if(!soundsMuted) resultSound.play().catch(()=>{});
+  if(!passed && !musicMuted){
+    resultMusic=new Audio("music/NoGood.mp3");
+    playResultMusic();
+  }
 
   summaryEl.textContent = passed
     ? `You passed! ${correctCount} correct and ${incorrectCount} missed.`
@@ -348,7 +382,7 @@ window.addEventListener("load", function(){
   /* -------------------------------------------------------
      CSS/JS FIREWORKS
      Passed: many fireworks
-     Failed: exactly one firework
+     Failed: no fireworks
      ------------------------------------------------------- */
   const canvas = document.getElementById("fireworks");
   const ctx = canvas.getContext("2d");
@@ -360,8 +394,8 @@ window.addEventListener("load", function(){
 
   function resize(){
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
+    W = window.quizHubDisplayViewport.width;
+    H = window.quizHubDisplayViewport.height;
     canvas.width = Math.floor(W * dpr);
     canvas.height = Math.floor(H * dpr);
     canvas.style.width = W + "px";
@@ -489,6 +523,10 @@ window.addEventListener("load", function(){
   }
 
   function startFireworks(){
+    if(!passed){
+      canvas.hidden=true;
+      return;
+    }
     const reduced = window.quizHubPreferences.reduceMotion ||
       (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 

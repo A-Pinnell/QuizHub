@@ -25,6 +25,7 @@ test("offline package includes every standalone HTML page", () => {
   );
   assert.ok(htmlPages.includes("index.html"));
   assert.ok(htmlPages.includes("quiz.html"));
+  assert.ok(htmlPages.includes("dev-menu.html"));
   for (const page of htmlPages) {
     assert.ok(
       fs.statSync(path.join(root, page)).isFile(),

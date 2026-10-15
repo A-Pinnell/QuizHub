@@ -39,17 +39,35 @@
 						location.protocol === "file:")),
 			);
 			window.quizHubNativeApp = isQuizHubNativeApp;
-			window.quizHubOfflineApp = isQuizHubOfflineApp;
-			if (isQuizHubOfflineApp) {
+			window.quizHubNativeOfflineApp = isQuizHubOfflineApp;
+			window.quizHubOfflineTestMode =
+				localStorage.getItem("quizHubOfflineTestMode") === "true";
+			window.quizHubOfflineApp =
+				isQuizHubOfflineApp || window.quizHubOfflineTestMode;
+			if (isQuizHubOfflineApp || window.quizHubOfflineTestMode) {
+				window.quizHubOfflineApp = true;
 				document.documentElement.classList.add("offline-mode");
 				document.addEventListener(
 					"DOMContentLoaded",
 					() => {
 						const version = document.querySelector(".tagline");
-						if (version) version.textContent = `Offline ${version.textContent}`;
+						if (version && !version.textContent.startsWith("Offline ")) {
+							version.textContent = `Offline ${version.textContent}`;
+						}
 					},
 					{ once: true },
 				);
+			}
+			const developerDisplayMode = localStorage.getItem(
+				"quizHubDeveloperDisplayMode",
+			);
+			if (["mobile", "cover"].includes(developerDisplayMode)) {
+				document.documentElement.classList.add(
+					`dev-display-${developerDisplayMode}`,
+				);
+			}
+			if (window.quizHubOfflineTestMode) {
+				document.documentElement.classList.add("offline-test-mode");
 			}
 			if (isQuizHubAndroidApp) {
 				try {
@@ -68,17 +86,21 @@
 				document.documentElement.classList.add("native-app");
 			}
 		</script>
-		<link rel="stylesheet" href="css/title.css?v=20261014-3" />
+		<link rel="stylesheet" href="css/title.css" />
 		<link rel="stylesheet" href="css/preferences.css" />
-		<link rel="stylesheet" href="css/offline-app.css?v=20261014-1" />
-		<link rel="stylesheet" href="css/cover-screen.css?v=20261012-6" />
+		<link rel="stylesheet" href="css/offline-app.css" />
+		<link rel="stylesheet" href="css/cover-screen.css" />
+		<link rel="stylesheet" href="css/dev.css" />
 		<script src="./js/audio-focus.js" defer></script>
-		<script src="./js/offline-app.js?v=20261014-1" defer></script>
+		<script src="./js/offline-app.js" defer></script>
 		<script src="./js/load-preferences.js"></script>
+		<script src="./js/dev-scenes.js" defer></script>
+		<script src="./js/dev.js" defer></script>
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
-		<script src="./js/index.js?v=20261014-9" defer></script>
+		<script src="./js/index.js" defer></script>
+		<script src="./js/active-presence.js" defer></script>
 	</head>
 	<body>
 		<button
@@ -210,7 +232,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 2.7.0</div>
+						<div class="tagline">Version 2.7.1</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -883,6 +905,24 @@ Loading patch notes...</pre
 			<div>
 				<div class="welcome-line" id="welcomeLine"></div>
 				<div class="loading-status" id="loadingStatus">Loading...</div>
+			</div>
+		</div>
+		<div
+			class="loading-progress-panel"
+			id="loadingProgressPanel"
+			role="status"
+			aria-live="polite"
+			aria-label="Loading progress"
+			hidden>
+			<strong id="loadingProgressPercent">0%</strong>
+			<div
+				class="loading-progress-track"
+				role="progressbar"
+				aria-label="Quiz loading progress"
+				aria-valuemin="0"
+				aria-valuemax="100"
+				aria-valuenow="0">
+				<div class="loading-progress-fill" id="loadingProgressFill"></div>
 			</div>
 		</div>
 		<div class="start-cover"></div>

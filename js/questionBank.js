@@ -13223,4496 +13223,5749 @@ window.questionBank = {
 		],
 	},
 
-	DataSci: [
-		// =========================
-		// INTRODUCTION TO DATA SCIENCE
-		// =========================
+	DataSci: {
+		test1: [
+			// =========================
+			// INTRODUCTION TO DATA SCIENCE
+			// =========================
 
-		{
-			q: "What is essentially at the heart of the information revolution?",
-			a: [
-				"The collection and analysis of data",
-				"The creation of video games",
-				"The development of operating systems",
-				"The invention of databases",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the ultimate goal of data science?",
-			a: [
-				"To gain knowledge and communicate conclusions drawn from data",
-				"To store as much data as possible",
-				"To replace all human decisions",
-				"To create computer hardware",
-			],
-			c: 0,
-		},
-		{
-			q: "Why does society need people who understand data science?",
-			a: [
-				"To make sense of data and visualize it for others",
-				"To build only databases",
-				"To replace computer programmers",
-				"To create more data",
-			],
-			c: 0,
-		},
-		{
-			q: "What problem does YouTube have when reviewing uploaded videos?",
-			a: [
-				"There is not enough human time and resources to review all videos",
-				"Videos cannot be stored",
-				"Users cannot upload videos",
-				"Videos cannot contain advertisements",
-			],
-			c: 0,
-		},
-		{
-			q: "How can data analysis help YouTube with videos?",
-			a: [
-				"By judging videos as appropriate or monetizable",
-				"By deleting every uploaded video",
-				"By converting videos into text",
-				"By increasing video resolution",
-			],
-			c: 0,
-		},
-		{
-			q: "According to the lecture, what is an important takeaway from the YouTube example?",
-			a: [
-				"Data analysis is always easy to get right",
-				"There is not always a good technological solution to a social problem",
-				"Humans should never review data",
-				"All social problems can be solved with software",
-			],
-			c: 1,
-		},
-		{
-			q: "Which of the following is an example of data?",
-			a: [
-				"Numbers and values",
-				"Only computer programs",
-				"Only databases",
-				"Only written documents",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the singular form of data mentioned in the lecture?",
-			a: ["Datum", "Datae", "Datas", "Daton"],
-			c: 0,
-		},
-		{
-			q: "Which of the following is listed as a source of data?",
-			a: [
-				"Measurements",
-				"Keyboard drivers",
-				"Logic gates",
-				"Operating systems",
-			],
-			c: 0,
-		},
-		{
-			q: "Which of the following is another source of data?",
-			a: ["Transactions", "Compilers", "CPUs", "Monitors"],
-			c: 0,
-		},
+			{
+				q: "What is essentially at the heart of the information revolution?",
+				a: [
+					"The collection and analysis of data",
+					"The creation of video games",
+					"The development of operating systems",
+					"The invention of databases",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the ultimate goal of data science?",
+				a: [
+					"To gain knowledge and communicate conclusions drawn from data",
+					"To store as much data as possible",
+					"To replace all human decisions",
+					"To create computer hardware",
+				],
+				c: 0,
+			},
+			{
+				q: "Why does society need people who understand data science?",
+				a: [
+					"To make sense of data and visualize it for others",
+					"To build only databases",
+					"To replace computer programmers",
+					"To create more data",
+				],
+				c: 0,
+			},
+			{
+				q: "What problem does YouTube have when reviewing uploaded videos?",
+				a: [
+					"There is not enough human time and resources to review all videos",
+					"Videos cannot be stored",
+					"Users cannot upload videos",
+					"Videos cannot contain advertisements",
+				],
+				c: 0,
+			},
+			{
+				q: "How can data analysis help YouTube with videos?",
+				a: [
+					"By judging videos as appropriate or monetizable",
+					"By deleting every uploaded video",
+					"By converting videos into text",
+					"By increasing video resolution",
+				],
+				c: 0,
+			},
+			{
+				q: "According to the lecture, what is an important takeaway from the YouTube example?",
+				a: [
+					"Data analysis is always easy to get right",
+					"There is not always a good technological solution to a social problem",
+					"Humans should never review data",
+					"All social problems can be solved with software",
+				],
+				c: 1,
+			},
+			{
+				q: "Which of the following is an example of data?",
+				a: [
+					"Numbers and values",
+					"Only computer programs",
+					"Only databases",
+					"Only written documents",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the singular form of data mentioned in the lecture?",
+				a: ["Datum", "Datae", "Datas", "Daton"],
+				c: 0,
+			},
+			{
+				q: "Which of the following is listed as a source of data?",
+				a: [
+					"Measurements",
+					"Keyboard drivers",
+					"Logic gates",
+					"Operating systems",
+				],
+				c: 0,
+			},
+			{
+				q: "Which of the following is another source of data?",
+				a: ["Transactions", "Compilers", "CPUs", "Monitors"],
+				c: 0,
+			},
 
-		// =========================
-		// TYPES OF DATA
-		// =========================
+			// =========================
+			// TYPES OF DATA
+			// =========================
 
-		{
-			q: "What are the two large categories that data tends to fall into?",
-			a: [
-				"Quantitative and categorical",
-				"Binary and hexadecimal",
-				"Text and binary",
-				"Continuous and nominal",
-			],
-			c: 0,
-		},
-		{
-			q: "What is quantitative data?",
-			a: [
-				"Numerical values that can be measured and ordered",
-				"Values belonging to categories with no numbers",
-				"Only text values",
-				"Only Boolean values",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an example of quantitative data?",
-			a: ["Temperature", "Colour name", "University name", "Music genre"],
-			c: 0,
-		},
-		{
-			q: "What is categorical data?",
-			a: [
-				"Values normally belonging to the same category",
-				"Numerical values that are always continuous",
-				"Only measurements",
-				"Values that must be calculated",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an example of categorical data?",
-			a: ["Music genre", "Temperature", "Distance", "Speed"],
-			c: 0,
-		},
-		{
-			q: "What are the two types of quantitative data discussed in the lecture?",
-			a: [
-				"Continuous and discrete",
-				"Nominal and ordinal",
-				"Binary and text",
-				"Measured and categorical",
-			],
-			c: 0,
-		},
-		{
-			q: "What is continuous data?",
-			a: [
-				"Numerical values that are infinite along a range",
-				"Countable values that are finite within a range",
-				"Labels with no order",
-				"Labels with an order",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an example of continuous data?",
-			a: [
-				"Temperature of 22.25C",
-				"Number of computers in a lab",
-				"Number of fingers",
-				"Population count",
-			],
-			c: 0,
-		},
-		{
-			q: "What is discrete data?",
-			a: [
-				"Countable numerical values that are finite within a range",
-				"Numerical values that are infinite along a range",
-				"Labels with no order",
-				"Text that represents categories",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an example of discrete data?",
-			a: [
-				"Number of computers in a lab",
-				"Speed of a car",
-				"Temperature",
-				"Distance",
-			],
-			c: 0,
-		},
-		{
-			q: "What are the two types of categorical data discussed in the lecture?",
-			a: [
-				"Nominal and ordinal",
-				"Continuous and discrete",
-				"Binary and hexadecimal",
-				"Text and numerical",
-			],
-			c: 0,
-		},
-		{
-			q: "What is nominal data?",
-			a: [
-				"Values in categories with no order",
-				"Values in categories with an ordering",
-				"Infinite numerical values",
-				"Finite numerical values",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an example of nominal data?",
-			a: ["Colour", "Letter grade", "Movie rating", "Sentiment level"],
-			c: 0,
-		},
-		{
-			q: "What is ordinal data?",
-			a: [
-				"Values in a category with an ordering",
-				"Values in categories with no order",
-				"Numerical values that are infinite",
-				"Numerical values that are countable",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an example of ordinal data?",
-			a: ["Letter grades", "Country of birth", "Colour", "University name"],
-			c: 0,
-		},
+			{
+				q: "What are the two large categories that data tends to fall into?",
+				a: [
+					"Quantitative and categorical",
+					"Binary and hexadecimal",
+					"Text and binary",
+					"Continuous and nominal",
+				],
+				c: 0,
+			},
+			{
+				q: "What is quantitative data?",
+				a: [
+					"Numerical values that can be measured and ordered",
+					"Values belonging to categories with no numbers",
+					"Only text values",
+					"Only Boolean values",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example of quantitative data?",
+				a: ["Temperature", "Colour name", "University name", "Music genre"],
+				c: 0,
+			},
+			{
+				q: "What is categorical data?",
+				a: [
+					"Values normally belonging to the same category",
+					"Numerical values that are always continuous",
+					"Only measurements",
+					"Values that must be calculated",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example of categorical data?",
+				a: ["Music genre", "Temperature", "Distance", "Speed"],
+				c: 0,
+			},
+			{
+				q: "What are the two types of quantitative data discussed in the lecture?",
+				a: [
+					"Continuous and discrete",
+					"Nominal and ordinal",
+					"Binary and text",
+					"Measured and categorical",
+				],
+				c: 0,
+			},
+			{
+				q: "What is continuous data?",
+				a: [
+					"Numerical values that are infinite along a range",
+					"Countable values that are finite within a range",
+					"Labels with no order",
+					"Labels with an order",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example of continuous data?",
+				a: [
+					"Temperature of 22.25C",
+					"Number of computers in a lab",
+					"Number of fingers",
+					"Population count",
+				],
+				c: 0,
+			},
+			{
+				q: "What is discrete data?",
+				a: [
+					"Countable numerical values that are finite within a range",
+					"Numerical values that are infinite along a range",
+					"Labels with no order",
+					"Text that represents categories",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example of discrete data?",
+				a: [
+					"Number of computers in a lab",
+					"Speed of a car",
+					"Temperature",
+					"Distance",
+				],
+				c: 0,
+			},
+			{
+				q: "What are the two types of categorical data discussed in the lecture?",
+				a: [
+					"Nominal and ordinal",
+					"Continuous and discrete",
+					"Binary and hexadecimal",
+					"Text and numerical",
+				],
+				c: 0,
+			},
+			{
+				q: "What is nominal data?",
+				a: [
+					"Values in categories with no order",
+					"Values in categories with an ordering",
+					"Infinite numerical values",
+					"Finite numerical values",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example of nominal data?",
+				a: ["Colour", "Letter grade", "Movie rating", "Sentiment level"],
+				c: 0,
+			},
+			{
+				q: "What is ordinal data?",
+				a: [
+					"Values in a category with an ordering",
+					"Values in categories with no order",
+					"Numerical values that are infinite",
+					"Numerical values that are countable",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example of ordinal data?",
+				a: ["Letter grades", "Country of birth", "Colour", "University name"],
+				c: 0,
+			},
 
-		// =========================
-		// DATA REPRESENTATION
-		// =========================
+			// =========================
+			// DATA REPRESENTATION
+			// =========================
 
-		{
-			q: "How can data be represented by humans?",
-			a: [
-				"Writing, drawings, speech, and body language",
-				"Only binary numbers",
-				"Only databases",
-				"Only computer files",
-			],
-			c: 0,
-		},
-		{
-			q: "How is data represented by computers?",
-			a: [
-				"Using bits and binary interpretation",
-				"Using only decimal numbers",
-				"Using only text",
-				"Using only images",
-			],
-			c: 0,
-		},
-		{
-			q: "Where can data be located according to the lecture?",
-			a: [
-				"In memory and in files",
-				"Only in RAM",
-				"Only in databases",
-				"Only in cloud services",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the basic representation of data in computers?",
-			a: ["Bits", "Pixels", "Characters", "Files"],
-			c: 0,
-		},
-		{
-			q: "What is the interpretation of computer data based on?",
-			a: ["Binary", "Decimal only", "Hexadecimal only", "ASCII only"],
-			c: 0,
-		},
-		{
-			q: "What is the decimal value of binary 0110?",
-			a: ["4", "5", "6", "7"],
-			c: 2,
-		},
-		{
-			q: "What is hexadecimal A equal to in decimal?",
-			a: ["8", "9", "10", "11"],
-			c: 2,
-		},
-		{
-			q: "What is hexadecimal F equal to in decimal?",
-			a: ["13", "14", "15", "16"],
-			c: 2,
-		},
-		{
-			q: "What is ASCII used for?",
-			a: [
-				"Converting numbers to characters",
-				"Compressing images",
-				"Storing databases",
-				"Creating binary files",
-			],
-			c: 0,
-		},
-		{
-			q: "What does Unicode provide compared to ASCII?",
-			a: [
-				"More characters, including other languages, math symbols, and emoji",
-				"Fewer characters using less storage",
-				"Only numbers",
-				"Only English letters",
-			],
-			c: 0,
-		},
-		{
-			q: "How are images represented according to the lecture?",
-			a: ["As pixels", "As database tables", "As text only", "As XML tags"],
-			c: 0,
-		},
-		{
-			q: "What three colours are represented by the three bytes in the example?",
-			a: [
-				"Red, green, and blue",
-				"Red, yellow, and blue",
-				"Cyan, magenta, and yellow",
-				"Black, white, and grey",
-			],
-			c: 0,
-		},
-		{
-			q: "How can the RGB colour value 79, 38, 131 be represented?",
-			a: ["#4F2683", "#793813", "#4F8313", "#26834F"],
-			c: 0,
-		},
+			{
+				q: "How can data be represented by humans?",
+				a: [
+					"Writing, drawings, speech, and body language",
+					"Only binary numbers",
+					"Only databases",
+					"Only computer files",
+				],
+				c: 0,
+			},
+			{
+				q: "How is data represented by computers?",
+				a: [
+					"Using bits and binary interpretation",
+					"Using only decimal numbers",
+					"Using only text",
+					"Using only images",
+				],
+				c: 0,
+			},
+			{
+				q: "Where can data be located according to the lecture?",
+				a: [
+					"In memory and in files",
+					"Only in RAM",
+					"Only in databases",
+					"Only in cloud services",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the basic representation of data in computers?",
+				a: ["Bits", "Pixels", "Characters", "Files"],
+				c: 0,
+			},
+			{
+				q: "What is the interpretation of computer data based on?",
+				a: ["Binary", "Decimal only", "Hexadecimal only", "ASCII only"],
+				c: 0,
+			},
+			{
+				q: "What is the decimal value of binary 0110?",
+				a: ["4", "5", "6", "7"],
+				c: 2,
+			},
+			{
+				q: "What is hexadecimal A equal to in decimal?",
+				a: ["8", "9", "10", "11"],
+				c: 2,
+			},
+			{
+				q: "What is hexadecimal F equal to in decimal?",
+				a: ["13", "14", "15", "16"],
+				c: 2,
+			},
+			{
+				q: "What is ASCII used for?",
+				a: [
+					"Converting numbers to characters",
+					"Compressing images",
+					"Storing databases",
+					"Creating binary files",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Unicode provide compared to ASCII?",
+				a: [
+					"More characters, including other languages, math symbols, and emoji",
+					"Fewer characters using less storage",
+					"Only numbers",
+					"Only English letters",
+				],
+				c: 0,
+			},
+			{
+				q: "How are images represented according to the lecture?",
+				a: ["As pixels", "As database tables", "As text only", "As XML tags"],
+				c: 0,
+			},
+			{
+				q: "What three colours are represented by the three bytes in the example?",
+				a: [
+					"Red, green, and blue",
+					"Red, yellow, and blue",
+					"Cyan, magenta, and yellow",
+					"Black, white, and grey",
+				],
+				c: 0,
+			},
+			{
+				q: "How can the RGB colour value 79, 38, 131 be represented?",
+				a: ["#4F2683", "#793813", "#4F8313", "#26834F"],
+				c: 0,
+			},
 
-		// =========================
-		// FILE FORMATS
-		// =========================
+			// =========================
+			// FILE FORMATS
+			// =========================
 
-		{
-			q: "Which three types of file formats are discussed in the lecture?",
-			a: [
-				"Text, binary, and XML",
-				"JPEG, PNG, and GIF",
-				"RAM, ROM, and CPU",
-				"ASCII, RGB, and HTML",
-			],
-			c: 0,
-		},
-		{
-			q: "How are text files commonly encoded?",
-			a: [
-				"ASCII, UTF, or Unicode",
-				"RGB only",
-				"Binary images only",
-				"XML only",
-			],
-			c: 0,
-		},
-		{
-			q: "What can invisible characters in text files represent?",
-			a: [
-				"Spaces and line breaks",
-				"Colours and pixels",
-				"Database tables",
-				"CPU instructions only",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a characteristic of binary files?",
-			a: [
-				"They define their own format or encoding",
-				"They are always human readable",
-				"They only contain text",
-				"They cannot store images",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an advantage of binary files?",
-			a: [
-				"They can store data more compactly",
-				"They are easier for humans to read",
-				"They always use more storage",
-				"They are not specific to programs",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is a disadvantage of binary files?",
-			a: [
-				"They are harder for humans to read and program",
-				"They require no special format",
-				"They always use less processing time",
-				"They cannot store data",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an example of a binary file?",
-			a: ["PNG image", "Plain text document", "XML document", "ASCII text"],
-			c: 0,
-		},
-		{
-			q: "What is XML?",
-			a: [
-				"A text file format that is both human and machine readable",
-				"A binary-only format",
-				"A type of processor",
-				"A type of database hardware",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one advantage of XML?",
-			a: [
-				"It can represent complex data objects",
-				"It always requires less space than binary",
-				"It cannot be read by humans",
-				"It is not structured",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one disadvantage of XML?",
-			a: [
-				"It can require more space than binary or text files",
-				"It cannot represent structured data",
-				"It cannot be read by computers",
-				"It cannot transport data",
-			],
-			c: 0,
-		},
+			{
+				q: "Which three types of file formats are discussed in the lecture?",
+				a: [
+					"Text, binary, and XML",
+					"JPEG, PNG, and GIF",
+					"RAM, ROM, and CPU",
+					"ASCII, RGB, and HTML",
+				],
+				c: 0,
+			},
+			{
+				q: "How are text files commonly encoded?",
+				a: [
+					"ASCII, UTF, or Unicode",
+					"RGB only",
+					"Binary images only",
+					"XML only",
+				],
+				c: 0,
+			},
+			{
+				q: "What can invisible characters in text files represent?",
+				a: [
+					"Spaces and line breaks",
+					"Colours and pixels",
+					"Database tables",
+					"CPU instructions only",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a characteristic of binary files?",
+				a: [
+					"They define their own format or encoding",
+					"They are always human readable",
+					"They only contain text",
+					"They cannot store images",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an advantage of binary files?",
+				a: [
+					"They can store data more compactly",
+					"They are easier for humans to read",
+					"They always use more storage",
+					"They are not specific to programs",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is a disadvantage of binary files?",
+				a: [
+					"They are harder for humans to read and program",
+					"They require no special format",
+					"They always use less processing time",
+					"They cannot store data",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example of a binary file?",
+				a: ["PNG image", "Plain text document", "XML document", "ASCII text"],
+				c: 0,
+			},
+			{
+				q: "What is XML?",
+				a: [
+					"A text file format that is both human and machine readable",
+					"A binary-only format",
+					"A type of processor",
+					"A type of database hardware",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one advantage of XML?",
+				a: [
+					"It can represent complex data objects",
+					"It always requires less space than binary",
+					"It cannot be read by humans",
+					"It is not structured",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one disadvantage of XML?",
+				a: [
+					"It can require more space than binary or text files",
+					"It cannot represent structured data",
+					"It cannot be read by computers",
+					"It cannot transport data",
+				],
+				c: 0,
+			},
 
-		// =========================
-		// DATA PIPELINE
-		// =========================
+			// =========================
+			// DATA PIPELINE
+			// =========================
 
-		{
-			q: "What is the first stage of the data pipeline?",
-			a: ["Collect or create", "Analyze", "Visualize", "Store"],
-			c: 0,
-		},
-		{
-			q: "Which stage of the data pipeline deals with invalid and untrusted data?",
-			a: ["Validate", "Visualize", "Analyze", "Combine"],
-			c: 0,
-		},
-		{
-			q: "What is the purpose of cleaning data?",
-			a: [
-				"To fix or remove incorrect, broken, duplicate, or missing information",
-				"To create more duplicate information",
-				"To visualize the dataset",
-				"To convert all data to binary",
-			],
-			c: 0,
-		},
-		{
-			q: "Which stage removes unneeded and redundant data?",
-			a: ["Filter", "Collect", "Visualize", "Analyze"],
-			c: 0,
-		},
-		{
-			q: "Which stage of the data pipeline involves putting data into storage?",
-			a: ["Store", "Analyze", "Clean", "Collect"],
-			c: 0,
-		},
-		{
-			q: "Which stage combines data from different sources?",
-			a: ["Combine", "Validate", "Filter", "Visualize"],
-			c: 0,
-		},
-		{
-			q: "Which stage is used to examine data and find useful information?",
-			a: ["Analyze", "Store", "Collect", "Filter"],
-			c: 0,
-		},
-		{
-			q: "What is the final stage shown in the data pipeline?",
-			a: ["Visualize", "Collect", "Validate", "Clean"],
-			c: 0,
-		},
-		{
-			q: "Which can provide data for the data pipeline?",
-			a: [
-				"Databases, sensors, measurements, and transactions",
-				"Only CPUs",
-				"Only text files",
-				"Only cloud services",
-			],
-			c: 0,
-		},
-		{
-			q: "What does data science focus on in this course?",
-			a: [
-				"Methods for analyzing data sets",
-				"Building computer hardware",
-				"Designing operating systems",
-				"Creating databases only",
-			],
-			c: 0,
-		},
+			{
+				q: "What is the first stage of the data pipeline?",
+				a: ["Collect or create", "Analyze", "Visualize", "Store"],
+				c: 0,
+			},
+			{
+				q: "Which stage of the data pipeline deals with invalid and untrusted data?",
+				a: ["Validate", "Visualize", "Analyze", "Combine"],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of cleaning data?",
+				a: [
+					"To fix or remove incorrect, broken, duplicate, or missing information",
+					"To create more duplicate information",
+					"To visualize the dataset",
+					"To convert all data to binary",
+				],
+				c: 0,
+			},
+			{
+				q: "Which stage removes unneeded and redundant data?",
+				a: ["Filter", "Collect", "Visualize", "Analyze"],
+				c: 0,
+			},
+			{
+				q: "Which stage of the data pipeline involves putting data into storage?",
+				a: ["Store", "Analyze", "Clean", "Collect"],
+				c: 0,
+			},
+			{
+				q: "Which stage combines data from different sources?",
+				a: ["Combine", "Validate", "Filter", "Visualize"],
+				c: 0,
+			},
+			{
+				q: "Which stage is used to examine data and find useful information?",
+				a: ["Analyze", "Store", "Collect", "Filter"],
+				c: 0,
+			},
+			{
+				q: "What is the final stage shown in the data pipeline?",
+				a: ["Visualize", "Collect", "Validate", "Clean"],
+				c: 0,
+			},
+			{
+				q: "Which can provide data for the data pipeline?",
+				a: [
+					"Databases, sensors, measurements, and transactions",
+					"Only CPUs",
+					"Only text files",
+					"Only cloud services",
+				],
+				c: 0,
+			},
+			{
+				q: "What does data science focus on in this course?",
+				a: [
+					"Methods for analyzing data sets",
+					"Building computer hardware",
+					"Designing operating systems",
+					"Creating databases only",
+				],
+				c: 0,
+			},
 
-		// DATASETS & DATA PREPARATION
-		{
-			q: "What are three problems that data science datasets can be used to solve?",
-			a: [
-				"Classification, regression, and clustering",
-				"Sorting, searching, and compiling",
-				"Encryption, compression, and networking",
-				"Testing, debugging, and deployment",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a typical dataset contain besides features?",
-			a: [
-				"A class or output",
-				"Only text",
-				"A file extension",
-				"A regular expression",
-			],
-			c: 0,
-		},
-		{
-			q: "What is data preparation also called by data scientists?",
-			a: [
-				"Data wrangling",
-				"Data compiling",
-				"Data rendering",
-				"Data modeling",
-			],
-			c: 0,
-		},
-		{
-			q: "What is another term used for data preparation?",
-			a: ["Data munging", "Data rendering", "Data indexing", "Data encoding"],
-			c: 0,
-		},
-		{
-			q: "What is another informal term for data preparation?",
-			a: [
-				"Data janitor work",
-				"Data engineering",
-				"Data mining",
-				"Data processing",
-			],
-			c: 0,
-		},
-		{
-			q: "Approximately what percentage of their time can data scientists spend collecting and preparing unruly digital data?",
-			a: ["50% to 80%", "5% to 10%", "10% to 20%", "90% to 100%"],
-			c: 0,
-		},
-		{
-			q: "Why is data preparation necessary before exploring data?",
-			a: [
-				"The data may need to be cleaned and organized",
-				"It automatically creates a machine learning model",
-				"It converts all data into images",
-				"It removes the need for analysis",
-			],
-			c: 0,
-		},
-		{
-			q: "What can happen when data is copied and pasted from a web page or document?",
-			a: [
-				"The data can have an incomplete or irregular format",
-				"The data always becomes perfectly formatted",
-				"The data is automatically converted to binary",
-				"The data is automatically analyzed",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one problem that can occur when pasting data into a spreadsheet?",
-			a: [
-				"All the data may be placed into one cell",
-				"All the data is deleted",
-				"The data becomes encrypted",
-				"The spreadsheet becomes a database",
-			],
-			c: 0,
-		},
-		{
-			q: "Why might editing a data file by hand be impractical?",
-			a: [
-				"The file could contain millions of lines",
-				"The file may contain only one line",
-				"The file cannot contain numbers",
-				"The file is always encrypted",
-			],
-			c: 0,
-		},
+			// DATASETS & DATA PREPARATION
+			{
+				q: "What are three problems that data science datasets can be used to solve?",
+				a: [
+					"Classification, regression, and clustering",
+					"Sorting, searching, and compiling",
+					"Encryption, compression, and networking",
+					"Testing, debugging, and deployment",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a typical dataset contain besides features?",
+				a: [
+					"A class or output",
+					"Only text",
+					"A file extension",
+					"A regular expression",
+				],
+				c: 0,
+			},
+			{
+				q: "What is data preparation also called by data scientists?",
+				a: [
+					"Data wrangling",
+					"Data compiling",
+					"Data rendering",
+					"Data modeling",
+				],
+				c: 0,
+			},
+			{
+				q: "What is another term used for data preparation?",
+				a: ["Data munging", "Data rendering", "Data indexing", "Data encoding"],
+				c: 0,
+			},
+			{
+				q: "What is another informal term for data preparation?",
+				a: [
+					"Data janitor work",
+					"Data engineering",
+					"Data mining",
+					"Data processing",
+				],
+				c: 0,
+			},
+			{
+				q: "Approximately what percentage of their time can data scientists spend collecting and preparing unruly digital data?",
+				a: ["50% to 80%", "5% to 10%", "10% to 20%", "90% to 100%"],
+				c: 0,
+			},
+			{
+				q: "Why is data preparation necessary before exploring data?",
+				a: [
+					"The data may need to be cleaned and organized",
+					"It automatically creates a machine learning model",
+					"It converts all data into images",
+					"It removes the need for analysis",
+				],
+				c: 0,
+			},
+			{
+				q: "What can happen when data is copied and pasted from a web page or document?",
+				a: [
+					"The data can have an incomplete or irregular format",
+					"The data always becomes perfectly formatted",
+					"The data is automatically converted to binary",
+					"The data is automatically analyzed",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one problem that can occur when pasting data into a spreadsheet?",
+				a: [
+					"All the data may be placed into one cell",
+					"All the data is deleted",
+					"The data becomes encrypted",
+					"The spreadsheet becomes a database",
+				],
+				c: 0,
+			},
+			{
+				q: "Why might editing a data file by hand be impractical?",
+				a: [
+					"The file could contain millions of lines",
+					"The file may contain only one line",
+					"The file cannot contain numbers",
+					"The file is always encrypted",
+				],
+				c: 0,
+			},
 
-		// DATA CLEANING EXAMPLE
-		{
-			q: "In the wine spending example, what could be stored in the same cell?",
-			a: [
-				"The college name and amount spent on wine",
-				"A password and username",
-				"A date and file name",
-				"A city and country",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of unwanted information can appear in a dataset?",
-			a: ["Unwanted text", "Only numbers", "Only formulas", "Only headers"],
-			c: 0,
-		},
-		{
-			q: "What is another issue that can occur in a poorly prepared dataset?",
-			a: [
-				"Extra rows",
-				"Automatic sorting",
-				"Automatic validation",
-				"Encrypted columns",
-			],
-			c: 0,
-		},
-		{
-			q: "What kind of information may be missing from an incomplete dataset?",
-			a: [
-				"Required data values",
-				"File extensions",
-				"Computer programs",
-				"Regular expressions",
-			],
-			c: 0,
-		},
-		{
-			q: "What was an example of text that was incorrectly included with a value in the wine dataset?",
-			a: ["A pound sign", "An HTML tag", "An IP address", "A comma"],
-			c: 0,
-		},
-		{
-			q: "What format can be used to separate fields using tabs?",
-			a: ["TSV", "XML", "PNG", "MP3"],
-			c: 0,
-		},
-		{
-			q: "What does TSV stand for?",
-			a: [
-				"Tab-Separated Values",
-				"Text-Structured Variables",
-				"Typed Spreadsheet Values",
-				"Table-Separated Variables",
-			],
-			c: 0,
-		},
-		{
-			q: "What does CSV stand for?",
-			a: [
-				"Comma-Separated Values",
-				"Computer-Separated Variables",
-				"Categorical Structured Values",
-				"Column-Sorted Values",
-			],
-			c: 0,
-		},
-		{
-			q: "What can potentially be used to modify messy data automatically?",
-			a: [
-				"Regex or a program",
-				"A video editor",
-				"A graphics editor",
-				"A media player",
-			],
-			c: 0,
-		},
-		{
-			q: "When can editing a short data file by hand be reasonable?",
-			a: [
-				"When the file has around 30 lines",
-				"When the file has 30 million lines",
-				"When the file is encrypted",
-				"When the file contains only images",
-			],
-			c: 0,
-		},
+			// DATA CLEANING EXAMPLE
+			{
+				q: "In the wine spending example, what could be stored in the same cell?",
+				a: [
+					"The college name and amount spent on wine",
+					"A password and username",
+					"A date and file name",
+					"A city and country",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of unwanted information can appear in a dataset?",
+				a: ["Unwanted text", "Only numbers", "Only formulas", "Only headers"],
+				c: 0,
+			},
+			{
+				q: "What is another issue that can occur in a poorly prepared dataset?",
+				a: [
+					"Extra rows",
+					"Automatic sorting",
+					"Automatic validation",
+					"Encrypted columns",
+				],
+				c: 0,
+			},
+			{
+				q: "What kind of information may be missing from an incomplete dataset?",
+				a: [
+					"Required data values",
+					"File extensions",
+					"Computer programs",
+					"Regular expressions",
+				],
+				c: 0,
+			},
+			{
+				q: "What was an example of text that was incorrectly included with a value in the wine dataset?",
+				a: ["A pound sign", "An HTML tag", "An IP address", "A comma"],
+				c: 0,
+			},
+			{
+				q: "What format can be used to separate fields using tabs?",
+				a: ["TSV", "XML", "PNG", "MP3"],
+				c: 0,
+			},
+			{
+				q: "What does TSV stand for?",
+				a: [
+					"Tab-Separated Values",
+					"Text-Structured Variables",
+					"Typed Spreadsheet Values",
+					"Table-Separated Variables",
+				],
+				c: 0,
+			},
+			{
+				q: "What does CSV stand for?",
+				a: [
+					"Comma-Separated Values",
+					"Computer-Separated Variables",
+					"Categorical Structured Values",
+					"Column-Sorted Values",
+				],
+				c: 0,
+			},
+			{
+				q: "What can potentially be used to modify messy data automatically?",
+				a: [
+					"Regex or a program",
+					"A video editor",
+					"A graphics editor",
+					"A media player",
+				],
+				c: 0,
+			},
+			{
+				q: "When can editing a short data file by hand be reasonable?",
+				a: [
+					"When the file has around 30 lines",
+					"When the file has 30 million lines",
+					"When the file is encrypted",
+					"When the file contains only images",
+				],
+				c: 0,
+			},
 
-		// REGULAR EXPRESSIONS
-		{
-			q: "What is a regular expression?",
-			a: [
-				"A language used to describe text patterns",
-				"A database format",
-				"A type of spreadsheet",
-				"A programming language for graphics",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a regular expression describe?",
-			a: [
-				"A certain amount or pattern of text",
-				"A computer's hardware",
-				"A database schema",
-				"A file's storage size",
-			],
-			c: 0,
-		},
-		{
-			q: "What is required to use regular expressions?",
-			a: [
-				"A regular expression engine",
-				"A graphics card",
-				"A database server",
-				"An XML file",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a regular expression engine do?",
-			a: [
-				"Processes expressions and attempts to match them to a string",
-				"Converts images into pixels",
-				"Stores data in a database",
-				"Calculates averages",
-			],
-			c: 0,
-		},
-		{
-			q: "Which programming language has a regular expression engine?",
-			a: ["Python", "C#", "Swift", "Kotlin"],
-			c: 0,
-		},
-		{
-			q: "Which programming language has a regular expression engine?",
-			a: ["Java", "C++", "JavaScript", "R"],
-			c: 0,
-		},
-		{
-			q: "Are regular expressions always completely compatible between different languages and tools?",
-			a: [
-				"No, they can use slightly different syntax",
-				"Yes, they always use identical syntax",
-				"Only in Python",
-				"Only in Java",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one use of Regex in data preparation?",
-			a: [
-				"Identifying, cleaning, and transforming messy text",
-				"Creating images",
-				"Running databases",
-				"Calculating hardware performance",
-			],
-			c: 0,
-		},
-		{
-			q: "How can Regex help with data cleaning and standardization?",
-			a: [
-				"It can locate variations and standardize them",
-				"It automatically creates new datasets",
-				"It converts all data to images",
-				"It deletes every text value",
-			],
-			c: 0,
-		},
-		{
-			q: "What Regex concept can be used to find non-digit characters?",
-			a: ["\\D", "\\s+", "\\d+", "\\W"],
-			c: 0,
-		},
+			// REGULAR EXPRESSIONS
+			{
+				q: "What is a regular expression?",
+				a: [
+					"A language used to describe text patterns",
+					"A database format",
+					"A type of spreadsheet",
+					"A programming language for graphics",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a regular expression describe?",
+				a: [
+					"A certain amount or pattern of text",
+					"A computer's hardware",
+					"A database schema",
+					"A file's storage size",
+				],
+				c: 0,
+			},
+			{
+				q: "What is required to use regular expressions?",
+				a: [
+					"A regular expression engine",
+					"A graphics card",
+					"A database server",
+					"An XML file",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a regular expression engine do?",
+				a: [
+					"Processes expressions and attempts to match them to a string",
+					"Converts images into pixels",
+					"Stores data in a database",
+					"Calculates averages",
+				],
+				c: 0,
+			},
+			{
+				q: "Which programming language has a regular expression engine?",
+				a: ["Python", "C#", "Swift", "Kotlin"],
+				c: 0,
+			},
+			{
+				q: "Which programming language has a regular expression engine?",
+				a: ["Java", "C++", "JavaScript", "R"],
+				c: 0,
+			},
+			{
+				q: "Are regular expressions always completely compatible between different languages and tools?",
+				a: [
+					"No, they can use slightly different syntax",
+					"Yes, they always use identical syntax",
+					"Only in Python",
+					"Only in Java",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one use of Regex in data preparation?",
+				a: [
+					"Identifying, cleaning, and transforming messy text",
+					"Creating images",
+					"Running databases",
+					"Calculating hardware performance",
+				],
+				c: 0,
+			},
+			{
+				q: "How can Regex help with data cleaning and standardization?",
+				a: [
+					"It can locate variations and standardize them",
+					"It automatically creates new datasets",
+					"It converts all data to images",
+					"It deletes every text value",
+				],
+				c: 0,
+			},
+			{
+				q: "What Regex concept can be used to find non-digit characters?",
+				a: ["\\D", "\\s+", "\\d+", "\\W"],
+				c: 0,
+			},
 
-		// REGEX USES
-		{
-			q: "What can \\s+ be used to help clean?",
-			a: ["Whitespace", "Numbers", "Images", "Dates only"],
-			c: 0,
-		},
-		{
-			q: "What can Regex remove from numerical data?",
-			a: [
-				"Currency symbols, parentheses, or dashes",
-				"Only decimal points",
-				"Database tables",
-				"File extensions",
-			],
-			c: 0,
-		},
-		{
-			q: "What can Regex help remove from text?",
-			a: [
-				"HTML tags or markdown markers",
-				"Computer hardware",
-				"Database records",
-				"Image pixels",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one use of Regex for information extraction?",
-			a: [
-				"Extracting timestamps from logs",
-				"Calculating variance",
-				"Creating spreadsheets",
-				"Sorting images",
-			],
-			c: 0,
-		},
-		{
-			q: "What can Regex extract from server log files?",
-			a: [
-				"IP addresses or error codes",
-				"Images or videos",
-				"Excel formulas",
-				"Audio files",
-			],
-			c: 0,
-		},
-		{
-			q: "What can Regex do with a raw email string?",
-			a: [
-				"Pull out a domain name",
-				"Convert it into an image",
-				"Calculate its mean",
-				"Store it as binary",
-			],
-			c: 0,
-		},
-		{
-			q: "How can Regex help with dates?",
-			a: [
-				"Break a date into components such as day, month, and year",
-				"Automatically predict future dates",
-				"Remove every date",
-				"Convert dates into images",
-			],
-			c: 0,
-		},
-		{
-			q: "What date format is given as an example for universal formatting?",
-			a: ["YYYY-MM-DD", "DD-YYYY-MM", "MM-DD-YYYY", "YYYY-DD-MM"],
-			c: 0,
-		},
-		{
-			q: "How can Regex be used for data validation?",
-			a: [
-				"It can check whether incoming text fits required patterns",
-				"It automatically fills in missing values",
-				"It calculates standard deviation",
-				"It creates charts",
-			],
-			c: 0,
-		},
-		{
-			q: "What can Regex validate?",
-			a: [
-				"Email addresses, ZIP codes, and Social Security Numbers",
-				"Images, videos, and audio",
-				"Means, medians, and modes",
-				"Databases and spreadsheets",
-			],
-			c: 0,
-		},
+			// REGEX USES
+			{
+				q: "What can \\s+ be used to help clean?",
+				a: ["Whitespace", "Numbers", "Images", "Dates only"],
+				c: 0,
+			},
+			{
+				q: "What can Regex remove from numerical data?",
+				a: [
+					"Currency symbols, parentheses, or dashes",
+					"Only decimal points",
+					"Database tables",
+					"File extensions",
+				],
+				c: 0,
+			},
+			{
+				q: "What can Regex help remove from text?",
+				a: [
+					"HTML tags or markdown markers",
+					"Computer hardware",
+					"Database records",
+					"Image pixels",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one use of Regex for information extraction?",
+				a: [
+					"Extracting timestamps from logs",
+					"Calculating variance",
+					"Creating spreadsheets",
+					"Sorting images",
+				],
+				c: 0,
+			},
+			{
+				q: "What can Regex extract from server log files?",
+				a: [
+					"IP addresses or error codes",
+					"Images or videos",
+					"Excel formulas",
+					"Audio files",
+				],
+				c: 0,
+			},
+			{
+				q: "What can Regex do with a raw email string?",
+				a: [
+					"Pull out a domain name",
+					"Convert it into an image",
+					"Calculate its mean",
+					"Store it as binary",
+				],
+				c: 0,
+			},
+			{
+				q: "How can Regex help with dates?",
+				a: [
+					"Break a date into components such as day, month, and year",
+					"Automatically predict future dates",
+					"Remove every date",
+					"Convert dates into images",
+				],
+				c: 0,
+			},
+			{
+				q: "What date format is given as an example for universal formatting?",
+				a: ["YYYY-MM-DD", "DD-YYYY-MM", "MM-DD-YYYY", "YYYY-DD-MM"],
+				c: 0,
+			},
+			{
+				q: "How can Regex be used for data validation?",
+				a: [
+					"It can check whether incoming text fits required patterns",
+					"It automatically fills in missing values",
+					"It calculates standard deviation",
+					"It creates charts",
+				],
+				c: 0,
+			},
+			{
+				q: "What can Regex validate?",
+				a: [
+					"Email addresses, ZIP codes, and Social Security Numbers",
+					"Images, videos, and audio",
+					"Means, medians, and modes",
+					"Databases and spreadsheets",
+				],
+				c: 0,
+			},
 
-		// STATISTICS
-		{
-			q: "What are three types of statistical measures?",
-			a: [
-				"Central tendency, spread, and correlations",
-				"Classification, regression, and clustering",
-				"Mean, XML, and Regex",
-				"Text, binary, and categorical",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the mean?",
-			a: [
-				"The sum of the values divided by the number of values",
-				"The most common value",
-				"The middle value only",
-				"The largest value",
-			],
-			c: 0,
-		},
-		{
-			q: "What is another name for the mean?",
-			a: ["Average", "Median", "Mode", "Range"],
-			c: 0,
-		},
-		{
-			q: "What is the median?",
-			a: [
-				"The value separating the higher half from the lower half",
-				"The most frequently occurring value",
-				"The largest value",
-				"The difference between two values",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the mode?",
-			a: [
-				"The value that appears most often",
-				"The middle value",
-				"The average value",
-				"The smallest value",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the range?",
-			a: [
-				"The difference between the largest and smallest values",
-				"The average of all values",
-				"The middle value",
-				"The most common value",
-			],
-			c: 0,
-		},
-		{
-			q: "What is variance used to describe?",
-			a: [
-				"How far a set of numbers is spread out from its average",
-				"The middle value of a dataset",
-				"The most common value",
-				"The largest value",
-			],
-			c: 0,
-		},
-		{
-			q: "What is standard deviation?",
-			a: [
-				"The square root of the variance",
-				"The square of the variance",
-				"The average of the dataset",
-				"The difference between the mean and median",
-			],
-			c: 0,
-		},
-		{
-			q: "What does Pearson correlation measure?",
-			a: [
-				"The strength of the connection between two variables",
-				"The number of values in a dataset",
-				"The largest value in a dataset",
-				"The amount of missing data",
-			],
-			c: 0,
-		},
-		{
-			q: "What range can Pearson correlation have?",
-			a: ["-1 to 1", "0 to 100", "-100 to 100", "1 to 10"],
-			c: 0,
-		},
+			// STATISTICS
+			{
+				q: "What are three types of statistical measures?",
+				a: [
+					"Central tendency, spread, and correlations",
+					"Classification, regression, and clustering",
+					"Mean, XML, and Regex",
+					"Text, binary, and categorical",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the mean?",
+				a: [
+					"The sum of the values divided by the number of values",
+					"The most common value",
+					"The middle value only",
+					"The largest value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is another name for the mean?",
+				a: ["Average", "Median", "Mode", "Range"],
+				c: 0,
+			},
+			{
+				q: "What is the median?",
+				a: [
+					"The value separating the higher half from the lower half",
+					"The most frequently occurring value",
+					"The largest value",
+					"The difference between two values",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the mode?",
+				a: [
+					"The value that appears most often",
+					"The middle value",
+					"The average value",
+					"The smallest value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the range?",
+				a: [
+					"The difference between the largest and smallest values",
+					"The average of all values",
+					"The middle value",
+					"The most common value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is variance used to describe?",
+				a: [
+					"How far a set of numbers is spread out from its average",
+					"The middle value of a dataset",
+					"The most common value",
+					"The largest value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is standard deviation?",
+				a: [
+					"The square root of the variance",
+					"The square of the variance",
+					"The average of the dataset",
+					"The difference between the mean and median",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Pearson correlation measure?",
+				a: [
+					"The strength of the connection between two variables",
+					"The number of values in a dataset",
+					"The largest value in a dataset",
+					"The amount of missing data",
+				],
+				c: 0,
+			},
+			{
+				q: "What range can Pearson correlation have?",
+				a: ["-1 to 1", "0 to 100", "-100 to 100", "1 to 10"],
+				c: 0,
+			},
 
-		// CORRELATION
-		{
-			q: "What does a Pearson correlation of -1 represent?",
-			a: [
-				"A perfect negative correlation",
-				"No correlation",
-				"A perfect positive correlation",
-				"A weak correlation",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a Pearson correlation of 0 represent?",
-			a: [
-				"No correlation",
-				"A perfect negative correlation",
-				"A perfect positive correlation",
-				"A perfect nonlinear correlation",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a Pearson correlation of 1 represent?",
-			a: [
-				"A perfect positive correlation",
-				"No correlation",
-				"A perfect negative correlation",
-				"A weak correlation",
-			],
-			c: 0,
-		},
-		{
-			q: "What does Pearson correlation basically attempt to do?",
-			a: [
-				"Draw a line of best fit through the data",
-				"Remove missing values",
-				"Calculate the median",
-				"Group data into categories",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of correlations does Pearson correlation work for?",
-			a: [
-				"Linear correlations",
-				"Only categorical correlations",
-				"Only nonlinear correlations",
-				"Only text correlations",
-			],
-			c: 0,
-		},
-		{
-			q: "Does finding a correlation necessarily mean that one variable causes another?",
-			a: [
-				"No",
-				"Yes",
-				"Only when the correlation is 1",
-				"Only when the correlation is -1",
-			],
-			c: 0,
-		},
+			// CORRELATION
+			{
+				q: "What does a Pearson correlation of -1 represent?",
+				a: [
+					"A perfect negative correlation",
+					"No correlation",
+					"A perfect positive correlation",
+					"A weak correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a Pearson correlation of 0 represent?",
+				a: [
+					"No correlation",
+					"A perfect negative correlation",
+					"A perfect positive correlation",
+					"A perfect nonlinear correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a Pearson correlation of 1 represent?",
+				a: [
+					"A perfect positive correlation",
+					"No correlation",
+					"A perfect negative correlation",
+					"A weak correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Pearson correlation basically attempt to do?",
+				a: [
+					"Draw a line of best fit through the data",
+					"Remove missing values",
+					"Calculate the median",
+					"Group data into categories",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of correlations does Pearson correlation work for?",
+				a: [
+					"Linear correlations",
+					"Only categorical correlations",
+					"Only nonlinear correlations",
+					"Only text correlations",
+				],
+				c: 0,
+			},
+			{
+				q: "Does finding a correlation necessarily mean that one variable causes another?",
+				a: [
+					"No",
+					"Yes",
+					"Only when the correlation is 1",
+					"Only when the correlation is -1",
+				],
+				c: 0,
+			},
 
-		// DATASETS & STATISTICS
-		{
-			q: "What are three problems that data science datasets can be used to solve?",
-			a: [
-				"Classification, regression, and clustering",
-				"Sorting, searching, and compiling",
-				"Encryption, compression, and networking",
-				"Testing, debugging, and deployment",
-			],
-			c: 0,
-		},
-		{
-			q: "What are the two main types of statistics?",
-			a: [
-				"Descriptive and inferential statistics",
-				"Quantitative and categorical statistics",
-				"Linear and nonlinear statistics",
-				"Discrete and continuous statistics",
-			],
-			c: 0,
-		},
-		{
-			q: "What does descriptive statistics help us do?",
-			a: [
-				"Simplify and organize large amounts of data",
-				"Predict the future with certainty",
-				"Create machine learning models",
-				"Remove all outliers",
-			],
-			c: 0,
-		},
-		{
-			q: "Why is descriptive statistics useful?",
-			a: [
-				"It makes large amounts of data easier to understand",
-				"It guarantees accurate predictions",
-				"It removes the need for data collection",
-				"It converts data into binary",
-			],
-			c: 0,
-		},
-		{
-			q: "What does inferential statistics use to make conclusions about a larger group?",
-			a: [
-				"A small amount of data",
-				"Every possible data point",
-				"Only categorical data",
-				"Only historical data",
-			],
-			c: 0,
-		},
-		{
-			q: "What larger group are inferential statistics used to draw conclusions about?",
-			a: ["A population", "A sample", "A variable", "A dataset column"],
-			c: 0,
-		},
+			// DATASETS & STATISTICS
+			{
+				q: "What are three problems that data science datasets can be used to solve?",
+				a: [
+					"Classification, regression, and clustering",
+					"Sorting, searching, and compiling",
+					"Encryption, compression, and networking",
+					"Testing, debugging, and deployment",
+				],
+				c: 0,
+			},
+			{
+				q: "What are the two main types of statistics?",
+				a: [
+					"Descriptive and inferential statistics",
+					"Quantitative and categorical statistics",
+					"Linear and nonlinear statistics",
+					"Discrete and continuous statistics",
+				],
+				c: 0,
+			},
+			{
+				q: "What does descriptive statistics help us do?",
+				a: [
+					"Simplify and organize large amounts of data",
+					"Predict the future with certainty",
+					"Create machine learning models",
+					"Remove all outliers",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is descriptive statistics useful?",
+				a: [
+					"It makes large amounts of data easier to understand",
+					"It guarantees accurate predictions",
+					"It removes the need for data collection",
+					"It converts data into binary",
+				],
+				c: 0,
+			},
+			{
+				q: "What does inferential statistics use to make conclusions about a larger group?",
+				a: [
+					"A small amount of data",
+					"Every possible data point",
+					"Only categorical data",
+					"Only historical data",
+				],
+				c: 0,
+			},
+			{
+				q: "What larger group are inferential statistics used to draw conclusions about?",
+				a: ["A population", "A sample", "A variable", "A dataset column"],
+				c: 0,
+			},
 
-		// MEASURES OF CENTRAL TENDENCY
-		{
-			q: "What is the arithmetic mean?",
-			a: [
-				"The sum of the values divided by the number of values",
-				"The most frequently occurring value",
-				"The middle value",
-				"The largest value",
-			],
-			c: 0,
-		},
-		{
-			q: "What is another name for the arithmetic mean?",
-			a: ["Average", "Mode", "Median", "Range"],
-			c: 0,
-		},
-		{
-			q: "What is the geometric mean useful for?",
-			a: [
-				"Comparing values that change over time",
-				"Finding the largest value",
-				"Finding the middle value",
-				"Counting categories",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of values is the geometric mean especially useful for?",
-			a: [
-				"Growth rates or percentages",
-				"Only whole numbers",
-				"Only categorical values",
-				"Only negative values",
-			],
-			c: 0,
-		},
-		{
-			q: "Which is an example where the geometric mean can be useful?",
-			a: [
-				"Investment returns",
-				"Finding a student's mode",
-				"Counting computers",
-				"Finding the maximum value",
-			],
-			c: 0,
-		},
-		{
-			q: "When values vary greatly, which mean can be useful?",
-			a: ["Geometric mean", "Mode", "Median", "Range"],
-			c: 0,
-		},
-		{
-			q: "What is the mode?",
-			a: [
-				"The value that has the maximum frequency",
-				"The value in the middle",
-				"The average of all values",
-				"The largest value",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the median?",
-			a: [
-				"The value that divides a set into two equal parts",
-				"The most common value",
-				"The average of all values",
-				"The difference between two values",
-			],
-			c: 0,
-		},
-		{
-			q: "In a dataset, what does the median separate?",
-			a: [
-				"The observations above and below it",
-				"The largest and smallest values",
-				"The positive and negative values",
-				"The categorical and numerical values",
-			],
-			c: 0,
-		},
+			// MEASURES OF CENTRAL TENDENCY
+			{
+				q: "What is the arithmetic mean?",
+				a: [
+					"The sum of the values divided by the number of values",
+					"The most frequently occurring value",
+					"The middle value",
+					"The largest value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is another name for the arithmetic mean?",
+				a: ["Average", "Mode", "Median", "Range"],
+				c: 0,
+			},
+			{
+				q: "What is the geometric mean useful for?",
+				a: [
+					"Comparing values that change over time",
+					"Finding the largest value",
+					"Finding the middle value",
+					"Counting categories",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of values is the geometric mean especially useful for?",
+				a: [
+					"Growth rates or percentages",
+					"Only whole numbers",
+					"Only categorical values",
+					"Only negative values",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example where the geometric mean can be useful?",
+				a: [
+					"Investment returns",
+					"Finding a student's mode",
+					"Counting computers",
+					"Finding the maximum value",
+				],
+				c: 0,
+			},
+			{
+				q: "When values vary greatly, which mean can be useful?",
+				a: ["Geometric mean", "Mode", "Median", "Range"],
+				c: 0,
+			},
+			{
+				q: "What is the mode?",
+				a: [
+					"The value that has the maximum frequency",
+					"The value in the middle",
+					"The average of all values",
+					"The largest value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the median?",
+				a: [
+					"The value that divides a set into two equal parts",
+					"The most common value",
+					"The average of all values",
+					"The difference between two values",
+				],
+				c: 0,
+			},
+			{
+				q: "In a dataset, what does the median separate?",
+				a: [
+					"The observations above and below it",
+					"The largest and smallest values",
+					"The positive and negative values",
+					"The categorical and numerical values",
+				],
+				c: 0,
+			},
 
-		// VARIABILITY & STANDARD DEVIATION
-		{
-			q: "What do measures of spread describe?",
-			a: [
-				"Variability in the data",
-				"The most common value",
-				"The middle value",
-				"The number of categories",
-			],
-			c: 0,
-		},
-		{
-			q: "What is standard deviation?",
-			a: [
-				"The square root of the variance",
-				"The square of the variance",
-				"The average of the values",
-				"The difference between the mean and median",
-			],
-			c: 0,
-		},
-		{
-			q: "Why is standard deviation calculated as the square root of variance?",
-			a: [
-				"So it has the same units as the individual values",
-				"So it becomes a percentage",
-				"So it removes outliers",
-				"So it becomes a correlation",
-			],
-			c: 0,
-		},
-		{
-			q: "What problem occurs with the units of variance?",
-			a: [
-				"They are not the same as the units of the individual values",
-				"They cannot contain numbers",
-				"They are always percentages",
-				"They are always negative",
-			],
-			c: 0,
-		},
-		{
-			q: "What does standard deviation allow us to do regarding units?",
-			a: [
-				"Use the same units as the individual data values",
-				"Remove the units completely",
-				"Convert the values to percentages",
-				"Change the values into categories",
-			],
-			c: 0,
-		},
+			// VARIABILITY & STANDARD DEVIATION
+			{
+				q: "What do measures of spread describe?",
+				a: [
+					"Variability in the data",
+					"The most common value",
+					"The middle value",
+					"The number of categories",
+				],
+				c: 0,
+			},
+			{
+				q: "What is standard deviation?",
+				a: [
+					"The square root of the variance",
+					"The square of the variance",
+					"The average of the values",
+					"The difference between the mean and median",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is standard deviation calculated as the square root of variance?",
+				a: [
+					"So it has the same units as the individual values",
+					"So it becomes a percentage",
+					"So it removes outliers",
+					"So it becomes a correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "What problem occurs with the units of variance?",
+				a: [
+					"They are not the same as the units of the individual values",
+					"They cannot contain numbers",
+					"They are always percentages",
+					"They are always negative",
+				],
+				c: 0,
+			},
+			{
+				q: "What does standard deviation allow us to do regarding units?",
+				a: [
+					"Use the same units as the individual data values",
+					"Remove the units completely",
+					"Convert the values to percentages",
+					"Change the values into categories",
+				],
+				c: 0,
+			},
 
-		// CORRELATION & COVARIANCE
-		{
-			q: "What does correlation measure?",
-			a: [
-				"The relationship between two variables",
-				"The number of observations",
-				"The spread of one variable",
-				"The middle of a dataset",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the possible range of a correlation value?",
-			a: ["-1 to 1", "0 to 100", "-100 to 100", "1 to 10"],
-			c: 0,
-		},
-		{
-			q: "What does a correlation of -1 represent?",
-			a: [
-				"A perfect negative correlation",
-				"No correlation",
-				"A perfect positive correlation",
-				"A weak correlation",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a correlation of 0 represent?",
-			a: [
-				"No correlation at all",
-				"A perfect negative correlation",
-				"A perfect positive correlation",
-				"Maximum correlation",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a correlation of 1 represent?",
-			a: [
-				"A perfect correlation",
-				"No correlation",
-				"A perfect negative correlation",
-				"A weak correlation",
-			],
-			c: 0,
-		},
-		{
-			q: "What does covariance measure?",
-			a: [
-				"The relationship between two variables",
-				"The middle value of a dataset",
-				"The frequency of a value",
-				"The number of categories",
-			],
-			c: 0,
-		},
-		{
-			q: "What range can covariance take?",
-			a: [
-				"Negative infinity to positive infinity",
-				"-1 to 1",
-				"0 to 1",
-				"0 to 100",
-			],
-			c: 0,
-		},
-		{
-			q: "What does covariance help us understand?",
-			a: [
-				"The direction of a relationship",
-				"Only the strength of a relationship",
-				"The median of a dataset",
-				"The number of outliers",
-			],
-			c: 0,
-		},
-		{
-			q: "What does covariance assess?",
-			a: [
-				"How much two variables change together",
-				"How many values are in a dataset",
-				"How far values are from zero",
-				"How many categories exist",
-			],
-			c: 0,
-		},
-		{
-			q: "What does correlation show compared with covariance?",
-			a: [
-				"Both direction and strength",
-				"Only direction",
-				"Only frequency",
-				"Only the average",
-			],
-			c: 0,
-		},
-		{
-			q: "What does covariance mainly show?",
-			a: [
-				"The direction of the relationship",
-				"The exact strength on a -1 to 1 scale",
-				"The median",
-				"The standard deviation",
-			],
-			c: 0,
-		},
-		{
-			q: "If two variables increase together, what type of relationship would covariance indicate?",
-			a: [
-				"A positive relationship",
-				"A negative relationship",
-				"No relationship",
-				"A categorical relationship",
-			],
-			c: 0,
-		},
+			// CORRELATION & COVARIANCE
+			{
+				q: "What does correlation measure?",
+				a: [
+					"The relationship between two variables",
+					"The number of observations",
+					"The spread of one variable",
+					"The middle of a dataset",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the possible range of a correlation value?",
+				a: ["-1 to 1", "0 to 100", "-100 to 100", "1 to 10"],
+				c: 0,
+			},
+			{
+				q: "What does a correlation of -1 represent?",
+				a: [
+					"A perfect negative correlation",
+					"No correlation",
+					"A perfect positive correlation",
+					"A weak correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a correlation of 0 represent?",
+				a: [
+					"No correlation at all",
+					"A perfect negative correlation",
+					"A perfect positive correlation",
+					"Maximum correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a correlation of 1 represent?",
+				a: [
+					"A perfect correlation",
+					"No correlation",
+					"A perfect negative correlation",
+					"A weak correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "What does covariance measure?",
+				a: [
+					"The relationship between two variables",
+					"The middle value of a dataset",
+					"The frequency of a value",
+					"The number of categories",
+				],
+				c: 0,
+			},
+			{
+				q: "What range can covariance take?",
+				a: [
+					"Negative infinity to positive infinity",
+					"-1 to 1",
+					"0 to 1",
+					"0 to 100",
+				],
+				c: 0,
+			},
+			{
+				q: "What does covariance help us understand?",
+				a: [
+					"The direction of a relationship",
+					"Only the strength of a relationship",
+					"The median of a dataset",
+					"The number of outliers",
+				],
+				c: 0,
+			},
+			{
+				q: "What does covariance assess?",
+				a: [
+					"How much two variables change together",
+					"How many values are in a dataset",
+					"How far values are from zero",
+					"How many categories exist",
+				],
+				c: 0,
+			},
+			{
+				q: "What does correlation show compared with covariance?",
+				a: [
+					"Both direction and strength",
+					"Only direction",
+					"Only frequency",
+					"Only the average",
+				],
+				c: 0,
+			},
+			{
+				q: "What does covariance mainly show?",
+				a: [
+					"The direction of the relationship",
+					"The exact strength on a -1 to 1 scale",
+					"The median",
+					"The standard deviation",
+				],
+				c: 0,
+			},
+			{
+				q: "If two variables increase together, what type of relationship would covariance indicate?",
+				a: [
+					"A positive relationship",
+					"A negative relationship",
+					"No relationship",
+					"A categorical relationship",
+				],
+				c: 0,
+			},
 
-		// QUARTILES & IQR
-		{
-			q: "What do quartiles divide a dataset into?",
-			a: [
-				"Four equal parts",
-				"Two equal parts",
-				"Three equal parts",
-				"Five equal parts",
-			],
-			c: 0,
-		},
-		{
-			q: "What does Q1 represent?",
-			a: [
-				"The first quartile and the median of the lower half",
-				"The middle value of the entire dataset",
-				"The median of the upper half",
-				"The largest value",
-			],
-			c: 0,
-		},
-		{
-			q: "What percentage of the data is below Q1?",
-			a: ["25%", "50%", "75%", "100%"],
-			c: 0,
-		},
-		{
-			q: "What is Q2?",
-			a: [
-				"The second quartile or median",
-				"The first quartile",
-				"The third quartile",
-				"The range",
-			],
-			c: 0,
-		},
-		{
-			q: "What does Q2 divide the dataset into?",
-			a: [
-				"Two equal parts",
-				"Four equal parts",
-				"Three equal parts",
-				"Two unequal parts",
-			],
-			c: 0,
-		},
-		{
-			q: "What does Q3 represent?",
-			a: [
-				"The median of the upper half",
-				"The median of the lower half",
-				"The middle value of the entire dataset",
-				"The minimum value",
-			],
-			c: 0,
-		},
-		{
-			q: "What percentage of the data does Q3 separate from the top?",
-			a: ["25%", "50%", "75%", "10%"],
-			c: 0,
-		},
-		{
-			q: "What does IQR stand for?",
-			a: [
-				"Interquartile Range",
-				"Internal Quartile Range",
-				"Individual Quantitative Range",
-				"Interrelated Quartile Range",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the interquartile range?",
-			a: [
-				"The range between Q1 and Q3",
-				"The range between the minimum and maximum",
-				"The difference between the mean and median",
-				"The range between Q2 and Q3",
-			],
-			c: 0,
-		},
-		{
-			q: "Why is IQR useful when compared with the regular range?",
-			a: [
-				"It is less sensitive to extreme values",
-				"It always has a larger value",
-				"It removes the median",
-				"It measures correlation",
-			],
-			c: 0,
-		},
-		{
-			q: "What should be done before calculating Q1 and Q3 for IQR?",
-			a: [
-				"Arrange the data in ascending order",
-				"Remove the median",
-				"Calculate the correlation",
-				"Convert the data to percentages",
-			],
-			c: 0,
-		},
+			// QUARTILES & IQR
+			{
+				q: "What do quartiles divide a dataset into?",
+				a: [
+					"Four equal parts",
+					"Two equal parts",
+					"Three equal parts",
+					"Five equal parts",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Q1 represent?",
+				a: [
+					"The first quartile and the median of the lower half",
+					"The middle value of the entire dataset",
+					"The median of the upper half",
+					"The largest value",
+				],
+				c: 0,
+			},
+			{
+				q: "What percentage of the data is below Q1?",
+				a: ["25%", "50%", "75%", "100%"],
+				c: 0,
+			},
+			{
+				q: "What is Q2?",
+				a: [
+					"The second quartile or median",
+					"The first quartile",
+					"The third quartile",
+					"The range",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Q2 divide the dataset into?",
+				a: [
+					"Two equal parts",
+					"Four equal parts",
+					"Three equal parts",
+					"Two unequal parts",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Q3 represent?",
+				a: [
+					"The median of the upper half",
+					"The median of the lower half",
+					"The middle value of the entire dataset",
+					"The minimum value",
+				],
+				c: 0,
+			},
+			{
+				q: "What percentage of the data does Q3 separate from the top?",
+				a: ["25%", "50%", "75%", "10%"],
+				c: 0,
+			},
+			{
+				q: "What does IQR stand for?",
+				a: [
+					"Interquartile Range",
+					"Internal Quartile Range",
+					"Individual Quantitative Range",
+					"Interrelated Quartile Range",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the interquartile range?",
+				a: [
+					"The range between Q1 and Q3",
+					"The range between the minimum and maximum",
+					"The difference between the mean and median",
+					"The range between Q2 and Q3",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is IQR useful when compared with the regular range?",
+				a: [
+					"It is less sensitive to extreme values",
+					"It always has a larger value",
+					"It removes the median",
+					"It measures correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "What should be done before calculating Q1 and Q3 for IQR?",
+				a: [
+					"Arrange the data in ascending order",
+					"Remove the median",
+					"Calculate the correlation",
+					"Convert the data to percentages",
+				],
+				c: 0,
+			},
 
-		// OUTLIERS & SKEWNESS
-		{
-			q: "What can IQR be used for?",
-			a: [
-				"Outlier detection",
-				"Calculating correlation",
-				"Finding the mode only",
-				"Creating categorical data",
-			],
-			c: 0,
-		},
-		{
-			q: "In which areas is IQR being used for outlier detection?",
-			a: [
-				"Finance, healthcare, and quality control",
-				"Gaming, networking, and programming",
-				"Education, music, and art",
-				"Sports, travel, and weather",
-			],
-			c: 0,
-		},
-		{
-			q: "When is a data point considered an outlier using the IQR method?",
-			a: [
-				"When it falls outside Q1 - 1.5 × IQR or Q3 + 1.5 × IQR",
-				"When it is equal to the median",
-				"When it is below Q2",
-				"When it is equal to Q1",
-			],
-			c: 0,
-		},
-		{
-			q: "What does skewness tell us?",
-			a: [
-				"Whether data points are skewed left or right in relation to the mean",
-				"How many values are in a dataset",
-				"The correlation between two variables",
-				"The number of categories",
-			],
-			c: 0,
-		},
-		{
-			q: "What does skewness based on quartiles examine?",
-			a: [
-				"The distances between the quartiles",
-				"The number of observations",
-				"The maximum and minimum values only",
-				"The correlation between variables",
-			],
-			c: 0,
-		},
-		{
-			q: "In a symmetric distribution, what should ideally be equal?",
-			a: [
-				"Q3 minus the median and the median minus Q1",
-				"Q1 and Q3",
-				"The mean and mode only",
-				"The minimum and maximum",
-			],
-			c: 0,
-		},
+			// OUTLIERS & SKEWNESS
+			{
+				q: "What can IQR be used for?",
+				a: [
+					"Outlier detection",
+					"Calculating correlation",
+					"Finding the mode only",
+					"Creating categorical data",
+				],
+				c: 0,
+			},
+			{
+				q: "In which areas is IQR being used for outlier detection?",
+				a: [
+					"Finance, healthcare, and quality control",
+					"Gaming, networking, and programming",
+					"Education, music, and art",
+					"Sports, travel, and weather",
+				],
+				c: 0,
+			},
+			{
+				q: "When is a data point considered an outlier using the IQR method?",
+				a: [
+					"When it falls outside Q1 - 1.5 × IQR or Q3 + 1.5 × IQR",
+					"When it is equal to the median",
+					"When it is below Q2",
+					"When it is equal to Q1",
+				],
+				c: 0,
+			},
+			{
+				q: "What does skewness tell us?",
+				a: [
+					"Whether data points are skewed left or right in relation to the mean",
+					"How many values are in a dataset",
+					"The correlation between two variables",
+					"The number of categories",
+				],
+				c: 0,
+			},
+			{
+				q: "What does skewness based on quartiles examine?",
+				a: [
+					"The distances between the quartiles",
+					"The number of observations",
+					"The maximum and minimum values only",
+					"The correlation between variables",
+				],
+				c: 0,
+			},
+			{
+				q: "In a symmetric distribution, what should ideally be equal?",
+				a: [
+					"Q3 minus the median and the median minus Q1",
+					"Q1 and Q3",
+					"The mean and mode only",
+					"The minimum and maximum",
+				],
+				c: 0,
+			},
 
-		// DISTRIBUTIONS & FREQUENCY
-		{
-			q: "What does a histogram represent?",
-			a: [
-				"The frequency of each interval of continuous data",
-				"The relationship between two variables",
-				"Only categorical data",
-				"The median of a dataset",
-			],
-			c: 0,
-		},
-		{
-			q: "How are the bars in a histogram described?",
-			a: [
-				"They have equal width",
-				"They have random widths",
-				"They overlap completely",
-				"They are circular",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a frequency polygon use to represent frequency?",
-			a: [
-				"Lines connecting frequency points",
-				"Circular slices",
-				"Bars only",
-				"Quartiles",
-			],
-			c: 0,
-		},
-		{
-			q: "How is a frequency polygon different from a histogram?",
-			a: [
-				"It uses lines instead of bars",
-				"It only displays categorical data",
-				"It does not display frequency",
-				"It only displays outliers",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a pie chart show?",
-			a: [
-				"Proportional sizes as slices of a circle",
-				"Continuous data using bars",
-				"Correlation between variables",
-				"The median of a dataset",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a normal distribution?",
-			a: [
-				"A symmetrical, bell-shaped distribution with data concentrated around the mean",
-				"A distribution with only negative values",
-				"A distribution with no mean",
-				"A distribution containing only outliers",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a skewed distribution?",
-			a: [
-				"A distribution that is not symmetric",
-				"A perfectly symmetrical distribution",
-				"A distribution with no median",
-				"A distribution with no variables",
-			],
-			c: 0,
-		},
+			// DISTRIBUTIONS & FREQUENCY
+			{
+				q: "What does a histogram represent?",
+				a: [
+					"The frequency of each interval of continuous data",
+					"The relationship between two variables",
+					"Only categorical data",
+					"The median of a dataset",
+				],
+				c: 0,
+			},
+			{
+				q: "How are the bars in a histogram described?",
+				a: [
+					"They have equal width",
+					"They have random widths",
+					"They overlap completely",
+					"They are circular",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a frequency polygon use to represent frequency?",
+				a: [
+					"Lines connecting frequency points",
+					"Circular slices",
+					"Bars only",
+					"Quartiles",
+				],
+				c: 0,
+			},
+			{
+				q: "How is a frequency polygon different from a histogram?",
+				a: [
+					"It uses lines instead of bars",
+					"It only displays categorical data",
+					"It does not display frequency",
+					"It only displays outliers",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a pie chart show?",
+				a: [
+					"Proportional sizes as slices of a circle",
+					"Continuous data using bars",
+					"Correlation between variables",
+					"The median of a dataset",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a normal distribution?",
+				a: [
+					"A symmetrical, bell-shaped distribution with data concentrated around the mean",
+					"A distribution with only negative values",
+					"A distribution with no mean",
+					"A distribution containing only outliers",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a skewed distribution?",
+				a: [
+					"A distribution that is not symmetric",
+					"A perfectly symmetrical distribution",
+					"A distribution with no median",
+					"A distribution with no variables",
+				],
+				c: 0,
+			},
 
-		// INFERENTIAL STATISTICS & CONFIDENCE INTERVALS
-		{
-			q: "Why is analyzing an entire population often impossible?",
-			a: [
-				"The entire population may be too large to analyze",
-				"Populations cannot contain data",
-				"Populations only contain categorical data",
-				"Statistics cannot be used on populations",
-			],
-			c: 0,
-		},
-		{
-			q: "What do we collect instead of analyzing an entire population?",
-			a: ["A sample", "A histogram", "A quartile", "A correlation"],
-			c: 0,
-		},
-		{
-			q: "What can inferential statistics help us do with a sample?",
-			a: [
-				"Make conclusions about the whole population",
-				"Remove the population",
-				"Guarantee the result",
-				"Convert the sample into binary",
-			],
-			c: 0,
-		},
-		{
-			q: "What do confidence intervals help quantify?",
-			a: [
-				"Uncertainty of an estimate",
-				"The mode of a dataset",
-				"The number of variables",
-				"The correlation strength",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a confidence interval provide?",
-			a: [
-				"A range of values",
-				"A single guaranteed value",
-				"A frequency table",
-				"A correlation coefficient",
-			],
-			c: 0,
-		},
-		{
-			q: "In the example, if the mean is 4.63 and the standard deviation is 0.54, what is the stated 95% confidence interval?",
-			a: ["4.480 to 4.780", "3.63 to 5.63", "4.09 to 5.17", "0.54 to 4.63"],
-			c: 0,
-		},
+			// INFERENTIAL STATISTICS & CONFIDENCE INTERVALS
+			{
+				q: "Why is analyzing an entire population often impossible?",
+				a: [
+					"The entire population may be too large to analyze",
+					"Populations cannot contain data",
+					"Populations only contain categorical data",
+					"Statistics cannot be used on populations",
+				],
+				c: 0,
+			},
+			{
+				q: "What do we collect instead of analyzing an entire population?",
+				a: ["A sample", "A histogram", "A quartile", "A correlation"],
+				c: 0,
+			},
+			{
+				q: "What can inferential statistics help us do with a sample?",
+				a: [
+					"Make conclusions about the whole population",
+					"Remove the population",
+					"Guarantee the result",
+					"Convert the sample into binary",
+				],
+				c: 0,
+			},
+			{
+				q: "What do confidence intervals help quantify?",
+				a: [
+					"Uncertainty of an estimate",
+					"The mode of a dataset",
+					"The number of variables",
+					"The correlation strength",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a confidence interval provide?",
+				a: [
+					"A range of values",
+					"A single guaranteed value",
+					"A frequency table",
+					"A correlation coefficient",
+				],
+				c: 0,
+			},
+			{
+				q: "In the example, if the mean is 4.63 and the standard deviation is 0.54, what is the stated 95% confidence interval?",
+				a: ["4.480 to 4.780", "3.63 to 5.63", "4.09 to 5.17", "0.54 to 4.63"],
+				c: 0,
+			},
 
-		// PYTHON
-		{
-			q: "What programming language does the final slide introduce?",
-			a: ["Python", "Java", "C++", "C#"],
-			c: 0,
-		},
-		{
-			q: "What does Python have that is useful for data analysis and learning?",
-			a: [
-				"Many functions and libraries",
-				"Only graphics tools",
-				"Only database tools",
-				"Only networking libraries",
-			],
-			c: 0,
-		},
+			// PYTHON
+			{
+				q: "What programming language does the final slide introduce?",
+				a: ["Python", "Java", "C++", "C#"],
+				c: 0,
+			},
+			{
+				q: "What does Python have that is useful for data analysis and learning?",
+				a: [
+					"Many functions and libraries",
+					"Only graphics tools",
+					"Only database tools",
+					"Only networking libraries",
+				],
+				c: 0,
+			},
 
-		// R BASICS
-		{
-			q: "What programming language is introduced in Unit 02b?",
-			a: ["R", "Python", "Java", "C++"],
-			c: 0,
-		},
-		{
-			q: "What topics are mentioned as part of R basics?",
-			a: [
-				"Variables, vectors, and loops",
-				"Classes, objects, and inheritance",
-				"HTML, CSS, and JavaScript",
-				"Threads, sockets, and processes",
-			],
-			c: 0,
-		},
-		{
-			q: "What can be used when help is needed for R functions?",
-			a: [
-				"The help() function",
-				"The assist() function",
-				"The guide() function",
-				"The manual() function",
-			],
-			c: 0,
-		},
-		{
-			q: "What example is given for getting help with a function such as mean?",
-			a: ["help(mean)", "mean(help)", "?mean only", "gethelp(mean)"],
-			c: 0,
-		},
+			// R BASICS
+			{
+				q: "What programming language is introduced in Unit 02b?",
+				a: ["R", "Python", "Java", "C++"],
+				c: 0,
+			},
+			{
+				q: "What topics are mentioned as part of R basics?",
+				a: [
+					"Variables, vectors, and loops",
+					"Classes, objects, and inheritance",
+					"HTML, CSS, and JavaScript",
+					"Threads, sockets, and processes",
+				],
+				c: 0,
+			},
+			{
+				q: "What can be used when help is needed for R functions?",
+				a: [
+					"The help() function",
+					"The assist() function",
+					"The guide() function",
+					"The manual() function",
+				],
+				c: 0,
+			},
+			{
+				q: "What example is given for getting help with a function such as mean?",
+				a: ["help(mean)", "mean(help)", "?mean only", "gethelp(mean)"],
+				c: 0,
+			},
 
-		// CENTRAL TENDENCY WITH R
-		{
-			q: "Which statistical topic is demonstrated using R?",
-			a: [
-				"Measures of central tendency",
-				"Network security",
-				"File compression",
-				"Machine learning classification",
-			],
-			c: 0,
-		},
-		{
-			q: "Which R function can be used to calculate the mean?",
-			a: ["mean()", "average()", "avg()", "central()"],
-			c: 0,
-		},
-		{
-			q: "What type of statistical measure does mean() calculate?",
-			a: ["Mean", "Median", "Mode", "Range"],
-			c: 0,
-		},
-		{
-			q: "What can you use when you need information about how to use mean() in R?",
-			a: ["help(mean)", "mean.info()", "info(mean)", "describe(mean)"],
-			c: 0,
-		},
+			// CENTRAL TENDENCY WITH R
+			{
+				q: "Which statistical topic is demonstrated using R?",
+				a: [
+					"Measures of central tendency",
+					"Network security",
+					"File compression",
+					"Machine learning classification",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R function can be used to calculate the mean?",
+				a: ["mean()", "average()", "avg()", "central()"],
+				c: 0,
+			},
+			{
+				q: "What type of statistical measure does mean() calculate?",
+				a: ["Mean", "Median", "Mode", "Range"],
+				c: 0,
+			},
+			{
+				q: "What can you use when you need information about how to use mean() in R?",
+				a: ["help(mean)", "mean.info()", "info(mean)", "describe(mean)"],
+				c: 0,
+			},
 
-		// SPREAD & VARIABILITY
-		{
-			q: "Which R function is used to calculate variance?",
-			a: ["var()", "variance()", "spread()", "sdvar()"],
-			c: 0,
-		},
-		{
-			q: "What statistical concept does var() calculate?",
-			a: ["Variance", "Mean", "Median", "Correlation"],
-			c: 0,
-		},
-		{
-			q: "Which topic is demonstrated with the var() function?",
-			a: [
-				"Measures of spread or variability",
-				"Measures of central tendency only",
-				"Frequency labels",
-				"Data visualization only",
-			],
-			c: 0,
-		},
-		{
-			q: "Which R function is associated with calculating quartiles and summary statistics?",
-			a: ["quantile()", "quartile()", "fourparts()", "split()"],
-			c: 0,
-		},
-		{
-			q: "Which R function can provide a statistical summary of data?",
-			a: ["summary()", "statistics()", "statsummary()", "describeData()"],
-			c: 0,
-		},
-		{
-			q: "Which R function is listed alongside summary(), quantile(), and IQR()?",
-			a: ["fivenum()", "fournum()", "fivevalues()", "five()"],
-			c: 0,
-		},
-		{
-			q: "What does IQR() represent?",
-			a: [
-				"Interquartile range",
-				"Individual quantitative range",
-				"Internal quantity ratio",
-				"Indexed quartile result",
-			],
-			c: 0,
-		},
-		{
-			q: "Which R function can calculate the interquartile range?",
-			a: ["IQR()", "range4()", "quartileRange()", "spread()"],
-			c: 0,
-		},
-		{
-			q: "Which R function can calculate quantiles?",
-			a: ["quantile()", "quartiles()", "q()", "percentile()"],
-			c: 0,
-		},
-		{
-			q: "What does the PDF note about calculating the 25% quantile in R?",
-			a: [
-				"R is a little different from the demonstrated method",
-				"R cannot calculate it",
-				"R always gives the same result as the manual method",
-				"R only supports 50% quantiles",
-			],
-			c: 0,
-		},
+			// SPREAD & VARIABILITY
+			{
+				q: "Which R function is used to calculate variance?",
+				a: ["var()", "variance()", "spread()", "sdvar()"],
+				c: 0,
+			},
+			{
+				q: "What statistical concept does var() calculate?",
+				a: ["Variance", "Mean", "Median", "Correlation"],
+				c: 0,
+			},
+			{
+				q: "Which topic is demonstrated with the var() function?",
+				a: [
+					"Measures of spread or variability",
+					"Measures of central tendency only",
+					"Frequency labels",
+					"Data visualization only",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R function is associated with calculating quartiles and summary statistics?",
+				a: ["quantile()", "quartile()", "fourparts()", "split()"],
+				c: 0,
+			},
+			{
+				q: "Which R function can provide a statistical summary of data?",
+				a: ["summary()", "statistics()", "statsummary()", "describeData()"],
+				c: 0,
+			},
+			{
+				q: "Which R function is listed alongside summary(), quantile(), and IQR()?",
+				a: ["fivenum()", "fournum()", "fivevalues()", "five()"],
+				c: 0,
+			},
+			{
+				q: "What does IQR() represent?",
+				a: [
+					"Interquartile range",
+					"Individual quantitative range",
+					"Internal quantity ratio",
+					"Indexed quartile result",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R function can calculate the interquartile range?",
+				a: ["IQR()", "range4()", "quartileRange()", "spread()"],
+				c: 0,
+			},
+			{
+				q: "Which R function can calculate quantiles?",
+				a: ["quantile()", "quartiles()", "q()", "percentile()"],
+				c: 0,
+			},
+			{
+				q: "What does the PDF note about calculating the 25% quantile in R?",
+				a: [
+					"R is a little different from the demonstrated method",
+					"R cannot calculate it",
+					"R always gives the same result as the manual method",
+					"R only supports 50% quantiles",
+				],
+				c: 0,
+			},
 
-		// CORRELATION & COVARIANCE
-		{
-			q: "Which R function is used for correlation?",
-			a: ["cor()", "corr()", "correlation()", "relate()"],
-			c: 0,
-		},
-		{
-			q: "What statistical relationship can be calculated with cor()?",
-			a: ["Correlation", "Variance", "Median", "Frequency"],
-			c: 0,
-		},
-		{
-			q: "Which R function is used for covariance?",
-			a: ["cov()", "covariance()", "co()", "relationship()"],
-			c: 0,
-		},
-		{
-			q: "What statistical relationship can be calculated with cov()?",
-			a: ["Covariance", "Correlation", "Mode", "IQR"],
-			c: 0,
-		},
-		{
-			q: "Which function would you use to calculate correlation between two columns in R?",
-			a: ["cor()", "cov()", "mean()", "hist()"],
-			c: 0,
-		},
-		{
-			q: "Which function would you use to calculate covariance between two columns in R?",
-			a: ["cov()", "cor()", "var()", "plot()"],
-			c: 0,
-		},
+			// CORRELATION & COVARIANCE
+			{
+				q: "Which R function is used for correlation?",
+				a: ["cor()", "corr()", "correlation()", "relate()"],
+				c: 0,
+			},
+			{
+				q: "What statistical relationship can be calculated with cor()?",
+				a: ["Correlation", "Variance", "Median", "Frequency"],
+				c: 0,
+			},
+			{
+				q: "Which R function is used for covariance?",
+				a: ["cov()", "covariance()", "co()", "relationship()"],
+				c: 0,
+			},
+			{
+				q: "What statistical relationship can be calculated with cov()?",
+				a: ["Covariance", "Correlation", "Mode", "IQR"],
+				c: 0,
+			},
+			{
+				q: "Which function would you use to calculate correlation between two columns in R?",
+				a: ["cor()", "cov()", "mean()", "hist()"],
+				c: 0,
+			},
+			{
+				q: "Which function would you use to calculate covariance between two columns in R?",
+				a: ["cov()", "cor()", "var()", "plot()"],
+				c: 0,
+			},
 
-		// HISTOGRAMS
-		{
-			q: "What type of graph is demonstrated in R using hist()?",
-			a: ["Histogram", "Scatter plot", "Pie chart", "Frequency polygon"],
-			c: 0,
-		},
-		{
-			q: "Which R function creates a histogram?",
-			a: ["hist()", "histogram()", "bar()", "frequency()"],
-			c: 0,
-		},
-		{
-			q: "What function is used in the example with x <- c(40, 41, 42, 43, 50)?",
-			a: ["hist(x)", "plot(x)", "pie(x)", "graph(x)"],
-			c: 0,
-		},
-		{
-			q: "What type of skew does the histogram example with 40, 41, 42, 43, and 50 have?",
-			a: ["Positive skew", "Negative skew", "No skew", "Perfect symmetry"],
-			c: 0,
-		},
-		{
-			q: "Which function is used to create another histogram after changing the values of x?",
-			a: ["hist()", "plot()", "pie()", "lines()"],
-			c: 0,
-		},
-		{
-			q: "What type of data visualization is a histogram?",
-			a: [
-				"A frequency distribution graph",
-				"A relationship graph between two variables",
-				"A circular graph",
-				"A line graph",
-			],
-			c: 0,
-		},
+			// HISTOGRAMS
+			{
+				q: "What type of graph is demonstrated in R using hist()?",
+				a: ["Histogram", "Scatter plot", "Pie chart", "Frequency polygon"],
+				c: 0,
+			},
+			{
+				q: "Which R function creates a histogram?",
+				a: ["hist()", "histogram()", "bar()", "frequency()"],
+				c: 0,
+			},
+			{
+				q: "What function is used in the example with x <- c(40, 41, 42, 43, 50)?",
+				a: ["hist(x)", "plot(x)", "pie(x)", "graph(x)"],
+				c: 0,
+			},
+			{
+				q: "What type of skew does the histogram example with 40, 41, 42, 43, and 50 have?",
+				a: ["Positive skew", "Negative skew", "No skew", "Perfect symmetry"],
+				c: 0,
+			},
+			{
+				q: "Which function is used to create another histogram after changing the values of x?",
+				a: ["hist()", "plot()", "pie()", "lines()"],
+				c: 0,
+			},
+			{
+				q: "What type of data visualization is a histogram?",
+				a: [
+					"A frequency distribution graph",
+					"A relationship graph between two variables",
+					"A circular graph",
+					"A line graph",
+				],
+				c: 0,
+			},
 
-		// SCATTER PLOTS
-		{
-			q: "Which R function is used to create scatter plots?",
-			a: ["plot()", "scatter()", "points()", "graph()"],
-			c: 0,
-		},
-		{
-			q: "What type of graph is demonstrated using plot()?",
-			a: ["Scatter plot", "Histogram", "Pie chart", "Frequency polygon"],
-			c: 0,
-		},
-		{
-			q: "What can the plot() function be used for in the examples?",
-			a: [
-				"Creating scatter plots",
-				"Calculating variance",
-				"Finding quartiles",
-				"Calculating covariance only",
-			],
-			c: 0,
-		},
-		{
-			q: "Which R function can be used to add lines to plots?",
-			a: ["lines()", "addline()", "line()", "drawlines()"],
-			c: 0,
-		},
-		{
-			q: "What does the lines() function allow you to do?",
-			a: [
-				"Add lines to plots",
-				"Calculate correlation",
-				"Create a data frame",
-				"Calculate the mean",
-			],
-			c: 0,
-		},
+			// SCATTER PLOTS
+			{
+				q: "Which R function is used to create scatter plots?",
+				a: ["plot()", "scatter()", "points()", "graph()"],
+				c: 0,
+			},
+			{
+				q: "What type of graph is demonstrated using plot()?",
+				a: ["Scatter plot", "Histogram", "Pie chart", "Frequency polygon"],
+				c: 0,
+			},
+			{
+				q: "What can the plot() function be used for in the examples?",
+				a: [
+					"Creating scatter plots",
+					"Calculating variance",
+					"Finding quartiles",
+					"Calculating covariance only",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R function can be used to add lines to plots?",
+				a: ["lines()", "addline()", "line()", "drawlines()"],
+				c: 0,
+			},
+			{
+				q: "What does the lines() function allow you to do?",
+				a: [
+					"Add lines to plots",
+					"Calculate correlation",
+					"Create a data frame",
+					"Calculate the mean",
+				],
+				c: 0,
+			},
 
-		// PIE CHARTS
-		{
-			q: "Which R function is used to create a pie chart?",
-			a: ["pie()", "chart()", "circle()", "piechart()"],
-			c: 0,
-		},
-		{
-			q: "What type of graph does pie() create?",
-			a: ["Pie chart", "Histogram", "Scatter plot", "Frequency polygon"],
-			c: 0,
-		},
+			// PIE CHARTS
+			{
+				q: "Which R function is used to create a pie chart?",
+				a: ["pie()", "chart()", "circle()", "piechart()"],
+				c: 0,
+			},
+			{
+				q: "What type of graph does pie() create?",
+				a: ["Pie chart", "Histogram", "Scatter plot", "Frequency polygon"],
+				c: 0,
+			},
 
-		{
-			q: "What does lbls contain in the pie chart example?",
-			a: [
-				"Labels such as US, UK, and Australia",
-				"Numerical slice values",
-				"The percentages",
-				"The chart title",
-			],
-			c: 0,
-		},
-		{
-			q: "What function is used to calculate percentages in the pie chart example?",
-			a: ["round()", "percent()", "percentage()", "calcpercent()"],
-			c: 0,
-		},
-		{
-			q: "What operation is used to calculate the percentages for the pie chart?",
-			a: [
-				"slices/sum(slices)*100",
-				"slices*sum(slices)",
-				"sum(slices)/100",
-				"slices/100",
-			],
-			c: 0,
-		},
-		{
-			q: "What function is used to combine the labels and percentages?",
-			a: ["paste()", "combine()", "join()", "merge()"],
-			c: 0,
-		},
-		{
-			q: "What argument is used to specify the labels in the pie() function?",
-			a: ["labels", "lbl", "names", "text"],
-			c: 0,
-		},
-		{
-			q: "What argument is used to specify the title of the pie chart?",
-			a: ["main", "title", "heading", "caption"],
-			c: 0,
-		},
+			{
+				q: "What does lbls contain in the pie chart example?",
+				a: [
+					"Labels such as US, UK, and Australia",
+					"Numerical slice values",
+					"The percentages",
+					"The chart title",
+				],
+				c: 0,
+			},
+			{
+				q: "What function is used to calculate percentages in the pie chart example?",
+				a: ["round()", "percent()", "percentage()", "calcpercent()"],
+				c: 0,
+			},
+			{
+				q: "What operation is used to calculate the percentages for the pie chart?",
+				a: [
+					"slices/sum(slices)*100",
+					"slices*sum(slices)",
+					"sum(slices)/100",
+					"slices/100",
+				],
+				c: 0,
+			},
+			{
+				q: "What function is used to combine the labels and percentages?",
+				a: ["paste()", "combine()", "join()", "merge()"],
+				c: 0,
+			},
+			{
+				q: "What argument is used to specify the labels in the pie() function?",
+				a: ["labels", "lbl", "names", "text"],
+				c: 0,
+			},
+			{
+				q: "What argument is used to specify the title of the pie chart?",
+				a: ["main", "title", "heading", "caption"],
+				c: 0,
+			},
 
-		// ARRAYS & DATA FRAMES
-		{
-			q: "What data structure is specifically demonstrated after arrays?",
-			a: ["Data frame", "Linked list", "Hash table", "Binary tree"],
-			c: 0,
-		},
-		{
-			q: "Which built-in R dataset is used to demonstrate data frames?",
-			a: ["mtcars", "iris", "wine", "diabetes"],
-			c: 0,
-		},
-		{
-			q: "What does mtcars[1,] select?",
-			a: [
-				"The first row of mtcars",
-				"The first column of mtcars",
-				"Rows 1 through 3",
-				"The mpg column",
-			],
-			c: 0,
-		},
-		{
-			q: "What does mtcars[1:3,] select?",
-			a: [
-				"Rows 1 through 3",
-				"Columns 1 through 3",
-				"The first three values",
-				"The first three named columns",
-			],
-			c: 0,
-		},
-		{
-			q: "What does mtcars[1] select?",
-			a: [
-				"The first column",
-				"The first row",
-				"The first three rows",
-				"The mpg column only",
-			],
-			c: 0,
-		},
-		{
-			q: 'What does mtcars["mpg"] access?',
-			a: [
-				"The mpg column",
-				"The first row",
-				"The first three rows",
-				"The hp column",
-			],
-			c: 0,
-		},
-		{
-			q: 'What does mtcars[c("mpg", "hp")] access?',
-			a: [
-				"The mpg and hp columns",
-				"Rows 1 and 2",
-				"The first two values",
-				"Only the mpg column",
-			],
-			c: 0,
-		},
-		{
-			q: "What symbol is used to read columns from a dataset in R?",
-			a: ["$", "@", "#", "%"],
-			c: 0,
-		},
-		{
-			q: "Which dataset is used in the final example of the PDF?",
-			a: ["Iris plants data", "California Housing", "Diabetes", "mtcars only"],
-			c: 0,
-		},
-		{
-			q: "Which function is used to display the first part of the iris dataset?",
-			a: ["head(iris)", "first(iris)", "show(iris)", "top(iris)"],
-			c: 0,
-		},
-		{
-			q: "Which function is used to create plots of the iris dataset?",
-			a: ["plot()", "irisplot()", "graph()", "draw()"],
-			c: 0,
-		},
+			// ARRAYS & DATA FRAMES
+			{
+				q: "What data structure is specifically demonstrated after arrays?",
+				a: ["Data frame", "Linked list", "Hash table", "Binary tree"],
+				c: 0,
+			},
+			{
+				q: "Which built-in R dataset is used to demonstrate data frames?",
+				a: ["mtcars", "iris", "wine", "diabetes"],
+				c: 0,
+			},
+			{
+				q: "What does mtcars[1,] select?",
+				a: [
+					"The first row of mtcars",
+					"The first column of mtcars",
+					"Rows 1 through 3",
+					"The mpg column",
+				],
+				c: 0,
+			},
+			{
+				q: "What does mtcars[1:3,] select?",
+				a: [
+					"Rows 1 through 3",
+					"Columns 1 through 3",
+					"The first three values",
+					"The first three named columns",
+				],
+				c: 0,
+			},
+			{
+				q: "What does mtcars[1] select?",
+				a: [
+					"The first column",
+					"The first row",
+					"The first three rows",
+					"The mpg column only",
+				],
+				c: 0,
+			},
+			{
+				q: 'What does mtcars["mpg"] access?',
+				a: [
+					"The mpg column",
+					"The first row",
+					"The first three rows",
+					"The hp column",
+				],
+				c: 0,
+			},
+			{
+				q: 'What does mtcars[c("mpg", "hp")] access?',
+				a: [
+					"The mpg and hp columns",
+					"Rows 1 and 2",
+					"The first two values",
+					"Only the mpg column",
+				],
+				c: 0,
+			},
+			{
+				q: "What symbol is used to read columns from a dataset in R?",
+				a: ["$", "@", "#", "%"],
+				c: 0,
+			},
+			{
+				q: "Which dataset is used in the final example of the PDF?",
+				a: [
+					"Iris plants data",
+					"California Housing",
+					"Diabetes",
+					"mtcars only",
+				],
+				c: 0,
+			},
+			{
+				q: "Which function is used to display the first part of the iris dataset?",
+				a: ["head(iris)", "first(iris)", "show(iris)", "top(iris)"],
+				c: 0,
+			},
+			{
+				q: "Which function is used to create plots of the iris dataset?",
+				a: ["plot()", "irisplot()", "graph()", "draw()"],
+				c: 0,
+			},
 
-		{
-			q: "What software is covered in Unit/Week 03a?",
-			a: ["Python and R", "C++ and Java", "SQL and C#", "JavaScript and PHP"],
-			c: 0,
-		},
-		{
-			q: "What software can be installed using WinPython?",
-			a: ["Python", "R", "SQL", "Java"],
-			c: 0,
-		},
-		{
-			q: "What type of file is used in the Python diabetes example?",
-			a: ["CSV", "JSON", "XML", "TXT"],
-			c: 0,
-		},
-		{
-			q: "What dataset is used in the Python CSV reading example?",
-			a: ["diabetes.csv", "iris.csv", "faithful.csv", "plants.csv"],
-			c: 0,
-		},
-		{
-			q: "What is one task performed on the diabetes data in Python?",
-			a: [
-				"Removing outliers",
-				"Creating a website",
-				"Encrypting the data",
-				"Converting it to audio",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of visualization is used for correlations in Python?",
-			a: ["Heatmap", "Pie chart", "Box plot", "Cumulative graph"],
-			c: 0,
-		},
-		{
-			q: "What is plotted when examining the distribution of a variable in Python?",
-			a: [
-				"The distribution of the variable",
-				"Only categorical labels",
-				"Only outliers",
-				"The file size",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the purpose of normalizing data?",
-			a: [
-				"To make the minimum 0 and maximum 1",
-				"To remove every value below zero",
-				"To make every value equal",
-				"To convert numbers into text",
-			],
-			c: 0,
-		},
-		{
-			q: "What value should the minimum become after normalization?",
-			a: ["0", "1", "-1", "100"],
-			c: 0,
-		},
-		{
-			q: "What value should the maximum become after normalization?",
-			a: ["1", "0", "-1", "100"],
-			c: 0,
-		},
-		{
-			q: "What is subtracted from a value during normalization?",
-			a: ["The minimum", "The maximum", "The mean", "The median"],
-			c: 0,
-		},
-		{
-			q: "What is the denominator used in the normalization process?",
-			a: [
-				"The range (max-min)",
-				"The mean",
-				"The median",
-				"The standard deviation",
-			],
-			c: 0,
-		},
-		{
-			q: "Which formula represents the normalization process described in the slides?",
-			a: [
-				"(value-min)/(max-min)",
-				"(value+min)/(max-min)",
-				"(value-max)/(max+min)",
-				"value/(mean+median)",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the normalized minimum of the dataset (1,2,3,3,3,4,5)?",
-			a: ["0", "1", "-1", "5"],
-			c: 0,
-		},
-		{
-			q: "What is the normalized maximum of the dataset (1,2,3,3,3,4,5)?",
-			a: ["1", "0", "5", "-1"],
-			c: 0,
-		},
-		{
-			q: "What is the range of the dataset (1,2,3,3,3,4,5)?",
-			a: ["4", "5", "3", "6"],
-			c: 0,
-		},
-		{
-			q: "What is the range of the dataset (6,7,8,8,8,9,10)?",
-			a: ["4", "10", "6", "8"],
-			c: 0,
-		},
-		{
-			q: "What is the range of the dataset (1,2,4,8,16,101)?",
-			a: ["100", "101", "99", "102"],
-			c: 0,
-		},
-		{
-			q: "Which Python topic follows the introduction of normalization?",
-			a: [
-				"Standardizing data",
-				"Reading CSV files",
-				"Correlation heatmaps",
-				"Removing outliers",
-			],
-			c: 0,
-		},
-		{
-			q: "What is another data preprocessing technique covered in Unit 03a?",
-			a: [
-				"Standardizing data",
-				"Sorting alphabetically",
-				"Encrypting files",
-				"Compressing images",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one advantage of data preprocessing?",
-			a: [
-				"Improves data quality",
-				"Removes the need for analysis",
-				"Makes all data identical",
-				"Prevents data from being stored",
-			],
-			c: 0,
-		},
-		{
-			q: "How does data preprocessing improve data quality?",
-			a: [
-				"It cleans and organizes raw data",
-				"It deletes all numerical data",
-				"It converts data into images",
-				"It removes every feature",
-			],
-			c: 0,
-		},
-		{
-			q: "How can data preprocessing enhance model accuracy?",
-			a: [
-				"By removing noise and irrelevant data",
-				"By increasing the number of errors",
-				"By deleting the target variable",
-				"By making every value identical",
-			],
-			c: 0,
-		},
-		{
-			q: "How can preprocessing help reduce overfitting?",
-			a: [
-				"By handling outliers and redundant features",
-				"By adding random errors",
-				"By removing all training data",
-				"By avoiding model evaluation",
-			],
-			c: 0,
-		},
-		{
-			q: "How can scaled data affect training speed?",
-			a: [
-				"It can reduce computation time",
-				"It always doubles computation time",
-				"It prevents training",
-				"It makes computation impossible",
-			],
-			c: 0,
-		},
-		{
-			q: "Why does preprocessing help ensure algorithm compatibility?",
-			a: [
-				"It converts data into suitable formats for learning models",
-				"It removes all algorithms",
-				"It converts models into spreadsheets",
-				"It prevents data from being analyzed",
-			],
-			c: 0,
-		},
-		{
-			q: "Which dataset is used in the Python example involving iris plants?",
-			a: ["iris.csv", "diabetes.csv", "faithful.csv", "plants.txt"],
-			c: 0,
-		},
-		{
-			q: "What type of plot is discussed in R with numerical data?",
-			a: ["Scatter plot", "Pie chart", "Bar chart", "Histogram only"],
-			c: 0,
-		},
-		{
-			q: "Which R dataset is used for the scatter plot example?",
-			a: ["faithful", "iris.csv", "diabetes", "mtcars"],
-			c: 0,
-		},
-		{
-			q: "What does the R 'faithful' dataset contain?",
-			a: [
-				"Observations of the Old Faithful geyser",
-				"Measurements of iris flowers",
-				"Diabetes patient records",
-				"Car specifications",
-			],
-			c: 0,
-		},
-		{
-			q: "Where is the Old Faithful geyser located according to the slides?",
-			a: [
-				"Yellowstone National Park",
-				"Banff National Park",
-				"Algonquin Park",
-				"Jasper National Park",
-			],
-			c: 0,
-		},
-		{
-			q: "What does the first feature in the faithful dataset represent?",
-			a: [
-				"Duration of geyser eruptions",
-				"Waiting time until an eruption",
-				"Temperature",
-				"Number of eruptions",
-			],
-			c: 0,
-		},
-		{
-			q: "What unit is used for eruption duration in the faithful dataset?",
-			a: ["Minutes", "Seconds", "Hours", "Days"],
-			c: 0,
-		},
-		{
-			q: "What does the second feature in the faithful dataset represent?",
-			a: [
-				"Waiting period until the next eruption",
-				"Duration of the eruption",
-				"Temperature of the geyser",
-				"Height of the geyser",
-			],
-			c: 0,
-		},
-		{
-			q: "What can scatter plots be used to visually examine?",
-			a: ["Correlations", "File sizes", "Passwords", "Program execution time"],
-			c: 0,
-		},
-		{
-			q: "Which other R dataset is suggested for visually seeing correlations?",
-			a: ["iris", "faithful", "diabetes", "cars"],
-			c: 0,
-		},
-		{
-			q: "What type of graph is discussed for cumulative relative frequency in R?",
-			a: [
-				"Cumulative relative frequency graph",
-				"Pie chart",
-				"Scatter plot only",
-				"Heatmap",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a cumulative relative frequency graph show?",
-			a: [
-				"The cumulative relative frequency distribution of a quantitative variable",
-				"Only categorical labels",
-				"Only the mean",
-				"Only the maximum value",
-			],
-			c: 0,
-		},
-		{
-			q: "In the faithful example, what does a point on the cumulative relative frequency graph represent?",
-			a: [
-				"The frequency proportion of eruptions with durations less than or equal to a given level",
-				"The average waiting time",
-				"The maximum eruption duration",
-				"The number of geysers",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of data is specifically discussed in the R categorical data section?",
-			a: [
-				"Categorical data",
-				"Only continuous data",
-				"Only time-series data",
-				"Only image data",
-			],
-			c: 0,
-		},
-		{
-			q: "How does R compute skewness according to the slides?",
-			a: [
-				"Using central moments",
-				"Using only the median",
-				"Using only the range",
-				"Using a pie chart",
-			],
-			c: 0,
-		},
-		{
-			q: "What statistical concept has a dedicated section after central moments?",
-			a: [
-				"Skewness",
-				"Normalization",
-				"Correlation heatmaps",
-				"Outlier removal",
-			],
-			c: 0,
-		},
-		{
-			q: "Which statistical concept has a dedicated section after skewness?",
-			a: ["Kurtosis", "Normalization", "Covariance", "IQR"],
-			c: 0,
-		},
-		{
-			q: "What R help command is suggested for learning about kurtosis?",
-			a: ["help(kurtosis)", "help(skewness)", "help(normal)", "help(plot)"],
-			c: 0,
-		},
-		{
-			q: "Which distribution is specifically covered in R near the end of Unit 03a?",
-			a: [
-				"Normal distribution",
-				"Binomial distribution",
-				"Poisson distribution",
-				"Uniform distribution",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of plot is covered on the final page of Unit 03a?",
-			a: ["Box plot", "Pie chart", "Heatmap", "Scatter plot"],
-			c: 0,
-		},
-		{
-			q: "Which topic is scheduled for Week 04 after Python and R?",
-			a: [
-				"Supervised Learning and Model Evaluations",
-				"Unsupervised Learning only",
-				"Data Preparation",
-				"Test 1",
-			],
-			c: 0,
-		},
-		{
-			q: "Which topic is scheduled for Week 05?",
-			a: [
-				"Unsupervised Learning and Clustering",
-				"Python and R",
-				"Data Preparation",
-				"Model Evaluations only",
-			],
-			c: 0,
-		},
-		{
-			q: "What occurs during Week 06 according to the tentative schedule?",
-			a: [
-				"Fall Study Week",
-				"Test 1",
-				"Introduction to Data Science",
-				"Supervised Learning",
-			],
-			c: 0,
-		},
-		{
-			q: "What is scheduled for Week 07?",
-			a: [
-				"Review on Tuesday and Test 1 on Thursday",
-				"Fall Study Week",
-				"Python installation",
-				"Supervised Learning",
-			],
-			c: 0,
-		},
-		{
-			q: "What review calculation is given at the beginning of Unit 03a?",
-			a: [
-				"Computing the IQR and determining outliers",
-				"Computing a correlation heatmap",
-				"Normalizing the data",
-				"Creating a box plot",
-			],
-			c: 0,
-		},
+			{
+				q: "What software is covered in Unit/Week 03a?",
+				a: ["Python and R", "C++ and Java", "SQL and C#", "JavaScript and PHP"],
+				c: 0,
+			},
+			{
+				q: "What software can be installed using WinPython?",
+				a: ["Python", "R", "SQL", "Java"],
+				c: 0,
+			},
+			{
+				q: "What type of file is used in the Python diabetes example?",
+				a: ["CSV", "JSON", "XML", "TXT"],
+				c: 0,
+			},
+			{
+				q: "What dataset is used in the Python CSV reading example?",
+				a: ["diabetes.csv", "iris.csv", "faithful.csv", "plants.csv"],
+				c: 0,
+			},
+			{
+				q: "What is one task performed on the diabetes data in Python?",
+				a: [
+					"Removing outliers",
+					"Creating a website",
+					"Encrypting the data",
+					"Converting it to audio",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of visualization is used for correlations in Python?",
+				a: ["Heatmap", "Pie chart", "Box plot", "Cumulative graph"],
+				c: 0,
+			},
+			{
+				q: "What is plotted when examining the distribution of a variable in Python?",
+				a: [
+					"The distribution of the variable",
+					"Only categorical labels",
+					"Only outliers",
+					"The file size",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of normalizing data?",
+				a: [
+					"To make the minimum 0 and maximum 1",
+					"To remove every value below zero",
+					"To make every value equal",
+					"To convert numbers into text",
+				],
+				c: 0,
+			},
+			{
+				q: "What value should the minimum become after normalization?",
+				a: ["0", "1", "-1", "100"],
+				c: 0,
+			},
+			{
+				q: "What value should the maximum become after normalization?",
+				a: ["1", "0", "-1", "100"],
+				c: 0,
+			},
+			{
+				q: "What is subtracted from a value during normalization?",
+				a: ["The minimum", "The maximum", "The mean", "The median"],
+				c: 0,
+			},
+			{
+				q: "What is the denominator used in the normalization process?",
+				a: [
+					"The range (max-min)",
+					"The mean",
+					"The median",
+					"The standard deviation",
+				],
+				c: 0,
+			},
+			{
+				q: "Which formula represents the normalization process described in the slides?",
+				a: [
+					"(value-min)/(max-min)",
+					"(value+min)/(max-min)",
+					"(value-max)/(max+min)",
+					"value/(mean+median)",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the normalized minimum of the dataset (1,2,3,3,3,4,5)?",
+				a: ["0", "1", "-1", "5"],
+				c: 0,
+			},
+			{
+				q: "What is the normalized maximum of the dataset (1,2,3,3,3,4,5)?",
+				a: ["1", "0", "5", "-1"],
+				c: 0,
+			},
+			{
+				q: "What is the range of the dataset (1,2,3,3,3,4,5)?",
+				a: ["4", "5", "3", "6"],
+				c: 0,
+			},
+			{
+				q: "What is the range of the dataset (6,7,8,8,8,9,10)?",
+				a: ["4", "10", "6", "8"],
+				c: 0,
+			},
+			{
+				q: "What is the range of the dataset (1,2,4,8,16,101)?",
+				a: ["100", "101", "99", "102"],
+				c: 0,
+			},
+			{
+				q: "Which Python topic follows the introduction of normalization?",
+				a: [
+					"Standardizing data",
+					"Reading CSV files",
+					"Correlation heatmaps",
+					"Removing outliers",
+				],
+				c: 0,
+			},
+			{
+				q: "What is another data preprocessing technique covered in Unit 03a?",
+				a: [
+					"Standardizing data",
+					"Sorting alphabetically",
+					"Encrypting files",
+					"Compressing images",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one advantage of data preprocessing?",
+				a: [
+					"Improves data quality",
+					"Removes the need for analysis",
+					"Makes all data identical",
+					"Prevents data from being stored",
+				],
+				c: 0,
+			},
+			{
+				q: "How does data preprocessing improve data quality?",
+				a: [
+					"It cleans and organizes raw data",
+					"It deletes all numerical data",
+					"It converts data into images",
+					"It removes every feature",
+				],
+				c: 0,
+			},
+			{
+				q: "How can data preprocessing enhance model accuracy?",
+				a: [
+					"By removing noise and irrelevant data",
+					"By increasing the number of errors",
+					"By deleting the target variable",
+					"By making every value identical",
+				],
+				c: 0,
+			},
+			{
+				q: "How can preprocessing help reduce overfitting?",
+				a: [
+					"By handling outliers and redundant features",
+					"By adding random errors",
+					"By removing all training data",
+					"By avoiding model evaluation",
+				],
+				c: 0,
+			},
+			{
+				q: "How can scaled data affect training speed?",
+				a: [
+					"It can reduce computation time",
+					"It always doubles computation time",
+					"It prevents training",
+					"It makes computation impossible",
+				],
+				c: 0,
+			},
+			{
+				q: "Why does preprocessing help ensure algorithm compatibility?",
+				a: [
+					"It converts data into suitable formats for learning models",
+					"It removes all algorithms",
+					"It converts models into spreadsheets",
+					"It prevents data from being analyzed",
+				],
+				c: 0,
+			},
+			{
+				q: "Which dataset is used in the Python example involving iris plants?",
+				a: ["iris.csv", "diabetes.csv", "faithful.csv", "plants.txt"],
+				c: 0,
+			},
+			{
+				q: "What type of plot is discussed in R with numerical data?",
+				a: ["Scatter plot", "Pie chart", "Bar chart", "Histogram only"],
+				c: 0,
+			},
+			{
+				q: "Which R dataset is used for the scatter plot example?",
+				a: ["faithful", "iris.csv", "diabetes", "mtcars"],
+				c: 0,
+			},
+			{
+				q: "What does the R 'faithful' dataset contain?",
+				a: [
+					"Observations of the Old Faithful geyser",
+					"Measurements of iris flowers",
+					"Diabetes patient records",
+					"Car specifications",
+				],
+				c: 0,
+			},
+			{
+				q: "Where is the Old Faithful geyser located according to the slides?",
+				a: [
+					"Yellowstone National Park",
+					"Banff National Park",
+					"Algonquin Park",
+					"Jasper National Park",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the first feature in the faithful dataset represent?",
+				a: [
+					"Duration of geyser eruptions",
+					"Waiting time until an eruption",
+					"Temperature",
+					"Number of eruptions",
+				],
+				c: 0,
+			},
+			{
+				q: "What unit is used for eruption duration in the faithful dataset?",
+				a: ["Minutes", "Seconds", "Hours", "Days"],
+				c: 0,
+			},
+			{
+				q: "What does the second feature in the faithful dataset represent?",
+				a: [
+					"Waiting period until the next eruption",
+					"Duration of the eruption",
+					"Temperature of the geyser",
+					"Height of the geyser",
+				],
+				c: 0,
+			},
+			{
+				q: "What can scatter plots be used to visually examine?",
+				a: [
+					"Correlations",
+					"File sizes",
+					"Passwords",
+					"Program execution time",
+				],
+				c: 0,
+			},
+			{
+				q: "Which other R dataset is suggested for visually seeing correlations?",
+				a: ["iris", "faithful", "diabetes", "cars"],
+				c: 0,
+			},
+			{
+				q: "What type of graph is discussed for cumulative relative frequency in R?",
+				a: [
+					"Cumulative relative frequency graph",
+					"Pie chart",
+					"Scatter plot only",
+					"Heatmap",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a cumulative relative frequency graph show?",
+				a: [
+					"The cumulative relative frequency distribution of a quantitative variable",
+					"Only categorical labels",
+					"Only the mean",
+					"Only the maximum value",
+				],
+				c: 0,
+			},
+			{
+				q: "In the faithful example, what does a point on the cumulative relative frequency graph represent?",
+				a: [
+					"The frequency proportion of eruptions with durations less than or equal to a given level",
+					"The average waiting time",
+					"The maximum eruption duration",
+					"The number of geysers",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of data is specifically discussed in the R categorical data section?",
+				a: [
+					"Categorical data",
+					"Only continuous data",
+					"Only time-series data",
+					"Only image data",
+				],
+				c: 0,
+			},
+			{
+				q: "How does R compute skewness according to the slides?",
+				a: [
+					"Using central moments",
+					"Using only the median",
+					"Using only the range",
+					"Using a pie chart",
+				],
+				c: 0,
+			},
+			{
+				q: "What statistical concept has a dedicated section after central moments?",
+				a: [
+					"Skewness",
+					"Normalization",
+					"Correlation heatmaps",
+					"Outlier removal",
+				],
+				c: 0,
+			},
+			{
+				q: "Which statistical concept has a dedicated section after skewness?",
+				a: ["Kurtosis", "Normalization", "Covariance", "IQR"],
+				c: 0,
+			},
+			{
+				q: "What R help command is suggested for learning about kurtosis?",
+				a: ["help(kurtosis)", "help(skewness)", "help(normal)", "help(plot)"],
+				c: 0,
+			},
+			{
+				q: "Which distribution is specifically covered in R near the end of Unit 03a?",
+				a: [
+					"Normal distribution",
+					"Binomial distribution",
+					"Poisson distribution",
+					"Uniform distribution",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of plot is covered on the final page of Unit 03a?",
+				a: ["Box plot", "Pie chart", "Heatmap", "Scatter plot"],
+				c: 0,
+			},
+			{
+				q: "Which topic is scheduled for Week 04 after Python and R?",
+				a: [
+					"Supervised Learning and Model Evaluations",
+					"Unsupervised Learning only",
+					"Data Preparation",
+					"Test 1",
+				],
+				c: 0,
+			},
+			{
+				q: "Which topic is scheduled for Week 05?",
+				a: [
+					"Unsupervised Learning and Clustering",
+					"Python and R",
+					"Data Preparation",
+					"Model Evaluations only",
+				],
+				c: 0,
+			},
+			{
+				q: "What occurs during Week 06 according to the tentative schedule?",
+				a: [
+					"Fall Study Week",
+					"Test 1",
+					"Introduction to Data Science",
+					"Supervised Learning",
+				],
+				c: 0,
+			},
+			{
+				q: "What is scheduled for Week 07?",
+				a: [
+					"Review on Tuesday and Test 1 on Thursday",
+					"Fall Study Week",
+					"Python installation",
+					"Supervised Learning",
+				],
+				c: 0,
+			},
+			{
+				q: "What review calculation is given at the beginning of Unit 03a?",
+				a: [
+					"Computing the IQR and determining outliers",
+					"Computing a correlation heatmap",
+					"Normalizing the data",
+					"Creating a box plot",
+				],
+				c: 0,
+			},
 
-		{
-			q: "What software is covered in Unit/Week 03b?",
-			a: ["Python and R", "C++ and Java", "SQL and C#", "JavaScript and PHP"],
-			c: 0,
-		},
-		{
-			q: "What is one topic reviewed at the beginning of Unit 03b?",
-			a: [
-				"Python code calculations",
-				"Database design",
-				"Web development",
-				"Object-oriented programming",
-			],
-			c: 0,
-		},
-		{
-			q: "What does the R plot() review question involve?",
-			a: [
-				"Using 2 variables",
-				"Using 10 variables",
-				"Using only categorical data",
-				"Using no variables",
-			],
-			c: 0,
-		},
-		{
-			q: "What can an R plot with two variables help show?",
-			a: [
-				"The relationship between the variables",
-				"The file size",
-				"The program's memory usage",
-				"The number of Python libraries",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a correlation heatmap show?",
-			a: [
-				"Correlations between variables",
-				"Only variable names",
-				"Only missing values",
-				"The order of rows",
-			],
-			c: 0,
-		},
-		{
-			q: "What should be identified when examining a correlation heatmap?",
-			a: [
-				"The largest and smallest correlations",
-				"Only the first variable",
-				"Only the diagonal values",
-				"The number of rows",
-			],
-			c: 0,
-		},
-		{
-			q: "What can the largest and smallest correlations help explain?",
-			a: [
-				"Relationships between variables",
-				"The computer's CPU speed",
-				"The size of a CSV file",
-				"The number of Python packages",
-			],
-			c: 0,
-		},
-		{
-			q: "Which Python library is described as Numerical Python?",
-			a: ["numpy", "pandas", "matplotlib", "scipy"],
-			c: 0,
-		},
-		{
-			q: "What is numpy primarily used for?",
-			a: [
-				"Scientific computing, data science, and machine learning",
-				"Creating websites",
-				"Managing email",
-				"Editing documents",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of arrays does numpy provide?",
-			a: [
-				"N-dimensional arrays (ndarray)",
-				"Only one-dimensional strings",
-				"Only text arrays",
-				"Only image arrays",
-			],
-			c: 0,
-		},
-		{
-			q: "What are numpy ndarrays useful for handling?",
-			a: [
-				"Vectors and matrices",
-				"Only paragraphs",
-				"Only web pages",
-				"Only audio files",
-			],
-			c: 0,
-		},
-		{
-			q: "How are numpy ndarrays described in the slides?",
-			a: [
-				"Fast, flexible, fixed-size structures",
-				"Slow, variable-size files",
-				"Text-only structures",
-				"Database tables",
-			],
-			c: 0,
-		},
-		{
-			q: "What does the numpy mathematical engine provide?",
-			a: [
-				"Statistics, linear algebra, random numbers, and trigonometry",
-				"Web hosting and networking",
-				"Video editing and audio recording",
-				"Database authentication",
-			],
-			c: 0,
-		},
-		{
-			q: "Which Python library is designed for data manipulation, analysis, and cleaning?",
-			a: ["pandas", "numpy", "kNN", "R"],
-			c: 0,
-		},
-		{
-			q: "What is a pandas DataFrame?",
-			a: [
-				"A two-dimensional tabular data structure",
-				"A one-dimensional array only",
-				"A Python function",
-				"A mathematical formula",
-			],
-			c: 0,
-		},
-		{
-			q: "What does a pandas DataFrame have as labels?",
-			a: [
-				"Rows and columns",
-				"Only columns",
-				"Only rows",
-				"Neither rows nor columns",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a pandas DataFrame similar to?",
-			a: ["A spreadsheet", "A video", "A web browser", "A text editor"],
-			c: 0,
-		},
-		{
-			q: "What does pandas provide for data ingestion?",
-			a: [
-				"Methods for loading data from various formats",
-				"Methods for creating animations",
-				"Methods for compiling Python",
-				"Methods for encrypting files",
-			],
-			c: 0,
-		},
-		{
-			q: "Which pandas method can load a CSV file?",
-			a: ["pd.read_csv()", "pd.load_csv()", "pd.csv_read()", "pd.open_csv()"],
-			c: 0,
-		},
-		{
-			q: "Which pandas method can load an Excel file?",
-			a: [
-				"pd.read_excel()",
-				"pd.excel_read()",
-				"pd.load_excel()",
-				"pd.open_xlsx()",
-			],
-			c: 0,
-		},
-		{
-			q: "Which pandas method can provide a quick look at the beginning of data?",
-			a: [".head()", " .start()", " .first()", " .begin()"],
-			c: 0,
-		},
-		{
-			q: "Which pandas method provides information about a DataFrame?",
-			a: [".info()", " .details()", " .data()", " .inspect()"],
-			c: 0,
-		},
-		{
-			q: "Which pandas method generates descriptive statistics?",
-			a: [".describe()", " .statistics()", " .summary_stats()", " .stats()"],
-			c: 0,
-		},
-		{
-			q: "What is an expected value?",
-			a: [
-				"The long-term average outcome of a variable",
-				"The largest possible value",
-				"The smallest possible value",
-				"The median value only",
-			],
-			c: 0,
-		},
-		{
-			q: "How is an expected value calculated?",
-			a: [
-				"Multiply each possible result by its likelihood and add the results",
-				"Add all values and divide by the maximum",
-				"Multiply all values together",
-				"Subtract the probabilities from each value",
-			],
-			c: 0,
-		},
-		{
-			q: "What does expected value describe over the long term?",
-			a: [
-				"The average outcome",
-				"The maximum outcome",
-				"The minimum outcome",
-				"The most unusual outcome",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of dice is used in the expected value example?",
-			a: [
-				"A fair 6-sided die",
-				"A biased 4-sided die",
-				"A fair 8-sided die",
-				"A 20-sided die",
-			],
-			c: 0,
-		},
-		{
-			q: "What are the possible values when rolling a fair 6-sided die?",
-			a: [
-				"1, 2, 3, 4, 5, and 6",
-				"0, 1, 2, 3, 4, and 5",
-				"2, 4, 6, 8, 10, and 12",
-				"1, 3, 5, 7, 9, and 11",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the probability of each result when rolling a fair 6-sided die?",
-			a: ["1/6", "1/4", "1/8", "1/2"],
-			c: 0,
-		},
-		{
-			q: "What is the expected value of a fair 6-sided die?",
-			a: ["3.5", "3", "4", "6"],
-			c: 0,
-		},
-		{
-			q: "Can you actually roll a 3.5 on a single throw of a standard die?",
-			a: ["No", "Yes", "Only with a biased die", "Only after six throws"],
-			c: 0,
-		},
-		{
-			q: "What does the long-run average of a fair 6-sided die converge to?",
-			a: ["3.5", "1", "6", "0"],
-			c: 0,
-		},
-		{
-			q: "Why do casinos rely on negative expected value for players?",
-			a: [
-				"To guarantee their baseline profits",
-				"To guarantee players always win",
-				"To eliminate probability",
-				"To make every game fair",
-			],
-			c: 0,
-		},
-		{
-			q: "In the biased 6-sided dice practice question, which values occur twice as often as the others?",
-			a: ["1 and 2", "3 and 4", "5 and 6", "All values equally often"],
-			c: 0,
-		},
-		{
-			q: "What is calculated for the biased dice practice problem?",
-			a: [
-				"The long-run average or expected value",
-				"The median only",
-				"The range only",
-				"The standard deviation only",
-			],
-			c: 0,
-		},
-		{
-			q: "What is asked for the fair 8-sided dice practice problem?",
-			a: ["The expected value", "The correlation", "The IQR", "The variance"],
-			c: 0,
-		},
-		{
-			q: "In the casino practice question, how much does it cost to play the game?",
-			a: ["$11", "$5", "$20", "$24"],
-			c: 0,
-		},
-		{
-			q: "In the casino practice question, how often do you win $5?",
-			a: [
-				"Half of the time",
-				"One quarter of the time",
-				"One eighth of the time",
-				"Every time",
-			],
-			c: 0,
-		},
-		{
-			q: "In the casino practice question, how often do you win $20?",
-			a: [
-				"One quarter of the time",
-				"Half of the time",
-				"One eighth of the time",
-				"Never",
-			],
-			c: 0,
-		},
-		{
-			q: "In the casino practice question, how often do you win $24?",
-			a: [
-				"One eighth of the time",
-				"Half of the time",
-				"One quarter of the time",
-				"Every time",
-			],
-			c: 0,
-		},
-		{
-			q: "What happens for the remaining eighth of the casino game?",
-			a: ["You win $0", "You win $5", "You win $20", "You win $24"],
-			c: 0,
-		},
-		{
-			q: "What is the casino practice question asking you to consider?",
-			a: [
-				"Whether you would play the game many times",
-				"Whether the game uses Python",
-				"Whether the game needs a DataFrame",
-				"Whether the game has correlations",
-			],
-			c: 0,
-		},
-		{
-			q: "Which function is used to filter data stored in DataFrames?",
-			a: ["filter()", "select()", "mutate()", "arrange()"],
-			c: 0,
-		},
-		{
-			q: "Which function is used to select data stored in DataFrames?",
-			a: ["select()", "filter()", "mutate()", "arrange()"],
-			c: 0,
-		},
-		{
-			q: "Which function is used to modify or create data in a DataFrame?",
-			a: ["mutate()", "filter()", "select()", "arrange()"],
-			c: 0,
-		},
-		{
-			q: "Which function is used to arrange data in a DataFrame?",
-			a: ["arrange()", "filter()", "select()", "mutate()"],
-			c: 0,
-		},
-		{
-			q: "What is kNN short for?",
-			a: [
-				"K Nearest Neighbor",
-				"Known Numerical Network",
-				"Kernel Nearest Number",
-				"K-Normalized Network",
-			],
-			c: 0,
-		},
-		{
-			q: "What can kNN predict?",
-			a: [
-				"Discrete classes or numerical values",
-				"Only text",
-				"Only images",
-				"Only file names",
-			],
-			c: 0,
-		},
-		{
-			q: "What values can k be changed to in the kNN examples?",
-			a: ["1, 3, 5, and so on", "Only 2 and 4", "Only 10", "Only 0"],
-			c: 0,
-		},
-		{
-			q: "What can kNN use on numerical values?",
-			a: ["Weights", "Colors", "File names", "Passwords"],
-			c: 0,
-		},
-		{
-			q: "In the weighted kNN formula, what does w represent?",
-			a: [
-				"A weight calculated as 1/d",
-				"The predicted class",
-				"The number of variables",
-				"The total number of rows",
-			],
-			c: 0,
-		},
-		{
-			q: "Which topics are covered in Week 04 according to the schedule?",
-			a: [
-				"Supervised Learning and Model Evaluations",
-				"Python and R",
-				"Statistics and Data Analysis",
-				"Unsupervised Learning only",
-			],
-			c: 0,
-		},
-		{
-			q: "What are the three types of problems mentioned when discussing datasets?",
-			a: [
-				"Classification, regression, clustering",
-				"Sorting, searching, hashing",
-				"Prediction, storage, networking",
-				"Normalization, scaling, cleaning",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the general goal of prediction in supervised learning?",
-			a: [
-				"Estimate a function f(x) so that y = f(x)",
-				"Remove all features from the dataset",
-				"Convert categorical data into text",
-				"Create a database",
-			],
-			c: 0,
-		},
-		{
-			q: "In the prediction equation y = f(x), what does x represent?",
-			a: [
-				"Input features",
-				"The output class only",
-				"The test result",
-				"The model accuracy",
-			],
-			c: 0,
-		},
-		{
-			q: "In the prediction equation y = f(x), what does y represent?",
-			a: [
-				"The output",
-				"The input features",
-				"The distance metric",
-				"The training set",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of output corresponds to regression?",
-			a: [
-				"A real number",
-				"A categorical label",
-				"Only +1 or -1",
-				"A Boolean value only",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of output corresponds to classification?",
-			a: [
-				"A categorical value",
-				"A real number only",
-				"A distance",
-				"A probability only",
-			],
-			c: 0,
-		},
-		{
-			q: "What does it mean when data is labeled?",
-			a: [
-				"There are many pairs of (x,y) values",
-				"There are no output values",
-				"All values are missing",
-				"The data contains only categories",
-			],
-			c: 0,
-		},
-		{
-			q: "What can the feature vector x contain?",
-			a: [
-				"Binary, categorical, and real-valued features",
-				"Only real numbers",
-				"Only binary values",
-				"Only text",
-			],
-			c: 0,
-		},
-		{
-			q: "What can y represent in the supervised learning examples?",
-			a: [
-				"A class such as +1/-1 or a real number",
-				"Only a real number",
-				"Only a string",
-				"Only a Boolean value",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the task given data (X,Y)?",
-			a: [
-				"Build a model f() to predict Y' based on X'",
-				"Delete the training data",
-				"Find the smallest feature",
-				"Convert X into Y",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the purpose of training data?",
-			a: [
-				"To estimate the model",
-				"To evaluate only unseen data",
-				"To remove outliers",
-				"To create the test labels",
-			],
-			c: 0,
-		},
-		{
-			q: "What is test data used for?",
-			a: [
-				"Testing how well the model predicts unseen data",
-				"Training the model only",
-				"Creating features",
-				"Removing categorical values",
-			],
-			c: 0,
-		},
-		{
-			q: "What is generalization?",
-			a: [
-				"The hope that the same f(x) works on unseen data",
-				"The process of deleting test data",
-				"The process of adding more features",
-				"The conversion of categories to numbers",
-			],
-			c: 0,
-		},
-		{
-			q: "What is overfitting?",
-			a: [
-				"When f(x) predicts Y well but cannot predict Y' well",
-				"When a model performs equally well on all data",
-				"When there are too few features",
-				"When the dataset has no labels",
-			],
-			c: 0,
-		},
-		{
-			q: "What kind of model do we want to build?",
-			a: [
-				"One that generalizes well to unseen data",
-				"One that only works on training data",
-				"One that memorizes every test value",
-				"One that ignores the features",
-			],
-			c: 0,
-		},
-		{
-			q: "Which method is described as instance-based learning?",
-			a: [
-				"k-Nearest Neighbor",
-				"Logistic Regression",
-				"Neural Networks",
-				"Linear Regression",
-			],
-			c: 0,
-		},
-		{
-			q: "What does k-Nearest Neighbor use to make predictions?",
-			a: [
-				"Nearby data points",
-				"Only the mean",
-				"A sigmoid curve",
-				"Only the training labels",
-			],
-			c: 0,
-		},
-		{
-			q: "What does logistic regression output according to the slides?",
-			a: ["0 or 1", "Only real numbers", "+1 or -1 only", "Three categories"],
-			c: 0,
-		},
-		{
-			q: "Which method is mentioned as a later supervised learning method?",
-			a: [
-				"Neural Networks",
-				"Clustering",
-				"Principal Component Analysis",
-				"Decision Trees",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the main question concerning training a model?",
-			a: [
-				"How to efficiently train or build the model",
-				"How to delete the dataset",
-				"How to remove all features",
-				"How to create more test data",
-			],
-			c: 0,
-		},
-		{
-			q: "What distance metric is used in the nearest neighbor examples?",
-			a: [
-				"Euclidean distance",
-				"Manhattan distance",
-				"Cosine distance",
-				"Hamming distance",
-			],
-			c: 0,
-		},
-		{
-			q: "In the simplest nearest neighbor example, how many neighbors are considered?",
-			a: ["One", "Two", "Three", "Five"],
-			c: 0,
-		},
-		{
-			q: "In the simplest nearest neighbor example, is a weighting function used?",
-			a: [
-				"No",
-				"Yes, always",
-				"Only for classification",
-				"Only for regression",
-			],
-			c: 0,
-		},
-		{
-			q: "How does the simplest nearest neighbor method make a prediction?",
-			a: [
-				"It predicts the same output as the nearest neighbor",
-				"It predicts the average of every point",
-				"It randomly selects an output",
-				"It uses a sigmoid function",
-			],
-			c: 0,
-		},
-		{
-			q: "In the more general kNN method, how many neighbors are considered?",
-			a: ["k", "One only", "Zero", "All possible datasets"],
-			c: 0,
-		},
-		{
-			q: "What does the optional weighting function in kNN do?",
-			a: [
-				"Weights each output based on the distance from the query",
-				"Removes the nearest neighbor",
-				"Changes categorical data to text",
-				"Determines the number of features",
-			],
-			c: 0,
-		},
-		{
-			q: "For numerical outputs, what can kNN predict from the k nearest neighbors?",
-			a: [
-				"The average output",
-				"The largest output only",
-				"The smallest output only",
-				"A random output",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one way machine learning models can be plotted easily?",
-			a: [
-				"Using 1, 2, or 3 features",
-				"Using only 10 features",
-				"Using no features",
-				"Using only categorical variables",
-			],
-			c: 0,
-		},
-		{
-			q: "What does each feature generally represent when plotting a model?",
-			a: ["A dimension", "A class", "A label", "A probability"],
-			c: 0,
-		},
-		{
-			q: "Why can going beyond three features cause problems when plotting models?",
-			a: [
-				"The number of dimensions becomes difficult to visualize",
-				"The model cannot be trained",
-				"The data becomes categorical",
-				"The features disappear",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one main-memory approach mentioned for handling nearest neighbor data?",
-			a: ["Linear scan", "Binary search only", "Hashing", "Sorting"],
-			c: 0,
-		},
-		{
-			q: "What type of structure is mentioned as a tree-based approach?",
-			a: ["Quadtree", "Binary tree", "Decision tree", "AVL tree"],
-			c: 0,
-		},
-		{
-			q: "In the kNN example, what value of k is used?",
-			a: ["3", "1", "5", "10"],
-			c: 0,
-		},
-		{
-			q: "In the kNN example, what are the possible output classes?",
-			a: ["c1 and c2", "0 and 1", "Yes and No", "A and B and C"],
-			c: 0,
-		},
-		{
-			q: "What is the output of sample1 in the classification example?",
-			a: ["c1", "c2", "0", "1"],
-			c: 0,
-		},
-		{
-			q: "What is the output of sample3 in the classification example?",
-			a: ["c2", "c1", "0", "1"],
-			c: 0,
-		},
-		{
-			q: "What is the first step in the listed classification workflow?",
-			a: [
-				"Choose and import classifiers",
-				"Fit the data to the model",
-				"Split the dataset",
-				"Test the model",
-			],
-			c: 0,
-		},
-		{
-			q: "What is loaded after choosing and importing classifiers?",
-			a: [
-				"The dataset with classification labels or outputs",
-				"Only the test set",
-				"Only the model parameters",
-				"A correlation heatmap",
-			],
-			c: 0,
-		},
-		{
-			q: "How is the dataset typically divided into training and testing sets?",
-			a: ["70/30 or 80/20", "50/50 only", "90/10 only", "25/75 only"],
-			c: 0,
-		},
-		{
-			q: "What happens after splitting the dataset?",
-			a: [
-				"The data is fitted to a learning model",
-				"The dataset is deleted",
-				"The test labels are removed",
-				"The features are converted to text",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the final step in the listed classification workflow?",
-			a: [
-				"See how well the model runs on test data",
-				"Import the classifier",
-				"Load the dataset",
-				"Split the dataset",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a true positive?",
-			a: [
-				"A sick person correctly identified as sick",
-				"A healthy person incorrectly identified as sick",
-				"A sick person identified as healthy",
-				"A healthy person correctly identified as healthy",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a true negative?",
-			a: [
-				"A correct negative prediction",
-				"A sick person incorrectly identified as sick",
-				"A positive prediction that is wrong",
-				"A missing prediction",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a false positive?",
-			a: [
-				"Someone identified as sick when they are not",
-				"A sick person correctly identified as sick",
-				"A healthy person correctly identified as healthy",
-				"Someone identified as healthy when they are healthy",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a false negative?",
-			a: [
-				"A negative prediction that is incorrect",
-				"A positive prediction that is correct",
-				"A negative prediction that is correct",
-				"A positive prediction that is incorrect",
-			],
-			c: 0,
-		},
-		{
-			q: "What happens to the confusion categories if there are more than two output categories?",
-			a: [
-				"They could be a bit different",
-				"They disappear completely",
-				"They always remain exactly the same",
-				"They become regression outputs",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of classification is logistic regression primarily used for?",
-			a: [
-				"Binary classification",
-				"Clustering",
-				"Unsupervised learning",
-				"Multi-dimensional plotting",
-			],
-			c: 0,
-		},
-		{
-			q: "What values does the dependent variable have in the logistic regression example?",
-			a: ["0 or 1", "1 through 10", "-1 through 1 only", "Any text string"],
-			c: 0,
-		},
-		{
-			q: "What does logistic regression learn from x and y?",
-			a: [
-				"Parameters of a curve to estimate the data points",
-				"A distance metric only",
-				"A quadtree",
-				"A random forest",
-			],
-			c: 0,
-		},
-		{
-			q: "What does logistic regression convert independent variables into?",
-			a: [
-				"A categorical decision such as yes/no",
-				"A continuous image",
-				"A database table",
-				"A training/test split",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the first step described in how logistic regression works?",
-			a: [
-				"Compute a weighted sum of input features",
-				"Apply a decision threshold",
-				"Calculate an average",
-				"Find the nearest neighbor",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the second step in logistic regression?",
-			a: [
-				"Pass the result through a sigmoid activation function",
-				"Split the dataset",
-				"Find the nearest neighbor",
-				"Calculate the IQR",
-			],
-			c: 0,
-		},
-		{
-			q: "What does the sigmoid function produce?",
-			a: [
-				"A probability",
-				"A distance",
-				"A feature vector",
-				"A class label directly",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the usual decision threshold for logistic regression?",
-			a: ["0.5", "0", "1", "0.25"],
-			c: 0,
-		},
-		{
-			q: "What happens when the calculated probability is compared against the threshold?",
-			a: [
-				"A final categorical classification is made",
-				"The dataset is normalized",
-				"The model is deleted",
-				"The nearest neighbor is found",
-			],
-			c: 0,
-		},
-		{
-			q: "What does logistic regression find during training?",
-			a: [
-				"The best coefficients (β values)",
-				"The nearest neighbors",
-				"The number of rows",
-				"The number of categories only",
-			],
-			c: 0,
-		},
-		{
-			q: "What shape does logistic regression use to fit the data?",
-			a: ["An S-curve", "A straight line only", "A circle", "A box"],
-			c: 0,
-		},
-		{
-			q: "What does the S-curve attempt to maximize?",
-			a: [
-				"The probability of correctly guessing the observed data",
-				"The number of features",
-				"The dataset size",
-				"The training time",
-			],
-			c: 0,
-		},
-		{
-			q: "What optimization algorithm is specifically mentioned for logistic regression training?",
-			a: [
-				"Gradient descent",
-				"K-means",
-				"Nearest neighbor search",
-				"Linear scanning",
-			],
-			c: 0,
-		},
-		{
-			q: "What does logistic regression provide in addition to categorical predictions?",
-			a: [
-				"Probability estimates",
-				"Only class names",
-				"Only distances",
-				"Only feature rankings",
-			],
-			c: 0,
-		},
-		{
-			q: "Why can probability estimates from logistic regression be useful?",
-			a: [
-				"They are useful in decision-making",
-				"They remove the need for training",
-				"They eliminate all errors",
-				"They prevent classification",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of classification is logistic regression used for?",
-			a: [
-				"Binary classification such as Yes/No or Spam/Not Spam",
-				"Only clustering",
-				"Only regression",
-				"Only three-class classification",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one advantage of logistic regression mentioned in the slides?",
-			a: [
-				"It requires less computational power than deep learning models",
-				"It always requires more computational power",
-				"It cannot work with small datasets",
-				"It only works with images",
-			],
-			c: 0,
-		},
-		{
-			q: "What size of dataset can logistic regression work well with according to the slides?",
-			a: [
-				"Small datasets",
-				"Only extremely large datasets",
-				"Only one observation",
-				"Only millions of observations",
-			],
-			c: 0,
-		},
-		{
-			q: "What can logistic regression predict before the output is converted to a category?",
-			a: [
-				"A value between 0 and 1",
-				"Only negative values",
-				"Only values greater than 1",
-				"Any integer",
-			],
-			c: 0,
-		},
-		{
-			q: "What does logistic regression ultimately convert its output into?",
-			a: ["0 or 1", "0 through 10", "A real number only", "A text string"],
-			c: 0,
-		},
-		{
-			q: "Why is logistic regression more like classification despite its name?",
-			a: [
-				"Its output is converted to 0 or 1",
-				"It only works with real numbers",
-				"It does not use training data",
-				"It cannot make predictions",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the first step in the general classification/regression process?",
-			a: [
-				"Import the classifier or regression model",
-				"Split the dataset",
-				"Fit the data",
-				"Test the model",
-			],
-			c: 0,
-		},
-		{
-			q: "What is loaded in the second step of the general process?",
-			a: [
-				"The dataset with labels or predicted values",
-				"Only the testing data",
-				"Only the training labels",
-				"The model parameters",
-			],
-			c: 0,
-		},
-		{
-			q: "What happens in the third step of the general process?",
-			a: [
-				"The dataset is split into train/test sets",
-				"The model is tested",
-				"The model is imported",
-				"The coefficients are deleted",
-			],
-			c: 0,
-		},
-		{
-			q: "What happens after splitting the dataset?",
-			a: [
-				"The data is fitted to a learning model",
-				"The dataset is discarded",
-				"The test data is normalized",
-				"The model is deleted",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the final step in the general classification/regression process?",
-			a: [
-				"See how well the model runs on test data",
-				"Import the model",
-				"Load the dataset",
-				"Split the dataset",
-			],
-			c: 0,
-		},
-		{
-			q: "What is linear regression?",
-			a: [
-				"A simple approach to supervised learning",
-				"An unsupervised clustering technique",
-				"A type of neural network",
-				"A data cleaning method",
-			],
-			c: 0,
-		},
-		{
-			q: "What does linear regression assume about the dependence of Y on X1, X2, ..., Xp?",
-			a: [
-				"It is linear",
-				"It is always categorical",
-				"It is random",
-				"It is exponential",
-			],
-			c: 0,
-		},
-		{
-			q: "What does linear regression predict instead of a class?",
-			a: [
-				"A predicted value",
-				"A category only",
-				"A Boolean value only",
-				"A distance",
-			],
-			c: 0,
-		},
-		{
-			q: "According to the slides, are true regression functions ever perfectly linear?",
-			a: [
-				"No",
-				"Yes, always",
-				"Only with one predictor",
-				"Only with categorical data",
-			],
-			c: 0,
-		},
-		{
-			q: "Despite being simplistic, how is linear regression described?",
-			a: [
-				"Extremely useful conceptually and practically",
-				"Generally useless",
-				"Only useful for classification",
-				"Only useful for visualization",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of data is used as an example for linear regression?",
-			a: [
-				"Advertising data",
-				"Iris data only",
-				"Medical data only",
-				"Traffic data",
-			],
-			c: 0,
-		},
-		{
-			q: "What relationship is investigated in the advertising data?",
-			a: [
-				"Advertising budget and sales",
-				"Temperature and rainfall",
-				"Age and height",
-				"Distance and speed",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one question asked about the advertising data?",
-			a: [
-				"How strong is the relationship between advertising budget and sales?",
-				"How many rows are in the dataset?",
-				"How large is the file?",
-				"Which programming language created it?",
-			],
-			c: 0,
-		},
-		{
-			q: "What does the advertising example ask about different media?",
-			a: [
-				"Which media contribute to sales",
-				"Which media contain missing values",
-				"Which media are categorical",
-				"Which media are cheapest",
-			],
-			c: 0,
-		},
-		{
-			q: "What prediction question is asked about the advertising data?",
-			a: [
-				"How accurately can future sales be predicted?",
-				"How many advertisements exist?",
-				"How many features should be removed?",
-				"How large should the training set be?",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of relationship is investigated in the advertising example?",
-			a: [
-				"Whether the relationship is linear",
-				"Whether the relationship is categorical",
-				"Whether the relationship is random",
-				"Whether the relationship is exponential",
-			],
-			c: 0,
-		},
-		{
-			q: "What additional relationship between advertising media is considered?",
-			a: [
-				"Synergy among the advertising media",
-				"Distance between media",
-				"The average media cost",
-				"The number of media files",
-			],
-			c: 0,
-		},
-		{
-			q: "How many predictors are used in simple linear regression?",
-			a: [
-				"A single predictor X",
-				"Two predictors only",
-				"Three predictors only",
-				"No predictors",
-			],
-			c: 0,
-		},
-		{
-			q: "What do B0 and B1 represent in simple linear regression?",
-			a: [
-				"The intercept and slope",
-				"The mean and median",
-				"The training and test sets",
-				"The class and probability",
-			],
-			c: 0,
-		},
-		{
-			q: "What are B0 and B1 also called?",
-			a: [
-				"Coefficients or parameters",
-				"Features or labels",
-				"Residuals or errors",
-				"Classes or categories",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a residual?",
-			a: [
-				"The difference between the actual value and the predicted value",
-				"The average of all predictions",
-				"The slope of the line",
-				"The number of features",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the formula for a residual given in the slides?",
-			a: ["y - ŷ", "y + ŷ", "ŷ - x", "x - y"],
-			c: 0,
-		},
-		{
-			q: "What does the vertical distance between a data point and the regression line represent?",
-			a: ["The residual", "The intercept", "The slope", "The predicted class"],
-			c: 0,
-		},
-		{
-			q: "How can error be simply thought of in the regression example?",
-			a: [
-				"The average distance that data points are from the regression line",
-				"The number of features",
-				"The largest predicted value",
-				"The number of training examples",
-			],
-			c: 0,
-		},
-		{
-			q: "What is demonstrated with linear regression in Python?",
-			a: [
-				"Setting data and finding model parameters",
-				"Only loading an image",
-				"Only creating a DataFrame",
-				"Only calculating an IQR",
-			],
-			c: 0,
-		},
-		{
-			q: "What can be printed after finding the linear regression parameters?",
-			a: [
-				"The parameters and R²",
-				"Only the residuals",
-				"Only the dataset size",
-				"Only the mean",
-			],
-			c: 0,
-		},
-		{
-			q: "What can linear regression in Python predict given the original x values?",
-			a: ["y values", "Only x values", "Only categories", "Only probabilities"],
-			c: 0,
-		},
-		{
-			q: "What can be done with a new x value in the Python example?",
-			a: [
-				"Predict the corresponding new y value",
-				"Delete the value",
-				"Convert it into a category",
-				"Calculate only its distance",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of linear regression uses inputs x0 and x1 with output y?",
-			a: [
-				"Multiple linear regression",
-				"Simple linear regression",
-				"Logistic regression",
-				"kNN",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the purpose of assessing the performance of a learning algorithm?",
-			a: [
-				"To determine how well the learning algorithm performs",
-				"To remove all training data",
-				"To create more features",
-				"To change categorical data",
-			],
-			c: 0,
-		},
-		{
-			q: "How can examples be divided when assessing a learning algorithm?",
-			a: [
-				"Into training and testing sets",
-				"Into only validation sets",
-				"Into three equal sets always",
-				"Into input and output only",
-			],
-			c: 0,
-		},
-		{
-			q: "What are two typical training/testing percentages mentioned?",
-			a: [
-				"70%/30% and 80%/20%",
-				"50%/50% and 60%/40%",
-				"90%/10% and 95%/5%",
-				"25%/75% and 40%/60%",
-			],
-			c: 0,
-		},
-		{
-			q: "What is another way to choose examples for training and testing?",
-			a: [
-				"Randomly select examples for each set",
-				"Always use the first half",
-				"Always use the last half",
-				"Use only the largest values",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of curve can be shown when assessing model performance?",
-			a: [
-				"A learning curve",
-				"A sigmoid curve only",
-				"A bell curve only",
-				"A pie curve",
-			],
-			c: 0,
-		},
-		{
-			q: "What is overfitting?",
-			a: [
-				"Finding meaningless regularity in the data",
-				"Improving model generalization",
-				"Increasing the testing set",
-				"Reducing the number of features",
-			],
-			c: 0,
-		},
-		{
-			q: "Why can many possible hypotheses cause a problem?",
-			a: [
-				"They can lead to meaningless regularities in the data",
-				"They always improve predictions",
-				"They eliminate overfitting",
-				"They remove the need for testing",
-			],
-			c: 0,
-		},
-		{
-			q: "What does the dice example illustrate about overfitting?",
-			a: [
-				"A pattern can appear meaningful even when it is not",
-				"Dice always produce the same value",
-				"Training data is always accurate",
-				"Randomness does not exist",
-			],
-			c: 0,
-		},
-		{
-			q: "What additional dataset can be used besides training and testing data?",
-			a: [
-				"A validation dataset",
-				"A clustering dataset",
-				"A prediction-only dataset",
-				"A residual dataset",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one split of the original data suggested when using validation data?",
-			a: [
-				"70% training, 15% validation, 15% testing",
-				"50% training, 25% validation, 25% testing",
-				"80% training, 10% validation, 10% testing",
-				"60% training, 20% validation, 20% testing",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the validation data used for?",
-			a: [
-				"Evaluating model performance and tuning hyperparameters",
-				"Training the final model exclusively",
-				"Replacing the training data",
-				"Calculating only the residuals",
-			],
-			c: 0,
-		},
-		{
-			q: "What are hyperparameters?",
-			a: [
-				"Constants in a model that can be tuned during training",
-				"The actual output values",
-				"The rows in a dataset",
-				"The residuals",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the testing data used for after training?",
-			a: [
-				"Providing an unbiased assessment of the final model",
-				"Choosing the training algorithm",
-				"Tuning the model repeatedly",
-				"Creating the validation set",
-			],
-			c: 0,
-		},
-		{
-			q: "Why is it important that testing data is unseen during training?",
-			a: [
-				"It allows an unbiased performance assessment",
-				"It makes training faster",
-				"It increases the number of features",
-				"It guarantees 100% accuracy",
-			],
-			c: 0,
-		},
-		{
-			q: "How many samples are in the iris dataset example?",
-			a: ["150", "100", "115", "20"],
-			c: 0,
-		},
-		{
-			q: "How many iris samples are used for training in the validation example?",
-			a: ["115", "150", "15", "20"],
-			c: 0,
-		},
-		{
-			q: "How many iris samples are used for validation?",
-			a: ["15", "115", "20", "150"],
-			c: 0,
-		},
-		{
-			q: "How many iris samples are used for testing?",
-			a: ["20", "15", "115", "150"],
-			c: 0,
-		},
-		{
-			q: "For kNN with k=1, how many of the 15 validation samples are correctly predicted in the example?",
-			a: ["10", "12", "14", "15"],
-			c: 0,
-		},
-		{
-			q: "For kNN with k=3, how many of the 15 validation samples are correctly predicted?",
-			a: ["14", "10", "12", "15"],
-			c: 0,
-		},
-		{
-			q: "For kNN with k=5, how many of the 15 validation samples are correctly predicted?",
-			a: ["12", "10", "14", "15"],
-			c: 0,
-		},
-		{
-			q: "Which kNN model is selected as the best model in the example?",
-			a: ["k=3", "k=1", "k=5", "k=10"],
-			c: 0,
-		},
-		{
-			q: "How many of the 20 testing samples does the selected k=3 model correctly predict?",
-			a: ["17", "14", "12", "20"],
-			c: 0,
-		},
-		{
-			q: "What is the testing accuracy in the kNN example?",
-			a: ["85%", "70%", "75%", "90%"],
-			c: 0,
-		},
-		{
-			q: "What is K-fold cross-validation?",
-			a: [
-				"Splitting training data into k equally sized folds",
-				"Splitting data into only training and testing sets",
-				"Using only one validation sample",
-				"Training the model once",
-			],
-			c: 0,
-		},
-		{
-			q: "During K-fold cross-validation, what happens to each fold?",
-			a: [
-				"Each fold is used once as validation while the others are used for training",
-				"Each fold is always used for testing",
-				"Every fold is discarded after training",
-				"Every fold is used only for training",
-			],
-			c: 0,
-		},
-		{
-			q: "How many times are the model trained and validated during K-fold cross-validation?",
-			a: ["k times", "Once", "Twice", "10 times always"],
-			c: 0,
-		},
-		{
-			q: "Which are common choices for k in K-fold cross-validation?",
-			a: ["5 or 10", "1 or 2", "3 or 4", "20 or 30"],
-			c: 0,
-		},
-		{
-			q: "What is the final topic covered in Unit 04b?",
-			a: [
-				"Confusion Matrix",
-				"Linear Regression",
-				"K-fold Cross-validation",
-				"Logistic Regression",
-			],
-			c: 0,
-		},
-		{
-			q: "In the confusion matrix example, how many samples are there in total?",
-			a: ["12", "8", "4", "20"],
-			c: 0,
-		},
-		{
-			q: "In the confusion matrix example, how many samples are actually classified as yes?",
-			a: ["8", "4", "12", "6"],
-			c: 0,
-		},
-		{
-			q: "In the confusion matrix example, how many samples are classified as no?",
-			a: ["4", "8", "12", "6"],
-			c: 0,
-		},
-		{
-			q: "What is the main difference between supervised and unsupervised learning presented in the dataset format?",
-			a: [
-				"Unsupervised learning does not require class or output labels",
-				"Unsupervised learning always requires more labels",
-				"Supervised learning has no features",
-				"Supervised learning cannot use numerical data",
-			],
-			c: 0,
-		},
-		{
-			q: "What is customer segmentation an application of?",
-			a: [
-				"Unsupervised learning",
-				"Linear regression only",
-				"Data normalization only",
-				"Supervised classification only",
-			],
-			c: 0,
-		},
-		{
-			q: "How can customer segmentation help a supermarket?",
-			a: [
-				"It can help determine what to stock and when and where",
-				"It removes the need for customers",
-				"It guarantees all customers buy the same products",
-				"It converts all products into numerical values",
-			],
-			c: 0,
-		},
-		{
-			q: "What does anomaly detection identify?",
-			a: [
-				"Unusual patterns in data",
-				"Only the largest clusters",
-				"The average of every feature",
-				"Only labeled classes",
-			],
-			c: 0,
-		},
-		{
-			q: "Which of the following is an application of anomaly detection?",
-			a: [
-				"Fraud detection",
-				"CD purchasing",
-				"Document formatting",
-				"Data entry",
-			],
-			c: 0,
-		},
-		{
-			q: "What do recommendation systems analyze to suggest products, movies, or music?",
-			a: [
-				"User behavior and preferences",
-				"Only the number of clusters",
-				"Only Euclidean distances",
-				"Only document length",
-			],
-			c: 0,
-		},
-		{
-			q: "What can image and text clustering be used for?",
-			a: [
-				"Grouping similar images or documents",
-				"Predicting exact sales values",
-				"Calculating regression coefficients",
-				"Removing all outliers",
-			],
-			c: 0,
-		},
-		{
-			q: "What can social network analysis detect?",
-			a: [
-				"Communities or trends in user interactions",
-				"Regression slopes",
-				"Centroids only",
-				"Normal distributions",
-			],
-			c: 0,
-		},
-		{
-			q: "What is one advantage of unsupervised learning?",
-			a: [
-				"It does not need labeled data",
-				"It always produces known categories",
-				"It requires every data point to be labeled",
-				"It eliminates all noise",
-			],
-			c: 0,
-		},
-		{
-			q: "Why can unsupervised learning save time and effort on data annotation?",
-			a: [
-				"It works with raw, unlabeled data",
-				"It automatically labels every point correctly",
-				"It requires manual labeling before clustering",
-				"It only works with small datasets",
-			],
-			c: 0,
-		},
-		{
-			q: "What can unsupervised learning discover?",
-			a: [
-				"Hidden patterns and natural groupings",
-				"Only predefined classes",
-				"Only regression coefficients",
-				"Only labeled examples",
-			],
-			c: 0,
-		},
-		{
-			q: "What type of datasets can unsupervised learning handle effectively?",
-			a: [
-				"High-dimensional or very large datasets",
-				"Only two-dimensional datasets",
-				"Only datasets with two samples",
-				"Only labeled datasets",
-			],
-			c: 0,
-		},
-		{
-			q: "How can unsupervised learning be useful for anomaly detection?",
-			a: [
-				"It can identify outliers without prior examples",
-				"It requires every anomaly to be labeled first",
-				"It removes all unusual data automatically",
-				"It only detects anomalies in two dimensions",
-			],
-			c: 0,
-		},
-		{
-			q: "How can noisy data affect unsupervised learning?",
-			a: [
-				"Outliers and noise can distort patterns",
-				"It always improves clustering",
-				"It guarantees clearer clusters",
-				"It eliminates the need for distance measures",
-			],
-			c: 0,
-		},
-		{
-			q: "What is assumption dependence in unsupervised learning?",
-			a: [
-				"Algorithms may rely on assumptions such as cluster shapes that do not match the actual data",
-				"Algorithms always require labeled classes",
-				"Algorithms cannot use distance measures",
-				"Algorithms only work with text",
-			],
-			c: 0,
-		},
-		{
-			q: "What does the absence of labels cause in unsupervised learning?",
-			a: [
-				"Limited guidance toward specific outcomes",
-				"Automatic perfect classification",
-				"More accurate ground truth",
-				"Guaranteed meaningful clusters",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a possible problem with cluster interpretability?",
-			a: [
-				"Clusters may lack clear meaning or alignment with real-world categories",
-				"Clusters always have predefined meanings",
-				"Clusters cannot contain more than one point",
-				"Clusters must correspond to labels",
-			],
-			c: 0,
-		},
-		{
-			q: "Why can hyperparameters be important in unsupervised learning?",
-			a: [
-				"Many algorithms require careful tuning, such as the number of clusters in k-means",
-				"Hyperparameters are never used in clustering",
-				"They automatically label every point",
-				"They remove the need for distance measures",
-			],
-			c: 0,
-		},
-		{
-			q: "Why is evaluating unsupervised learning results difficult?",
-			a: [
-				"There is no labeled ground truth",
-				"There are always too many labels",
-				"Every cluster has a known correct answer",
-				"All algorithms use the same distance",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the goal of clustering?",
-			a: [
-				"To group points so members of a cluster are similar and members of different clusters are dissimilar",
-				"To assign every point a regression value",
-				"To remove every outlier",
-				"To create as many clusters as possible",
-			],
-			c: 0,
-		},
-		{
-			q: "What is usually used to define similarity between points in clustering?",
-			a: [
-				"A distance measure",
-				"A regression coefficient",
-				"A class label",
-				"A validation set",
-			],
-			c: 0,
-		},
-		{
-			q: "Which distance measure is commonly used in clustering?",
-			a: [
-				"Euclidean distance",
-				"Regression distance",
-				"Validation distance",
-				"Classification distance",
-			],
-			c: 0,
-		},
-		{
-			q: "What other distance measure is mentioned as an option besides Euclidean distance?",
-			a: [
-				"Cosine distance",
-				"Manhattan regression",
-				"Centroid distance only",
-				"Cluster-label distance",
-			],
-			c: 0,
-		},
-		{
-			q: "In clustering, what should members of the same cluster be?",
-			a: [
-				"Close or similar to each other",
-				"As far apart as possible",
-				"Assigned different labels",
-				"Outside the data space",
-			],
-			c: 0,
-		},
-		{
-			q: "In clustering, what should members of different clusters be?",
-			a: ["Dissimilar", "Identical", "Always adjacent", "The same point"],
-			c: 0,
-		},
-		{
-			q: "Why can clustering become difficult in high-dimensional spaces?",
-			a: [
-				"Almost all pairs of points can be at about the same distance",
-				"There are no points in high-dimensional spaces",
-				"Every point becomes an outlier",
-				"Distances cannot be calculated",
-			],
-			c: 0,
-		},
-		{
-			q: "How many dimensions can some applications involve according to the lecture?",
-			a: [
-				"10 or 10,000 dimensions",
-				"Only 2 dimensions",
-				"Exactly 3 dimensions",
-				"Only 100 dimensions",
-			],
-			c: 0,
-		},
-		{
-			q: "How can a CD be represented for clustering based on customer purchases?",
-			a: [
-				"As a set of customers who bought it",
-				"As a regression coefficient",
-				"As a class label only",
-				"As a single distance value",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the relationship between similar CDs and their sets of customers?",
-			a: [
-				"Similar CDs have similar sets of customers",
-				"Similar CDs always have completely different customers",
-				"Similar CDs must have identical prices",
-				"Similar CDs cannot be clustered",
-			],
-			c: 0,
-		},
-		{
-			q: "In the CD representation, what does each dimension represent?",
-			a: ["A customer", "A CD genre", "A cluster", "A distance"],
-			c: 0,
-		},
-		{
-			q: "In the CD space example, what values can a dimension have?",
-			a: ["0 or 1", "Only 2", "Any negative value", "Only 10 or 100"],
-			c: 0,
-		},
-		{
-			q: "What does xi = 1 mean in the CD representation?",
-			a: [
-				"The ith customer bought the CD",
-				"The ith customer disliked the CD",
-				"The CD belongs to cluster i",
-				"The CD has i dimensions",
-			],
-			c: 0,
-		},
-		{
-			q: "How many dimensions can the Amazon CD example have?",
-			a: ["Tens of millions", "Exactly two", "Exactly ten", "One hundred"],
-			c: 0,
-		},
-		{
-			q: "What is the task when clustering CDs?",
-			a: [
-				"Find clusters of similar CDs",
-				"Predict the price of every CD",
-				"Assign every CD a regression slope",
-				"Remove every CD without a label",
-			],
-			c: 0,
-		},
-		{
-			q: "How can a document be represented for finding topics?",
-			a: [
-				"As a vector based on the words appearing in it",
-				"As a single class label",
-				"As a regression line",
-				"As a centroid only",
-			],
-			c: 0,
-		},
-		{
-			q: "What does xi = 1 mean in the document representation?",
-			a: [
-				"The ith word appears in the document",
-				"The ith document is in cluster one",
-				"The document has one page",
-				"The ith word is the longest word",
-			],
-			c: 0,
-		},
-		{
-			q: "What may documents with similar sets of words be about?",
-			a: [
-				"The same topic",
-				"Different regression models",
-				"Different distance metrics",
-				"The same customer",
-			],
-			c: 0,
-		},
-		{
-			q: "Which distance can be used when documents are represented as vectors?",
-			a: [
-				"Cosine distance",
-				"Only Euclidean distance",
-				"Only regression distance",
-				"Only centroid distance",
-			],
-			c: 0,
-		},
-		{
-			q: "Which distance can be used when documents are treated as points?",
-			a: [
-				"Euclidean distance",
-				"Only cosine distance",
-				"Only classification distance",
-				"Only validation distance",
-			],
-			c: 0,
-		},
-		{
-			q: "What does Euclidean distance represent?",
-			a: [
-				"The straight-line length between two points",
-				"The number of clusters in a dataset",
-				"The average number of features",
-				"The number of labels",
-			],
-			c: 0,
-		},
-		{
-			q: "What is Euclidean distance calculated using?",
-			a: [
-				"The Pythagorean theorem",
-				"The logistic function",
-				"A confusion matrix",
-				"A validation split",
-			],
-			c: 0,
-		},
-		{
-			q: "What is hierarchical clustering?",
-			a: [
-				"A clustering approach that builds or splits clusters hierarchically",
-				"A method that only predicts classes",
-				"A regression method",
-				"A method that requires labeled outputs",
-			],
-			c: 0,
-		},
-		{
-			q: "What happens initially in agglomerative hierarchical clustering?",
-			a: [
-				"Each point is its own cluster",
-				"All points are in one cluster",
-				"All points are discarded",
-				"Each point is assigned a class label",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the main operation in agglomerative clustering?",
-			a: [
-				"Repeatedly combine the two nearest clusters",
-				"Repeatedly remove the farthest point",
-				"Predict a new output value",
-				"Randomly label every point",
-			],
-			c: 0,
-		},
-		{
-			q: "What does divisive hierarchical clustering do?",
-			a: [
-				"Starts with one cluster and recursively splits it",
-				"Starts with every point as a cluster and combines them",
-				"Predicts a continuous value",
-				"Uses only labeled data",
-			],
-			c: 0,
-		},
-		{
-			q: "What does point assignment clustering do?",
-			a: [
-				"Maintains a set of clusters and assigns points to the nearest cluster",
-				"Starts with one cluster and always splits it",
-				"Removes all points outside the centroid",
-				"Requires every point to have a class label",
-			],
-			c: 0,
-		},
-		{
-			q: "In hierarchical clustering, how can a cluster containing many points be represented in the Euclidean case?",
-			a: [
-				"By its centroid, the average of its points",
-				"By its largest point only",
-				"By its first point only",
-				"By a class label",
-			],
-			c: 0,
-		},
-		{
-			q: "How can the nearness of clusters be determined in the centroid approach?",
-			a: [
-				"By measuring distances between their centroids",
-				"By comparing their class labels",
-				"By counting their dimensions",
-				"By using only the largest point",
-			],
-			c: 0,
-		},
-		{
-			q: "What is a clustroid?",
-			a: [
-				"An existing data point that is closest to the other points in a cluster",
-				"The average of all points in a cluster",
-				"A point that is always outside the cluster",
-				"The number of clusters in k-means",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the key difference between a centroid and a clustroid?",
-			a: [
-				"A centroid is an average and may be artificial, while a clustroid is an existing data point",
-				"A centroid is always an existing point while a clustroid is always artificial",
-				"They are exactly the same thing",
-				"A clustroid can only be used with labeled data",
-			],
-			c: 0,
-		},
-		{
-			q: "What does k represent in k-means clustering?",
-			a: [
-				"The number of clusters",
-				"The number of features",
-				"The number of data points",
-				"The number of labels",
-			],
-			c: 0,
-		},
-		{
-			q: "What assumption does k-means make according to the lecture?",
-			a: [
-				"It assumes Euclidean space and distance",
-				"It assumes every point has a class label",
-				"It assumes all data is text",
-				"It assumes there is only one cluster",
-			],
-			c: 0,
-		},
-		{
-			q: "What is the first major step when starting k-means?",
-			a: [
-				"Pick k, the number of clusters",
-				"Calculate a confusion matrix",
-				"Split the data into training and testing sets",
-				"Assign every point a final label",
-			],
-			c: 0,
-		},
-		{
-			q: "How can k-means initialize its clusters?",
-			a: [
-				"By picking one point per cluster",
-				"By deleting the furthest points",
-				"By assigning every point to every cluster",
-				"By selecting only outliers",
-			],
-			c: 0,
-		},
-		{
-			q: "During k-means assignment, where is each point placed?",
-			a: [
-				"In the cluster whose current centroid is nearest",
-				"In the cluster with the most points",
-				"In a randomly selected cluster every time",
-				"In the cluster with the farthest centroid",
-			],
-			c: 0,
-		},
-		{
-			q: "What happens after all points are assigned in k-means?",
-			a: [
-				"The locations of the centroids are updated",
-				"All clusters are deleted",
-				"The value of k is automatically changed",
-				"All points become outliers",
-			],
-			c: 0,
-		},
-		{
-			q: "What happens after centroids are updated in k-means?",
-			a: [
-				"Points are reassigned to their closest centroid",
-				"The dataset is discarded",
-				"The number of dimensions is reduced to zero",
-				"The algorithm immediately stops",
-			],
-			c: 0,
-		},
-		{
-			q: "What does convergence mean in the k-means process?",
-			a: [
-				"Points stop moving between clusters and centroids stabilize",
-				"Every point becomes an outlier",
-				"The number of clusters becomes zero",
-				"All points receive different labels",
-			],
-			c: 0,
-		},
-		{
-			q: "What are the three important questions in hierarchical clustering?",
-			a: [
-				"How to represent clusters, determine cluster nearness, and decide when to stop combining",
-				"How to label data, remove features, and calculate regression",
-				"How to normalize data, split data, and calculate accuracy",
-				"How to choose Python, R, and SQL",
-			],
-			c: 0,
-		},
-	],
+			{
+				q: "What software is covered in Unit/Week 03b?",
+				a: ["Python and R", "C++ and Java", "SQL and C#", "JavaScript and PHP"],
+				c: 0,
+			},
+			{
+				q: "What is one topic reviewed at the beginning of Unit 03b?",
+				a: [
+					"Python code calculations",
+					"Database design",
+					"Web development",
+					"Object-oriented programming",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the R plot() review question involve?",
+				a: [
+					"Using 2 variables",
+					"Using 10 variables",
+					"Using only categorical data",
+					"Using no variables",
+				],
+				c: 0,
+			},
+			{
+				q: "What can an R plot with two variables help show?",
+				a: [
+					"The relationship between the variables",
+					"The file size",
+					"The program's memory usage",
+					"The number of Python libraries",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a correlation heatmap show?",
+				a: [
+					"Correlations between variables",
+					"Only variable names",
+					"Only missing values",
+					"The order of rows",
+				],
+				c: 0,
+			},
+			{
+				q: "What should be identified when examining a correlation heatmap?",
+				a: [
+					"The largest and smallest correlations",
+					"Only the first variable",
+					"Only the diagonal values",
+					"The number of rows",
+				],
+				c: 0,
+			},
+			{
+				q: "What can the largest and smallest correlations help explain?",
+				a: [
+					"Relationships between variables",
+					"The computer's CPU speed",
+					"The size of a CSV file",
+					"The number of Python packages",
+				],
+				c: 0,
+			},
+			{
+				q: "Which Python library is described as Numerical Python?",
+				a: ["numpy", "pandas", "matplotlib", "scipy"],
+				c: 0,
+			},
+			{
+				q: "What is numpy primarily used for?",
+				a: [
+					"Scientific computing, data science, and machine learning",
+					"Creating websites",
+					"Managing email",
+					"Editing documents",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of arrays does numpy provide?",
+				a: [
+					"N-dimensional arrays (ndarray)",
+					"Only one-dimensional strings",
+					"Only text arrays",
+					"Only image arrays",
+				],
+				c: 0,
+			},
+			{
+				q: "What are numpy ndarrays useful for handling?",
+				a: [
+					"Vectors and matrices",
+					"Only paragraphs",
+					"Only web pages",
+					"Only audio files",
+				],
+				c: 0,
+			},
+			{
+				q: "How are numpy ndarrays described in the slides?",
+				a: [
+					"Fast, flexible, fixed-size structures",
+					"Slow, variable-size files",
+					"Text-only structures",
+					"Database tables",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the numpy mathematical engine provide?",
+				a: [
+					"Statistics, linear algebra, random numbers, and trigonometry",
+					"Web hosting and networking",
+					"Video editing and audio recording",
+					"Database authentication",
+				],
+				c: 0,
+			},
+			{
+				q: "Which Python library is designed for data manipulation, analysis, and cleaning?",
+				a: ["pandas", "numpy", "kNN", "R"],
+				c: 0,
+			},
+			{
+				q: "What is a pandas DataFrame?",
+				a: [
+					"A two-dimensional tabular data structure",
+					"A one-dimensional array only",
+					"A Python function",
+					"A mathematical formula",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a pandas DataFrame have as labels?",
+				a: [
+					"Rows and columns",
+					"Only columns",
+					"Only rows",
+					"Neither rows nor columns",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a pandas DataFrame similar to?",
+				a: ["A spreadsheet", "A video", "A web browser", "A text editor"],
+				c: 0,
+			},
+			{
+				q: "What does pandas provide for data ingestion?",
+				a: [
+					"Methods for loading data from various formats",
+					"Methods for creating animations",
+					"Methods for compiling Python",
+					"Methods for encrypting files",
+				],
+				c: 0,
+			},
+			{
+				q: "Which pandas method can load a CSV file?",
+				a: ["pd.read_csv()", "pd.load_csv()", "pd.csv_read()", "pd.open_csv()"],
+				c: 0,
+			},
+			{
+				q: "Which pandas method can load an Excel file?",
+				a: [
+					"pd.read_excel()",
+					"pd.excel_read()",
+					"pd.load_excel()",
+					"pd.open_xlsx()",
+				],
+				c: 0,
+			},
+			{
+				q: "Which pandas method can provide a quick look at the beginning of data?",
+				a: [".head()", " .start()", " .first()", " .begin()"],
+				c: 0,
+			},
+			{
+				q: "Which pandas method provides information about a DataFrame?",
+				a: [".info()", " .details()", " .data()", " .inspect()"],
+				c: 0,
+			},
+			{
+				q: "Which pandas method generates descriptive statistics?",
+				a: [".describe()", " .statistics()", " .summary_stats()", " .stats()"],
+				c: 0,
+			},
+			{
+				q: "What is an expected value?",
+				a: [
+					"The long-term average outcome of a variable",
+					"The largest possible value",
+					"The smallest possible value",
+					"The median value only",
+				],
+				c: 0,
+			},
+			{
+				q: "How is an expected value calculated?",
+				a: [
+					"Multiply each possible result by its likelihood and add the results",
+					"Add all values and divide by the maximum",
+					"Multiply all values together",
+					"Subtract the probabilities from each value",
+				],
+				c: 0,
+			},
+			{
+				q: "What does expected value describe over the long term?",
+				a: [
+					"The average outcome",
+					"The maximum outcome",
+					"The minimum outcome",
+					"The most unusual outcome",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of dice is used in the expected value example?",
+				a: [
+					"A fair 6-sided die",
+					"A biased 4-sided die",
+					"A fair 8-sided die",
+					"A 20-sided die",
+				],
+				c: 0,
+			},
+			{
+				q: "What are the possible values when rolling a fair 6-sided die?",
+				a: [
+					"1, 2, 3, 4, 5, and 6",
+					"0, 1, 2, 3, 4, and 5",
+					"2, 4, 6, 8, 10, and 12",
+					"1, 3, 5, 7, 9, and 11",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the probability of each result when rolling a fair 6-sided die?",
+				a: ["1/6", "1/4", "1/8", "1/2"],
+				c: 0,
+			},
+			{
+				q: "What is the expected value of a fair 6-sided die?",
+				a: ["3.5", "3", "4", "6"],
+				c: 0,
+			},
+			{
+				q: "Can you actually roll a 3.5 on a single throw of a standard die?",
+				a: ["No", "Yes", "Only with a biased die", "Only after six throws"],
+				c: 0,
+			},
+			{
+				q: "What does the long-run average of a fair 6-sided die converge to?",
+				a: ["3.5", "1", "6", "0"],
+				c: 0,
+			},
+			{
+				q: "Why do casinos rely on negative expected value for players?",
+				a: [
+					"To guarantee their baseline profits",
+					"To guarantee players always win",
+					"To eliminate probability",
+					"To make every game fair",
+				],
+				c: 0,
+			},
+			{
+				q: "In the biased 6-sided dice practice question, which values occur twice as often as the others?",
+				a: ["1 and 2", "3 and 4", "5 and 6", "All values equally often"],
+				c: 0,
+			},
+			{
+				q: "What is calculated for the biased dice practice problem?",
+				a: [
+					"The long-run average or expected value",
+					"The median only",
+					"The range only",
+					"The standard deviation only",
+				],
+				c: 0,
+			},
+			{
+				q: "What is asked for the fair 8-sided dice practice problem?",
+				a: ["The expected value", "The correlation", "The IQR", "The variance"],
+				c: 0,
+			},
+			{
+				q: "In the casino practice question, how much does it cost to play the game?",
+				a: ["$11", "$5", "$20", "$24"],
+				c: 0,
+			},
+			{
+				q: "In the casino practice question, how often do you win $5?",
+				a: [
+					"Half of the time",
+					"One quarter of the time",
+					"One eighth of the time",
+					"Every time",
+				],
+				c: 0,
+			},
+			{
+				q: "In the casino practice question, how often do you win $20?",
+				a: [
+					"One quarter of the time",
+					"Half of the time",
+					"One eighth of the time",
+					"Never",
+				],
+				c: 0,
+			},
+			{
+				q: "In the casino practice question, how often do you win $24?",
+				a: [
+					"One eighth of the time",
+					"Half of the time",
+					"One quarter of the time",
+					"Every time",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens for the remaining eighth of the casino game?",
+				a: ["You win $0", "You win $5", "You win $20", "You win $24"],
+				c: 0,
+			},
+			{
+				q: "What is the casino practice question asking you to consider?",
+				a: [
+					"Whether you would play the game many times",
+					"Whether the game uses Python",
+					"Whether the game needs a DataFrame",
+					"Whether the game has correlations",
+				],
+				c: 0,
+			},
+			{
+				q: "Which function is used to filter data stored in DataFrames?",
+				a: ["filter()", "select()", "mutate()", "arrange()"],
+				c: 0,
+			},
+			{
+				q: "Which function is used to select data stored in DataFrames?",
+				a: ["select()", "filter()", "mutate()", "arrange()"],
+				c: 0,
+			},
+			{
+				q: "Which function is used to modify or create data in a DataFrame?",
+				a: ["mutate()", "filter()", "select()", "arrange()"],
+				c: 0,
+			},
+			{
+				q: "Which function is used to arrange data in a DataFrame?",
+				a: ["arrange()", "filter()", "select()", "mutate()"],
+				c: 0,
+			},
+			{
+				q: "What is kNN short for?",
+				a: [
+					"K Nearest Neighbor",
+					"Known Numerical Network",
+					"Kernel Nearest Number",
+					"K-Normalized Network",
+				],
+				c: 0,
+			},
+			{
+				q: "What can kNN predict?",
+				a: [
+					"Discrete classes or numerical values",
+					"Only text",
+					"Only images",
+					"Only file names",
+				],
+				c: 0,
+			},
+			{
+				q: "What values can k be changed to in the kNN examples?",
+				a: ["1, 3, 5, and so on", "Only 2 and 4", "Only 10", "Only 0"],
+				c: 0,
+			},
+			{
+				q: "What can kNN use on numerical values?",
+				a: ["Weights", "Colors", "File names", "Passwords"],
+				c: 0,
+			},
+			{
+				q: "In the weighted kNN formula, what does w represent?",
+				a: [
+					"A weight calculated as 1/d",
+					"The predicted class",
+					"The number of variables",
+					"The total number of rows",
+				],
+				c: 0,
+			},
+			{
+				q: "Which topics are covered in Week 04 according to the schedule?",
+				a: [
+					"Supervised Learning and Model Evaluations",
+					"Python and R",
+					"Statistics and Data Analysis",
+					"Unsupervised Learning only",
+				],
+				c: 0,
+			},
+			{
+				q: "What are the three types of problems mentioned when discussing datasets?",
+				a: [
+					"Classification, regression, clustering",
+					"Sorting, searching, hashing",
+					"Prediction, storage, networking",
+					"Normalization, scaling, cleaning",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the general goal of prediction in supervised learning?",
+				a: [
+					"Estimate a function f(x) so that y = f(x)",
+					"Remove all features from the dataset",
+					"Convert categorical data into text",
+					"Create a database",
+				],
+				c: 0,
+			},
+			{
+				q: "In the prediction equation y = f(x), what does x represent?",
+				a: [
+					"Input features",
+					"The output class only",
+					"The test result",
+					"The model accuracy",
+				],
+				c: 0,
+			},
+			{
+				q: "In the prediction equation y = f(x), what does y represent?",
+				a: [
+					"The output",
+					"The input features",
+					"The distance metric",
+					"The training set",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of output corresponds to regression?",
+				a: [
+					"A real number",
+					"A categorical label",
+					"Only +1 or -1",
+					"A Boolean value only",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of output corresponds to classification?",
+				a: [
+					"A categorical value",
+					"A real number only",
+					"A distance",
+					"A probability only",
+				],
+				c: 0,
+			},
+			{
+				q: "What does it mean when data is labeled?",
+				a: [
+					"There are many pairs of (x,y) values",
+					"There are no output values",
+					"All values are missing",
+					"The data contains only categories",
+				],
+				c: 0,
+			},
+			{
+				q: "What can the feature vector x contain?",
+				a: [
+					"Binary, categorical, and real-valued features",
+					"Only real numbers",
+					"Only binary values",
+					"Only text",
+				],
+				c: 0,
+			},
+			{
+				q: "What can y represent in the supervised learning examples?",
+				a: [
+					"A class such as +1/-1 or a real number",
+					"Only a real number",
+					"Only a string",
+					"Only a Boolean value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the task given data (X,Y)?",
+				a: [
+					"Build a model f() to predict Y' based on X'",
+					"Delete the training data",
+					"Find the smallest feature",
+					"Convert X into Y",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of training data?",
+				a: [
+					"To estimate the model",
+					"To evaluate only unseen data",
+					"To remove outliers",
+					"To create the test labels",
+				],
+				c: 0,
+			},
+			{
+				q: "What is test data used for?",
+				a: [
+					"Testing how well the model predicts unseen data",
+					"Training the model only",
+					"Creating features",
+					"Removing categorical values",
+				],
+				c: 0,
+			},
+			{
+				q: "What is generalization?",
+				a: [
+					"The hope that the same f(x) works on unseen data",
+					"The process of deleting test data",
+					"The process of adding more features",
+					"The conversion of categories to numbers",
+				],
+				c: 0,
+			},
+			{
+				q: "What is overfitting?",
+				a: [
+					"When f(x) predicts Y well but cannot predict Y' well",
+					"When a model performs equally well on all data",
+					"When there are too few features",
+					"When the dataset has no labels",
+				],
+				c: 0,
+			},
+			{
+				q: "What kind of model do we want to build?",
+				a: [
+					"One that generalizes well to unseen data",
+					"One that only works on training data",
+					"One that memorizes every test value",
+					"One that ignores the features",
+				],
+				c: 0,
+			},
+			{
+				q: "Which method is described as instance-based learning?",
+				a: [
+					"k-Nearest Neighbor",
+					"Logistic Regression",
+					"Neural Networks",
+					"Linear Regression",
+				],
+				c: 0,
+			},
+			{
+				q: "What does k-Nearest Neighbor use to make predictions?",
+				a: [
+					"Nearby data points",
+					"Only the mean",
+					"A sigmoid curve",
+					"Only the training labels",
+				],
+				c: 0,
+			},
+			{
+				q: "What does logistic regression output according to the slides?",
+				a: ["0 or 1", "Only real numbers", "+1 or -1 only", "Three categories"],
+				c: 0,
+			},
+			{
+				q: "Which method is mentioned as a later supervised learning method?",
+				a: [
+					"Neural Networks",
+					"Clustering",
+					"Principal Component Analysis",
+					"Decision Trees",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main question concerning training a model?",
+				a: [
+					"How to efficiently train or build the model",
+					"How to delete the dataset",
+					"How to remove all features",
+					"How to create more test data",
+				],
+				c: 0,
+			},
+			{
+				q: "What distance metric is used in the nearest neighbor examples?",
+				a: [
+					"Euclidean distance",
+					"Manhattan distance",
+					"Cosine distance",
+					"Hamming distance",
+				],
+				c: 0,
+			},
+			{
+				q: "In the simplest nearest neighbor example, how many neighbors are considered?",
+				a: ["One", "Two", "Three", "Five"],
+				c: 0,
+			},
+			{
+				q: "In the simplest nearest neighbor example, is a weighting function used?",
+				a: [
+					"No",
+					"Yes, always",
+					"Only for classification",
+					"Only for regression",
+				],
+				c: 0,
+			},
+			{
+				q: "How does the simplest nearest neighbor method make a prediction?",
+				a: [
+					"It predicts the same output as the nearest neighbor",
+					"It predicts the average of every point",
+					"It randomly selects an output",
+					"It uses a sigmoid function",
+				],
+				c: 0,
+			},
+			{
+				q: "In the more general kNN method, how many neighbors are considered?",
+				a: ["k", "One only", "Zero", "All possible datasets"],
+				c: 0,
+			},
+			{
+				q: "What does the optional weighting function in kNN do?",
+				a: [
+					"Weights each output based on the distance from the query",
+					"Removes the nearest neighbor",
+					"Changes categorical data to text",
+					"Determines the number of features",
+				],
+				c: 0,
+			},
+			{
+				q: "For numerical outputs, what can kNN predict from the k nearest neighbors?",
+				a: [
+					"The average output",
+					"The largest output only",
+					"The smallest output only",
+					"A random output",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one way machine learning models can be plotted easily?",
+				a: [
+					"Using 1, 2, or 3 features",
+					"Using only 10 features",
+					"Using no features",
+					"Using only categorical variables",
+				],
+				c: 0,
+			},
+			{
+				q: "What does each feature generally represent when plotting a model?",
+				a: ["A dimension", "A class", "A label", "A probability"],
+				c: 0,
+			},
+			{
+				q: "Why can going beyond three features cause problems when plotting models?",
+				a: [
+					"The number of dimensions becomes difficult to visualize",
+					"The model cannot be trained",
+					"The data becomes categorical",
+					"The features disappear",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one main-memory approach mentioned for handling nearest neighbor data?",
+				a: ["Linear scan", "Binary search only", "Hashing", "Sorting"],
+				c: 0,
+			},
+			{
+				q: "What type of structure is mentioned as a tree-based approach?",
+				a: ["Quadtree", "Binary tree", "Decision tree", "AVL tree"],
+				c: 0,
+			},
+			{
+				q: "In the kNN example, what value of k is used?",
+				a: ["3", "1", "5", "10"],
+				c: 0,
+			},
+			{
+				q: "In the kNN example, what are the possible output classes?",
+				a: ["c1 and c2", "0 and 1", "Yes and No", "A and B and C"],
+				c: 0,
+			},
+			{
+				q: "What is the output of sample1 in the classification example?",
+				a: ["c1", "c2", "0", "1"],
+				c: 0,
+			},
+			{
+				q: "What is the output of sample3 in the classification example?",
+				a: ["c2", "c1", "0", "1"],
+				c: 0,
+			},
+			{
+				q: "What is the first step in the listed classification workflow?",
+				a: [
+					"Choose and import classifiers",
+					"Fit the data to the model",
+					"Split the dataset",
+					"Test the model",
+				],
+				c: 0,
+			},
+			{
+				q: "What is loaded after choosing and importing classifiers?",
+				a: [
+					"The dataset with classification labels or outputs",
+					"Only the test set",
+					"Only the model parameters",
+					"A correlation heatmap",
+				],
+				c: 0,
+			},
+			{
+				q: "How is the dataset typically divided into training and testing sets?",
+				a: ["70/30 or 80/20", "50/50 only", "90/10 only", "25/75 only"],
+				c: 0,
+			},
+			{
+				q: "What happens after splitting the dataset?",
+				a: [
+					"The data is fitted to a learning model",
+					"The dataset is deleted",
+					"The test labels are removed",
+					"The features are converted to text",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the final step in the listed classification workflow?",
+				a: [
+					"See how well the model runs on test data",
+					"Import the classifier",
+					"Load the dataset",
+					"Split the dataset",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a true positive?",
+				a: [
+					"A sick person correctly identified as sick",
+					"A healthy person incorrectly identified as sick",
+					"A sick person identified as healthy",
+					"A healthy person correctly identified as healthy",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a true negative?",
+				a: [
+					"A correct negative prediction",
+					"A sick person incorrectly identified as sick",
+					"A positive prediction that is wrong",
+					"A missing prediction",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a false positive?",
+				a: [
+					"Someone identified as sick when they are not",
+					"A sick person correctly identified as sick",
+					"A healthy person correctly identified as healthy",
+					"Someone identified as healthy when they are healthy",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a false negative?",
+				a: [
+					"A negative prediction that is incorrect",
+					"A positive prediction that is correct",
+					"A negative prediction that is correct",
+					"A positive prediction that is incorrect",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens to the confusion categories if there are more than two output categories?",
+				a: [
+					"They could be a bit different",
+					"They disappear completely",
+					"They always remain exactly the same",
+					"They become regression outputs",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of classification is logistic regression primarily used for?",
+				a: [
+					"Binary classification",
+					"Clustering",
+					"Unsupervised learning",
+					"Multi-dimensional plotting",
+				],
+				c: 0,
+			},
+			{
+				q: "What values does the dependent variable have in the logistic regression example?",
+				a: ["0 or 1", "1 through 10", "-1 through 1 only", "Any text string"],
+				c: 0,
+			},
+			{
+				q: "What does logistic regression learn from x and y?",
+				a: [
+					"Parameters of a curve to estimate the data points",
+					"A distance metric only",
+					"A quadtree",
+					"A random forest",
+				],
+				c: 0,
+			},
+			{
+				q: "What does logistic regression convert independent variables into?",
+				a: [
+					"A categorical decision such as yes/no",
+					"A continuous image",
+					"A database table",
+					"A training/test split",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the first step described in how logistic regression works?",
+				a: [
+					"Compute a weighted sum of input features",
+					"Apply a decision threshold",
+					"Calculate an average",
+					"Find the nearest neighbor",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the second step in logistic regression?",
+				a: [
+					"Pass the result through a sigmoid activation function",
+					"Split the dataset",
+					"Find the nearest neighbor",
+					"Calculate the IQR",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the sigmoid function produce?",
+				a: [
+					"A probability",
+					"A distance",
+					"A feature vector",
+					"A class label directly",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the usual decision threshold for logistic regression?",
+				a: ["0.5", "0", "1", "0.25"],
+				c: 0,
+			},
+			{
+				q: "What happens when the calculated probability is compared against the threshold?",
+				a: [
+					"A final categorical classification is made",
+					"The dataset is normalized",
+					"The model is deleted",
+					"The nearest neighbor is found",
+				],
+				c: 0,
+			},
+			{
+				q: "What does logistic regression find during training?",
+				a: [
+					"The best coefficients (β values)",
+					"The nearest neighbors",
+					"The number of rows",
+					"The number of categories only",
+				],
+				c: 0,
+			},
+			{
+				q: "What shape does logistic regression use to fit the data?",
+				a: ["An S-curve", "A straight line only", "A circle", "A box"],
+				c: 0,
+			},
+			{
+				q: "What does the S-curve attempt to maximize?",
+				a: [
+					"The probability of correctly guessing the observed data",
+					"The number of features",
+					"The dataset size",
+					"The training time",
+				],
+				c: 0,
+			},
+			{
+				q: "What optimization algorithm is specifically mentioned for logistic regression training?",
+				a: [
+					"Gradient descent",
+					"K-means",
+					"Nearest neighbor search",
+					"Linear scanning",
+				],
+				c: 0,
+			},
+			{
+				q: "What does logistic regression provide in addition to categorical predictions?",
+				a: [
+					"Probability estimates",
+					"Only class names",
+					"Only distances",
+					"Only feature rankings",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can probability estimates from logistic regression be useful?",
+				a: [
+					"They are useful in decision-making",
+					"They remove the need for training",
+					"They eliminate all errors",
+					"They prevent classification",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of classification is logistic regression used for?",
+				a: [
+					"Binary classification such as Yes/No or Spam/Not Spam",
+					"Only clustering",
+					"Only regression",
+					"Only three-class classification",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one advantage of logistic regression mentioned in the slides?",
+				a: [
+					"It requires less computational power than deep learning models",
+					"It always requires more computational power",
+					"It cannot work with small datasets",
+					"It only works with images",
+				],
+				c: 0,
+			},
+			{
+				q: "What size of dataset can logistic regression work well with according to the slides?",
+				a: [
+					"Small datasets",
+					"Only extremely large datasets",
+					"Only one observation",
+					"Only millions of observations",
+				],
+				c: 0,
+			},
+			{
+				q: "What can logistic regression predict before the output is converted to a category?",
+				a: [
+					"A value between 0 and 1",
+					"Only negative values",
+					"Only values greater than 1",
+					"Any integer",
+				],
+				c: 0,
+			},
+			{
+				q: "What does logistic regression ultimately convert its output into?",
+				a: ["0 or 1", "0 through 10", "A real number only", "A text string"],
+				c: 0,
+			},
+			{
+				q: "Why is logistic regression more like classification despite its name?",
+				a: [
+					"Its output is converted to 0 or 1",
+					"It only works with real numbers",
+					"It does not use training data",
+					"It cannot make predictions",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the first step in the general classification/regression process?",
+				a: [
+					"Import the classifier or regression model",
+					"Split the dataset",
+					"Fit the data",
+					"Test the model",
+				],
+				c: 0,
+			},
+			{
+				q: "What is loaded in the second step of the general process?",
+				a: [
+					"The dataset with labels or predicted values",
+					"Only the testing data",
+					"Only the training labels",
+					"The model parameters",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens in the third step of the general process?",
+				a: [
+					"The dataset is split into train/test sets",
+					"The model is tested",
+					"The model is imported",
+					"The coefficients are deleted",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens after splitting the dataset?",
+				a: [
+					"The data is fitted to a learning model",
+					"The dataset is discarded",
+					"The test data is normalized",
+					"The model is deleted",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the final step in the general classification/regression process?",
+				a: [
+					"See how well the model runs on test data",
+					"Import the model",
+					"Load the dataset",
+					"Split the dataset",
+				],
+				c: 0,
+			},
+			{
+				q: "What is linear regression?",
+				a: [
+					"A simple approach to supervised learning",
+					"An unsupervised clustering technique",
+					"A type of neural network",
+					"A data cleaning method",
+				],
+				c: 0,
+			},
+			{
+				q: "What does linear regression assume about the dependence of Y on X1, X2, ..., Xp?",
+				a: [
+					"It is linear",
+					"It is always categorical",
+					"It is random",
+					"It is exponential",
+				],
+				c: 0,
+			},
+			{
+				q: "What does linear regression predict instead of a class?",
+				a: [
+					"A predicted value",
+					"A category only",
+					"A Boolean value only",
+					"A distance",
+				],
+				c: 0,
+			},
+			{
+				q: "According to the slides, are true regression functions ever perfectly linear?",
+				a: [
+					"No",
+					"Yes, always",
+					"Only with one predictor",
+					"Only with categorical data",
+				],
+				c: 0,
+			},
+			{
+				q: "Despite being simplistic, how is linear regression described?",
+				a: [
+					"Extremely useful conceptually and practically",
+					"Generally useless",
+					"Only useful for classification",
+					"Only useful for visualization",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of data is used as an example for linear regression?",
+				a: [
+					"Advertising data",
+					"Iris data only",
+					"Medical data only",
+					"Traffic data",
+				],
+				c: 0,
+			},
+			{
+				q: "What relationship is investigated in the advertising data?",
+				a: [
+					"Advertising budget and sales",
+					"Temperature and rainfall",
+					"Age and height",
+					"Distance and speed",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one question asked about the advertising data?",
+				a: [
+					"How strong is the relationship between advertising budget and sales?",
+					"How many rows are in the dataset?",
+					"How large is the file?",
+					"Which programming language created it?",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the advertising example ask about different media?",
+				a: [
+					"Which media contribute to sales",
+					"Which media contain missing values",
+					"Which media are categorical",
+					"Which media are cheapest",
+				],
+				c: 0,
+			},
+			{
+				q: "What prediction question is asked about the advertising data?",
+				a: [
+					"How accurately can future sales be predicted?",
+					"How many advertisements exist?",
+					"How many features should be removed?",
+					"How large should the training set be?",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of relationship is investigated in the advertising example?",
+				a: [
+					"Whether the relationship is linear",
+					"Whether the relationship is categorical",
+					"Whether the relationship is random",
+					"Whether the relationship is exponential",
+				],
+				c: 0,
+			},
+			{
+				q: "What additional relationship between advertising media is considered?",
+				a: [
+					"Synergy among the advertising media",
+					"Distance between media",
+					"The average media cost",
+					"The number of media files",
+				],
+				c: 0,
+			},
+			{
+				q: "How many predictors are used in simple linear regression?",
+				a: [
+					"A single predictor X",
+					"Two predictors only",
+					"Three predictors only",
+					"No predictors",
+				],
+				c: 0,
+			},
+			{
+				q: "What do B0 and B1 represent in simple linear regression?",
+				a: [
+					"The intercept and slope",
+					"The mean and median",
+					"The training and test sets",
+					"The class and probability",
+				],
+				c: 0,
+			},
+			{
+				q: "What are B0 and B1 also called?",
+				a: [
+					"Coefficients or parameters",
+					"Features or labels",
+					"Residuals or errors",
+					"Classes or categories",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a residual?",
+				a: [
+					"The difference between the actual value and the predicted value",
+					"The average of all predictions",
+					"The slope of the line",
+					"The number of features",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the formula for a residual given in the slides?",
+				a: ["y - ŷ", "y + ŷ", "ŷ - x", "x - y"],
+				c: 0,
+			},
+			{
+				q: "What does the vertical distance between a data point and the regression line represent?",
+				a: [
+					"The residual",
+					"The intercept",
+					"The slope",
+					"The predicted class",
+				],
+				c: 0,
+			},
+			{
+				q: "How can error be simply thought of in the regression example?",
+				a: [
+					"The average distance that data points are from the regression line",
+					"The number of features",
+					"The largest predicted value",
+					"The number of training examples",
+				],
+				c: 0,
+			},
+			{
+				q: "What is demonstrated with linear regression in Python?",
+				a: [
+					"Setting data and finding model parameters",
+					"Only loading an image",
+					"Only creating a DataFrame",
+					"Only calculating an IQR",
+				],
+				c: 0,
+			},
+			{
+				q: "What can be printed after finding the linear regression parameters?",
+				a: [
+					"The parameters and R²",
+					"Only the residuals",
+					"Only the dataset size",
+					"Only the mean",
+				],
+				c: 0,
+			},
+			{
+				q: "What can linear regression in Python predict given the original x values?",
+				a: [
+					"y values",
+					"Only x values",
+					"Only categories",
+					"Only probabilities",
+				],
+				c: 0,
+			},
+			{
+				q: "What can be done with a new x value in the Python example?",
+				a: [
+					"Predict the corresponding new y value",
+					"Delete the value",
+					"Convert it into a category",
+					"Calculate only its distance",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of linear regression uses inputs x0 and x1 with output y?",
+				a: [
+					"Multiple linear regression",
+					"Simple linear regression",
+					"Logistic regression",
+					"kNN",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of assessing the performance of a learning algorithm?",
+				a: [
+					"To determine how well the learning algorithm performs",
+					"To remove all training data",
+					"To create more features",
+					"To change categorical data",
+				],
+				c: 0,
+			},
+			{
+				q: "How can examples be divided when assessing a learning algorithm?",
+				a: [
+					"Into training and testing sets",
+					"Into only validation sets",
+					"Into three equal sets always",
+					"Into input and output only",
+				],
+				c: 0,
+			},
+			{
+				q: "What are two typical training/testing percentages mentioned?",
+				a: [
+					"70%/30% and 80%/20%",
+					"50%/50% and 60%/40%",
+					"90%/10% and 95%/5%",
+					"25%/75% and 40%/60%",
+				],
+				c: 0,
+			},
+			{
+				q: "What is another way to choose examples for training and testing?",
+				a: [
+					"Randomly select examples for each set",
+					"Always use the first half",
+					"Always use the last half",
+					"Use only the largest values",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of curve can be shown when assessing model performance?",
+				a: [
+					"A learning curve",
+					"A sigmoid curve only",
+					"A bell curve only",
+					"A pie curve",
+				],
+				c: 0,
+			},
+			{
+				q: "What is overfitting?",
+				a: [
+					"Finding meaningless regularity in the data",
+					"Improving model generalization",
+					"Increasing the testing set",
+					"Reducing the number of features",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can many possible hypotheses cause a problem?",
+				a: [
+					"They can lead to meaningless regularities in the data",
+					"They always improve predictions",
+					"They eliminate overfitting",
+					"They remove the need for testing",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the dice example illustrate about overfitting?",
+				a: [
+					"A pattern can appear meaningful even when it is not",
+					"Dice always produce the same value",
+					"Training data is always accurate",
+					"Randomness does not exist",
+				],
+				c: 0,
+			},
+			{
+				q: "What additional dataset can be used besides training and testing data?",
+				a: [
+					"A validation dataset",
+					"A clustering dataset",
+					"A prediction-only dataset",
+					"A residual dataset",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one split of the original data suggested when using validation data?",
+				a: [
+					"70% training, 15% validation, 15% testing",
+					"50% training, 25% validation, 25% testing",
+					"80% training, 10% validation, 10% testing",
+					"60% training, 20% validation, 20% testing",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the validation data used for?",
+				a: [
+					"Evaluating model performance and tuning hyperparameters",
+					"Training the final model exclusively",
+					"Replacing the training data",
+					"Calculating only the residuals",
+				],
+				c: 0,
+			},
+			{
+				q: "What are hyperparameters?",
+				a: [
+					"Constants in a model that can be tuned during training",
+					"The actual output values",
+					"The rows in a dataset",
+					"The residuals",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the testing data used for after training?",
+				a: [
+					"Providing an unbiased assessment of the final model",
+					"Choosing the training algorithm",
+					"Tuning the model repeatedly",
+					"Creating the validation set",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is it important that testing data is unseen during training?",
+				a: [
+					"It allows an unbiased performance assessment",
+					"It makes training faster",
+					"It increases the number of features",
+					"It guarantees 100% accuracy",
+				],
+				c: 0,
+			},
+			{
+				q: "How many samples are in the iris dataset example?",
+				a: ["150", "100", "115", "20"],
+				c: 0,
+			},
+			{
+				q: "How many iris samples are used for training in the validation example?",
+				a: ["115", "150", "15", "20"],
+				c: 0,
+			},
+			{
+				q: "How many iris samples are used for validation?",
+				a: ["15", "115", "20", "150"],
+				c: 0,
+			},
+			{
+				q: "How many iris samples are used for testing?",
+				a: ["20", "15", "115", "150"],
+				c: 0,
+			},
+			{
+				q: "For kNN with k=1, how many of the 15 validation samples are correctly predicted in the example?",
+				a: ["10", "12", "14", "15"],
+				c: 0,
+			},
+			{
+				q: "For kNN with k=3, how many of the 15 validation samples are correctly predicted?",
+				a: ["14", "10", "12", "15"],
+				c: 0,
+			},
+			{
+				q: "For kNN with k=5, how many of the 15 validation samples are correctly predicted?",
+				a: ["12", "10", "14", "15"],
+				c: 0,
+			},
+			{
+				q: "Which kNN model is selected as the best model in the example?",
+				a: ["k=3", "k=1", "k=5", "k=10"],
+				c: 0,
+			},
+			{
+				q: "How many of the 20 testing samples does the selected k=3 model correctly predict?",
+				a: ["17", "14", "12", "20"],
+				c: 0,
+			},
+			{
+				q: "What is the testing accuracy in the kNN example?",
+				a: ["85%", "70%", "75%", "90%"],
+				c: 0,
+			},
+			{
+				q: "What is K-fold cross-validation?",
+				a: [
+					"Splitting training data into k equally sized folds",
+					"Splitting data into only training and testing sets",
+					"Using only one validation sample",
+					"Training the model once",
+				],
+				c: 0,
+			},
+			{
+				q: "During K-fold cross-validation, what happens to each fold?",
+				a: [
+					"Each fold is used once as validation while the others are used for training",
+					"Each fold is always used for testing",
+					"Every fold is discarded after training",
+					"Every fold is used only for training",
+				],
+				c: 0,
+			},
+			{
+				q: "How many times are the model trained and validated during K-fold cross-validation?",
+				a: ["k times", "Once", "Twice", "10 times always"],
+				c: 0,
+			},
+			{
+				q: "Which are common choices for k in K-fold cross-validation?",
+				a: ["5 or 10", "1 or 2", "3 or 4", "20 or 30"],
+				c: 0,
+			},
+			{
+				q: "What is the final topic covered in Unit 04b?",
+				a: [
+					"Confusion Matrix",
+					"Linear Regression",
+					"K-fold Cross-validation",
+					"Logistic Regression",
+				],
+				c: 0,
+			},
+			{
+				q: "In the confusion matrix example, how many samples are there in total?",
+				a: ["12", "8", "4", "20"],
+				c: 0,
+			},
+			{
+				q: "In the confusion matrix example, how many samples are actually classified as yes?",
+				a: ["8", "4", "12", "6"],
+				c: 0,
+			},
+			{
+				q: "In the confusion matrix example, how many samples are classified as no?",
+				a: ["4", "8", "12", "6"],
+				c: 0,
+			},
+			{
+				q: "What is the main difference between supervised and unsupervised learning presented in the dataset format?",
+				a: [
+					"Unsupervised learning does not require class or output labels",
+					"Unsupervised learning always requires more labels",
+					"Supervised learning has no features",
+					"Supervised learning cannot use numerical data",
+				],
+				c: 0,
+			},
+			{
+				q: "What is customer segmentation an application of?",
+				a: [
+					"Unsupervised learning",
+					"Linear regression only",
+					"Data normalization only",
+					"Supervised classification only",
+				],
+				c: 0,
+			},
+			{
+				q: "How can customer segmentation help a supermarket?",
+				a: [
+					"It can help determine what to stock and when and where",
+					"It removes the need for customers",
+					"It guarantees all customers buy the same products",
+					"It converts all products into numerical values",
+				],
+				c: 0,
+			},
+			{
+				q: "What does anomaly detection identify?",
+				a: [
+					"Unusual patterns in data",
+					"Only the largest clusters",
+					"The average of every feature",
+					"Only labeled classes",
+				],
+				c: 0,
+			},
+			{
+				q: "Which of the following is an application of anomaly detection?",
+				a: [
+					"Fraud detection",
+					"CD purchasing",
+					"Document formatting",
+					"Data entry",
+				],
+				c: 0,
+			},
+			{
+				q: "What do recommendation systems analyze to suggest products, movies, or music?",
+				a: [
+					"User behavior and preferences",
+					"Only the number of clusters",
+					"Only Euclidean distances",
+					"Only document length",
+				],
+				c: 0,
+			},
+			{
+				q: "What can image and text clustering be used for?",
+				a: [
+					"Grouping similar images or documents",
+					"Predicting exact sales values",
+					"Calculating regression coefficients",
+					"Removing all outliers",
+				],
+				c: 0,
+			},
+			{
+				q: "What can social network analysis detect?",
+				a: [
+					"Communities or trends in user interactions",
+					"Regression slopes",
+					"Centroids only",
+					"Normal distributions",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one advantage of unsupervised learning?",
+				a: [
+					"It does not need labeled data",
+					"It always produces known categories",
+					"It requires every data point to be labeled",
+					"It eliminates all noise",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can unsupervised learning save time and effort on data annotation?",
+				a: [
+					"It works with raw, unlabeled data",
+					"It automatically labels every point correctly",
+					"It requires manual labeling before clustering",
+					"It only works with small datasets",
+				],
+				c: 0,
+			},
+			{
+				q: "What can unsupervised learning discover?",
+				a: [
+					"Hidden patterns and natural groupings",
+					"Only predefined classes",
+					"Only regression coefficients",
+					"Only labeled examples",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of datasets can unsupervised learning handle effectively?",
+				a: [
+					"High-dimensional or very large datasets",
+					"Only two-dimensional datasets",
+					"Only datasets with two samples",
+					"Only labeled datasets",
+				],
+				c: 0,
+			},
+			{
+				q: "How can unsupervised learning be useful for anomaly detection?",
+				a: [
+					"It can identify outliers without prior examples",
+					"It requires every anomaly to be labeled first",
+					"It removes all unusual data automatically",
+					"It only detects anomalies in two dimensions",
+				],
+				c: 0,
+			},
+			{
+				q: "How can noisy data affect unsupervised learning?",
+				a: [
+					"Outliers and noise can distort patterns",
+					"It always improves clustering",
+					"It guarantees clearer clusters",
+					"It eliminates the need for distance measures",
+				],
+				c: 0,
+			},
+			{
+				q: "What is assumption dependence in unsupervised learning?",
+				a: [
+					"Algorithms may rely on assumptions such as cluster shapes that do not match the actual data",
+					"Algorithms always require labeled classes",
+					"Algorithms cannot use distance measures",
+					"Algorithms only work with text",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the absence of labels cause in unsupervised learning?",
+				a: [
+					"Limited guidance toward specific outcomes",
+					"Automatic perfect classification",
+					"More accurate ground truth",
+					"Guaranteed meaningful clusters",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a possible problem with cluster interpretability?",
+				a: [
+					"Clusters may lack clear meaning or alignment with real-world categories",
+					"Clusters always have predefined meanings",
+					"Clusters cannot contain more than one point",
+					"Clusters must correspond to labels",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can hyperparameters be important in unsupervised learning?",
+				a: [
+					"Many algorithms require careful tuning, such as the number of clusters in k-means",
+					"Hyperparameters are never used in clustering",
+					"They automatically label every point",
+					"They remove the need for distance measures",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is evaluating unsupervised learning results difficult?",
+				a: [
+					"There is no labeled ground truth",
+					"There are always too many labels",
+					"Every cluster has a known correct answer",
+					"All algorithms use the same distance",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the goal of clustering?",
+				a: [
+					"To group points so members of a cluster are similar and members of different clusters are dissimilar",
+					"To assign every point a regression value",
+					"To remove every outlier",
+					"To create as many clusters as possible",
+				],
+				c: 0,
+			},
+			{
+				q: "What is usually used to define similarity between points in clustering?",
+				a: [
+					"A distance measure",
+					"A regression coefficient",
+					"A class label",
+					"A validation set",
+				],
+				c: 0,
+			},
+			{
+				q: "Which distance measure is commonly used in clustering?",
+				a: [
+					"Euclidean distance",
+					"Regression distance",
+					"Validation distance",
+					"Classification distance",
+				],
+				c: 0,
+			},
+			{
+				q: "What other distance measure is mentioned as an option besides Euclidean distance?",
+				a: [
+					"Cosine distance",
+					"Manhattan regression",
+					"Centroid distance only",
+					"Cluster-label distance",
+				],
+				c: 0,
+			},
+			{
+				q: "In clustering, what should members of the same cluster be?",
+				a: [
+					"Close or similar to each other",
+					"As far apart as possible",
+					"Assigned different labels",
+					"Outside the data space",
+				],
+				c: 0,
+			},
+			{
+				q: "In clustering, what should members of different clusters be?",
+				a: ["Dissimilar", "Identical", "Always adjacent", "The same point"],
+				c: 0,
+			},
+			{
+				q: "Why can clustering become difficult in high-dimensional spaces?",
+				a: [
+					"Almost all pairs of points can be at about the same distance",
+					"There are no points in high-dimensional spaces",
+					"Every point becomes an outlier",
+					"Distances cannot be calculated",
+				],
+				c: 0,
+			},
+			{
+				q: "How many dimensions can some applications involve according to the lecture?",
+				a: [
+					"10 or 10,000 dimensions",
+					"Only 2 dimensions",
+					"Exactly 3 dimensions",
+					"Only 100 dimensions",
+				],
+				c: 0,
+			},
+			{
+				q: "How can a CD be represented for clustering based on customer purchases?",
+				a: [
+					"As a set of customers who bought it",
+					"As a regression coefficient",
+					"As a class label only",
+					"As a single distance value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the relationship between similar CDs and their sets of customers?",
+				a: [
+					"Similar CDs have similar sets of customers",
+					"Similar CDs always have completely different customers",
+					"Similar CDs must have identical prices",
+					"Similar CDs cannot be clustered",
+				],
+				c: 0,
+			},
+			{
+				q: "In the CD representation, what does each dimension represent?",
+				a: ["A customer", "A CD genre", "A cluster", "A distance"],
+				c: 0,
+			},
+			{
+				q: "In the CD space example, what values can a dimension have?",
+				a: ["0 or 1", "Only 2", "Any negative value", "Only 10 or 100"],
+				c: 0,
+			},
+			{
+				q: "What does xi = 1 mean in the CD representation?",
+				a: [
+					"The ith customer bought the CD",
+					"The ith customer disliked the CD",
+					"The CD belongs to cluster i",
+					"The CD has i dimensions",
+				],
+				c: 0,
+			},
+			{
+				q: "How many dimensions can the Amazon CD example have?",
+				a: ["Tens of millions", "Exactly two", "Exactly ten", "One hundred"],
+				c: 0,
+			},
+			{
+				q: "What is the task when clustering CDs?",
+				a: [
+					"Find clusters of similar CDs",
+					"Predict the price of every CD",
+					"Assign every CD a regression slope",
+					"Remove every CD without a label",
+				],
+				c: 0,
+			},
+			{
+				q: "How can a document be represented for finding topics?",
+				a: [
+					"As a vector based on the words appearing in it",
+					"As a single class label",
+					"As a regression line",
+					"As a centroid only",
+				],
+				c: 0,
+			},
+			{
+				q: "What does xi = 1 mean in the document representation?",
+				a: [
+					"The ith word appears in the document",
+					"The ith document is in cluster one",
+					"The document has one page",
+					"The ith word is the longest word",
+				],
+				c: 0,
+			},
+			{
+				q: "What may documents with similar sets of words be about?",
+				a: [
+					"The same topic",
+					"Different regression models",
+					"Different distance metrics",
+					"The same customer",
+				],
+				c: 0,
+			},
+			{
+				q: "Which distance can be used when documents are represented as vectors?",
+				a: [
+					"Cosine distance",
+					"Only Euclidean distance",
+					"Only regression distance",
+					"Only centroid distance",
+				],
+				c: 0,
+			},
+			{
+				q: "Which distance can be used when documents are treated as points?",
+				a: [
+					"Euclidean distance",
+					"Only cosine distance",
+					"Only classification distance",
+					"Only validation distance",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Euclidean distance represent?",
+				a: [
+					"The straight-line length between two points",
+					"The number of clusters in a dataset",
+					"The average number of features",
+					"The number of labels",
+				],
+				c: 0,
+			},
+			{
+				q: "What is Euclidean distance calculated using?",
+				a: [
+					"The Pythagorean theorem",
+					"The logistic function",
+					"A confusion matrix",
+					"A validation split",
+				],
+				c: 0,
+			},
+			{
+				q: "What is hierarchical clustering?",
+				a: [
+					"A clustering approach that builds or splits clusters hierarchically",
+					"A method that only predicts classes",
+					"A regression method",
+					"A method that requires labeled outputs",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens initially in agglomerative hierarchical clustering?",
+				a: [
+					"Each point is its own cluster",
+					"All points are in one cluster",
+					"All points are discarded",
+					"Each point is assigned a class label",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main operation in agglomerative clustering?",
+				a: [
+					"Repeatedly combine the two nearest clusters",
+					"Repeatedly remove the farthest point",
+					"Predict a new output value",
+					"Randomly label every point",
+				],
+				c: 0,
+			},
+			{
+				q: "What does divisive hierarchical clustering do?",
+				a: [
+					"Starts with one cluster and recursively splits it",
+					"Starts with every point as a cluster and combines them",
+					"Predicts a continuous value",
+					"Uses only labeled data",
+				],
+				c: 0,
+			},
+			{
+				q: "What does point assignment clustering do?",
+				a: [
+					"Maintains a set of clusters and assigns points to the nearest cluster",
+					"Starts with one cluster and always splits it",
+					"Removes all points outside the centroid",
+					"Requires every point to have a class label",
+				],
+				c: 0,
+			},
+			{
+				q: "In hierarchical clustering, how can a cluster containing many points be represented in the Euclidean case?",
+				a: [
+					"By its centroid, the average of its points",
+					"By its largest point only",
+					"By its first point only",
+					"By a class label",
+				],
+				c: 0,
+			},
+			{
+				q: "How can the nearness of clusters be determined in the centroid approach?",
+				a: [
+					"By measuring distances between their centroids",
+					"By comparing their class labels",
+					"By counting their dimensions",
+					"By using only the largest point",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a clustroid?",
+				a: [
+					"An existing data point that is closest to the other points in a cluster",
+					"The average of all points in a cluster",
+					"A point that is always outside the cluster",
+					"The number of clusters in k-means",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the key difference between a centroid and a clustroid?",
+				a: [
+					"A centroid is an average and may be artificial, while a clustroid is an existing data point",
+					"A centroid is always an existing point while a clustroid is always artificial",
+					"They are exactly the same thing",
+					"A clustroid can only be used with labeled data",
+				],
+				c: 0,
+			},
+			{
+				q: "What does k represent in k-means clustering?",
+				a: [
+					"The number of clusters",
+					"The number of features",
+					"The number of data points",
+					"The number of labels",
+				],
+				c: 0,
+			},
+			{
+				q: "What assumption does k-means make according to the lecture?",
+				a: [
+					"It assumes Euclidean space and distance",
+					"It assumes every point has a class label",
+					"It assumes all data is text",
+					"It assumes there is only one cluster",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the first major step when starting k-means?",
+				a: [
+					"Pick k, the number of clusters",
+					"Calculate a confusion matrix",
+					"Split the data into training and testing sets",
+					"Assign every point a final label",
+				],
+				c: 0,
+			},
+			{
+				q: "How can k-means initialize its clusters?",
+				a: [
+					"By picking one point per cluster",
+					"By deleting the furthest points",
+					"By assigning every point to every cluster",
+					"By selecting only outliers",
+				],
+				c: 0,
+			},
+			{
+				q: "During k-means assignment, where is each point placed?",
+				a: [
+					"In the cluster whose current centroid is nearest",
+					"In the cluster with the most points",
+					"In a randomly selected cluster every time",
+					"In the cluster with the farthest centroid",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens after all points are assigned in k-means?",
+				a: [
+					"The locations of the centroids are updated",
+					"All clusters are deleted",
+					"The value of k is automatically changed",
+					"All points become outliers",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens after centroids are updated in k-means?",
+				a: [
+					"Points are reassigned to their closest centroid",
+					"The dataset is discarded",
+					"The number of dimensions is reduced to zero",
+					"The algorithm immediately stops",
+				],
+				c: 0,
+			},
+			{
+				q: "What does convergence mean in the k-means process?",
+				a: [
+					"Points stop moving between clusters and centroids stabilize",
+					"Every point becomes an outlier",
+					"The number of clusters becomes zero",
+					"All points receive different labels",
+				],
+				c: 0,
+			},
+			{
+				q: "What are the three important questions in hierarchical clustering?",
+				a: [
+					"How to represent clusters, determine cluster nearness, and decide when to stop combining",
+					"How to label data, remove features, and calculate regression",
+					"How to normalize data, split data, and calculate accuracy",
+					"How to choose Python, R, and SQL",
+				],
+				c: 0,
+			},
+		],
+		lautest: [
+			{
+				q: "What is 1111₂ in base 10?",
+				a: ["15", "11", "13", "17"],
+				c: 0,
+			},
+			{
+				q: "What is CBA₁₆ in base 10?",
+				a: ["3264", "3450", "3210", "3514"],
+				c: 1,
+			},
+			{
+				q: "What RGB values correspond to the hex color #50C878?",
+				a: [
+					"(80, 200, 120)",
+					"(50, 200, 120)",
+					"(80, 120, 200)",
+					"(80, 200, 78)",
+				],
+				c: 0,
+			},
+			{
+				q: "What color is represented by the hex code #50C878?",
+				a: ["Emerald green", "Royal blue", "Bright orange", "Deep purple"],
+				c: 0,
+			},
+			{
+				q: "In the handwritten digits dataset, what does each value in an 8×8 array represent?",
+				a: [
+					"A pixel's intensity in the digit image",
+					"The coordinates of a handwritten word",
+					"The probability of a digit being correct",
+					"The number of characters in a sample",
+				],
+				c: 0,
+			},
+			{
+				q: "The diabetes dataset is set up such that we can predict “average blood pressure” from the “blood sugar level”.",
+				a: ["True", "False", "BLANK", "BLANK"],
+				c: 1,
+			},
+			{
+				q: "Why is it incorrect to assume that the diabetes dataset predicts average blood pressure directly from blood sugar level?",
+				a: [
+					"Blood pressure is a categorical target variable, whereas blood sugar level is a discrete binary label",
+					'Both "average blood pressure" (bp / BloodPressure) and "blood sugar level" (s6 glu / Glucose) are input feature variables used together to predict a separate target variable',
+					"Blood sugar level is the target output variable of the model, while all other physiological measurements are ignored.",
+					"Linear regression models require categorical inputs, but blood pressure and blood sugar level are quantitative numbers",
+				],
+				c: 1,
+			},
+			{
+				q: "Which type of string does the regular expression x*y+ match?",
+				a: [
+					"Zero or more x characters followed by one or more y characters",
+					"One or more x characters followed by zero or more y characters",
+					"Any string containing exactly one x and one y",
+					"Any string containing only x characters",
+				],
+				c: 0,
+			},
+			{
+				q: 'Which regular expression matches both "y" and "xy"?',
+				a: ["x?y", "xy+", "x+y", "x*y*"],
+				c: 0,
+			},
+			{
+				q: "Which is a practical use of regular expressions?",
+				a: [
+					"Validating whether text follows a required pattern",
+					"Calculating the arithmetic mean of a dataset",
+					"Training a k-means clustering model",
+					"Measuring the distance between two points",
+				],
+				c: 0,
+			},
+			{
+				q: "Which measure of central tendency represents the arithmetic average?",
+				a: ["Mean", "Median", "Mode", "Range"],
+				c: 0,
+			},
+			{
+				q: "Which measure of central tendency identifies the middle value of sorted data?",
+				a: ["Median", "Mean", "Variance", "Standard deviation"],
+				c: 0,
+			},
+			{
+				q: "Which measure identifies the most frequently occurring value?",
+				a: ["Mode", "Median", "Range", "Correlation"],
+				c: 0,
+			},
+			{
+				q: "Which measure describes the difference between the maximum and minimum values?",
+				a: ["Range", "Variance", "Mean", "Mode"],
+				c: 0,
+			},
+			{
+				q: "What does standard deviation describe?",
+				a: [
+					"The typical spread of values around their mean",
+					"The most frequently occurring observation",
+					"The difference between two variable names",
+					"The number of features in a dataset",
+				],
+				c: 0,
+			},
+			{
+				q: "Which Python expression calculates the mean of a list named values using NumPy?",
+				a: [
+					"np.mean(values)",
+					"np.median(values)",
+					"np.mode(values)",
+					"np.range(values)",
+				],
+				c: 0,
+			},
+			{
+				q: "Which Python expression calculates the median of a list named values using NumPy?",
+				a: [
+					"np.median(values)",
+					"np.mean(values)",
+					"np.var(values)",
+					"np.std(values)",
+				],
+				c: 0,
+			},
+			{
+				q: "Which Python expression calculates the population variance using NumPy?",
+				a: [
+					"np.var(values)",
+					"np.std(values)",
+					"np.mean(values)",
+					"np.median(values)",
+				],
+				c: 0,
+			},
+			{
+				q: "Which Python expression calculates the population standard deviation using NumPy?",
+				a: [
+					"np.std(values)",
+					"np.var(values)",
+					"np.max(values)",
+					"np.min(values)",
+				],
+				c: 0,
+			},
+			{
+				q: "Which Python expression calculates the Pearson correlation between arrays x and y?",
+				a: [
+					"np.corrcoef(x, y)[0, 1]",
+					"np.mean(x, y)",
+					"np.var(x, y)",
+					"np.median(x, y)",
+				],
+				c: 0,
+			},
+			{
+				q: "Given values = [2, 4, 4, 6, 9], what does np.mean(values) return?",
+				a: ["5.0", "4.0", "6.0", "25.0"],
+				c: 0,
+			},
+			{
+				q: "Which Python expression counts the occurrences of each category in a pandas Series named data?",
+				a: [
+					"data.value_counts()",
+					"data.mean()",
+					"data.corr()",
+					"data.describe()",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R function calculates the mean of a numeric vector named values?",
+				a: ["mean(values)", "median(values)", "var(values)", "sd(values)"],
+				c: 0,
+			},
+			{
+				q: "Which R function calculates the median of a numeric vector named values?",
+				a: ["median(values)", "mean(values)", "range(values)", "table(values)"],
+				c: 0,
+			},
+			{
+				q: "Which R function calculates the variance of a numeric vector named values?",
+				a: ["var(values)", "sd(values)", "mean(values)", "median(values)"],
+				c: 0,
+			},
+			{
+				q: "Which R function calculates the standard deviation of a numeric vector named values?",
+				a: ["sd(values)", "var(values)", "range(values)", "mean(values)"],
+				c: 0,
+			},
+			{
+				q: "Which R expression calculates the Pearson correlation between vectors x and y?",
+				a: ["cor(x, y)", "mean(x, y)", "var(x, y)", "range(x, y)"],
+				c: 0,
+			},
+			{
+				q: "Given values <- c(2, 4, 4, 6, 9), what does median(values) return?",
+				a: ["4", "5", "6", "4.5"],
+				c: 0,
+			},
+			{
+				q: "Which R function creates a frequency table showing how often each category occurs?",
+				a: ["table(data)", "mean(data)", "sd(data)", "cor(data)"],
+				c: 0,
+			},
+			{
+				q: "Which set of five integers has a mean of 4 and a mode of 6?",
+				a: ["1, 3, 6, 6, 4", "2, 3, 4, 5, 6", "1, 4, 4, 5, 6", "3, 3, 4, 6, 7"],
+				c: 0,
+				interaction: {
+					type: "statistics-set",
+					valueCount: 5,
+					targetMean: 4,
+					targetMode: 6,
+				},
+			},
+			{
+				q: "What is the variance of the values (3, 4, 5, 6, 7)?",
+				a: ["2", "2.5", "4", "1.5"],
+				c: 0,
+			},
+			{
+				q: "As the number of hours spent studying increases, exam scores tend to increase. What type of correlation is this?",
+				a: [
+					"Positive correlation",
+					"Negative correlation",
+					"No correlation",
+					"Perfect negative correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "As the number of hours spent gaming increases, hours of sleep tend to decrease. What type of correlation is this?",
+				a: [
+					"Negative correlation",
+					"Positive correlation",
+					"No correlation",
+					"Perfect positive correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "A scatter plot shows points scattered randomly with no clear upward or downward pattern. What does this suggest?",
+				a: [
+					"Little or no correlation",
+					"A strong positive correlation",
+					"A strong negative correlation",
+					"A perfect linear correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "When two variables have a positive correlation, what generally happens as one variable increases?",
+				a: [
+					"The other variable tends to increase",
+					"The other variable always decreases",
+					"The other variable remains constant",
+					"The variables become unrelated",
+				],
+				c: 0,
+			},
+			{
+				q: "When two variables have a negative correlation, what generally happens as one variable increases?",
+				a: [
+					"The other variable tends to decrease",
+					"The other variable tends to increase",
+					"Both variables always remain constant",
+					"The variables must have identical values",
+				],
+				c: 0,
+			},
+			{
+				q: "A correlation coefficient is close to +1. What does this indicate?",
+				a: [
+					"A strong positive linear relationship",
+					"A strong negative linear relationship",
+					"Little or no linear relationship",
+					"A relationship where one variable causes the other",
+				],
+				c: 0,
+			},
+			{
+				q: "A correlation coefficient is close to -1. What does this indicate?",
+				a: [
+					"A strong negative linear relationship",
+					"A strong positive linear relationship",
+					"No relationship between the variables",
+					"A perfect positive relationship",
+				],
+				c: 0,
+			},
+			{
+				q: "A correlation coefficient is close to 0. What does this usually indicate?",
+				a: [
+					"Little or no linear relationship",
+					"A strong positive linear relationship",
+					"A strong negative linear relationship",
+					"One variable directly causes the other",
+				],
+				c: 0,
+			},
+			{
+				q: "Two variables have a correlation coefficient of 0.85. How would you describe their linear relationship?",
+				a: [
+					"Strong positive correlation",
+					"Strong negative correlation",
+					"Little or no linear correlation",
+					"Perfect negative correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "Two variables have a correlation coefficient of -0.15. Which interpretation is most appropriate?",
+				a: [
+					"Weak negative linear correlation",
+					"Strong positive linear correlation",
+					"Perfect negative linear correlation",
+					"Strong positive causal relationship",
+				],
+				c: 0,
+			},
+			{
+				q: "A study finds a correlation between ice cream sales and swimming incidents. What can be concluded from this alone?",
+				a: [
+					"The correlation does not prove that one causes the other",
+					"Ice cream sales directly cause swimming incidents",
+					"Swimming incidents directly cause ice cream sales",
+					"The two variables cannot be correlated",
+				],
+				c: 0,
+			},
+			{
+				q: "A scatter plot forms a clear upward-sloping straight-line pattern. Which type of correlation does it show?",
+				a: [
+					"Positive correlation",
+					"Negative correlation",
+					"No correlation",
+					"Non-numerical correlation only",
+				],
+				c: 0,
+			},
+			{
+				q: "A scatter plot forms a clear downward-sloping straight-line pattern. Which type of correlation does it show?",
+				a: [
+					"Negative correlation",
+					"Positive correlation",
+					"No correlation",
+					"Perfect positive correlation",
+				],
+				c: 0,
+			},
+			{
+				q: "If two variables have a correlation coefficient of exactly +1, what does this mean?",
+				a: [
+					"They have a perfect positive linear relationship",
+					"They have no linear relationship",
+					"They have a perfect negative linear relationship",
+					"One variable must cause the other",
+				],
+				c: 0,
+			},
+			{
+				q: "If two variables have a correlation coefficient of exactly -1, what does this mean?",
+				a: [
+					"They have a perfect negative linear relationship",
+					"They have a perfect positive linear relationship",
+					"They have no linear relationship",
+					"Both variables always increase together",
+				],
+				c: 0,
+			},
+			{
+				q: "Can two variables have a strong nonlinear relationship even if their Pearson correlation is close to zero?",
+				a: [
+					"Yes, because Pearson correlation measures linear relationships",
+					"No, because zero correlation means no relationship of any kind",
+					"No, because all relationships must be linear",
+					"Yes, but only when both variables are categorical",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a Pearson correlation coefficient of 0 indicate?",
+				a: [
+					"There is no linear correlation between the variables",
+					"The variables have a perfect positive linear relationship",
+					"The variables have identical values",
+					"The variables must have a perfect nonlinear relationship",
+				],
+				c: 0,
+			},
+			{
+				q: "Can two variables have a Pearson correlation of 0 while still having a relationship?",
+				a: [
+					"Yes, they may have a nonlinear relationship",
+					"No, a correlation of 0 means they are always unrelated",
+					"No, a correlation of 0 means both variables are constant",
+					"Yes, but only if both variables are categorical",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a positive Pearson correlation indicate?",
+				a: [
+					"Higher values of one variable tend to accompany higher values of the other",
+					"Higher values of one variable always produce lower values of the other",
+					"Both variables must have identical numerical values",
+					"Neither variable has any variation",
+				],
+				c: 0,
+			},
+			{
+				q: "For these 3 plots of (x,y) values, why do they all have a Pearson Correlation of 0?",
+				a: [
+					"They have no linear correlation, even though their patterns may differ",
+					"They contain the same data points in different orders",
+					"They all have identical x and y values",
+					"They all show a perfect negative linear relationship",
+				],
+				c: 0,
+				i: "./assets/quizimages/lau-datscimidtermpractice/image1.png",
+			},
+			{
+				q: "For n=5 students, and the following data, compute the Correlation between h and s.",
+				a: ["0.95", "0.00", "-0.95", "0.50"],
+				c: 0,
+				i: "./assets/quizimages/lau-datscimidtermpractice/image2.png",
+			},
+			{
+				q: "For the values (2, 4, 8, 16, 32), what is the geometric mean?",
+				a: ["8", "12.4", "16", "10"],
+				c: 0,
+			},
+			{
+				q: "For the values (2, 4, 8, 16, 32), what is the arithmetic mean?",
+				a: ["12.4", "8", "16", "10.5"],
+				c: 0,
+			},
+			{
+				q: "Why might the geometric mean be more suitable than the arithmetic mean for values that grow multiplicatively?",
+				a: [
+					"It accounts for multiplicative growth and proportional changes",
+					"It always produces a larger value than the arithmetic mean",
+					"It ignores every value except the largest observation",
+					"It measures the difference between the largest and smallest values",
+				],
+				c: 0,
+			},
+			{
+				q: "For the weekly TV sales data (4,5,3,4,5,5,3), what is the unit of the range?",
+				a: [
+					"TVs sold, because the range uses the original data values",
+					"TVs squared, because the values are squared",
+					"No units, because the range is a ratio",
+					"Days, because the data covers one week",
+				],
+				c: 0,
+			},
+			{
+				q: "For the weekly TV sales data (4,5,3,4,5,5,3), what is the unit of the variance?",
+				a: [
+					"TVs squared, because variance uses squared deviations",
+					"TVs sold, because variance uses the original values",
+					"No units, because variance is dimensionless",
+					"Days squared, because the data covers one week",
+				],
+				c: 0,
+			},
+			{
+				q: "For the weekly TV sales data (4,5,3,4,5,5,3), what is the unit of the standard deviation?",
+				a: [
+					"TVs sold, because standard deviation is the square root of variance",
+					"TVs squared, because standard deviation squares deviations",
+					"No units, because standard deviation is dimensionless",
+					"Days, because the data covers one week",
+				],
+				c: 0,
+			},
+			{
+				q: "For the sorted table lengths (55, 66, 67, 69, 70, 72, 78), what is the interquartile range using the median-of-halves method?",
+				a: ["6 cm", "12 cm", "15 cm", "7 cm"],
+				c: 0,
+			},
+			{
+				q: "Using the 1.5 × IQR rule, which table length is an outlier in (55, 66, 67, 69, 70, 72, 78)?",
+				a: ["55 cm", "66 cm", "70 cm", "72 cm"],
+				c: 0,
+			},
+			{
+				q: "What does positive skewness indicate about a data distribution?",
+				a: [
+					"The distribution has a longer tail toward larger values",
+					"The distribution has a longer tail toward smaller values",
+					"Every value occurs with equal frequency",
+					"The distribution must be perfectly symmetric",
+				],
+				c: 0,
+			},
+			{
+				q: "Given the values (2, 3, 4, 5, 16), what type of skewness does the dataset most likely have?",
+				a: [
+					"Positive skewness",
+					"Negative skewness",
+					"Zero skewness",
+					"Perfectly uniform distribution",
+				],
+				c: 0,
+			},
+			{
+				q: "A dataset contains many high values and a few unusually low values, creating a long tail on the left. What type of skewness does it have?",
+				a: [
+					"Negative skewness",
+					"Positive skewness",
+					"Zero skewness",
+					"No variability",
+				],
+				c: 0,
+			},
+			{
+				q: "A distribution is approximately symmetrical, with similar tails on both sides. What type of skewness would you expect?",
+				a: [
+					"Zero skewness",
+					"Positive skewness",
+					"Negative skewness",
+					"Maximum positive skewness",
+				],
+				c: 0,
+			},
+			{
+				q: "A dataset has most of its values clustered on the left, with a few extremely large values extending the tail to the right. How is the distribution skewed?",
+				a: [
+					"Positively skewed",
+					"Negatively skewed",
+					"Symmetrical",
+					"Uniformly distributed",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a histogram display?",
+				a: [
+					"The frequency of numerical values grouped into intervals",
+					"The relationship between two numerical variables",
+					"The proportion of each category as slices of a circle",
+					"The cumulative total of observations in a dataset",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a bar chart display?",
+				a: [
+					"The frequency or value associated with each category",
+					"The distribution of continuous values using connected points",
+					"The correlation between two numerical variables",
+					"The cumulative frequency across numerical intervals",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a pie chart display?",
+				a: [
+					"Each category's proportion of the overall total",
+					"The frequency of values across continuous intervals",
+					"The relationship between two numerical variables",
+					"The spread of values around the mean",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a frequency polygon display?",
+				a: [
+					"Frequencies for intervals connected by line segments",
+					"Categories represented as separate rectangular bars",
+					"Proportions represented as slices of a circle",
+					"Individual observations plotted against two variables",
+				],
+				c: 0,
+			},
+			{
+				q: "What does an ogive (cumulative frequency graph) display?",
+				a: [
+					"The running total of frequencies up to each value or interval",
+					"The proportion of each category in a circular chart",
+					"The frequency of each category using separate bars",
+					"The relationship between two numerical variables",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a scatter plot display?",
+				a: [
+					"The relationship between two numerical variables",
+					"The frequency of a single variable grouped into intervals",
+					"The proportion of each category in a dataset",
+					"The cumulative frequency of observations",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a box plot display?",
+				a: [
+					"The median, quartiles, spread, and potential outliers",
+					"The frequency of each category as rectangular bars",
+					"The relationship between two categorical variables",
+					"The cumulative frequency across all observations",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a frequency table show?",
+				a: [
+					"The number of times each value or category occurs",
+					"The correlation coefficient between two variables",
+					"The mean and standard deviation of every category",
+					"The order in which observations were collected",
+				],
+				c: 0,
+			},
+			{
+				q: "Which chart is most appropriate for showing how a numerical variable is distributed across intervals?",
+				a: ["Histogram", "Pie chart", "Scatter plot", "Network diagram"],
+				c: 0,
+			},
+			{
+				q: "Which chart is best for comparing frequencies across distinct categories?",
+				a: ["Bar chart", "Histogram", "Ogive", "Scatter plot"],
+				c: 0,
+			},
+			{
+				q: "Which chart is best for showing how a total is divided among categories?",
+				a: ["Pie chart", "Scatter plot", "Frequency polygon", "Box plot"],
+				c: 0,
+			},
+			{
+				q: "Which graph is useful for identifying the median, quartiles, and potential outliers?",
+				a: ["Box plot", "Pie chart", "Frequency polygon", "Bar chart"],
+				c: 0,
+			},
+			{
+				q: "In R, what does the statement dx = x - mean(x) do?",
+				a: [
+					"Subtracts the mean of x from every value in x",
+					"Adds the mean of x to every value in x",
+					"Sorts x from smallest to largest",
+					"Divides every value in x by its mean",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R command computes the correlation between iris petal length and petal width?",
+				a: [
+					"cor(iris$Petal.Length, iris$Petal.Width)",
+					"mean(iris$Petal.Length, iris$Petal.Width)",
+					"plot(iris$Petal.Length, iris$Petal.Width)",
+					"var(iris$Petal.Length + iris$Petal.Width)",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a data frame in R?",
+				a: [
+					"A tabular structure containing rows and columns",
+					"A single numeric value representing the mean",
+					"A function that automatically trains a classifier",
+					"A chart that displays only categorical frequencies",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R function is commonly used to create a basic scatter plot?",
+				a: ["plot(x, y)", "scatter(x, y)", "graph(x, y)", "array(x, y)"],
+				c: 0,
+			},
+			{
+				q: "In R, what do the arguments x and y represent in plot(x, y) when creating a scatter plot?",
+				a: [
+					"The x-axis and y-axis values for each point",
+					"The minimum and maximum values of the dataset",
+					"The mean and standard deviation of the data",
+					"The title and labels of the graph",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R code correctly creates a scatter plot using two numeric vectors named height and weight?",
+				a: [
+					"plot(height, weight)",
+					"scatter(height, weight)",
+					"array(height, weight)",
+					"cor(height, weight)",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R function creates a one-dimensional array or vector of values?",
+				a: [
+					"c(2, 4, 6, 8)",
+					"plot(2, 4, 6, 8)",
+					"cor(2, 4, 6, 8)",
+					"mean(2, 4, 6, 8)",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the R expression values <- c(3, 5, 7, 9) do?",
+				a: [
+					"Stores four values in a vector named values",
+					"Creates a scatter plot of four points",
+					"Calculates the average of the four values",
+					"Calculates the correlation between four variables",
+				],
+				c: 0,
+			},
+			{
+				q: "Given values <- c(10, 20, 30, 40), what does values[2] return in R?",
+				a: ["20", "10", "30", "40"],
+				c: 0,
+			},
+			{
+				q: "How do you access the third element of a vector named scores in R?",
+				a: ["scores[3]", "scores(3)", "scores{3}", "scores[2]"],
+				c: 0,
+			},
+			{
+				q: "Given x <- c(1, 2, 3) and y <- c(4, 5, 6), what does plot(x, y) display?",
+				a: [
+					"Three points: (1,4), (2,5), and (3,6)",
+					"A bar chart comparing the two vectors",
+					"A histogram of all six values",
+					"A single point showing the mean of each vector",
+				],
+				c: 0,
+			},
+			{
+				q: "What must generally be true of two vectors used as x and y values in an R scatter plot?",
+				a: [
+					"They must have the same length so each x value pairs with a y value",
+					"They must contain exactly the same numerical values",
+					"They must both contain only positive numbers",
+					"They must be sorted in descending order",
+				],
+				c: 0,
+			},
+			{
+				q: "Which R function combines multiple values into a single vector?",
+				a: ["c()", "plot()", "cor()", "sd()"],
+				c: 0,
+			},
+			{
+				q: "Given the values (2, 4, 6, 8), what are the min-max normalized values using the formula (x - min) / (max - min)?",
+				a: [
+					"0, 0.33, 0.67, 1",
+					"0.25, 0.5, 0.75, 1",
+					"2, 4, 6, 8",
+					"0, 0.5, 1, 1.5",
+				],
+				c: 0,
+			},
+			{
+				q: "In Python, which code correctly draws a correlation heatmap for a DataFrame named df?",
+				a: [
+					"sns.heatmap(df.corr(), annot=True)",
+					"plt.scatter(df.corr(), annot=True)",
+					"df.plot(correlation=True)",
+					"sns.histplot(df.corr(), annot=True)",
+				],
+				c: 0,
+			},
+			{
+				q: "When analyzing a correlation heatmap, how do you identify which variables have the strongest linear relationship?",
+				a: [
+					"Look for correlation values closest to +1 or -1",
+					"Look for correlation values closest to 0",
+					"Look for the variables with the largest averages",
+					"Look for the darkest cells regardless of their values",
+				],
+				c: 0,
+			},
+			{
+				q: "A correlation heatmap shows a value of -0.92 between two variables. What does this indicate?",
+				a: [
+					"A strong negative linear relationship",
+					"A strong positive linear relationship",
+					"Little or no linear relationship",
+					"One variable directly causes the other",
+				],
+				c: 0,
+			},
+			{
+				q: "When examining a correlation heatmap, what does a value close to 0 between two variables indicate?",
+				a: [
+					"Little or no linear relationship",
+					"A strong positive linear relationship",
+					"A strong negative linear relationship",
+					"The variables have identical values",
+				],
+				c: 0,
+			},
+			{
+				q: "In R, which command draws a box plot for the values stored in a vector named scores?",
+				a: [
+					"boxplot(scores)",
+					"hist(scores)",
+					"plot(scores)",
+					"barplot(scores)",
+				],
+				c: 0,
+			},
+			{
+				q: "In R, which code correctly draws a box plot for the values 4, 7, 8, 10, and 15?",
+				a: [
+					"boxplot(c(4, 7, 8, 10, 15))",
+					"hist(c(4, 7, 8, 10, 15))",
+					"boxplot(4, 7, 8, 10, 15)",
+					"plotbox(c(4, 7, 8, 10, 15))",
+				],
+				c: 0,
+			},
+			{
+				q: "In R, what does the command boxplot(c(2, 5, 7, 9, 12)) produce?",
+				a: [
+					"A box plot summarizing the distribution of the values",
+					"A histogram showing the frequency of each value",
+					"A scatter plot comparing two variables",
+					"A table listing the values in ascending order",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the expected value of a fair four-sided die numbered 1 through 4?",
+				a: ["2.5", "2", "3", "4"],
+				c: 0,
+			},
+			{
+				q: "How is the expected value of a discrete random variable calculated?",
+				a: [
+					"Multiply each possible value by its probability and sum the products",
+					"Add all possible values and divide by the number of variables",
+					"Multiply all possible values together and take the square root",
+					"Subtract the smallest value from the largest value",
+				],
+				c: 0,
+			},
+			{
+				q: "What is supervised learning?",
+				a: [
+					"Learning from examples that include known target outputs",
+					"Finding patterns in data without target labels",
+					"Sorting records alphabetically without using their features",
+					"Reducing a dataset to a single observation",
+				],
+				c: 0,
+			},
+			{
+				q: "What is unsupervised learning?",
+				a: [
+					"Finding patterns or structure in data without known target labels",
+					"Learning exclusively from examples with known answers",
+					"Using only manually assigned output categories",
+					"Calculating a target value from a fixed equation",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main idea behind k-nearest neighbors (kNN) classification?",
+				a: [
+					"Classify a new data point using the labels of its nearest neighbors",
+					"Classify data by sorting all values alphabetically",
+					"Assign every data point to the most common class in the dataset",
+					"Predict a class by calculating the mean of all features",
+				],
+				c: 0,
+			},
+			{
+				q: "When using kNN classification, how do you determine the nearest neighbors of a new query point?",
+				a: [
+					"Calculate the distance from the query to each training point and select the smallest distances",
+					"Select the training points with the largest feature values",
+					"Choose the training points with the most common class labels",
+					"Calculate the average distance between every pair of training points",
+				],
+				c: 0,
+			},
+			{
+				q: "A kNN classifier uses k = 3. The three nearest neighbors have labels A, B, and A. What class is predicted?",
+				a: [
+					"Class A, because it receives the majority of the votes",
+					"Class B, because it is different from the other labels",
+					"Neither class, because all labels must match",
+					"Class B, because it has the smallest number of votes",
+				],
+				c: 0,
+			},
+			{
+				q: "What type of problem is logistic regression primarily used for?",
+				a: [
+					"Classification, especially predicting between two classes",
+					"Clustering data into groups without labels",
+					"Predicting continuous numerical values only",
+					"Sorting data points by their distance from the mean",
+				],
+				c: 0,
+			},
+			{
+				q: "Which type of target data is logistic regression best suited for?",
+				a: [
+					"Categorical outcomes, such as yes/no or pass/fail",
+					"Continuous outcomes, such as temperature or height",
+					"Unlabeled data with no known categories",
+					"Numerical measurements that must be sorted",
+				],
+				c: 0,
+			},
+			{
+				q: "Why does logistic regression use the sigmoid activation function?",
+				a: [
+					"To convert a model's output into a value between 0 and 1",
+					"To convert every input into a negative number",
+					"To calculate the distance between two data points",
+					"To guarantee that every prediction is exactly 0 or 1",
+				],
+				c: 0,
+			},
+			{
+				q: "A logistic regression model outputs a sigmoid value of 0.85. How can this value be interpreted in binary classification?",
+				a: [
+					"The model estimates an 85% probability of the positive class",
+					"The model predicts a value of exactly 85 for the target",
+					"The model estimates an 85% probability of the negative class",
+					"The model guarantees that the positive class is correct",
+				],
+				c: 0,
+			},
+			{
+				q: "How does logistic regression typically turn a sigmoid output into a binary class prediction?",
+				a: [
+					"It compares the output to a threshold, often 0.5",
+					"It rounds every output up to the nearest whole number",
+					"It selects the class with the largest feature value",
+					"It compares the output to the mean of the input data",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is an example of a problem where logistic regression would be useful?",
+				a: [
+					"Predicting whether a student passes or fails based on study hours",
+					"Predicting the exact temperature tomorrow in degrees",
+					"Grouping customers without knowing their categories",
+					"Calculating the average height of a group of students",
+				],
+				c: 0,
+			},
+			{
+				q: "When creating example data by hand for logistic regression, what should the target labels represent?",
+				a: [
+					"The category to predict, such as pass (1) or fail (0)",
+					"The average of all input feature values",
+					"The distance between each pair of observations",
+					"The name of the Python library being used",
+				],
+				c: 0,
+			},
+			{
+				q: "Given the linear regression equation Y = 5 + 2X, what is the predicted Y value when X = 3?",
+				a: ["11", "10", "8", "15"],
+				c: 0,
+			},
+			{
+				q: "Using the equation Y = 5 + 2X, what are the corresponding Y values when X = 1, 2, 3, 4, and 5?",
+				a: [
+					"7, 9, 11, 13, 15",
+					"5, 7, 9, 11, 13",
+					"2, 4, 6, 8, 10",
+					"7, 8, 9, 10, 11",
+				],
+				c: 0,
+			},
+			{
+				q: "In the linear regression equation Y = β₀ + β₁X, what does β₀ represent?",
+				a: [
+					"The Y-intercept of the regression line",
+					"The slope of the regression line",
+					"The sum of squared residuals",
+					"The total variation in Y",
+				],
+				c: 0,
+			},
+			{
+				q: "In the linear regression equation Y = β₀ + β₁X, what does β₁ represent?",
+				a: [
+					"The change in predicted Y for each one-unit increase in X",
+					"The predicted value of Y when X equals zero",
+					"The average of all observed Y values",
+					"The total number of observations",
+				],
+				c: 0,
+			},
+			{
+				q: "Given the data points (1, 7), (2, 9), (3, 11), (4, 13), and (5, 15), what are β₀ and β₁ for the best-fit linear regression line?",
+				a: [
+					"β₀ = 5 and β₁ = 2",
+					"β₀ = 2 and β₁ = 5",
+					"β₀ = 7 and β₁ = 1",
+					"β₀ = 0 and β₁ = 3",
+				],
+				c: 0,
+			},
+			{
+				q: "In linear regression, what does the residual for an observation represent?",
+				a: [
+					"The actual Y value minus the predicted Y value",
+					"The predicted Y value minus the actual X value",
+					"The difference between the mean X and mean Y",
+					"The sum of all predicted Y values",
+				],
+				c: 0,
+			},
+			{
+				q: "What does RSS (Residual Sum of Squares) measure in linear regression?",
+				a: [
+					"The sum of squared differences between actual and predicted Y values",
+					"The sum of all actual Y values",
+					"The squared difference between the largest and smallest X values",
+					"The total number of observations multiplied by the mean",
+				],
+				c: 0,
+			},
+			{
+				q: "What does TSS (Total Sum of Squares) measure in linear regression?",
+				a: [
+					"The total squared variation of actual Y values around their mean",
+					"The sum of squared differences between X and predicted Y",
+					"The total number of correctly predicted observations",
+					"The squared difference between the slope and intercept",
+				],
+				c: 0,
+			},
+			{
+				q: "A linear regression model has TSS = 100 and RSS = 25. Using R² = 1 - RSS/TSS, what is R²?",
+				a: ["0.75", "0.25", "0.50", "0.95"],
+				c: 0,
+			},
+			{
+				q: "What does an R² value of 0.90 indicate for a linear regression model?",
+				a: [
+					"The model explains 90% of the variation in the response variable",
+					"The model predicts every observation with 90% accuracy",
+					"The model has a residual sum of squares equal to 90",
+					"The model's slope must be equal to 0.90",
+				],
+				c: 0,
+			},
+			{
+				q: "In Python, which library can be used to fit a linear regression model and estimate its intercept and coefficient?",
+				a: [
+					"sklearn.linear_model.LinearRegression",
+					"seaborn.heatmap",
+					"sklearn.cluster.KMeans",
+					"matplotlib.pyplot.hist",
+				],
+				c: 0,
+			},
+			{
+				q: "In Python, after fitting a LinearRegression model named model, which attributes provide the intercept and slope for a single-feature model?",
+				a: [
+					"model.intercept_ and model.coef_",
+					"model.mean_ and model.median_",
+					"model.rss_ and model.tss_",
+					"model.x_values and model.y_values",
+				],
+				c: 0,
+			},
+			{
+				q: "What distinguishes multiple linear regression from simple linear regression?",
+				a: [
+					"It uses two or more input features to predict a response variable",
+					"It predicts multiple response variables using no input features",
+					"It uses only one input feature but fits several lines",
+					"It classifies observations into categories instead of predicting values",
+				],
+				c: 0,
+			},
+			{
+				q: "Which equation represents multiple linear regression with two input features, X₁ and X₂?",
+				a: [
+					"Y = β₀ + β₁X₁ + β₂X₂",
+					"Y = β₀ + β₁X",
+					"Y = X₁ × X₂",
+					"Y = β₀ + β₁ + β₂",
+				],
+				c: 0,
+			},
+			{
+				q: "For the plot on the right, why the curves for the training set and test set would look like that.",
+				a: [
+					"Training accuracy increases as the model learns, while test accuracy eventually decreases due to overfitting",
+					"Both curves increase continuously because more training data always improves accuracy on every dataset",
+					"Training accuracy decreases as the model learns, while test accuracy increases due to overfitting",
+					"Test accuracy increases continuously because the model memorizes the training data more accurately",
+				],
+				c: 0,
+				i: "./assets/quizimages/lau-datscimidtermpractice/image3.png",
+			},
+			{
+				q: "How would you use a validation dataset when developing a machine learning model?",
+				a: [
+					"To compare model settings and help select the best model",
+					"To train the model using every available observation",
+					"To replace the testing dataset during final evaluation",
+					"To store the model's predicted values permanently",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main difference between a validation dataset and a testing dataset?",
+				a: [
+					"Validation helps tune the model, while testing evaluates its final performance",
+					"Validation trains the model, while testing adjusts its parameters",
+					"Validation contains input data, while testing contains only labels",
+					"Validation measures training speed, while testing measures memory usage",
+				],
+				c: 0,
+			},
+			{
+				q: "Are validation and testing datasets both used to judge the accuracy of a trained model?",
+				a: [
+					"Yes, validation helps with model selection and testing assesses final accuracy",
+					"No, only the training dataset can be used to measure accuracy",
+					"Yes, both datasets must be used to train the model's parameters",
+					"No, neither dataset can be used to evaluate model performance",
+				],
+				c: 0,
+			},
+			{
+				q: "For 2-fold cross validation, you split the whole data set into one part for training (50% of it) and one part for validation (50%). How is this then different than just taking 50% of the whole set as the validation data set?",
+				a: [
+					"Each half takes a turn being used for validation, so both halves are used for training and validation",
+					"The model is trained on the entire dataset and validated using the same data",
+					"Only the first half is used for training, while the second half is always used for validation",
+					"The dataset is divided into two parts, but neither part is used to validate the model",
+				],
+				c: 0,
+			},
+			{
+				q: "Describe the main concepts of k-fold cross-validation in your own words.",
+				a: [
+					"Split the dataset into k parts, then repeatedly train on k-1 parts and validate on the remaining part",
+					"Split the dataset into k parts and use all of them only for training the model",
+					"Train the model once on half the dataset and test it on the other half",
+					"Create k models that all use exactly the same training and validation data",
+				],
+				c: 0,
+			},
+			{
+				q: "For a problem with 2 output classes, given a set of actual classification outputs and predicted outputs, what should a confusion matrix show?",
+				a: [
+					"The counts of correct and incorrect predictions for each class",
+					"The average value of the input features for each class",
+					"The training and validation accuracy for each fold",
+					"The correlation between the actual and predicted numerical values",
+				],
+				c: 0,
+			},
+			{
+				q: "For a problem with 2 output classes, a confusion matrix shows 8 true positives, 3 false positives, 2 false negatives, and 7 true negatives. How many predictions were classified correctly?",
+				a: ["15", "10", "13", "20"],
+				c: 0,
+			},
+			{
+				q: "For a problem with 2 output classes, what does a false positive in a confusion matrix mean?",
+				a: [
+					"The predicted class is positive, but the actual class is negative",
+					"The predicted class is negative, but the actual class is positive",
+					"The predicted class is positive, and the actual class is positive",
+					"The predicted class is negative, and the actual class is negative",
+				],
+				c: 0,
+			},
+			{
+				q: "For linear regression, what does the RSS (Residual Sum of Squares) term describe?",
+				a: [
+					"The sum of squared differences between actual and predicted Y values",
+					"The sum of all actual Y values in the dataset",
+					"The average difference between the input and output values",
+					"The total variation of X values around their mean",
+				],
+				c: 0,
+			},
+			{
+				q: "In linear regression, how is RSS related to the function y = f(x)?",
+				a: [
+					"It measures how far the predicted values from f(x) are from the actual Y values",
+					"It measures the average of all input X values used by f(x)",
+					"It measures how many input features are included in f(x)",
+					"It measures the difference between the slope and intercept of f(x)",
+				],
+				c: 0,
+			},
+			{
+				q: "How does RSS work intuitively in linear regression?",
+				a: [
+					"It squares and adds the prediction errors to measure how far predictions are from actual values",
+					"It adds all predicted values together to determine the model's slope",
+					"It counts how many observations are included in the training dataset",
+					"It measures the distance between every pair of input values",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens to RSS when a trained linear regression model fits the data well?",
+				a: [
+					"RSS is small because the predicted values are close to the actual values",
+					"RSS is large because the predicted values are close to the actual values",
+					"RSS must equal the number of samples in the dataset",
+					"RSS becomes negative when the model predicts accurately",
+				],
+				c: 0,
+			},
+			{
+				q: "What happens to RSS when a trained linear regression model does not fit the data well?",
+				a: [
+					"RSS is generally large because the prediction errors are larger",
+					"RSS becomes zero because the model cannot fit the data",
+					"RSS becomes negative because the errors are squared",
+					"RSS always equals the mean of the actual Y values",
+				],
+				c: 0,
+			},
+		],
+	},
 
 	SoftEngi: {
 		quiz1: [

@@ -13,7 +13,12 @@
       serverUrl.hash="";
       this.listeners=new Map();
       this.socket=null;
-      this.opened=this.wakeServer(serverUrl).then(()=>this.connect(serverUrl));
+      this.opened=window.quizHubOfflineTestMode
+        ? Promise.resolve(false)
+        : this.wakeServer(serverUrl).then(()=>this.connect(serverUrl));
+      window.addEventListener("quizhub:offline-test-modechange",(event)=>{
+        if(event.detail.enabled) this.close();
+      });
     }
     async wakeServer(serverUrl){
       const healthUrl=new URL(serverUrl);
@@ -65,6 +70,7 @@
       return ()=>this.listeners.set(type,listeners.filter((entry)=>entry!==listener));
     }
     async send(message){
+      if(window.quizHubOfflineTestMode) throw new Error("Offline Test Mode disables online party play.");
       await this.opened;
       if(this.socket.readyState!==WebSocket.OPEN) throw new Error("The party server connection has closed.");
       this.socket.send(JSON.stringify(message));
