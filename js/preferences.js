@@ -38,11 +38,16 @@
 	};
 	const regularQuizMusicOptions = [
 		"default",
+		"rotation",
 		...Object.keys(quizMusicSources).filter((source) => source !== "run"),
 	];
-	const secretQuizMusicOptions = ["run", ...regularQuizMusicOptions];
+	const secretQuizMusicOptions = [
+		"run",
+		...regularQuizMusicOptions,
+	];
 	const quizMusicNames = {
 		default: "Course default",
+		rotation: "Music Rotation",
 		run: "Run",
 		Practice1: "Binary",
 		Practice2: "Hexadecimal",
@@ -277,6 +282,7 @@
 		} else if (
 			name === "quizMusic" &&
 			(value === "default" ||
+				value === "rotation" ||
 				(Object.prototype.hasOwnProperty.call(quizMusicSources, value) &&
 					(value !== "run" || preferences.secretMode)))
 		) {
@@ -443,6 +449,9 @@
 		getQuizMusicName(value = preferences.quizMusic) {
 			return quizMusicNames[value] || "Course default";
 		},
+		get isQuizMusicRotation() {
+			return preferences.quizMusic === "rotation";
+		},
 		setTextSize(value) {
 			update("textSize", value);
 		},
@@ -463,11 +472,33 @@
 			).toString();
 		},
 		resolveQuizMusic(defaultSource) {
+			if (preferences.quizMusic === "rotation") {
+				return this.getNextQuizMusic(null, defaultSource);
+			}
 			const selectedSource = quizMusicSources[preferences.quizMusic];
 			return new URL(
 				selectedSource || defaultSource,
 				window.location.href,
 			).toString();
+		},
+		getNextQuizMusic(currentSource, defaultSource) {
+			const rotationSources = [
+				...new Set([
+					...Object.values(quizMusicSources)
+						.filter((source) => source !== quizMusicSources.run)
+						.map((source) =>
+							new URL(source, window.location.href).toString(),
+						),
+					new URL(defaultSource, window.location.href).toString(),
+				]),
+			];
+			const currentUrl = currentSource
+				? new URL(currentSource, window.location.href).toString()
+				: "";
+			const nextSources = rotationSources.filter(
+				(source) => source !== currentUrl,
+			);
+			return nextSources[Math.floor(Math.random() * nextSources.length)];
 		},
 		setSoundMuted(value) {
 			update("soundMuted", value);

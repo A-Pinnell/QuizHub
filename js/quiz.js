@@ -192,7 +192,7 @@ const lautestLoopBuffers = new Map();
 let lautestLoopSource = null;
 let lautestLoopSourceUrl = "";
 let lautestLoopGeneration = 0;
-quizMusic.loop = true;
+quizMusic.loop = !window.quizHubPreferences.isQuizMusicRotation;
 quizMusic.volume = 0.45;
 function updateMusicToggle() {
 	musicToggle.textContent = musicMuted ? "♫̸" : "♫";
@@ -226,7 +226,8 @@ window.QuizHubMusicPicker.attach({
 function startQuizMusic() {
 	if (isPreloadedQuiz || musicMuted || !hostDisplayMusicAllowed) return;
 	if (isDataSciLautest && !dataSciLautestMusicStarted) return;
-	if (forceStaticQuestionOrder) {
+	quizMusic.loop = !window.quizHubPreferences.isQuizMusicRotation;
+	if (forceStaticQuestionOrder && !window.quizHubPreferences.isQuizMusicRotation) {
 		startLautestLoopingMusic();
 		return;
 	}
@@ -239,6 +240,15 @@ function startQuizMusic() {
 			quizMusicPending = true;
 		});
 }
+quizMusic.addEventListener("ended", () => {
+	if (!window.quizHubPreferences.isQuizMusicRotation) return;
+	quizMusic.src = window.quizHubPreferences.getNextQuizMusic(
+		quizMusic.currentSrc || quizMusic.src,
+		quizMusicDefaultSource,
+	);
+	quizMusic.load();
+	startQuizMusic();
+});
 async function startLautestLoopingMusic() {
 	if (musicMuted || !hostDisplayMusicAllowed) return;
 	const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -399,6 +409,18 @@ const networkPartyActive =
 	/^[A-Z]{4}$/.test(partyRoomCode) &&
 	Boolean(partyPlayerId) &&
 	!window.quizHubOfflineTestMode;
+if (networkPartyActive) {
+	const roomCodeBadge = document.createElement("div");
+	roomCodeBadge.className = "party-room-code-badge";
+	roomCodeBadge.setAttribute("role", "group");
+	roomCodeBadge.setAttribute("aria-label", "Party room code");
+	const roomCodeLabel = document.createElement("span");
+	roomCodeLabel.textContent = "ROOM CODE";
+	const roomCodeText = document.createElement("strong");
+	roomCodeText.textContent = partyRoomCode;
+	roomCodeBadge.append(roomCodeLabel, roomCodeText);
+	document.body.appendChild(roomCodeBadge);
+}
 let hostDisplayAnswerer =
 	hostDisplayEnabled && partyPlayerId === hostDisplayPlayerId;
 let canControlPartyQuiz =

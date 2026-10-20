@@ -36,6 +36,7 @@
   const resolveAssetUrl = (path) => new URL(path, window.location.href).toString();
   const defaultMusicSource = music.src;
   music.src = window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
+  music.loop = !window.quizHubPreferences.isQuizMusicRotation;
   const soundFiles = {
     correct: resolveAssetUrl("./sfx/Correct.wav"),
     highlight: resolveAssetUrl("./sfx/highlight.wav"),
@@ -212,10 +213,20 @@
   $("decimalToggle").addEventListener("click", () => { state.decimal = !state.decimal; setToggle($("decimalToggle"), state.decimal); document.body.classList.toggle("show-decimals", state.decimal); });
 
   function updateMusic() {
+    music.loop = !window.quizHubPreferences.isQuizMusicRotation;
     if (!state.music) { music.pause(); return; }
     music.volume = .45;
     music.play().catch(() => {});
   }
+  music.addEventListener("ended", () => {
+    if (!window.quizHubPreferences.isQuizMusicRotation || !state.music || state.paused) return;
+    music.src = window.quizHubPreferences.getNextQuizMusic(
+      music.currentSrc || music.src,
+      defaultMusicSource
+    );
+    music.load();
+    updateMusic();
+  });
   window.QuizHubMusicPicker.attach({
     button: $("quizMusicCycle"),
     isSoundEnabled: () => state.sound,

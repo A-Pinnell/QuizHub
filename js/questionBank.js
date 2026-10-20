@@ -24202,7 +24202,7 @@ window.questionBank = {
 				a: [
 					"Polygonal Mesh",
 					"Voxel Grid",
-					"Polygon Mesh",
+					"Polygon Dividor",
 					"Parametric Surface",
 				],
 				c: 0,
@@ -24276,9 +24276,9 @@ window.questionBank = {
 					"An equation used in Blender to conduct rotational properties",
 					"The point lies outside of the object ",
 					"an Implicit Surface",
-					"The point lies on the surface of the object",
+					"The point lies on the sides of the object",
 				],
-				c: 3,
+				c: 2,
 			},
 			{
 				q: "Explain how the equation f(x, y, z) = 0 (on surface) defines an Implicit Surface",
@@ -24320,7 +24320,10 @@ window.questionBank = {
 			{
 				q: "In the scene graph shown, if a new object intersects the rectangle at node B, what should we do to see whether this new object intersects with any of the other objects?",
 				a: [
+					"Check Node C first, then move up to Node A and test every object in the scene graph",
 					"Avoid computation with Node C and go down the Node B tree to check if it intersects with any of its children",
+					"Restart the intersection test from the root node and compare the new object against every leaf node",
+					"Ignore the Node B subtree and check only the objects stored in Node A and Node C",
 				],
 				c: 0,
 				i: "./assets/quizimages/lau-gfxmidtermpractice/image3.png",
@@ -24348,11 +24351,11 @@ window.questionBank = {
 				i: "./assets/quizimages/lau-gfxmidtermpractice/image5.png",
 			},
 			{
-				q: "How would you apply the subdivision rule shown in the image?",
+				q: "How would you apply the subdivision rule shown in the image? FIX",
 				a: [
-					"Apply the rule to update the relevant points or vertices",
-					"Use the rule to assign a colour to each polygon",
-					"Apply the rule to rotate the camera around the model",
+					"Move the red vertex to the average position of all surrounding vertices, giving each vertex an equal weight.",
+					"Multiply the red vertex's position by (\frac12), multiply each blue vertex's position by (\frac14), and add the weighted positions together.",
+					"Multiply the red vertex's position by (\frac14), multiply each blue vertex's position by (\frac12), and add the weighted positions together.",
 					"Use the rule to remove all vertices from the mesh",
 				],
 				c: 0,
@@ -24370,7 +24373,7 @@ window.questionBank = {
 				i: "./assets/quizimages/lau-gfxmidtermpractice/image7.png",
 			},
 			{
-				q: "What do the displayed formulas for scaling 2D objects in 2D space mean?",
+				q: "What do the displayed formulas for scaling 2D objects in 2D space mean? FIX",
 				a: [
 					"They change an object's size along the coordinate axes",
 					"They rotate an object around the origin",
@@ -24425,7 +24428,7 @@ window.questionBank = {
 			{
 				q: "What does it mean that matrix multiplication is not commutative?",
 				a: [
-					"Changing the order of matrices can change the result",
+					"Changing the order of transformations will change the result",
 					"Changing the grouping of matrices always changes the result",
 					"Every matrix multiplication produces the identity matrix",
 					"Matrices cannot be multiplied in a sequence",
@@ -24435,9 +24438,9 @@ window.questionBank = {
 			{
 				q: "In the Blender screenshot, what is the relationship between the left and right windows, especially regarding the image?",
 				a: [
-					"The windows show related views of the same scene or image data",
+					"The left image maps onto the right image as a texture",
 					"The windows display two unrelated projects",
-					"The windows display the same image data with different editing tools",
+					"The right image is a duplicate of the left image with no changes",
 					"The windows show different parts of the same project in separate workspaces",
 				],
 				c: 0,
@@ -24445,12 +24448,7 @@ window.questionBank = {
 			},
 			{
 				q: "This formula is a type of line in the OBJ file format. For the cube shown, how many such lines would there be? How many v, vt, and vn lines are there?",
-				a: [
-					"Determine the face lines and the vertex, texture-coordinate, and normal lines from the cube",
-					"Count only the cube's vertices and ignore its faces and texture coordinates",
-					"Count the cube's materials and lighting settings instead of its geometry",
-					"Count the cube's edges and use that number for every line type",
-				],
+				a: ["(8, 14, 6)", "(12, 8, 16)", "(10, 10, 10)", "(6, 14, 8)"],
 				c: 0,
 				i: "./assets/quizimages/lau-gfxmidtermpractice/image12.png",
 			},

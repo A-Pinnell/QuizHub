@@ -207,6 +207,20 @@
 					<span class="special-spotlight special-spotlight-mid-right"></span>
 					<span class="special-spotlight special-spotlight-right"></span>
 				</div>
+				<div class="fire-overlay" aria-hidden="true">
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+					<span class="fire-flame"></span><span class="fire-flame"></span>
+				</div>
 				<div class="menu-datetime" aria-label="Current date and time">
 					<span class="clock-icon" aria-hidden="true"></span>
 					<div class="menu-datetime-values">
@@ -232,7 +246,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 2.7.1</div>
+						<div class="tagline">Version 2.7.3</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -583,6 +597,7 @@ Loading patch notes...</pre
 						<select id="quizMusicSetting">
 							<option value="run" id="secretQuizMusicOption" hidden>...</option>
 							<option value="default">Default for each course</option>
+							<option value="rotation">Music Rotation</option>
 							<option value="CompArch">Computer Architecture</option>
 							<option value="Practice1">Binary Practice</option>
 							<option value="Practice2">Hexadecimal Practice</option>
@@ -923,7 +938,9 @@ Loading patch notes...</pre
 						<span
 							id="loadingProgressDetail"
 							aria-live="polite"
-							aria-atomic="true">Preparing your quiz…</span>
+							aria-atomic="true"
+							>Preparing your quiz…</span
+						>
 						<strong id="loadingProgressPercent">0%</strong>
 					</div>
 					<div
@@ -933,9 +950,7 @@ Loading patch notes...</pre
 						aria-valuemin="0"
 						aria-valuemax="100"
 						aria-valuenow="0">
-						<div
-							class="loading-progress-fill"
-							id="loadingProgressFill"></div>
+						<div class="loading-progress-fill" id="loadingProgressFill"></div>
 					</div>
 					<p class="loading-progress-note">
 						Loading questions, audio, and quiz settings.

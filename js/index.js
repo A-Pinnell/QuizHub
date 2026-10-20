@@ -125,7 +125,9 @@ const musicToggle = document.getElementById("musicToggle");
 const menuMusic = new Audio(resolveAssetUrl("music/MenuMusic.wav"));
 const normalMenuMusicSource = resolveAssetUrl("music/MenuMusic.wav");
 const specialMenuMusicSource = resolveAssetUrl("music/SpecialMenu.wav");
+const stressMenuMusicSource = resolveAssetUrl("music/StressMenu.mp3");
 const secretMenuMusicSource = resolveAssetUrl("secret/HUB.wav");
+const stressMenuDates = new Set(["2026-10-20", "2026-10-21", "2026-10-22"]);
 const specialMenuMusicDates = new Set([
 	"2026-10-12",
 	"2026-10-13",
@@ -135,9 +137,6 @@ const specialMenuMusicDates = new Set([
 	"2026-10-17",
 	"2026-10-18",
 	"2026-10-19",
-	"2026-10-20",
-	"2026-10-21",
-	"2026-10-22",
 ]);
 const quizMusicPreview = document.getElementById("quizMusicPreview");
 const quizPreviewMusic = new Audio();
@@ -151,10 +150,19 @@ let menuMusicFadePending = false;
 menuMusic.loop = true;
 menuMusic.volume = 0.45;
 function getMenuMusicSource(date = new Date()) {
+	if (isStressMenuDate(date)) return stressMenuMusicSource;
 	if (window.quizHubPreferences.secretMode) return secretMenuMusicSource;
 	return isSpecialMenuMusicDate(date)
 		? specialMenuMusicSource
 		: normalMenuMusicSource;
+}
+function isStressMenuDate(date = new Date()) {
+	const localDate = [
+		date.getFullYear(),
+		String(date.getMonth() + 1).padStart(2, "0"),
+		String(date.getDate()).padStart(2, "0"),
+	].join("-");
+	return stressMenuDates.has(localDate);
 }
 function isSpecialMenuMusicDate(date = new Date()) {
 	const localDate = [
@@ -166,6 +174,7 @@ function isSpecialMenuMusicDate(date = new Date()) {
 }
 function updateSpecialMenuTheme(date = new Date()) {
 	const override = localStorage.getItem("quizHubSpecialEventMode");
+	document.body.classList.toggle("stress-menu-fire", isStressMenuDate(date));
 	document.body.classList.toggle(
 		"special-menu-night",
 		override === "true" ||
@@ -1743,14 +1752,15 @@ function updateQuizMusicTrackName() {
 		Practice1: "Blue Spheres ... from Sonic Mania [QuizHub Mix]",
 		Practice2: "Special Stage ... from Sonic 3D Blast (Genesis) [QuizHub Mix]",
 		CompGFX: "Craterscape ... from Wild 9",
-		SocIndi: "Society, Individuals and Technology course music",
+		SocIndi: "Ace Attorney 6 [QuizHub Mix]",
 		CloudComp: "A Lone Prayer ... from Persona [QuizHub Mix]",
 		DataSci:
 			"Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]",
-		StatisticPractice: "Statistic Practice",
-		DataSciLautest: "Dr. Lau's Practice (Data Science)",
+		StatisticPractice:
+			"議論 -HOPE VS DESPAIR- ... from Trigger Happy Havoc Danganronpa",
+		DataSciLautest: "Flower Man (Supersponge Remix)",
 		SoftEngi: "Brainrot Hub Mix [Ratatung x Verity x Looping the Rooms]",
-		CompGFXLautest: "Dr. Lau's Practice (Computer Graphics)",
+		CompGFXLautest: "Confrontation ... from 007 Tomorrow Never Dies",
 	};
 
 	if (courseMusicNames[musicSetting]) {
@@ -1965,6 +1975,12 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.7.3
+- A new main menu theme has been added for Exam days.
+- Music rotation is now an option, allowing a different song to play throughout your quizzing
+- Fixes to Dr. Lau's Practice for Computer Graphics
+- The room code now always shows in the bottom right corner of the screen in Party Mode
+
 Version 2.7.2
 - A Statistics practice has been added for Data Science, for testing various kinds of math and statistics questions. This quiz has a new theme and music.
 - A player leaving a Party mode game will now only be removed and not cause the game from ending for everyone else.

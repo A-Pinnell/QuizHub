@@ -16,6 +16,16 @@
     gameShell.parentNode.insertBefore(gameLayout, gameShell);
     gameLayout.appendChild(gameShell);
     document.body.classList.add("party-mode-active");
+    const roomCodeBadge = document.createElement("div");
+    roomCodeBadge.className = "party-room-code-badge";
+    roomCodeBadge.setAttribute("role", "group");
+    roomCodeBadge.setAttribute("aria-label", "Party room code");
+    const roomCodeLabel = document.createElement("span");
+    roomCodeLabel.textContent = "ROOM CODE";
+    const roomCodeText = document.createElement("strong");
+    roomCodeText.textContent = roomCode;
+    roomCodeBadge.append(roomCodeLabel, roomCodeText);
+    document.body.appendChild(roomCodeBadge);
     const status = document.createElement("p");
     status.className = "party-quiz-status";
     status.setAttribute("role", "status");

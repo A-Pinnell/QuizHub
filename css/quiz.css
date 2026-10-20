@@ -3185,6 +3185,31 @@ body:not(.softengi-mode) .party-turn.rolling {
 body.party-mode .quiz-hud .score-display {
 	display: none;
 }
+.party-room-code-badge {
+	position: fixed;
+	right: calc(14px + env(safe-area-inset-right, 0px));
+	bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+	z-index: 1000;
+	display: grid;
+	gap: 2px;
+	padding: 8px 12px;
+	border: 2px solid #fdd835;
+	border-radius: 12px;
+	background: rgba(20, 20, 20, 0.92);
+	color: #fff;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+	pointer-events: none;
+}
+.party-room-code-badge span {
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+}
+.party-room-code-badge strong {
+	color: #fdd835;
+	font-size: 1.1rem;
+	letter-spacing: 0.14em;
+}
 .party-score-display {
 	display: flex;
 	justify-content: flex-start;

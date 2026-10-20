@@ -3193,3 +3193,194 @@ html.dev-display-cover .university {
 html.dev-display-cover .ground {
 	height: 105px;
 }
+
+body.stress-menu-fire .sky {
+	background: linear-gradient(180deg, #160604 0%, #651708 62%, #b93608 100%);
+}
+body.stress-menu-fire .sky::before {
+	position: absolute;
+	inset: 0;
+	content: "";
+	pointer-events: none;
+	background:
+		radial-gradient(2px 2px at 8% 72%, #ffd36a 50%, transparent 100%),
+		radial-gradient(2px 2px at 17% 49%, #ff8b32 50%, transparent 100%),
+		radial-gradient(1.5px 1.5px at 25% 81%, #ffe79a 50%, transparent 100%),
+		radial-gradient(2px 2px at 34% 62%, #ff9b3d 50%, transparent 100%),
+		radial-gradient(1.5px 1.5px at 43% 43%, #ffd36a 50%, transparent 100%),
+		radial-gradient(2px 2px at 52% 76%, #ff8b32 50%, transparent 100%),
+		radial-gradient(1.5px 1.5px at 61% 55%, #ffe79a 50%, transparent 100%),
+		radial-gradient(2px 2px at 70% 82%, #ff9b3d 50%, transparent 100%),
+		radial-gradient(1.5px 1.5px at 79% 47%, #ffd36a 50%, transparent 100%),
+		radial-gradient(2px 2px at 88% 67%, #ff8b32 50%, transparent 100%),
+		radial-gradient(1.5px 1.5px at 96% 52%, #ffe79a 50%, transparent 100%);
+	opacity: 0.75;
+	animation: emberGlow 1.8s ease-in-out infinite alternate;
+}
+body.stress-menu-fire .cloud-track,
+body.stress-menu-fire .special-spotlights {
+	display: none !important;
+}
+body.stress-menu-fire .ground {
+	background: #32100b;
+	box-shadow: 0 -18px 48px rgba(255, 72, 8, 0.45);
+}
+body.stress-menu-fire .pillar {
+	background: #34120e;
+}
+body.stress-menu-fire .menu-area {
+	background: rgba(74, 24, 17, 0.84);
+	border-top-color: rgba(255, 111, 24, 0.88);
+}
+body.stress-menu-fire .university {
+	background: linear-gradient(110deg, #691509, #b83b0a);
+}
+body.stress-menu-fire h1 .stem-letter:nth-child(-n + 4) {
+	color: #ff9a28;
+	text-shadow:
+		3px 3px 0 #541006,
+		0 0 14px rgba(255, 105, 18, 0.85);
+}
+body.stress-menu-fire h1 .stem-letter:nth-child(6),
+body.stress-menu-fire h1 .stem-letter:nth-child(7),
+body.stress-menu-fire h1 .stem-letter:nth-child(8),
+body.stress-menu-fire h1 .stem-letter:nth-child(9) {
+	color: #fff0cc;
+	text-shadow:
+		3px 3px 0 #541006,
+		0 0 12px rgba(255, 105, 18, 0.68);
+}
+body.stress-menu-fire.menu-visible h1 .stem-letter {
+	opacity: 1;
+	transform: none;
+	animation: burningTextRipple 1.55s ease-in-out infinite;
+}
+body.stress-menu-fire.menu-visible h1 .stem-letter:nth-child(2) { animation-delay: -0.18s; }
+body.stress-menu-fire.menu-visible h1 .stem-letter:nth-child(3) { animation-delay: -0.36s; }
+body.stress-menu-fire.menu-visible h1 .stem-letter:nth-child(4) { animation-delay: -0.54s; }
+body.stress-menu-fire.menu-visible h1 .stem-letter:nth-child(5) { animation-delay: -0.72s; }
+body.stress-menu-fire.menu-visible h1 .stem-letter:nth-child(6) { animation-delay: -0.9s; }
+body.stress-menu-fire.menu-visible h1 .stem-letter:nth-child(7) { animation-delay: -1.08s; }
+body.stress-menu-fire.menu-visible h1 .stem-letter:nth-child(8) { animation-delay: -1.26s; }
+body.stress-menu-fire.menu-visible h1 .stem-letter:nth-child(9) { animation-delay: -1.44s; }
+@keyframes burningTextRipple {
+	0%,
+	100% {
+		transform: translateY(0) skewX(0) scaleY(1);
+		filter: brightness(1);
+		text-shadow:
+			3px 3px 0 #541006,
+			0 0 12px rgba(255, 105, 18, 0.68);
+	}
+	24% {
+		transform: translateY(-3px) skewX(-2deg) scaleY(1.06);
+		filter: brightness(1.22);
+		text-shadow:
+			3px 3px 0 #541006,
+			0 0 18px rgba(255, 105, 18, 0.95),
+			0 0 30px rgba(255, 190, 60, 0.55);
+	}
+	52% {
+		transform: translateY(1px) skewX(1.5deg) scaleY(0.97);
+		filter: brightness(1.08);
+	}
+	76% {
+		transform: translateY(-1px) skewX(-1deg) scaleY(1.03);
+		filter: brightness(1.16);
+	}
+}
+body.stress-menu-fire .fire-overlay {
+	display: block;
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	opacity: 1;
+	pointer-events: none;
+}
+body.stress-menu-fire .content > header,
+body.stress-menu-fire .content > .menu-area,
+body.stress-menu-fire .content > .patchnotes-button {
+	position: relative;
+	z-index: 1;
+}
+.fire-overlay {
+	display: none;
+}
+.fire-flame {
+	position: absolute;
+	bottom: -8%;
+	width: 8%;
+	min-width: 54px;
+	border-radius: 50% 50% 14% 14%;
+	background: radial-gradient(
+		ellipse at 50% 82%,
+		#fff9bd 0 7%,
+		#ffd94f 15%,
+		#ff8c22 43%,
+		#ed3610 68%,
+		rgba(133, 13, 2, 0.4) 83%,
+		transparent 100%
+	);
+	clip-path: polygon(
+		50% 0,
+		64% 19%,
+		58% 34%,
+		78% 20%,
+		72% 43%,
+		100% 31%,
+		84% 58%,
+		94% 69%,
+		78% 100%,
+		18% 100%,
+		6% 78%,
+		21% 60%,
+		0 42%,
+		30% 52%,
+		29% 31%,
+		44% 43%
+	);
+	filter: blur(1.5px);
+	mix-blend-mode: screen;
+	transform-origin: 50% 100%;
+	animation: flameDance 1.2s ease-in-out infinite alternate;
+}
+.fire-flame:nth-child(1) { left: 0%; height: 46%; animation-duration: 1.15s; }
+.fire-flame:nth-child(2) { left: 4%; width: 6%; height: 34%; animation-delay: -0.7s; }
+.fire-flame:nth-child(3) { left: 8%; width: 10%; height: 58%; animation-delay: -0.2s; }
+.fire-flame:nth-child(4) { left: 13%; width: 7%; height: 41%; animation-delay: -0.9s; }
+.fire-flame:nth-child(5) { left: 17%; width: 9%; height: 64%; animation-duration: 1.4s; }
+.fire-flame:nth-child(6) { left: 22%; width: 7%; height: 38%; animation-delay: -0.4s; }
+.fire-flame:nth-child(7) { left: 26%; width: 10%; height: 53%; animation-delay: -1s; }
+.fire-flame:nth-child(8) { left: 31%; width: 6%; height: 34%; animation-duration: 0.95s; }
+.fire-flame:nth-child(9) { left: 35%; width: 11%; height: 68%; animation-delay: -0.6s; }
+.fire-flame:nth-child(10) { left: 41%; width: 7%; height: 42%; animation-delay: -0.25s; }
+.fire-flame:nth-child(11) { left: 45%; width: 9%; height: 57%; animation-duration: 1.35s; }
+.fire-flame:nth-child(12) { left: 50%; width: 7%; height: 37%; animation-delay: -0.8s; }
+.fire-flame:nth-child(13) { left: 54%; width: 11%; height: 66%; animation-delay: -0.35s; }
+.fire-flame:nth-child(14) { left: 60%; width: 7%; height: 43%; animation-duration: 1.05s; }
+.fire-flame:nth-child(15) { left: 64%; width: 10%; height: 58%; animation-delay: -0.75s; }
+.fire-flame:nth-child(16) { left: 69%; width: 6%; height: 35%; animation-delay: -0.15s; }
+.fire-flame:nth-child(17) { left: 73%; width: 10%; height: 65%; animation-duration: 1.3s; }
+.fire-flame:nth-child(18) { left: 78%; width: 7%; height: 42%; animation-delay: -0.5s; }
+.fire-flame:nth-child(19) { left: 82%; width: 11%; height: 55%; animation-delay: -1.1s; }
+.fire-flame:nth-child(20) { left: 88%; width: 7%; height: 38%; animation-duration: 1s; }
+.fire-flame:nth-child(21) { left: 92%; width: 10%; height: 63%; animation-delay: -0.65s; }
+.fire-flame:nth-child(22) { left: 96%; width: 7%; height: 45%; animation-delay: -0.3s; }
+.fire-flame:nth-child(23) { left: 2%; width: 6%; height: 28%; animation-delay: -0.45s; }
+.fire-flame:nth-child(24) { left: 90%; width: 6%; height: 30%; animation-delay: -0.85s; }
+@keyframes flameDance {
+	from { transform: scaleX(0.82) scaleY(0.92) rotate(-3deg); }
+	to { transform: scaleX(1.08) scaleY(1.06) rotate(3deg); }
+}
+@keyframes emberGlow {
+	from { opacity: 0.35; transform: translateY(8px); }
+	to { opacity: 0.9; transform: translateY(-12px); }
+}
+@media (prefers-reduced-motion: reduce) {
+	body.stress-menu-fire .sky::before,
+	body.stress-menu-fire .fire-flame,
+	body.stress-menu-fire.menu-visible h1 .stem-letter {
+		animation: none;
+	}
+}

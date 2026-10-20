@@ -172,6 +172,7 @@ test("quiz music options expose named, persistent track selections", () => {
 		],
 		[
 			"default",
+			"rotation",
 			"Practice1",
 			"Practice2",
 			"CompArch",
@@ -185,8 +186,25 @@ test("quiz music options expose named, persistent track selections", () => {
 			"SocIndi",
 		],
 	);
+	state.preferences.setQuizMusic("rotation");
+	assert.equal(state.values.get("quizHubQuizMusic"), "rotation");
+	assert.equal(state.preferences.isQuizMusicRotation, true);
+	assert.equal(state.preferences.getQuizMusicName(), "Music Rotation");
+	let previousRotationTrack =
+		state.preferences.resolveQuizMusic("./music/QuizMusic.wav");
+	for (let index = 0; index < 50; index++) {
+		const nextRotationTrack = state.preferences.getNextQuizMusic(
+			previousRotationTrack,
+			"./music/QuizMusic.wav",
+		);
+		assert.notEqual(nextRotationTrack, previousRotationTrack);
+		assert.match(nextRotationTrack, /\/music\/[^/]+\.(?:wav|mp3)$/);
+		previousRotationTrack = nextRotationTrack;
+	}
+
 	state.preferences.setQuizMusic("Practice1");
 	assert.equal(state.values.get("quizHubQuizMusic"), "Practice1");
+	assert.equal(state.preferences.isQuizMusicRotation, false);
 	assert.equal(state.preferences.getQuizMusicName(), "Binary");
 	state.preferences.setQuizMusic("SocIndi");
 	assert.equal(state.preferences.quizMusic, "SocIndi");
