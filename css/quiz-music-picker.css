@@ -1,0 +1,91 @@
+.quiz-music-picker {
+	width: min(380px, calc(100vw - 32px));
+	max-height: min(80vh, 620px);
+	padding: 20px;
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	border-radius: 18px;
+	background: #171a23;
+	color: #f6f7fb;
+	box-shadow: 0 24px 80px rgba(0, 0, 0, 0.58);
+}
+.quiz-music-picker::backdrop {
+	background: rgba(4, 7, 14, 0.68);
+	backdrop-filter: blur(4px);
+}
+.quiz-music-picker-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 16px;
+}
+.quiz-music-picker-header p {
+	margin: 0 0 5px;
+	color: #a9b2c7;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: 0.14em;
+}
+.quiz-music-picker-header h2 {
+	margin: 0;
+	font-size: 24px;
+}
+.quiz-music-picker-close {
+	width: 34px;
+	height: 34px;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.1);
+	color: inherit;
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+}
+.quiz-music-picker-options {
+	display: grid;
+	gap: 7px;
+	max-height: min(56vh, 440px);
+	overflow-y: auto;
+}
+.quiz-music-picker-option {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 42px;
+	padding: 10px 12px;
+	border: 1px solid rgba(255, 255, 255, 0.13);
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.055);
+	color: inherit;
+	text-align: left;
+	font: inherit;
+	cursor: pointer;
+}
+.quiz-music-picker-option:hover,
+.quiz-music-picker-option:focus-visible {
+	border-color: #9d8cff;
+	background: rgba(157, 140, 255, 0.14);
+	outline: none;
+}
+.quiz-music-picker-option[aria-pressed="true"]::after {
+	content: "SELECTED";
+	color: #a99aff;
+	font-size: 10px;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+}
+.quiz-music-picker-status {
+	min-height: 1.2em;
+	margin: 12px 0 0;
+	color: #bbc2d2;
+	font-size: 12px;
+}
+.quiz-music-picker-option:disabled {
+	opacity: 0.62;
+	cursor: wait;
+}
+@media (prefers-reduced-motion: reduce) {
+	.quiz-music-picker::backdrop {
+		backdrop-filter: none;
+	}
+}

@@ -132,6 +132,12 @@ const specialMenuMusicDates = new Set([
 	"2026-10-14",
 	"2026-10-15",
 	"2026-10-16",
+	"2026-10-17",
+	"2026-10-18",
+	"2026-10-19",
+	"2026-10-20",
+	"2026-10-21",
+	"2026-10-22",
 ]);
 const quizMusicPreview = document.getElementById("quizMusicPreview");
 const quizPreviewMusic = new Audio();
@@ -419,7 +425,9 @@ function renderQuizOptions(course) {
 	}
 	const options = (
 		courseQuizCatalog[course] || courseQuizCatalog.CompArch
-	).filter((quiz) => !partyModeActive || !quiz.external);
+	).filter(
+		(quiz) => !partyModeActive || (!quiz.external && quiz.partyMode !== false),
+	);
 	container.innerHTML = "";
 	document.getElementById("quizMenuTitle").textContent = partyModeActive
 		? "Choose a party quiz"
@@ -1739,7 +1747,10 @@ function updateQuizMusicTrackName() {
 		CloudComp: "A Lone Prayer ... from Persona [QuizHub Mix]",
 		DataSci:
 			"Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]",
+		StatisticPractice: "Statistic Practice",
+		DataSciLautest: "Dr. Lau's Practice (Data Science)",
 		SoftEngi: "Brainrot Hub Mix [Ratatung x Verity x Looping the Rooms]",
+		CompGFXLautest: "Dr. Lau's Practice (Computer Graphics)",
 	};
 
 	if (courseMusicNames[musicSetting]) {
@@ -1954,6 +1965,14 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.7.2
+- A Statistics practice has been added for Data Science, for testing various kinds of math and statistics questions. This quiz has a new theme and music.
+- A player leaving a Party mode game will now only be removed and not cause the game from ending for everyone else.
+- You can now change the quiz theme in the middle of a quiz
+- The default loading screen has been updated with a new design, including a progress bar
+- Binary Quiz and Hexadecimal Quiz are now available in Party Mode!
+
+
 Version 2.7.1
 - Dr. Lau's Practice for Data Science has been updated with new questions and images, including a new question type! Can you beat his questions? (Note this quiz is not available in Party Mode)
 - The win screen will now change if you fail a quiz.

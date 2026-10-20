@@ -78,7 +78,7 @@ function loadPreferences({
 		}
 	}
 
-	vm.runInNewContext(preferencesScript, { window, document, CustomEvent });
+	vm.runInNewContext(preferencesScript, { window, document, CustomEvent, URL });
 
 	return {
 		classes,
@@ -159,4 +159,74 @@ test("developer Cover Screen preview keeps Clamshell mode unavailable", () => {
 	assert.equal(state.preferences.clamshellModeAvailable, false);
 	assert.equal(state.preferences.clamshellMode, false);
 	assert.equal(state.values.get("quizHubClamshellMode"), "false");
+});
+
+test("quiz music options expose named, persistent track selections", () => {
+	const state = loadPreferences();
+
+	assert.deepEqual(
+		[
+			...state.preferences
+				.getQuizMusicOptions()
+				.map((option) => option.value),
+		],
+		[
+			"default",
+			"Practice1",
+			"Practice2",
+			"CompArch",
+			"CloudComp",
+			"DataSci",
+			"StatisticPractice",
+			"DataSciLautest",
+			"SoftEngi",
+			"CompGFX",
+			"CompGFXLautest",
+			"SocIndi",
+		],
+	);
+	state.preferences.setQuizMusic("Practice1");
+	assert.equal(state.values.get("quizHubQuizMusic"), "Practice1");
+	assert.equal(state.preferences.getQuizMusicName(), "Binary");
+	state.preferences.setQuizMusic("SocIndi");
+	assert.equal(state.preferences.quizMusic, "SocIndi");
+	assert.equal(
+		state.preferences.getQuizMusicName("StatisticPractice"),
+		"Statistic Practice",
+	);
+	assert.equal(
+		state.preferences.getQuizMusicName("DataSciLautest"),
+		"Dr. Lau's Practice (Data Science)",
+	);
+	assert.equal(
+		state.preferences.getQuizMusicName("CompGFXLautest"),
+		"Dr. Lau's Practice (Computer Graphics)",
+	);
+	state.preferences.setQuizMusic("StatisticPractice");
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3"),
+		/\/music\/Trial_Quiz\.mp3$/,
+	);
+	state.preferences.setQuizMusic("DataSciLautest");
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3"),
+		/\/music\/Challenge2\.mp3$/,
+	);
+	state.preferences.setQuizMusic("CompGFXLautest");
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3"),
+		/\/music\/Challenge\.mp3$/,
+	);
+});
+
+test("secret-mode quiz song options include the secret track", () => {
+	const state = loadPreferences();
+	state.preferences.setSecretMode(true);
+
+	assert.equal(state.preferences.quizMusic, "run");
+	assert.equal(state.preferences.getQuizMusicName(), "Run");
+	assert.equal(
+		state.preferences.getQuizMusicOptions()[0].value,
+		"run",
+	);
 });

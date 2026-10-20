@@ -106,6 +106,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
 
   await verifyPartyQuizLaunch("CompArch", "test1");
   await verifyPartyQuizLaunch("CloudComp", "test1");
+  await verifyPartyQuizLaunch("CompArch", "binary");
+  await verifyPartyQuizLaunch("CompArch", "hexadecimal");
 
   const host = await connect();
   const missingRoomError = waitForMessage(host, "error");
@@ -490,15 +492,13 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.deepEqual(mixedReplayMessage.mixedSources, mixedHostLaunch.mixedSources);
   assert.deepEqual(guestMixedReplayMessage, mixedReplayMessage);
 
-  const hostOver = waitForMessage(host, "game-over");
   const hostRoomState = waitForMessage(host, "room-state");
   const guestLeft = waitForMessage(guest, "left");
   send(guest, { type: "leave", code: hosted.room.code });
   await guestLeft;
-  const [ended, updatedRoom] = await Promise.all([hostOver, hostRoomState]);
-  assert.equal(ended.reason, "player-left");
-  assert.equal(ended.departedPlayerId, joined.playerId);
+  const updatedRoom = await hostRoomState;
   assert.equal(updatedRoom.room.players.length, 1);
+  assert.equal(updatedRoom.room.stage, "setup");
 
   let displayHost = await connect();
   const displayHostedPromise = waitForMessage(displayHost, "hosted");
@@ -507,6 +507,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     capacity: 50,
     player: { name: "Display Host", color: "#ff0000", photo: "" }
   });
+
   const displayHosted = await displayHostedPromise;
   assert.equal(displayHosted.room.hostDisplay, false);
 
@@ -873,4 +874,265 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     ),
     true
   );
+});
+
+test("only the host leaving ends an active party quiz", async (t) => {
+  const port = 20080 + Math.floor(Math.random() * 1000);
+  const server = spawn(process.execPath, ["server.js"], {
+    cwd: process.cwd(),
+    env: { ...process.env, PORT: String(port) },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  let serverOutput = "";
+  server.stdout.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  server.stderr.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  const sockets = [];
+  t.after(() => {
+    sockets.forEach((socket) => socket.close());
+    server.kill();
+  });
+
+  let ready = false;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    if (server.exitCode !== null) throw new Error(`Party server exited: ${serverOutput}`);
+    try {
+      const response = await fetch(`http://localhost:${port}/`);
+      if (response.ok) {
+        ready = true;
+        break;
+      }
+    } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  assert.equal(ready, true, `Party server did not start: ${serverOutput}`);
+
+  async function connect() {
+    const socket = new WebSocket(`ws://localhost:${port}/party`);
+    sockets.push(socket);
+    await once(socket, "open");
+    return socket;
+  }
+
+  const host = await connect();
+  const hostedPromise = waitForMessage(host, "hosted");
+  send(host, {
+    type: "host",
+    capacity: 4,
+    player: { name: "Host", color: "#ff0000" }
+  });
+  const hosted = await hostedPromise;
+
+  async function join(name, color) {
+    const socket = await connect();
+    const joinedPromise = waitForMessage(socket, "joined");
+    send(socket, {
+      type: "join",
+      code: hosted.room.code,
+      player: { name, color }
+    });
+    return { socket, joined: await joinedPromise };
+  }
+
+  const firstGuest = await join("First guest", "#0000ff");
+  const disconnectedGuest = await join("Disconnected guest", "#00ff00");
+  const continuingGuest = await join("Continuing guest", "#ffff00");
+
+  const launched = sockets.map((socket) => waitForMessage(socket, "launch"));
+  send(host, {
+    type: "launch",
+    code: hosted.room.code,
+    category: "CompArch",
+    quiz: "test1"
+  });
+  await Promise.all(launched);
+
+  const started = sockets.map((socket) => waitForMessage(socket, "quiz-start"));
+  send(host, {
+    type: "quiz-start",
+    code: hosted.room.code,
+    config: {
+      questionSequence: [0],
+      orderMode: "static",
+      timeLimitMinutes: null,
+      perQuestionTimeMinutes: null
+    }
+  });
+  await Promise.all(started);
+
+  const firstGuestLeft = waitForMessage(firstGuest.socket, "left");
+  const explicitLeaveUpdate = waitForMessage(host, "room-state");
+  send(firstGuest.socket, { type: "leave", code: hosted.room.code });
+  await firstGuestLeft;
+  const afterExplicitLeave = await explicitLeaveUpdate;
+  assert.equal(afterExplicitLeave.room.stage, "quiz");
+  assert.equal(afterExplicitLeave.room.players.length, 3);
+
+  const reconnectedGuest = await connect();
+  const guestRejoined = waitForMessage(reconnectedGuest, "joined");
+  send(reconnectedGuest, {
+    type: "join",
+    code: hosted.room.code,
+    playerId: disconnectedGuest.joined.playerId
+  });
+  await guestRejoined;
+  const disconnectUpdate = waitForMessage(
+    host,
+    "room-state",
+    (message) => message.room.stage === "quiz" && message.room.players.length === 2
+  );
+  const disconnected = once(reconnectedGuest, "close");
+  reconnectedGuest.close();
+  await disconnected;
+  const afterDisconnect = await disconnectUpdate;
+  assert.equal(afterDisconnect.room.stage, "quiz");
+  assert.equal(afterDisconnect.room.players.length, 2);
+
+  const reconnectedHost = await connect();
+  const hostRejoined = waitForMessage(reconnectedHost, "joined");
+  send(reconnectedHost, {
+    type: "join",
+    code: hosted.room.code,
+    playerId: hosted.playerId
+  });
+  await hostRejoined;
+  const hostDeparture = waitForMessage(continuingGuest.socket, "game-over");
+  const hostClosed = once(reconnectedHost, "close");
+  reconnectedHost.close();
+  await hostClosed;
+  const ended = await hostDeparture;
+  assert.equal(ended.reason, "player-left");
+  assert.equal(ended.departedPlayerId, hosted.playerId);
+});
+
+test("procedural party quizzes track activity and reveal submitted answers", async (t) => {
+  const port = 19080 + Math.floor(Math.random() * 1000);
+  const server = spawn(process.execPath, ["server.js"], {
+    cwd: process.cwd(),
+    env: { ...process.env, PORT: String(port) },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  const sockets = [];
+  let serverOutput = "";
+  server.stdout.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  server.stderr.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  t.after(() => {
+    sockets.forEach((socket) => socket.close());
+    server.kill();
+  });
+
+  let ready = false;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    if (server.exitCode !== null) throw new Error(`Party server exited: ${serverOutput}`);
+    try {
+      const response = await fetch(`http://localhost:${port}/healthz`);
+      if (response.ok) {
+        ready = true;
+        break;
+      }
+    } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  assert.equal(ready, true, `Party server did not start: ${serverOutput}`);
+
+  async function connect() {
+    const socket = new WebSocket(`ws://localhost:${port}/party`);
+    sockets.push(socket);
+    await once(socket, "open");
+    return socket;
+  }
+
+  const host = await connect();
+  const hostedPromise = waitForMessage(host, "hosted");
+  send(host, { type: "host", capacity: 2, player: { name: "Host", color: "#ff0000" } });
+  const hosted = await hostedPromise;
+  const guest = await connect();
+  const joinedPromise = waitForMessage(guest, "joined");
+  send(guest, {
+    type: "join",
+    code: hosted.room.code,
+    player: { name: "Guest", color: "#0000ff" }
+  });
+  await joinedPromise;
+
+  const hostLaunch = waitForMessage(host, "launch");
+  const guestLaunch = waitForMessage(guest, "launch");
+  send(host, { type: "launch", code: hosted.room.code, category: "CompArch", quiz: "binary" });
+  await Promise.all([hostLaunch, guestLaunch]);
+
+  const hostStarted = waitForMessage(host, "quiz-start");
+  const guestStarted = waitForMessage(guest, "quiz-start");
+  send(host, {
+    type: "quiz-start",
+    code: hosted.room.code,
+    config: {
+      proceduralType: "binary",
+      proceduralSettings: {
+        gameType: "twos",
+        operation: "+",
+        questions: 2,
+        timerLimit: 0,
+        guide: false,
+        decimal: false
+      },
+      questionSequence: [0, 1]
+    }
+  });
+  await Promise.all([hostStarted, guestStarted]);
+
+  const hostQuestion = waitForMessage(host, "question");
+  const guestQuestion = waitForMessage(guest, "question");
+  send(host, {
+    type: "question",
+    code: hosted.room.code,
+    questionNumber: 0,
+    badge: "TWO'S COMPLEMENT",
+    prompt: "Find the two's complement of this binary number",
+    challenge: "00000101 = ?",
+    answerKind: "binary",
+    correctAnswer: "11111011"
+  });
+  const [questionForHost, questionForGuest] = await Promise.all([hostQuestion, guestQuestion]);
+  assert.equal(questionForGuest.challenge, "00000101 = ?");
+  assert.equal("correctAnswer" in questionForGuest, false);
+  assert.equal("correctAnswer" in questionForHost, false);
+
+  const activity = waitForMessage(host, "player-progress");
+  send(guest, { type: "player-progress", code: hosted.room.code, status: "answering" });
+  assert.deepEqual(await activity.then(({ playerId, status }) => ({
+    playerId,
+    status
+  })), { playerId: (await joinedPromise).playerId, status: "answering" });
+
+  const guestLocked = waitForMessage(host, "answer-locked");
+  send(guest, { type: "answer", code: hosted.room.code, questionNumber: 0, answer: "11111011" });
+  await guestLocked;
+  const hostReveal = waitForMessage(host, "reveal");
+  const guestReveal = waitForMessage(guest, "reveal");
+  send(host, { type: "answer", code: hosted.room.code, questionNumber: 0, answer: "00000000" });
+  const [hostResult, guestResult] = await Promise.all([hostReveal, guestReveal]);
+  assert.deepEqual(hostResult, guestResult);
+  assert.equal(hostResult.correctAnswer, "11111011");
+  assert.equal(hostResult.answers.find((entry) => entry.answer === "11111011").correct, true);
+  assert.equal(hostResult.answers.find((entry) => entry.answer === "00000000").correct, false);
+
+  const hostNext = waitForMessage(host, "next-question");
+  const guestNext = waitForMessage(guest, "next-question");
+  send(host, { type: "next-question", code: hosted.room.code });
+  await Promise.all([hostNext, guestNext]);
+  const hostBinaryQuestion = waitForMessage(host, "question");
+  const guestBinaryQuestion = waitForMessage(guest, "question");
+  send(host, {
+    type: "question",
+    code: hosted.room.code,
+    questionNumber: 1,
+    badge: "BINARY → DECIMAL",
+    prompt: "Convert this binary number to decimal",
+    challenge: "10110101 = ?",
+    answerKind: "number",
+    correctAnswer: "181",
+    displayBits: "10110101"
+  });
+  const [, binaryQuestionForGuest] = await Promise.all([hostBinaryQuestion, guestBinaryQuestion]);
+  assert.equal(binaryQuestionForGuest.displayBits, "10110101");
+  assert.equal("correctAnswer" in binaryQuestionForGuest, false);
 });

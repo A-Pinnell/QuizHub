@@ -100,6 +100,7 @@ window.addEventListener("load", function(){
 
   const scoreEl = document.getElementById("score");
   const resultsTitle = document.getElementById("resultsTitle");
+  const resultsKicker = document.getElementById("resultsKicker");
   const longestComboEl = document.getElementById("longestCombo");
   const summaryEl = document.getElementById("summary");
   const reviewEl = document.getElementById("review");
@@ -163,13 +164,23 @@ window.addEventListener("load", function(){
 
   const correctCount = data.history.filter((item) => item && item.correct === true).length;
   const incorrectCount = data.history.filter((item) => item && item.correct !== true).length;
+  const statisticsPracticeGameOver =
+    data.quizType === "statisticsPractice" && data.endReason === "game-over";
+  if (statisticsPracticeGameOver) {
+    resultsKicker.textContent = "STATISTIC PRACTICE / GAME OVER";
+  }
 
   scoreEl.textContent = score + " / " + total;
   longestComboEl.textContent = `Longest combo: ${longestCombo}`;
 
   // Passing = at least 50%.
-  const passed = total > 0 && score / total >= 0.5;
-  resultsTitle.textContent = passed ? "Great work!" : "TRY AGAIN!";
+  const passed =
+    !statisticsPracticeGameOver && total > 0 && score / total >= 0.5;
+  resultsTitle.textContent = statisticsPracticeGameOver
+    ? "TRIAL OVER"
+    : passed
+      ? "Great work!"
+      : "TRY AGAIN!";
 
   const resultSound=new Audio(passed?"sfx/Win.wav":"sfx/Lose.mp3");
   if(!soundsMuted) resultSound.play().catch(()=>{});
@@ -178,9 +189,11 @@ window.addEventListener("load", function(){
     playResultMusic();
   }
 
-  summaryEl.textContent = passed
-    ? `You passed! ${correctCount} correct and ${incorrectCount} missed.`
-    : `Keep practicing — ${incorrectCount} missed questions are ready to retry.`;
+  summaryEl.textContent = statisticsPracticeGameOver
+    ? `Out of hearts after ${data.wrongEntries} incorrect entr${data.wrongEntries === 1 ? "y" : "ies"} across ${data.history.length} question${data.history.length === 1 ? "" : "s"}. Adjust the heart limit and take another run.`
+    : passed
+      ? `You passed! ${correctCount} correct and ${incorrectCount} missed.`
+      : `Keep practicing — ${incorrectCount} missed questions are ready to retry.`;
 
   function resolveQuizBank(course, quizType){
     const source = window.questionBank && window.questionBank[course]

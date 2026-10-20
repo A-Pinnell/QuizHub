@@ -55,6 +55,7 @@
 		<link rel="stylesheet" href="css/quiz.css" />
 		<link rel="stylesheet" href="css/preferences.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
+		<link rel="stylesheet" href="css/quiz-music-picker.css" />
 		<link rel="stylesheet" href="css/dev.css" />
 		<script src="./js/audio-focus.js" defer></script>
 		<script src="./js/load-preferences.js"></script>
@@ -65,6 +66,7 @@
 		<script src="./js/party-question.js" defer></script>
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
+		<script src="./js/quiz-music-picker.js" defer></script>
 		<script src="./js/quiz.js" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
@@ -129,6 +131,14 @@
 						aria-label="Mute sounds"
 						aria-pressed="false">
 						🔊
+					</button>
+					<button
+						class="music-toggle quiz-music-cycle"
+						id="quizMusicCycle"
+						type="button"
+						aria-label="Change quiz song"
+						title="Change quiz song">
+						💿
 					</button>
 				</div>
 				<div class="gfx-toolbar" aria-hidden="true">
@@ -250,10 +260,32 @@
 			</button>
 
 			<main class="panel">
+				<div
+					class="statistics-practice-background"
+					aria-hidden="true"></div>
 				<section class="quiz-setup" id="quizSetup" aria-labelledby="setupTitle">
 					<div class="setup-kicker">QUIZ SETUP</div>
 					<h1 id="setupTitle">Customize Your Quiz</h1>
 					<p class="setup-subtitle" id="setupCount">Loading question count…</p>
+					<fieldset
+						class="statistics-practice-focus"
+						id="statisticsPracticeFocus"
+						hidden>
+						<legend>Choose your focus areas</legend>
+						<p>Select one or more topics to build your practice set.</p>
+						<div class="statistics-practice-focus-grid">
+							<label><input type="checkbox" value="central-tendency" checked /><span>Central tendency<small>Mean, median, mode</small></span></label>
+							<label><input type="checkbox" value="spread" checked /><span>Spread and variability<small>Range, variance, standard deviation, IQR</small></span></label>
+							<label><input type="checkbox" value="correlation" checked /><span>Correlation<small>Pearson correlation</small></span></label>
+							<label><input type="checkbox" value="frequency" checked /><span>Frequency distributions<small>Frequency and relative frequency</small></span></label>
+							<label><input type="checkbox" value="skewness" checked /><span>Skewness<small>Bowley's skewness coefficient</small></span></label>
+							<label><input type="checkbox" value="normalized-data" checked /><span>Normalized data<small>Min-max scaling and z-scores</small></span></label>
+						</div>
+						<p
+							class="statistics-practice-focus-status"
+							id="statisticsPracticeFocusStatus"
+							aria-live="polite"></p>
+					</fieldset>
 					<p
 						class="party-settings-summary"
 						id="partySettingsSummary"
@@ -268,6 +300,7 @@
 						Choose review sections
 					</button>
 
+					<div class="statistics-practice-settings">
 					<label class="setup-label" for="questionCount"
 						>Number of questions</label
 					>
@@ -280,6 +313,34 @@
 							inputmode="numeric" />
 						<span id="countMax">of 6</span>
 					</div>
+
+					<fieldset
+						class="setup-group statistics-practice-heart-settings"
+						id="statisticsPracticeHeartSettings"
+						hidden>
+						<legend>Wrong-answer hearts</legend>
+						<label class="setup-label" for="statisticsPracticeHeartLimit">
+							Hearts before game over
+						</label>
+						<div class="count-row">
+							<select id="statisticsPracticeHeartLimit">
+								<option value="1">1 heart</option>
+								<option value="2">2 hearts</option>
+								<option value="3">3 hearts</option>
+								<option value="4">4 hearts</option>
+								<option value="5" selected>5 hearts</option>
+								<option value="6">6 hearts</option>
+								<option value="7">7 hearts</option>
+								<option value="8">8 hearts</option>
+								<option value="9">9 hearts</option>
+								<option value="10">10 hearts</option>
+								<option value="unlimited">Unlimited</option>
+							</select>
+						</div>
+						<p class="statistics-practice-heart-help">
+							Each incorrect answer uses one heart. Skipping does not.
+						</p>
+					</fieldset>
 
 					<fieldset class="setup-group">
 						<legend>Question order</legend>
@@ -344,6 +405,7 @@
 							<option value="none">No per-question limit</option>
 						</select>
 					</div>
+					</div>
 
 					<p class="setup-error" id="setupError" aria-live="polite"></p>
 					<div class="setup-actions">
@@ -357,6 +419,108 @@
 				</section>
 
 				<section class="quiz-content" id="quizContent" hidden>
+					<section
+						class="statistics-practice-workspace"
+						id="statisticsPracticeWorkspace"
+						aria-label="Statistics numeric practice"
+						tabindex="-1"
+						hidden>
+						<header class="statistics-practice-topbar">
+							<div class="statistics-practice-brand">
+								<span class="statistics-practice-brand-mark" aria-hidden="true">◆</span>
+								<div><strong>STATISTICS TRIAL</strong><span>DATA SCIENCE / NUMERIC PRACTICE</span></div>
+							</div>
+							<div class="statistics-practice-session-meta" id="statisticsPracticeHud">
+								<div
+									class="statistics-practice-hearts"
+									id="statisticsPracticeHeartsMeter"
+									role="img"
+									aria-label="5 wrong-answer hearts remaining"></div>
+								<div
+									class="statistics-practice-combo"
+									id="statisticsPracticeComboMeter"
+									role="img"
+									aria-label="Combo meter: 0 correct in a row">
+									<span class="statistics-practice-meter-label">COMBO</span>
+									<span class="statistics-practice-combo-stars" aria-hidden="true">
+										<span class="statistics-practice-combo-star">★</span>
+										<span class="statistics-practice-combo-star">★</span>
+										<span class="statistics-practice-combo-star">★</span>
+										<span class="statistics-practice-combo-star">★</span>
+										<span class="statistics-practice-combo-star">★</span>
+									</span>
+								</div>
+							</div>
+						</header>
+						<div class="statistics-practice-session">
+							<div class="statistics-practice-question-card">
+								<div class="statistics-practice-question-heading" id="statisticsPracticeQuestionHeading"></div>
+								<div class="statistics-practice-response" id="statisticsPracticeResponse"></div>
+								<div class="statistics-practice-feedback" id="statisticsPracticeFeedback"></div>
+							</div>
+							<nav
+								class="statistics-practice-controls"
+								id="statisticsPracticeControls"
+								aria-label="Practice controls"></nav>
+						</div>
+						<div class="statistics-practice-revolver">
+							<div class="statistics-practice-cylinder" aria-hidden="true">
+								<i></i><i></i><i></i><i></i><i></i><i></i>
+							</div>
+							<button
+								class="statistics-practice-progress-trigger"
+								id="statisticsPracticeProgressTrigger"
+								type="button"
+								aria-label="Show practice progress"
+								aria-controls="statisticsPracticeProgress"
+								aria-expanded="false">
+								<svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+									<path d="M6 3h12M6 21h12M7 3v5l5 4 5-4V3M7 21v-5l5-4 5 4v5" />
+								</svg>
+							</button>
+							<div
+								class="statistics-practice-progress"
+								id="statisticsPracticeProgress">
+								<div class="statistics-practice-progress-copy">
+									<span id="statisticsPracticeProgressText">1 OF 100</span>
+								</div>
+								<div class="statistics-practice-progress-line">
+									<div
+										class="statistics-practice-progress-track"
+										id="statisticsPracticeProgressTrack"
+										role="progressbar"
+										aria-label="Practice progress"
+										aria-valuemin="0"
+										aria-valuemax="100"
+										aria-valuenow="0">
+										<span id="statisticsPracticeProgressBar"></span>
+									</div>
+								</div>
+							</div>
+							<span
+								class="statistics-practice-bullet"
+								aria-hidden="true"
+								id="statisticsPracticeBullet">QUESTION 1</span>
+						</div>
+						<span id="statisticsPracticeSectionName">CENTRAL TENDENCY</span>
+						<div class="statistics-practice-trial-bars" aria-hidden="true">
+							<span></span>
+							<span></span>
+						</div>
+						<div
+							class="statistics-practice-game-over"
+							id="statisticsPracticeGameOverOverlay"
+							role="alert"
+							aria-label="Game over"
+							hidden>
+							<div class="statistics-practice-game-over-plate">
+								<p aria-hidden="true">
+									<span>G</span><span>A</span><span>M</span><span>E</span>
+									<span class="game-over-word-gap">O</span><span>V</span><span>E</span><span>R</span>
+								</p>
+							</div>
+						</div>
+					</section>
 					<div class="softengi-composer">
 						<section
 							class="statistics-set-builder"
@@ -429,6 +593,38 @@
 								id="statisticsSetSubmit"
 								type="button">
 								Check set
+							</button>
+						</section>
+						<section
+							class="numeric-answer-builder"
+							id="numericAnswerBuilder"
+							aria-label="Enter a numeric answer"
+							hidden>
+							<label class="numeric-answer-label" for="numericAnswerInput"
+								>Your answer</label
+							>
+							<input
+								class="numeric-answer-input"
+								id="numericAnswerInput"
+								type="number"
+								step="any"
+								inputmode="decimal"
+								autocomplete="off"
+								aria-describedby="numericAnswerStatus" />
+							<p
+								class="numeric-answer-status"
+								id="numericAnswerStatus"
+								aria-live="polite"></p>
+							<p
+								class="numeric-answer-solution"
+								id="numericAnswerSolution"
+								aria-live="polite"
+								hidden></p>
+							<button
+								class="control numeric-answer-submit"
+								id="numericAnswerSubmit"
+								type="button">
+								Check answer
 							</button>
 						</section>
 						<section

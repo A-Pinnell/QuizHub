@@ -1,3 +1,6 @@
 If playing again with the same party of people in Party Mode, keep track of the player's scores throughout and show overall placements as well as the current quiz (via buttons to toggle between each)
 Party Mode Host Display (Player) View: Text is too small on buttons and move playerto bottom right corner
-Have gifs work as profile pictures for party mode players
+
+
+
+Display room code in bottom corner of party mode game to make it easier for any new players to join the game.

@@ -1,3 +1,615 @@
+const statisticsPracticeNumber = (
+	question,
+	answer,
+	section,
+	tolerance = 0,
+	details = {},
+) => ({
+	q: question,
+	a: [String(answer)],
+	c: 0,
+	interaction: { type: "numeric-answer", section, tolerance, ...details },
+});
+const statisticsPracticeMedian = (values) => {
+	const middle = Math.floor(values.length / 2);
+	return values.length % 2
+		? values[middle]
+		: (values[middle - 1] + values[middle]) / 2;
+};
+const statisticsPracticeQuartiles = (values) => {
+	const middle = values.length / 2;
+	const lower = values.slice(0, middle);
+	const upper = values.slice(Math.ceil(values.length / 2));
+	return {
+		q1: statisticsPracticeMedian(lower),
+		median: statisticsPracticeMedian(values),
+		q3: statisticsPracticeMedian(upper),
+	};
+};
+const statisticsPracticeMeanQuestions = [
+	{ type: "arithmetic", values: [4, 6, 8, 10, 12] },
+	{ type: "arithmetic", values: [3, 5, 7, 9] },
+	{ type: "arithmetic", values: [2, 4, 6, 8, 10, 12] },
+	{ type: "arithmetic", values: [5, 5, 8, 10] },
+	{ type: "arithmetic", values: [12, 15, 18, 21] },
+	{ type: "geometric", values: [2, 8] },
+	{ type: "geometric", values: [4, 16] },
+	{ type: "geometric", values: [3, 12] },
+	{ type: "geometric", values: [1, 9] },
+	{ type: "geometric", values: [2, 18] },
+].map(({ type, values }) => {
+	const name = type === "arithmetic" ? "arithmetic" : "geometric";
+	const answer =
+		type === "arithmetic"
+			? values.reduce((sum, value) => sum + value, 0) / values.length
+			: Math.pow(
+					values.reduce((product, value) => product * value, 1),
+					1 / values.length,
+				);
+	return statisticsPracticeNumber(
+		`Calculate the ${name} mean of ${values.join(", ")}. Enter the number.`,
+		answer,
+		"central-tendency",
+	);
+});
+const statisticsPracticeCentralQuestions = [
+	{ type: "median", values: [1, 3, 5, 7, 9] },
+	{ type: "median", values: [2, 4, 8, 10] },
+	{ type: "median", values: [11, 13, 15, 17, 19, 21, 23] },
+	{ type: "median", values: [4, 6, 8, 10, 12, 14] },
+	{ type: "median", values: [3, 3, 6, 9, 12] },
+	{ type: "mode", values: [2, 3, 3, 4, 5] },
+	{ type: "mode", values: [1, 1, 1, 4, 7] },
+	{ type: "mode", values: [5, 6, 6, 8, 9, 6] },
+	{ type: "mode", values: [10, 12, 12, 14, 16] },
+	{ type: "mode", values: [2, 4, 4, 4, 6, 8, 8] },
+].map(({ type, values }) => {
+	if (type === "median") {
+		const sorted = [...values].sort((left, right) => left - right);
+		return statisticsPracticeNumber(
+			`Find the median of ${sorted.join(", ")}. Enter the number.`,
+			statisticsPracticeMedian(sorted),
+			"central-tendency",
+		);
+	}
+	const frequencies = new Map();
+	values.forEach((value) =>
+		frequencies.set(value, (frequencies.get(value) || 0) + 1),
+	);
+	const mode = [...frequencies].sort(
+		(left, right) => right[1] - left[1] || left[0] - right[0],
+	)[0][0];
+	return statisticsPracticeNumber(
+		`Find the mode of ${values.join(", ")}. Enter the number.`,
+		mode,
+		"central-tendency",
+	);
+});
+const statisticsPracticeRangeQuestions = [
+	[4, 7, 9, 12, 19],
+	[2, 8, 11, 15],
+	[-3, 0, 4, 9],
+	[14, 18, 22, 30],
+	[5, 5, 5, 5],
+	[-10, -4, 0, 6],
+	[1, 3, 7, 13, 21],
+	[25, 30, 35, 40, 45],
+	[-8, -2, 3, 12],
+	[100, 105, 115, 130],
+].map((values) =>
+	statisticsPracticeNumber(
+		`Calculate the range of ${values.join(", ")}. Enter the number.`,
+		Math.max(...values) - Math.min(...values),
+		"spread",
+	),
+);
+const statisticsPracticeVarianceQuestions = [
+	[1, 1, 3, 3],
+	[2, 4, 6, 8],
+	[5, 5, 5, 5],
+	[0, 2, 4, 6],
+	[3, 7, 11],
+	[2, 2, 6, 6],
+	[10, 12, 14, 16],
+	[1, 2, 3, 4, 5],
+	[4, 8, 12],
+	[0, 0, 4, 4],
+].map((values) => {
+	const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+	const variance =
+		values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length;
+	const answer = Math.round(variance * 100) / 100;
+	return statisticsPracticeNumber(
+		`Treat ${values.join(", ")} as the entire population. Calculate its variance and enter the answer rounded to 2 decimal places.`,
+		answer,
+		"spread",
+		0.01,
+	);
+});
+const statisticsPracticeDeviationQuestions = [
+	[1, 1, 3, 3],
+	[2, 4, 6, 8],
+	[5, 5, 5, 5],
+	[0, 2, 4, 6],
+	[3, 7, 11],
+	[2, 2, 6, 6],
+	[10, 12, 14, 16],
+	[1, 2, 3, 4, 5],
+	[4, 8, 12],
+	[0, 0, 4, 4],
+].map((values) => {
+	const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+	const variance =
+		values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length;
+	const answer = Math.round(Math.sqrt(variance) * 100) / 100;
+	return statisticsPracticeNumber(
+		`Treat ${values.join(", ")} as the entire population. Calculate its standard deviation and enter the answer rounded to 2 decimal places.`,
+		answer,
+		"spread",
+		0.01,
+	);
+});
+const statisticsPracticeIqrQuestions = [
+	[1, 2, 3, 4, 5, 6, 7, 8],
+	[2, 4, 6, 8, 10, 12, 14, 16],
+	[3, 5, 7, 9, 11, 13, 15, 17],
+	[10, 20, 30, 40, 50, 60, 70, 80],
+	[1, 3, 5, 7, 9, 11, 13, 15],
+	[4, 5, 6, 7, 8, 9, 10, 11],
+	[12, 14, 16, 18, 20, 22, 24, 26],
+	[0, 2, 4, 6, 8, 10, 12, 14],
+	[5, 10, 15, 20, 25, 30, 35, 40],
+	[6, 9, 12, 15, 18, 21, 24, 27],
+].map((values) => {
+	const sorted = [...values].sort((left, right) => left - right);
+	const { q1, q3 } = statisticsPracticeQuartiles(sorted);
+	return statisticsPracticeNumber(
+		`Using the median-of-halves method, calculate the IQR of ${sorted.join(", ")}. Enter Q3 - Q1.`,
+		q3 - q1,
+		"spread",
+	);
+});
+const statisticsPracticeFrequencyQuestions = [
+	{ values: [4, 4, 5, 6, 6, 6, 7], target: 6, relative: false },
+	{ values: [1, 2, 2, 3, 4, 4, 4, 5], target: 4, relative: false },
+	{ values: [3, 3, 3, 5, 5, 7], target: 3, relative: true },
+	{ values: [0, 1, 1, 1, 2, 2, 3, 3, 3, 3], target: 3, relative: true },
+	{ values: [10, 10, 12, 12, 12, 14], target: 10, relative: false },
+	{ values: [2, 2, 4, 4, 4, 6, 8, 8], target: 8, relative: true },
+	{ values: [5, 5, 5, 6, 7, 7, 8], target: 7, relative: false },
+	{ values: [1, 1, 2, 3, 3, 3, 4, 4, 5, 5], target: 1, relative: true },
+	{ values: [9, 10, 10, 11, 11, 11, 12], target: 11, relative: false },
+	{ values: [2, 3, 3, 4, 4, 4, 5, 6], target: 2, relative: true },
+].map(({ values, target, relative }) => {
+	const frequency = values.filter((value) => value === target).length;
+	const answer = relative
+		? Math.round((frequency / values.length) * 10000) / 100
+		: frequency;
+	return statisticsPracticeNumber(
+		relative
+			? `In ${values.join(", ")}, what is the relative frequency of ${target} as a percentage? Enter the number without the % sign.`
+			: `In ${values.join(", ")}, how many times does ${target} occur? Enter its frequency.`,
+		answer,
+		"frequency",
+	);
+});
+const statisticsPracticeCorrelationQuestions = [
+	{ x: [1, 2, 3, 4, 5], y: [2, 4, 6, 8, 10] },
+	{ x: [1, 2, 3, 4, 5], y: [10, 8, 6, 4, 2] },
+	{ x: [1, 2, 3, 4, 5], y: [1, 4, 2, 5, 3] },
+	{ x: [2, 4, 6, 8], y: [3, 6, 9, 12] },
+	{ x: [1, 2, 3, 4], y: [8, 6, 4, 2] },
+	{ x: [1, 2, 3, 4, 5], y: [1, 2, 1, 2, 1] },
+	{ x: [2, 4, 6, 8, 10], y: [5, 7, 9, 11, 13] },
+	{ x: [1, 2, 3, 4, 5], y: [9, 7, 8, 6, 5] },
+	{ x: [1, 2, 3, 4, 5], y: [3, 1, 4, 2, 5] },
+	{ x: [1, 2, 3, 4, 5], y: [5, 4, 3, 2, 1] },
+].map(({ x, y }) => {
+	const meanX = x.reduce((sum, value) => sum + value, 0) / x.length;
+	const meanY = y.reduce((sum, value) => sum + value, 0) / y.length;
+	const numerator = x.reduce(
+		(sum, value, index) => sum + (value - meanX) * (y[index] - meanY),
+		0,
+	);
+	const denominator = Math.sqrt(
+		x.reduce((sum, value) => sum + (value - meanX) ** 2, 0) *
+			y.reduce((sum, value) => sum + (value - meanY) ** 2, 0),
+	);
+	const answer = Math.round((numerator / denominator) * 100) / 100;
+	return statisticsPracticeNumber(
+		`Calculate the Pearson correlation coefficient for x = ${x.join(", ")} and y = ${y.join(", ")}. Enter r rounded to 2 decimal places.`,
+		answer,
+		"correlation",
+		0.01,
+	);
+});
+const statisticsPracticeSkewnessQuestions = [
+	[1, 2, 3, 4, 5, 6, 7, 8],
+	[1, 2, 3, 4, 5, 6, 7, 10],
+	[1, 2, 3, 4, 5, 6, 9, 10],
+	[1, 2, 3, 4, 5, 8, 9, 10],
+	[1, 2, 3, 4, 7, 8, 9, 10],
+	[1, 2, 3, 6, 7, 8, 9, 10],
+	[1, 2, 5, 6, 7, 8, 9, 10],
+	[1, 4, 5, 6, 7, 8, 9, 10],
+	[3, 4, 5, 6, 7, 8, 9, 10],
+	[1, 1, 2, 3, 4, 5, 8, 10],
+].map((values) => {
+	const sorted = [...values].sort((left, right) => left - right);
+	const { q1, median, q3 } = statisticsPracticeQuartiles(sorted);
+	const answer = Math.round(((q3 + q1 - 2 * median) / (q3 - q1)) * 100) / 100;
+	return statisticsPracticeNumber(
+		`Using Bowley's skewness coefficient (Q3 + Q1 - 2 × median) / (Q3 - Q1) and the median-of-halves method, calculate the skewness of ${sorted.join(", ")}. Enter the result rounded to 2 decimal places.`,
+		answer,
+		"skewness",
+		0.01,
+	);
+});
+const statisticsPracticeNormalizationQuestions = [
+	{ type: "min-max", value: 20, minimum: 10, maximum: 30 },
+	{ type: "min-max", value: 15, minimum: 5, maximum: 25 },
+	{ type: "min-max", value: 8, minimum: 0, maximum: 20 },
+	{ type: "min-max", value: 42, minimum: 30, maximum: 50 },
+	{ type: "min-max", value: 7, minimum: 2, maximum: 12 },
+	{ type: "z-score", value: 80, mean: 70, standardDeviation: 5 },
+	{ type: "z-score", value: 60, mean: 50, standardDeviation: 5 },
+	{ type: "z-score", value: 12, mean: 20, standardDeviation: 4 },
+	{ type: "z-score", value: 105, mean: 100, standardDeviation: 2 },
+	{ type: "z-score", value: 3, mean: 5, standardDeviation: 4 },
+].map((item) => {
+	if (item.type === "min-max") {
+		const answer =
+			Math.round(
+				((item.value - item.minimum) / (item.maximum - item.minimum)) * 100,
+			) / 100;
+		return statisticsPracticeNumber(
+			`Using min-max normalization to [0, 1], normalize x = ${item.value} when the minimum is ${item.minimum} and maximum is ${item.maximum}. Enter the result rounded to 2 decimal places.`,
+			answer,
+			"normalized-data",
+			0.01,
+		);
+	}
+	const answer =
+		Math.round(((item.value - item.mean) / item.standardDeviation) * 100) / 100;
+	return statisticsPracticeNumber(
+		`Using z-score normalization, calculate z for x = ${item.value}, mean = ${item.mean}, and standard deviation = ${item.standardDeviation}. Enter the result rounded to 2 decimal places.`,
+		answer,
+		"normalized-data",
+		0.01,
+	);
+});
+const statisticsPracticeRandomInteger = (minimum, maximum) =>
+	Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+const statisticsPracticeRandomValues = (count, minimum = 1, maximum = 30) =>
+	Array.from({ length: count }, () =>
+		statisticsPracticeRandomInteger(minimum, maximum),
+	);
+const statisticsPracticeUniqueRandomValues = (count, minimum, maximum) => {
+	const values = Array.from(
+		{ length: maximum - minimum + 1 },
+		(_, index) => minimum + index,
+	);
+	for (let index = 0; index < count; index++) {
+		const swapIndex = statisticsPracticeRandomInteger(index, values.length - 1);
+		[values[index], values[swapIndex]] = [values[swapIndex], values[index]];
+	}
+	return values.slice(0, count);
+};
+const statisticsPracticeRound = (value) => Math.round(value * 100) / 100;
+const statisticsPracticeMean = (values) =>
+	values.reduce((sum, value) => sum + value, 0) / values.length;
+const statisticsPracticeCorrelation = (x, y) => {
+	const meanX = statisticsPracticeMean(x);
+	const meanY = statisticsPracticeMean(y);
+	const covariance = x.reduce(
+		(sum, value, index) => sum + (value - meanX) * (y[index] - meanY),
+		0,
+	);
+	const denominator = Math.sqrt(
+		x.reduce((sum, value) => sum + (value - meanX) ** 2, 0) *
+			y.reduce((sum, value) => sum + (value - meanY) ** 2, 0),
+	);
+	return covariance / denominator;
+};
+const statisticsPracticeRandomQuestionFactories = {
+	"central-tendency": [
+		() => {
+			const values = statisticsPracticeRandomValues(
+				statisticsPracticeRandomInteger(4, 7),
+				2,
+				30,
+			);
+			const answer = statisticsPracticeRound(statisticsPracticeMean(values));
+			return statisticsPracticeNumber(
+				`Calculate the arithmetic mean of ${values.join(", ")}. Enter the answer rounded to 2 decimal places.`,
+				answer,
+				"central-tendency",
+				0.011,
+				{ template: "arithmetic-mean", values },
+			);
+		},
+		() => {
+			const base = statisticsPracticeRandomInteger(2, 12);
+			const multiplier = [4, 9, 16][statisticsPracticeRandomInteger(0, 2)];
+			const values = [base, base * multiplier];
+			const answer = base * Math.sqrt(multiplier);
+			return statisticsPracticeNumber(
+				`Calculate the geometric mean of ${values.join(", ")}. Enter the number.`,
+				answer,
+				"central-tendency",
+				0,
+				{ template: "geometric-mean", values },
+			);
+		},
+		() => {
+			const values = statisticsPracticeRandomValues(
+				statisticsPracticeRandomInteger(5, 8),
+				1,
+				40,
+			).sort((left, right) => left - right);
+			const answer = statisticsPracticeMedian(values);
+			return statisticsPracticeNumber(
+				`Find the median of ${values.join(", ")}. Enter the number.`,
+				answer,
+				"central-tendency",
+				0,
+				{ template: "median", values },
+			);
+		},
+		() => {
+			const mode = statisticsPracticeRandomInteger(1, 30);
+			const values = [
+				mode,
+				mode,
+				mode,
+				...statisticsPracticeRandomValues(
+					statisticsPracticeRandomInteger(4, 7),
+					31,
+					60,
+				),
+			].sort((left, right) => left - right);
+			return statisticsPracticeNumber(
+				`Find the mode of ${values.join(", ")}. Enter the number.`,
+				mode,
+				"central-tendency",
+				0,
+				{ template: "mode", values, target: mode },
+			);
+		},
+	],
+	spread: [
+		() => {
+			const values = statisticsPracticeRandomValues(
+				statisticsPracticeRandomInteger(4, 8),
+				-20,
+				50,
+			);
+			const answer = Math.max(...values) - Math.min(...values);
+			return statisticsPracticeNumber(
+				`Calculate the range of ${values.join(", ")}. Enter the number.`,
+				answer,
+				"spread",
+				0,
+				{ template: "range", values },
+			);
+		},
+		() => {
+			const values = statisticsPracticeRandomValues(
+				statisticsPracticeRandomInteger(4, 7),
+				-15,
+				35,
+			);
+			const mean = statisticsPracticeMean(values);
+			const variance = statisticsPracticeRound(
+				statisticsPracticeMean(values.map((value) => (value - mean) ** 2)),
+			);
+			return statisticsPracticeNumber(
+				`Treat ${values.join(", ")} as the entire population. Calculate its variance and enter the answer rounded to 2 decimal places.`,
+				variance,
+				"spread",
+				0.011,
+				{ template: "population-variance", values },
+			);
+		},
+		() => {
+			const values = statisticsPracticeRandomValues(
+				statisticsPracticeRandomInteger(4, 7),
+				-15,
+				35,
+			);
+			const mean = statisticsPracticeMean(values);
+			const variance = statisticsPracticeMean(
+				values.map((value) => (value - mean) ** 2),
+			);
+			const answer = statisticsPracticeRound(Math.sqrt(variance));
+			return statisticsPracticeNumber(
+				`Treat ${values.join(", ")} as the entire population. Calculate its standard deviation and enter the answer rounded to 2 decimal places.`,
+				answer,
+				"spread",
+				0.011,
+				{ template: "population-standard-deviation", values },
+			);
+		},
+		() => {
+			const values = statisticsPracticeRandomValues(8, -20, 50).sort(
+				(left, right) => left - right,
+			);
+			const { q1, q3 } = statisticsPracticeQuartiles(values);
+			return statisticsPracticeNumber(
+				`Using the median-of-halves method, calculate the IQR of ${values.join(", ")}. Enter Q3 - Q1.`,
+				q3 - q1,
+				"spread",
+				0,
+				{ template: "iqr", values },
+			);
+		},
+	],
+	correlation: [
+		() => {
+			const x = [1, 2, 3, 4, 5];
+			let y;
+			let correlation;
+			do {
+				const slope =
+					statisticsPracticeRandomInteger(1, 5) *
+					(statisticsPracticeRandomInteger(0, 1) ? 1 : -1);
+				const intercept = statisticsPracticeRandomInteger(-10, 10);
+				y = x.map(
+					(value) =>
+						slope * value + intercept + statisticsPracticeRandomInteger(-4, 4),
+				);
+				correlation = statisticsPracticeCorrelation(x, y);
+			} while (!Number.isFinite(correlation));
+			const answer = statisticsPracticeRound(correlation);
+			return statisticsPracticeNumber(
+				`Calculate the Pearson correlation coefficient for x = ${x.join(", ")} and y = ${y.join(", ")}. Enter r rounded to 2 decimal places.`,
+				answer,
+				"correlation",
+				0.011,
+				{ template: "pearson-correlation", x, y },
+			);
+		},
+	],
+	frequency: [
+		() => {
+			const target = statisticsPracticeRandomInteger(1, 20);
+			const values = [
+				...Array.from(
+					{ length: statisticsPracticeRandomInteger(2, 5) },
+					() => target,
+				),
+				...statisticsPracticeRandomValues(
+					statisticsPracticeRandomInteger(4, 8),
+					21,
+					40,
+				),
+			].sort((left, right) => left - right);
+			const relative = Boolean(statisticsPracticeRandomInteger(0, 1));
+			const frequency = values.filter((value) => value === target).length;
+			const answer = relative
+				? statisticsPracticeRound((frequency / values.length) * 100)
+				: frequency;
+			return statisticsPracticeNumber(
+				relative
+					? `In ${values.join(", ")}, what is the relative frequency of ${target} as a percentage? Enter the number without the % sign.`
+					: `In ${values.join(", ")}, how many times does ${target} occur? Enter its frequency.`,
+				answer,
+				"frequency",
+				relative ? 0.011 : 0,
+				{
+					template: relative ? "relative-frequency" : "frequency",
+					values,
+					target,
+				},
+			);
+		},
+	],
+	skewness: [
+		() => {
+			const values = statisticsPracticeUniqueRandomValues(8, 1, 50).sort(
+				(left, right) => left - right,
+			);
+			const { q1, median, q3 } = statisticsPracticeQuartiles(values);
+			const answer = statisticsPracticeRound(
+				(q3 + q1 - 2 * median) / (q3 - q1),
+			);
+			return statisticsPracticeNumber(
+				`Using Bowley's skewness coefficient (Q3 + Q1 - 2 × median) / (Q3 - Q1) and the median-of-halves method, calculate the skewness of ${values.join(", ")}. Enter the result rounded to 2 decimal places.`,
+				answer,
+				"skewness",
+				0.011,
+				{ template: "bowley-skewness", values },
+			);
+		},
+	],
+	"normalized-data": [
+		() => {
+			const minimum = statisticsPracticeRandomInteger(-30, 10);
+			const maximum = minimum + statisticsPracticeRandomInteger(10, 60);
+			const value = statisticsPracticeRandomInteger(minimum, maximum);
+			const answer = statisticsPracticeRound(
+				(value - minimum) / (maximum - minimum),
+			);
+			return statisticsPracticeNumber(
+				`Using min-max normalization to [0, 1], normalize x = ${value} when the minimum is ${minimum} and maximum is ${maximum}. Enter the result rounded to 2 decimal places.`,
+				answer,
+				"normalized-data",
+				0.011,
+				{
+					template: "min-max-normalization",
+					value,
+					minimum,
+					maximum,
+				},
+			);
+		},
+		() => {
+			const mean = statisticsPracticeRandomInteger(-20, 50);
+			const standardDeviation = statisticsPracticeRandomInteger(2, 15);
+			const value =
+				mean + statisticsPracticeRandomInteger(-4, 4) * standardDeviation;
+			const answer = statisticsPracticeRound(
+				(value - mean) / standardDeviation,
+			);
+			return statisticsPracticeNumber(
+				`Using z-score normalization, calculate z for x = ${value}, mean = ${mean}, and standard deviation = ${standardDeviation}. Enter the result rounded to 2 decimal places.`,
+				answer,
+				"normalized-data",
+				0.011,
+				{
+					template: "z-score",
+					value,
+					mean,
+					standardDeviation,
+				},
+			);
+		},
+	],
+};
+const statisticsPracticeTemplates = Object.entries(
+	statisticsPracticeRandomQuestionFactories,
+).map(([section, factories]) => factories[0]());
+const statisticsPracticeQuestions = [
+	...new Map(
+		statisticsPracticeTemplates.map((question) => [
+			question.interaction.section,
+			question,
+		]),
+	).values(),
+];
+const generateStatisticsPracticeQuestions = (count, sections) => {
+	if (!Number.isInteger(count) || count < 1 || count > 1000) {
+		throw new RangeError("Statistics practice supports 1 to 1000 questions.");
+	}
+	const enabledSections = [...new Set(sections)].filter(
+		(section) => statisticsPracticeRandomQuestionFactories[section],
+	);
+	const availableFactories = enabledSections.flatMap((section) =>
+		statisticsPracticeRandomQuestionFactories[section].map((factory) => ({
+			section,
+			factory,
+		})),
+	);
+	if (!availableFactories.length) {
+		throw new Error("Select at least one statistics practice topic.");
+	}
+	statisticsPracticePreviousSection = null;
+	return Array.from({ length: count }, (_, index) => {
+		const choices = availableFactories.filter(
+			(choice) => choice.section !== statisticsPracticePreviousSection,
+		);
+		const nextChoices = choices.length ? choices : availableFactories;
+		const choice =
+			nextChoices[statisticsPracticeRandomInteger(0, nextChoices.length - 1)];
+		statisticsPracticePreviousSection = choice.section;
+		return choice.factory();
+	});
+};
+let statisticsPracticePreviousSection = null;
+window.QuizHubStatisticsPractice = {
+	generateQuestions: generateStatisticsPracticeQuestions,
+};
+
 window.questionBank = {
 	CompArch: {
 		quiz1: [
@@ -2713,10 +3325,10 @@ window.questionBank = {
 			{
 				q: "In the IAS computer, what information did an instruction contain?",
 				a: [
-					"A 12-bit opcode and an 8-bit memory address",
-					"A 40-bit opcode with no address information",
+					"A 12-bit opcode specifying the operation and a 8-bit memory address",
+					"A 40-bit opcode specifying the operation and no address information",
 					"An 8-bit opcode specifying the operation and a 12-bit memory address",
-					"A 20-bit address and a 20-bit clock signal",
+					"A 20-bit address specifying the operation and 20-bit clock signal",
 				],
 				c: 2,
 			},
@@ -18965,6 +19577,7 @@ window.questionBank = {
 				c: 0,
 			},
 		],
+		statisticsPractice: statisticsPracticeQuestions,
 	},
 
 	SoftEngi: {
@@ -23567,15 +24180,33 @@ window.questionBank = {
 		],
 		lautest: [
 			{
-				q: "How can these objects be represented in a computer?",
-				a: [
-					"Using a suitable 3D model representation",
-					"Using only the colours of the objects",
-					"Using only the camera positions",
-					"Using only the lighting settings",
-				],
+				q: "How can this object be represented in a computer?",
+				a: ["Point Cloud", "Voxel Grid", "Polygon Mesh", "Parametric Surface"],
 				c: 0,
 				i: "./assets/quizimages/lau-gfxmidtermpractice/image1.png",
+			},
+			{
+				q: "How can this object be represented in a computer?",
+				a: ["CSG", "SVG", "Point Cloud", "Parametric Surface"],
+				c: 0,
+				i: "./assets/quizimages/lau-gfxmidtermpractice/image21.png",
+			},
+			{
+				q: "How can this object be represented in a computer?",
+				a: ["Voxel", "SVG", "Point Cloud", "Parametric Surface"],
+				c: 0,
+				i: "./assets/quizimages/lau-gfxmidtermpractice/image22.png",
+			},
+			{
+				q: "How can this object be represented in a computer?",
+				a: [
+					"Polygonal Mesh",
+					"Voxel Grid",
+					"Polygon Mesh",
+					"Parametric Surface",
+				],
+				c: 0,
+				i: "./assets/quizimages/lau-gfxmidtermpractice/image23.png",
 			},
 			{
 				q: "Which tables are used to represent the vertices and faces of a triangular pyramid?",
@@ -23610,7 +24241,7 @@ window.questionBank = {
 			{
 				q: "Why might a point cloud have different point densities in different parts of a scene?",
 				a: [
-					"Some regions may require more points to capture detail accurately",
+					"Some regions may require more points to capture more detail accurately",
 					"Every region must contain exactly the same number of points",
 					"Point density is determined only by the colours of the objects",
 					"Point clouds cannot represent surfaces with varying detail",
@@ -23629,14 +24260,35 @@ window.questionBank = {
 				i: "./assets/quizimages/lau-gfxmidtermpractice/image2.png",
 			},
 			{
+				q: "Explain how these three equations shown on the image define the surface of an ellipsoid?",
+				a: [
+					"U and V are parameters between 0° to 360°. We place the values into the equations to get the 3D points of an ellipsoid.",
+					"U and V are parameters between 0° to 180°. We place the values into the equations to get the 3D points of an ellipsoid.",
+					"U and V are coordinates between 0° to 360°. We place the values into the equations to get the 2D points of an ellipsoid.",
+					"U and V are parameters between 0° to 360°. We place the values into the equations to get the 3D points of a cylinder.",
+				],
+				c: 0,
+				i: "./assets/quizimages/lau-gfxmidtermpractice/image2.png",
+			},
+			{
 				q: "What does the equation f(x, y, z) = 0 (on surface) define?",
 				a: [
 					"An equation used in Blender to conduct rotational properties",
 					"The point lies outside of the object ",
-					"The point is travelling along the surface",
+					"an Implicit Surface",
 					"The point lies on the surface of the object",
 				],
 				c: 3,
+			},
+			{
+				q: "Explain how the equation f(x, y, z) = 0 (on surface) defines an Implicit Surface",
+				a: [
+					"All points that satisfy the equation are points that lie on the surface",
+					"All points that satisfy the equation are points that lie inside the surface",
+					"All points that satisfy the equation are points that lie outside the surface",
+					"All points that satisfy the equation are points that define the surface's vertices",
+				],
+				c: 0,
 			},
 			{
 				q: "Voxels are affine invariant.",
@@ -23646,10 +24298,10 @@ window.questionBank = {
 			{
 				q: "What does it mean that voxels are not affine invariant?",
 				a: [
-					"Their representation can change under affine transformations, such as scaling or rotation",
-					"They always preserve the exact shape of every object",
-					"They can only represent objects with flat surfaces",
-					"They store the colour and texture of each polygon",
+					"Transformation can cause voxels to take up a different number of pixels",
+					"Transformation does not change the size or shape of voxels",
+					"Transformation can cause voxels to preserve their original positions",
+					"Transformation prevents voxels from representing 3D objects",
 				],
 				c: 0,
 				i: false,
@@ -23657,21 +24309,18 @@ window.questionBank = {
 			{
 				q: "Why are voxels only an approximate representation?",
 				a: [
-					"They represent space using discrete volume elements",
+					"They cannot represent a smooth surface",
 					"They cannot store any information about object positions",
 					"They only work when a model contains triangular faces",
-					"They require every object to have a smooth surface",
+					"They cannot ensure every object has the same coordinates",
 				],
 				c: 0,
 				i: false,
 			},
 			{
-				q: "In the scene graph shown, if a new object intersects the rectangle at node B, what should be checked next to determine whether it intersects any other objects?",
+				q: "In the scene graph shown, if a new object intersects the rectangle at node B, what should we do to see whether this new object intersects with any of the other objects?",
 				a: [
-					"The other relevant objects or nodes in the scene graph",
-					"Only the texture coordinates assigned to node B",
-					"The lighting settings of the entire scene",
-					"The colour values stored in the rectangle",
+					"Avoid computation with Node C and go down the Node B tree to check if it intersects with any of its children",
 				],
 				c: 0,
 				i: "./assets/quizimages/lau-gfxmidtermpractice/image3.png",

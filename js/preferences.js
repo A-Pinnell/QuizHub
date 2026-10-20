@@ -29,8 +29,11 @@
 		CompArch: "./music/QuizMusic.wav",
 		CloudComp: "./music/CloudCompMusic.wav",
 		DataSci: "./music/DataSciMusic.wav",
+		StatisticPractice: "./music/Trial_Quiz.mp3",
+		DataSciLautest: "./music/Challenge2.mp3",
 		SoftEngi: "./music/SoftEngiMusic.wav",
 		CompGFX: "./music/CompGFXMusic.wav",
+		CompGFXLautest: "./music/Challenge.mp3",
 		SocIndi: "./music/SocIndiMusic.wav",
 	};
 	const regularQuizMusicOptions = [
@@ -38,6 +41,21 @@
 		...Object.keys(quizMusicSources).filter((source) => source !== "run"),
 	];
 	const secretQuizMusicOptions = ["run", ...regularQuizMusicOptions];
+	const quizMusicNames = {
+		default: "Course default",
+		run: "Run",
+		Practice1: "Binary",
+		Practice2: "Hexadecimal",
+		CompArch: "Computer Architecture",
+		CloudComp: "Cloud Computing",
+		DataSci: "Data Science",
+		StatisticPractice: "Statistic Practice",
+		DataSciLautest: "Dr. Lau's Practice (Data Science)",
+		SoftEngi: "Software Engineering",
+		CompGFX: "Computer Graphics",
+		CompGFXLautest: "Dr. Lau's Practice (Computer Graphics)",
+		SocIndi: "Society and Individuals",
+	};
 	const secretMode = storage.getItem("quizHubSecretMode") === "true";
 	const savedQuizMusic = storage.getItem("quizHubQuizMusic");
 	const textSizes = ["small", "default", "large"];
@@ -412,6 +430,18 @@
 		},
 		setQuizMusic(value) {
 			update("quizMusic", value);
+		},
+		getQuizMusicOptions() {
+			const options = preferences.secretMode
+				? secretQuizMusicOptions
+				: regularQuizMusicOptions;
+			return options.map((value) => ({
+				value,
+				label: quizMusicNames[value] || "Course default",
+			}));
+		},
+		getQuizMusicName(value = preferences.quizMusic) {
+			return quizMusicNames[value] || "Course default";
 		},
 		setTextSize(value) {
 			update("textSize", value);

@@ -46,6 +46,12 @@
 		DataSci: [
 			{ id: "test1", label: "Midterm Practice", detail: "for Oct 22" },
 			{ id: "lautest", label: "Dr. Lau's Practice", detail: "for Midterm" },
+			{
+				id: "statisticsPractice",
+				label: "Statistic Practice",
+				detail: "Math-focused statistics review",
+				partyMode: false,
+			},
 		],
 		SoftEngi: [
 			{ id: "quiz1", label: "Lectures 1–6 Practice", detail: "Question bank" },

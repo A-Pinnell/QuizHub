@@ -29,10 +29,13 @@
     timerId: null,
     feedbackTimer: null
   };
+  let party = null;
+  let partyQuestion = null;
 
   const music = $("music");
   const resolveAssetUrl = (path) => new URL(path, window.location.href).toString();
-  music.src = window.quizHubPreferences.resolveQuizMusic(music.src);
+  const defaultMusicSource = music.src;
+  music.src = window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
   const soundFiles = {
     correct: resolveAssetUrl("./sfx/Correct.wav"),
     highlight: resolveAssetUrl("./sfx/highlight.wav"),
@@ -129,6 +132,21 @@
       updateTimerSelection();
       return;
     }
+    if (party) {
+      state.remaining = Math.max(1, Number(state.timerLimit) * 60);
+      renderTimer();
+      state.timerId = setInterval(() => {
+        if (state.paused || !state.accepting) return;
+        state.remaining -= 1;
+        renderTimer();
+        if (state.remaining <= 0) {
+          clearInterval(state.timerId);
+          state.accepting = false;
+          if (party.isHost) party.timeout();
+        }
+      }, 1000);
+      return;
+    }
     const clamped = Math.min(60, Math.max(1, Math.round(parsed)));
     state.timerLimit = clamped;
     timerInput.value = String(clamped);
@@ -198,6 +216,17 @@
     music.volume = .45;
     music.play().catch(() => {});
   }
+  window.QuizHubMusicPicker.attach({
+    button: $("quizMusicCycle"),
+    isSoundEnabled: () => state.sound,
+    isMusicEnabled: () => state.music && !state.paused,
+    onSelectionStart: () => music.pause(),
+    onTrackSelected: (shouldPlay) => {
+      music.src = window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
+      music.load();
+      if (shouldPlay) updateMusic();
+    }
+  });
 
   function playTone(freq, duration = .08, type = "sine") {
     if (!state.sound) return;
@@ -238,6 +267,7 @@
           b.textContent = next;
           b.classList.toggle("on", next === "1");
           playTone(360 + index * 35, .04, "square");
+          party?.updateActivity("answering");
         });
       } else {
         b.disabled = true;
@@ -519,6 +549,21 @@
       $("timer").textContent = "—";
       return;
     }
+    if (party) {
+      state.remaining = Math.max(1, Number(state.timerLimit) * 60);
+      renderTimer();
+      state.timerId = setInterval(() => {
+        if (state.paused || !state.accepting) return;
+        state.remaining -= 1;
+        renderTimer();
+        if (state.remaining <= 0) {
+          clearInterval(state.timerId);
+          state.accepting = false;
+          if (party.isHost) party.timeout();
+        }
+      }, 1000);
+      return;
+    }
     const minutes = Number(state.timerLimit) || 1;
     const seconds = Math.max(1, Math.min(60 * 60, minutes * 60));
     $("timerBox").classList.remove("disabled");
@@ -549,6 +594,10 @@
   }
 
   function startGame() {
+    if (party) {
+      party.start(getPartySettings());
+      return;
+    }
     clearInterval(state.timerId);
     clearTimeout(state.feedbackTimer);
     state.current = 1;
@@ -570,6 +619,10 @@
   }
 
   function advanceQuestion() {
+    if (party) {
+      party.next();
+      return;
+    }
     if (!state.nextPending && state.accepting) return;
     clearInterval(state.timerId);
     state.nextPending = false;
@@ -585,6 +638,7 @@
   }
 
   function skipQuestion() {
+    if (party) return;
     if (!state.accepting || state.paused) return;
     clearInterval(state.timerId);
     state.accepting = false;
@@ -598,6 +652,17 @@
 
   function submitAnswer() {
     if (!state.accepting || state.paused) return;
+    if (party) {
+      const answer = partyQuestion?.answerKind === "binary"
+        ? state.userBits.join("")
+        : $("conversionAnswer")?.value.trim() || "";
+      if (!answer) {
+        showFeedback("Enter an answer first.", false);
+        return;
+      }
+      party.sendAnswer(partyQuestion?.answerKind === "text" ? answer.replace(/^0x/i, "") : answer);
+      return;
+    }
 
     let userAnswer = "";
 
@@ -672,11 +737,19 @@
     const total = state.correct + state.incorrect;
     $("finalAccuracy").textContent = total ? `${Math.round(state.correct / total * 100)}%` : "0%";
     show("resultsScreen");
+    if (party) {
+      $("resultsMenuButton").textContent = "Leave Party";
+      $("againButton").disabled = true;
+    }
     playSound("popup");
     playTone(620, .1);
   }
 
   function openSetup() {
+    if (party) {
+      party.leave();
+      return;
+    }
     clearInterval(state.timerId);
     state.paused = false;
     state.nextPending = false;
@@ -696,9 +769,9 @@
   }
 
   $("startButton").addEventListener("click", startGame);
-  $("exitSetup").addEventListener("click", () => { music.pause(); music.currentTime = 0; window.location.href = "index.html"; });
-  $("gameMenuButton").addEventListener("click", () => { if (confirm("Leave this quiz and return to the setup menu? Your current progress will be lost.")) openSetup(); });
-  $("endGameButton").addEventListener("click", () => finishGame("GAME ENDED"));
+  $("exitSetup").addEventListener("click", () => { if (party) party.leave(); else { music.pause(); music.currentTime = 0; window.location.href = "index.html"; } });
+  $("gameMenuButton").addEventListener("click", () => { if (party || confirm("Leave this quiz and return to the setup menu? Your current progress will be lost.")) openSetup(); });
+  $("endGameButton").addEventListener("click", () => { if (party) party.end(); else finishGame("GAME ENDED"); });
   $("skipButton").addEventListener("click", skipQuestion);
   $("nextQuestionButton").addEventListener("click", () => {
     if (state.nextPending) {
@@ -718,4 +791,190 @@
   setToggle($("decimalToggle"), state.decimal);
   updateTimerSelection();
   updateSetupVisibility();
+
+  function getPartySettings() {
+    return {
+      gameType: state.gameType,
+      conversionMode: state.conversionMode,
+      operation: state.operation,
+      questions: state.questions,
+      timerLimit: state.timerLimit,
+      guide: state.guide,
+      hexGuide: state.hexGuide,
+      decimal: state.decimal
+    };
+  }
+
+  function selectPartyChoice(groupId, value) {
+    $(groupId).querySelectorAll(".choice").forEach((button) => {
+      button.classList.toggle("selected", button.dataset.value === String(value));
+    });
+  }
+
+  function describePartyQuestion() {
+    let prompt;
+    let challenge;
+    let answerKind;
+    if (state.gameType === "operation") {
+      prompt = "Solve this hexadecimal arithmetic problem";
+      challenge = `0x${toHex(state.first, 2)} ${operationSymbols[state.operation]} 0x${toHex(state.second, 2)} = ?`;
+      answerKind = "text";
+    } else if (state.conversionMode === "b2h") {
+      prompt = "Convert this binary number to hexadecimal";
+      challenge = `${bitsFor(state.first).join("")} = ?`;
+      answerKind = "text";
+    } else if (state.conversionMode === "h2d") {
+      prompt = "Convert this hexadecimal value to decimal";
+      challenge = `0x${toHex(state.first)} = ?`;
+      answerKind = "number";
+    } else if (state.conversionMode === "d2h") {
+      prompt = "Convert this decimal value to hexadecimal";
+      challenge = `${state.first} = ?`;
+      answerKind = "text";
+    } else {
+      prompt = "Convert this hexadecimal value to binary";
+      challenge = `0x${toHex(state.first)} = ?`;
+      answerKind = "binary";
+    }
+    return {
+      badge: $("operationBadge").textContent,
+      prompt,
+      challenge,
+      answerKind,
+      correctAnswer: String(state.answer)
+    };
+  }
+
+  function renderPartyQuestion(question) {
+    partyQuestion = question;
+    state.accepting = true;
+    state.nextPending = false;
+    setNextButtonVisible(false);
+    state.userBits = [];
+    $("operationBadge").textContent = question.badge;
+    $("conversionProblem").classList.remove("hidden");
+    $("operationProblem").classList.add("hidden");
+    const host = $("conversionProblem");
+    host.replaceChildren();
+    const title = document.createElement("div");
+    title.className = "conversion-title";
+    title.textContent = question.prompt;
+    const challenge = document.createElement("div");
+    challenge.className = "conversion-decimal";
+    challenge.textContent = question.challenge.replace(" = ?", "");
+    const equals = document.createElement("div");
+    equals.className = "conversion-equals";
+    equals.textContent = "=";
+    host.append(title, challenge, equals);
+    if (question.answerKind === "binary") {
+      const user = document.createElement("div");
+      user.id = "userBits";
+      user.className = "user-bits-host";
+      host.appendChild(user);
+      state.userBits = Array(8).fill("0");
+      renderUserBits();
+    } else {
+      const input = document.createElement("input");
+      input.className = "decimal-answer-input";
+      input.id = "conversionAnswer";
+      input.type = question.answerKind === "number" ? "number" : "text";
+      input.inputMode = question.answerKind === "number" ? "numeric" : "text";
+      input.placeholder = "?";
+      input.maxLength = question.answerKind === "number" ? 3 : 6;
+      input.setAttribute("aria-label", question.answerKind === "number" ? "Decimal answer" : "Hexadecimal answer");
+      host.appendChild(input);
+    }
+    addSubmitButton(host);
+    $("questionHint").textContent = question.answerKind === "binary"
+      ? "Tap each bit to switch it between 0 and 1, then submit."
+      : question.answerKind === "number"
+        ? "Enter your decimal answer, then submit."
+        : "Enter your hexadecimal answer, then submit.";
+    show("gameScreen");
+    startTimer();
+  }
+
+  function beginPartyGame() {
+    state.current = 0;
+    state.score = 0;
+    state.correct = 0;
+    state.incorrect = 0;
+    state.paused = false;
+    state.accepting = false;
+    state.nextPending = false;
+    $("againButton").disabled = false;
+    $("resultsMenuButton").textContent = "Leave Party";
+    updateGuideVisibility();
+    updateStats();
+    show("gameScreen");
+    updateMusic();
+    playSound("begin");
+  }
+
+  function applyPartySettings(settings) {
+    state.gameType = settings.gameType;
+    state.conversionMode = settings.conversionMode;
+    state.operation = settings.operation;
+    state.questions = settings.questions;
+    state.timerLimit = settings.timerLimit;
+    state.guide = settings.guide;
+    state.hexGuide = settings.hexGuide;
+    state.decimal = settings.decimal;
+    selectPartyChoice("gameTypeChoices", state.gameType);
+    selectPartyChoice("practiceTypeChoices", state.conversionMode);
+    selectPartyChoice("operationChoices", state.operation);
+    selectPartyChoice("questionChoices", state.questions);
+    $("timerMinutes").value = String(state.timerLimit || 30);
+    updateTimerSelection();
+    [$("guideOff"), $("guideOn")].forEach((button) => button.classList.toggle("selected", button.dataset.value === (state.guide ? "on" : "off")));
+    [$("hexGuideOff"), $("hexGuideOn")].forEach((button) => button.classList.toggle("selected", button.dataset.value === (state.hexGuide ? "on" : "off")));
+    setToggle($("decimalToggle"), state.decimal);
+    document.body.classList.toggle("show-decimals", state.decimal);
+    updateSetupVisibility();
+  }
+
+  party = window.QuizHubProceduralParty.attach({
+    kind: "hexadecimal",
+    createQuestion: () => {
+      setNextButtonVisible(false);
+      makeProblem();
+      startTimer();
+      partyQuestion = describePartyQuestion();
+      return partyQuestion;
+    },
+    renderQuestion: renderPartyQuestion,
+    setQuestionNumber: (questionNumber) => {
+      state.current = questionNumber + 1;
+      updateStats();
+    },
+    applySettings: applyPartySettings,
+    beginGame: beginPartyGame,
+    setAnswerLocked: () => { state.accepting = false; clearInterval(state.timerId); },
+    onReveal: (reveal, id) => {
+      state.accepting = false;
+      clearInterval(state.timerId);
+      const ownAnswer = reveal.answers.find((entry) => entry.playerId === id);
+      if (ownAnswer && !party.isHostDisplay) {
+        state.correct += ownAnswer.correct ? 1 : 0;
+        state.incorrect += ownAnswer.correct ? 0 : 1;
+        state.score = ownAnswer.score;
+        updateStats();
+      }
+      setNextButtonVisible(party.canAdvance);
+    },
+    finishGame: () => finishGame("QUIZ COMPLETE")
+  });
+
+  if (party) {
+    $("endGameButton").textContent = "End Party Quiz";
+    if (!party.canAdvance) $("endGameButton").classList.add("hidden");
+    $("pauseButton").classList.add("hidden");
+    $("skipButton").classList.add("hidden");
+    $("nextQuestionButton").addEventListener("click", () => {
+      if (party.canAdvance) party.next();
+    });
+    document.addEventListener("input", (event) => {
+      if (event.target.id === "conversionAnswer") party.updateActivity("answering");
+    });
+  }
 })();

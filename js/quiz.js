@@ -23,6 +23,8 @@ const soundFiles = {
 const params = new URLSearchParams(location.search);
 const requestedQuiz = params.get("quiz");
 const requestedCategory = canonicalCategory(params.get("category"));
+const isStatisticsPracticeQuiz =
+	requestedCategory === "DataSci" && requestedQuiz === "statisticsPractice";
 const forceStaticQuestionOrder =
 	requestedCategory === "CompGFX" && requestedQuiz === "lautest";
 const isDataSciLautest =
@@ -46,7 +48,10 @@ window.addEventListener(
 	"quizhub:preferenceschange",
 	syncClamshellDocumentTitle,
 );
-window.addEventListener("quizhub:display-modechange", syncClamshellDocumentTitle);
+window.addEventListener(
+	"quizhub:display-modechange",
+	syncClamshellDocumentTitle,
+);
 clamshellViewport.addEventListener("change", syncClamshellDocumentTitle);
 syncClamshellDocumentTitle();
 const partyHost = params.get("partyHost") === "true";
@@ -155,6 +160,8 @@ const requestedMusicCategory = canonicalCategory(
 );
 const quizMusicFile = forceStaticQuestionOrder
 	? resolveAssetUrl("./music/Challenge_Intro.mp3")
+	: isStatisticsPracticeQuiz
+		? resolveAssetUrl("./music/Trial_Setup.mp3")
 	: requestedMusicCategory === "DataSci"
 		? resolveAssetUrl("./music/DataSciMusic.wav")
 		: requestedMusicCategory === "Practice1"
@@ -170,12 +177,11 @@ const quizMusicFile = forceStaticQuestionOrder
 							: requestedMusicCategory === "SocIndi"
 								? resolveAssetUrl("./music/SocIndiMusic.wav")
 								: resolveAssetUrl("./music/QuizMusic.wav");
+let quizMusicDefaultSource = quizMusicFile;
 const quizMusic = isDataSciLautest
 	? new Audio()
 	: new Audio(
-			forceStaticQuestionOrder
-				? quizMusicFile
-				: window.quizHubPreferences.resolveQuizMusic(quizMusicFile),
+			window.quizHubPreferences.resolveQuizMusic(quizMusicDefaultSource),
 		);
 const isPreloadedQuiz = window.self !== window.top;
 let quizMusicPending = false;
@@ -197,6 +203,26 @@ function updateMusicToggle() {
 	);
 	musicToggle.setAttribute("aria-pressed", String(musicMuted));
 }
+window.QuizHubMusicPicker.attach({
+	button: document.getElementById("quizMusicCycle"),
+	isSoundEnabled: () => !soundsMuted,
+	isMusicEnabled: () => !musicMuted,
+	onSelectionStart() {
+		if (forceStaticQuestionOrder) stopLautestLoopingMusic();
+		else {
+			quizMusic.pause();
+			quizMusicPending = false;
+		}
+	},
+	onTrackSelected(shouldPlay) {
+		if (isDataSciLautest && !dataSciLautestMusicStarted) return;
+		quizMusic.src = window.quizHubPreferences.resolveQuizMusic(
+			quizMusicDefaultSource,
+		);
+		quizMusic.load();
+		if (shouldPlay) startQuizMusic();
+	},
+});
 function startQuizMusic() {
 	if (isPreloadedQuiz || musicMuted || !hostDisplayMusicAllowed) return;
 	if (isDataSciLautest && !dataSciLautestMusicStarted) return;
@@ -301,7 +327,10 @@ function startLautestQuizMusic() {
 	if (!forceStaticQuestionOrder || lautestQuizMusicStarted) return;
 	lautestQuizMusicStarted = true;
 	stopLautestLoopingMusic();
-	quizMusic.src = resolveAssetUrl("./music/Challenge.mp3");
+	quizMusicDefaultSource = resolveAssetUrl("./music/Challenge.mp3");
+	quizMusic.src = window.quizHubPreferences.resolveQuizMusic(
+		quizMusicDefaultSource,
+	);
 	quizMusic.load();
 	quizMusicPending = true;
 	startQuizMusic();
@@ -309,7 +338,19 @@ function startLautestQuizMusic() {
 function startDataSciLautestMusic() {
 	if (!isDataSciLautest || dataSciLautestMusicStarted) return;
 	dataSciLautestMusicStarted = true;
-	quizMusic.src = resolveAssetUrl("./music/Challenge2.mp3");
+	quizMusicDefaultSource = resolveAssetUrl("./music/Challenge2.mp3");
+	quizMusic.src = window.quizHubPreferences.resolveQuizMusic(
+		quizMusicDefaultSource,
+	);
+	quizMusic.load();
+	startQuizMusic();
+}
+function startStatisticsPracticeMusic() {
+	if (!isStatisticsPracticeQuiz) return;
+	quizMusicDefaultSource = resolveAssetUrl("./music/Trial_Quiz.mp3");
+	quizMusic.src = window.quizHubPreferences.resolveQuizMusic(
+		quizMusicDefaultSource,
+	);
 	quizMusic.load();
 	startQuizMusic();
 }
@@ -513,6 +554,27 @@ if (mixedStudyActive && !mixedStudyConfigError) {
 } else if (!mixedStudyActive) {
 	bank = getSelectedQuestionBank();
 }
+const statisticsPracticeAllQuestions = isStatisticsPracticeQuiz ? bank : [];
+const statisticsPracticeSectionNames = {
+	"central-tendency": "Central tendency",
+	spread: "Spread and variability",
+	correlation: "Correlation",
+	frequency: "Frequency distributions",
+	skewness: "Skewness",
+	"normalized-data": "Normalized data",
+};
+let selectedStatisticsPracticeSections = new Set(
+	[
+		...document.querySelectorAll(
+			"#statisticsPracticeFocus input[type='checkbox']:checked",
+		),
+	].map((input) => input.value),
+);
+if (isStatisticsPracticeQuiz) {
+	bank = statisticsPracticeAllQuestions.filter((question) =>
+		selectedStatisticsPracticeSections.has(question.interaction.section),
+	);
+}
 const rawMiniQuestions = params.get("miniQuestions");
 const customQuestionSequence = rawMiniQuestions
 	? rawMiniQuestions
@@ -635,6 +697,70 @@ const statisticsSetResult = document.getElementById("statisticsSetResult");
 const statisticsSetSolution = document.getElementById("statisticsSetSolution");
 const statisticsSetStatus = document.getElementById("statisticsSetStatus");
 const statisticsSetSubmit = document.getElementById("statisticsSetSubmit");
+const numericAnswerBuilder = document.getElementById("numericAnswerBuilder");
+const numericAnswerInput = document.getElementById("numericAnswerInput");
+const numericAnswerStatus = document.getElementById("numericAnswerStatus");
+const numericAnswerSolution = document.getElementById("numericAnswerSolution");
+const numericAnswerSubmit = document.getElementById("numericAnswerSubmit");
+const statisticsPracticeFocus = document.getElementById(
+	"statisticsPracticeFocus",
+);
+const statisticsPracticeFocusStatus = document.getElementById(
+	"statisticsPracticeFocusStatus",
+);
+const statisticsPracticeWorkspace = document.getElementById(
+	"statisticsPracticeWorkspace",
+);
+const statisticsPracticeGameOverOverlay = document.getElementById(
+	"statisticsPracticeGameOverOverlay",
+);
+const statisticsPracticeQuestionHeading = document.getElementById(
+	"statisticsPracticeQuestionHeading",
+);
+const statisticsPracticeResponse = document.getElementById(
+	"statisticsPracticeResponse",
+);
+const statisticsPracticeFeedback = document.getElementById(
+	"statisticsPracticeFeedback",
+);
+const statisticsPracticeControls = document.getElementById(
+	"statisticsPracticeControls",
+);
+const statisticsPracticeHud = document.getElementById("statisticsPracticeHud");
+const statisticsPracticeHeartLimitInput = document.getElementById(
+	"statisticsPracticeHeartLimit",
+);
+const statisticsPracticeHeartsMeter = document.getElementById(
+	"statisticsPracticeHeartsMeter",
+);
+const statisticsPracticeComboMeter = document.getElementById(
+	"statisticsPracticeComboMeter",
+);
+const statisticsPracticeSectionName = document.getElementById(
+	"statisticsPracticeSectionName",
+);
+const statisticsPracticeProgressText = document.getElementById(
+	"statisticsPracticeProgressText",
+);
+const statisticsPracticeProgressTrigger = document.getElementById(
+	"statisticsPracticeProgressTrigger",
+);
+const statisticsPracticeRevolver = document.querySelector(
+	".statistics-practice-revolver",
+);
+let statisticsPracticeProgressTimer = null;
+const statisticsPracticeProgressTrack = document.getElementById(
+	"statisticsPracticeProgressTrack",
+);
+const statisticsPracticeProgressBar = document.getElementById(
+	"statisticsPracticeProgressBar",
+);
+const statisticsPracticeBullet = document.getElementById(
+	"statisticsPracticeBullet",
+);
+const statisticsPracticeQuestionCard = document.querySelector(
+	".statistics-practice-question-card",
+);
 const tableAnswerBuilder = document.getElementById("tableAnswerBuilder");
 const tableAnswerScroll = document.getElementById("tableAnswerScroll");
 const tableAnswerStatus = document.getElementById("tableAnswerStatus");
@@ -715,6 +841,52 @@ if (mixedStudyActive) {
 	}
 }
 
+if (isStatisticsPracticeQuiz) {
+	document.body.classList.add("statistics-practice-mode");
+	setupTitle.textContent = "STATISTIC PRACTICE";
+	setup.querySelector(".setup-kicker").textContent = "DATA SCIENCE";
+	beginButton.textContent = "START PRACTICE";
+	document
+		.querySelector(".quiz-setup")
+		.classList.add("statistics-practice-setup");
+	statisticsPracticeWorkspace.hidden = false;
+	courseCode.hidden = true;
+	statisticsPracticeProgressTrigger.addEventListener("click", () => {
+		if (statisticsPracticeProgressTimer !== null) {
+			clearTimeout(statisticsPracticeProgressTimer);
+		}
+		statisticsPracticeRevolver.classList.add("progress-peek-open");
+		statisticsPracticeProgressTrigger.setAttribute("aria-expanded", "true");
+		statisticsPracticeProgressTrigger.setAttribute(
+			"aria-label",
+			"Practice progress shown",
+		);
+		statisticsPracticeProgressTimer = setTimeout(() => {
+			statisticsPracticeRevolver.classList.remove("progress-peek-open");
+			statisticsPracticeProgressTrigger.setAttribute("aria-expanded", "false");
+			statisticsPracticeProgressTrigger.setAttribute(
+				"aria-label",
+				"Show practice progress",
+			);
+			statisticsPracticeProgressTimer = null;
+		}, 3500);
+	});
+	document
+		.getElementById("quizContent")
+		.querySelector(".softengi-composer")
+		.setAttribute("hidden", "");
+	statisticsPracticeQuestionHeading.append(
+		document.querySelector(".quiz-heading"),
+	);
+	statisticsPracticeResponse.append(numericAnswerBuilder);
+	statisticsPracticeFeedback.append(feedback);
+	statisticsPracticeControls.append(document.querySelector(".controls"));
+	statisticsPracticeHud.prepend(timer, questionTimer, scoreDisplay);
+	document
+		.getElementById("statisticsPracticeHeartSettings")
+		.removeAttribute("hidden");
+}
+
 if (isSoftEngi) {
 	document.body.classList.add("softengi-mode");
 	softengiSidebar.hidden = false;
@@ -780,12 +952,55 @@ if (networkPartyActive) {
 
 courseCode.textContent = mixedStudyActive
 	? "MIXED STUDY"
-	: `${codes[category] || category}`;
-let totalAvailable = bank.length;
+	: isStatisticsPracticeQuiz
+		? "STATISTICS LAB"
+		: `${codes[category] || category}`;
+let totalAvailable = isStatisticsPracticeQuiz ? 1000 : bank.length;
 countInput.max = Math.max(1, totalAvailable);
 countInput.value = Math.max(1, totalAvailable);
 countMax.textContent = `of ${totalAvailable}`;
 setupCount.textContent = `${totalAvailable} question${totalAvailable === 1 ? "" : "s"} available in this quiz.`;
+if (isStatisticsPracticeQuiz) {
+	countInput.value = 100;
+	countMax.textContent = "generated";
+	setupCount.textContent =
+		"STATISTIC PRACTICE · Generate up to 1,000 numeric questions from randomized data.";
+	statisticsPracticeFocus.hidden = false;
+	statisticsPracticeFocus.addEventListener("change", () => {
+		selectedStatisticsPracticeSections = new Set(
+			[
+				...statisticsPracticeFocus.querySelectorAll(
+					"input[type='checkbox']:checked",
+				),
+			].map((input) => input.value),
+		);
+		bank = statisticsPracticeAllQuestions.filter((question) =>
+			selectedStatisticsPracticeSections.has(question.interaction.section),
+		);
+		totalAvailable = bank.length ? 1000 : 0;
+		if (totalAvailable) {
+			const currentCount = Number.parseInt(countInput.value, 10);
+			countInput.max = totalAvailable;
+			countInput.value = Math.min(
+				Number.isFinite(currentCount) ? currentCount : totalAvailable,
+				totalAvailable,
+			);
+			selectedQuestionCount = Number.parseInt(countInput.value, 10);
+		} else {
+			countInput.max = 1000;
+		}
+		countMax.textContent = totalAvailable ? "generated" : "unavailable";
+		setupCount.textContent = totalAvailable
+			? "STATISTIC PRACTICE · Generate up to 1,000 numeric questions from randomized data."
+			: "Select at least one topic to generate questions.";
+		statisticsPracticeFocusStatus.textContent =
+			totalAvailable === 0
+				? "Select at least one topic to start."
+				: `${selectedStatisticsPracticeSections.size} topic${selectedStatisticsPracticeSections.size === 1 ? "" : "s"} selected · randomized questions`;
+		setupError.textContent = "";
+	});
+	statisticsPracticeFocusStatus.textContent = `${selectedStatisticsPracticeSections.size} topics selected · randomized questions`;
+}
 
 let orderMode = "random";
 const randomOrderInput = document.querySelector(
@@ -813,12 +1028,23 @@ let questionNumber = 0;
 let score = 0;
 let combo = 0;
 let longestCombo = 0;
+let statisticsPracticeHeartLimit = 5;
+let statisticsPracticeHeartsRemaining = 5;
+let statisticsPracticeWrongEntries = 0;
+let statisticsPracticeAdvancePending = false;
+let statisticsPracticeAdvanceTimer = null;
+let statisticsPracticeEntranceTimer = null;
+let statisticsPracticeStartTimer = null;
+let statisticsPracticeIntroPending = false;
+let statisticsPracticeGameOverPending = false;
+let statisticsPracticeGameOverTimer = null;
 const partyComboStreaks = new Map();
 const partyLongestComboStreaks = new Map();
 let answered = false;
 let openglAttemptCount = 0;
 let meshTableAttemptCount = 0;
 let statisticsSetAttemptCount = 0;
+let numericAnswerAttemptCount = 0;
 let history = [];
 let quizStarted = false;
 let remainingSeconds = null;
@@ -1154,11 +1380,7 @@ function shouldCountAsCorrect(resultType, isCorrect) {
 }
 
 function resetComboAfterIncorrectAnswer() {
-	if (
-		!cheatComboLossDisabled ||
-		partyModeActive ||
-		networkPartyActive
-	)
+	if (!cheatComboLossDisabled || partyModeActive || networkPartyActive)
 		combo = 0;
 }
 
@@ -1198,6 +1420,7 @@ function updateCheatDisplayMode() {
 function updateMeta() {
 	if (scoreDisplay) scoreDisplay.textContent = `Score: ${score}`;
 	if (comboDisplay) comboDisplay.textContent = `Combo: ${combo}`;
+	updateStatisticsPracticeMeters();
 	if (questionDisplay) {
 		if (current) {
 			const remaining = Math.max(0, selectedQuestionCount - questionNumber);
@@ -1231,6 +1454,141 @@ function updateMeta() {
 		softengiProgressBar.style.width = `${progress}%`;
 	}
 	updatePartyScoreDisplay();
+}
+
+function updateStatisticsPracticeMeters() {
+	if (
+		!isStatisticsPracticeQuiz ||
+		!statisticsPracticeHeartsMeter ||
+		!statisticsPracticeComboMeter
+	) {
+		return;
+	}
+
+	if (statisticsPracticeHeartLimit === null) {
+		if (
+			!statisticsPracticeHeartsMeter.firstElementChild?.classList.contains(
+				"statistics-practice-unlimited-hearts",
+			)
+		) {
+			const unlimited = document.createElement("span");
+			unlimited.className = "statistics-practice-unlimited-hearts";
+			unlimited.setAttribute("aria-hidden", "true");
+			unlimited.textContent = "∞";
+			statisticsPracticeHeartsMeter.replaceChildren(unlimited);
+		}
+		statisticsPracticeHeartsMeter.setAttribute(
+			"aria-label",
+			"Unlimited wrong-answer hearts",
+		);
+	} else {
+		const hearts = [
+			...statisticsPracticeHeartsMeter.querySelectorAll(
+				".statistics-practice-heart",
+			),
+		];
+		if (hearts.length !== statisticsPracticeHeartLimit) {
+			statisticsPracticeHeartsMeter.replaceChildren(
+				...Array.from({ length: statisticsPracticeHeartLimit }, () => {
+					const heart = document.createElement("span");
+					heart.className = "statistics-practice-heart";
+					heart.setAttribute("aria-hidden", "true");
+					heart.textContent = "♥";
+					return heart;
+				}),
+			);
+		}
+		const stableHearts = [
+			...statisticsPracticeHeartsMeter.querySelectorAll(
+				".statistics-practice-heart",
+			),
+		];
+		stableHearts.forEach((heart, index) => {
+			const isActive = index < statisticsPracticeHeartsRemaining;
+			heart.classList.toggle("is-active", isActive);
+			if (isActive) heart.classList.remove("is-breaking");
+		});
+		statisticsPracticeHeartsMeter.setAttribute(
+			"aria-label",
+			`${statisticsPracticeHeartsRemaining} of ${statisticsPracticeHeartLimit} wrong-answer hearts remaining`,
+		);
+	}
+
+	const stars = [
+		...statisticsPracticeComboMeter.querySelectorAll(
+			".statistics-practice-combo-star",
+		),
+	];
+	const comboTier = combo > 0 ? Math.ceil(combo / 10) - 1 : 0;
+	const comboStep = combo > 0 ? ((combo - 1) % 10) + 1 : 0;
+	const comboColors = [
+		["#53dfff", "#c7f8ff"],
+		["#bc79ff", "#f0d9ff"],
+		["#ffd34e", "#fff2b8"],
+		["#71f0a5", "#d7ffe5"],
+		["#ff79b7", "#ffe0ef"],
+	];
+	const [comboColor, comboGlow] = comboColors[comboTier % comboColors.length];
+	statisticsPracticeComboMeter.style.setProperty("--combo-color", comboColor);
+	statisticsPracticeComboMeter.style.setProperty("--combo-glow", comboGlow);
+	statisticsPracticeComboMeter.dataset.comboTier = String(comboTier);
+	stars.forEach((star, index) => {
+		const fill = Math.max(0, Math.min(100, (comboStep / 2 - index) * 100));
+		star.style.setProperty("--star-fill", `${fill}%`);
+		star.classList.toggle("is-lit", fill === 100);
+		star.classList.toggle("is-filling", fill > 0 && fill < 100);
+	});
+	statisticsPracticeComboMeter.setAttribute(
+		"aria-label",
+		`Combo meter: ${combo} correct in a row`,
+	);
+}
+
+function loseStatisticsPracticeHeart() {
+	if (!isStatisticsPracticeQuiz) return false;
+	statisticsPracticeWrongEntries++;
+	if (statisticsPracticeHeartLimit === null) return false;
+	const heartIndex = statisticsPracticeHeartsRemaining - 1;
+	statisticsPracticeHeartsRemaining = Math.max(
+		0,
+		statisticsPracticeHeartsRemaining - 1,
+	);
+	updateStatisticsPracticeMeters();
+	const consumedHeart = statisticsPracticeHeartsMeter.children[heartIndex];
+	consumedHeart?.classList.add("is-breaking");
+	return statisticsPracticeHeartsRemaining === 0;
+}
+
+function presentStatisticsPracticeGameOver() {
+	if (statisticsPracticeGameOverPending || !statisticsPracticeGameOverOverlay) {
+		return;
+	}
+	statisticsPracticeGameOverPending = true;
+	statisticsPracticeWorkspace.classList.add("game-over-pending");
+	const prefersReducedMotion = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
+	const heartFallDuration = prefersReducedMotion ? 0 : 900;
+	statisticsPracticeGameOverTimer = setTimeout(() => {
+		statisticsPracticeGameOverTimer = null;
+		statisticsPracticeGameOverOverlay.hidden = false;
+		statisticsPracticeGameOverOverlay.classList.add("is-active");
+		statisticsPracticeGameOverTimer = setTimeout(
+			() => {
+				statisticsPracticeGameOverTimer = null;
+				if (prefersReducedMotion) {
+					finishQuiz("game-over");
+					return;
+				}
+				statisticsPracticeGameOverOverlay.classList.add("is-zooming-in");
+				statisticsPracticeGameOverTimer = setTimeout(() => {
+					statisticsPracticeGameOverTimer = null;
+					finishQuiz("game-over");
+				}, 750);
+			},
+			prefersReducedMotion ? 2500 : 3600,
+		);
+	}, heartFallDuration);
 }
 
 function resetPartyComboStreaks() {
@@ -1531,7 +1889,8 @@ function startNetworkQuiz(config, roomSnapshot = null) {
 	if (isSoftEngi) document.body.classList.add("softengi-active");
 	if (isCompGFX) transitionCompGFXIntoQuiz();
 	playSound("begin");
-	if (forceStaticQuestionOrder) startLautestQuizMusic();
+	if (isStatisticsPracticeQuiz) startStatisticsPracticeMusic();
+	else if (forceStaticQuestionOrder) startLautestQuizMusic();
 	else if (isDataSciLautest) startDataSciLautestMusic();
 	else startQuizMusic();
 	setup.hidden = true;
@@ -2106,6 +2465,24 @@ function isStatisticsSetQuestion() {
 	);
 }
 
+function isNumericAnswerQuestion() {
+	return (
+		current?.interaction?.type === "numeric-answer" &&
+		!partyModeActive &&
+		!networkPartyActive
+	);
+}
+
+function resetNumericAnswerBuilder() {
+	numericAnswerAttemptCount = 0;
+	numericAnswerInput.value = "";
+	numericAnswerInput.disabled = false;
+	numericAnswerStatus.textContent = "Enter a number. You have 3 attempts.";
+	numericAnswerSolution.textContent = "";
+	numericAnswerSolution.hidden = true;
+	numericAnswerSubmit.disabled = false;
+}
+
 function resetStatisticsSetBuilder() {
 	statisticsSetAttemptCount = 0;
 	statisticsSetInputs.forEach((input) => {
@@ -2176,6 +2553,55 @@ function finishStatisticsSetResponse(resultType, isCorrect, submitted = "") {
 		input.disabled = true;
 	});
 	statisticsSetSubmit.disabled = true;
+	nextButton.disabled = false;
+	skipButton.disabled = true;
+	skipButton.classList.remove("skip-show");
+	skipButton.classList.add("skip-hidden", "animate-hide");
+	skipButton.style.setProperty("opacity", "0", "important");
+	skipButton.style.setProperty("visibility", "hidden", "important");
+	skipButton.style.setProperty("pointer-events", "none", "important");
+	updateMeta();
+}
+
+function finishNumericAnswerResponse(resultType, isCorrect, submitted = "") {
+	isCorrect = shouldCountAsCorrect(resultType, isCorrect);
+	stopQuestionTimer();
+	answered = true;
+	const correctAnswer = current.a[current.c];
+	if (isCorrect) {
+		combo++;
+		longestCombo = Math.max(longestCombo, combo);
+		if (combo > 1 && !isStatisticsPracticeQuiz) showComboPopup();
+		score++;
+		playSound("correct");
+		feedback.textContent = "Correct!";
+		feedback.className = "motivation visible right";
+		numericAnswerStatus.textContent = "Correct answer.";
+	} else {
+		resetComboAfterIncorrectAnswer();
+		if (resultType === "answer") playSound("incorrect");
+		numericAnswerSolution.textContent = `Correct answer: ${correctAnswer}`;
+		numericAnswerSolution.hidden = false;
+		feedback.textContent =
+			resultType === "skip"
+				? "Skipped. The correct answer is shown below."
+				: resultType === "timeout"
+					? "Time expired. The correct answer is shown below."
+					: "No attempts remaining. The correct answer is shown below.";
+		feedback.className = "motivation visible wrong";
+		numericAnswerStatus.textContent = feedback.textContent;
+	}
+	history.push({
+		question: current.q,
+		questionIndex: currentQuestionIndex,
+		selected: resultType === "answer" ? submitted : "",
+		correctAnswer,
+		correct: isCorrect,
+		skipped: resultType === "skip",
+		timedOut: resultType === "timeout",
+	});
+	numericAnswerInput.disabled = true;
+	numericAnswerSubmit.disabled = true;
 	nextButton.disabled = false;
 	skipButton.disabled = true;
 	skipButton.classList.remove("skip-show");
@@ -2663,6 +3089,49 @@ statisticsSetSubmit.addEventListener("click", () => {
 	const remaining = 3 - statisticsSetAttemptCount;
 	statisticsSetStatus.textContent = `Not quite. ${remaining} ${remaining === 1 ? "attempt" : "attempts"} remaining. Edit your set and try again.`;
 });
+numericAnswerSubmit.addEventListener("click", () => {
+	if (!isNumericAnswerQuestion() || answered) return;
+	const submitted = numericAnswerInput.value.trim();
+	if (submitted === "" || !Number.isFinite(Number(submitted))) {
+		numericAnswerStatus.textContent = "Enter a valid number before checking.";
+		numericAnswerInput.focus();
+		return;
+	}
+	const target = Number(current.a[current.c]);
+	const tolerance = Number(current.interaction.tolerance) || 0;
+	const isCorrect =
+		Math.abs(Number(submitted) - target) <= tolerance ||
+		cheatAlwaysRightAnswer ||
+		cheatAlwaysPerfectScore;
+	if (isCorrect) {
+		finishNumericAnswerResponse("answer", true, submitted);
+		return;
+	}
+	numericAnswerAttemptCount++;
+	if (isStatisticsPracticeQuiz) {
+		resetComboAfterIncorrectAnswer();
+	}
+	if (numericAnswerAttemptCount >= 3) {
+		if (isStatisticsPracticeQuiz) {
+			const gameOver = loseStatisticsPracticeHeart();
+			updateMeta();
+			if (gameOver) {
+				finishNumericAnswerResponse("answer", false, submitted);
+				presentStatisticsPracticeGameOver();
+				return;
+			}
+		}
+		finishNumericAnswerResponse("answer", false, submitted);
+		return;
+	}
+	if (isStatisticsPracticeQuiz) updateMeta();
+	playSound("incorrect");
+	const remaining = 3 - numericAnswerAttemptCount;
+	numericAnswerStatus.textContent = `Not quite. ${remaining} ${remaining === 1 ? "attempt" : "attempts"} remaining. Try again.`;
+});
+numericAnswerInput.addEventListener("keydown", (event) => {
+	if (event.key === "Enter") numericAnswerSubmit.click();
+});
 
 function fitCompGFXQuestionTitle() {
 	if (!isCompGFX || !questionTitle) return;
@@ -2799,10 +3268,9 @@ function transitionCompGFXQuestionTitle(shouldFade, turnDuration) {
 		new Promise((resolve) => setTimeout(resolve, duration));
 	const clickDuration = 110;
 	const answerPanelExitTransform =
-		window.matchMedia("(max-width: 760px)").matches ||
-		isForcedMobileDisplay()
-		? `translateY(${window.quizHubDisplayViewport.height + 40}px)`
-		: `translateX(${window.quizHubDisplayViewport.width + 40}px)`;
+		window.matchMedia("(max-width: 760px)").matches || isForcedMobileDisplay()
+			? `translateY(${window.quizHubDisplayViewport.height + 40}px)`
+			: `translateX(${window.quizHubDisplayViewport.width + 40}px)`;
 	const animateAnswerPanel = !partyHostDisplay;
 	if (animateAnswerPanel) {
 		compGFXAnswerPanelAnimation = content.animate(
@@ -3172,14 +3640,20 @@ function renderQuestion(forcedAnswerOrder = null) {
 	const useOpenGLBuilder = isOpenGLBuilderQuestion();
 	const useMeshTableBuilder = isMeshTableQuestion();
 	const useStatisticsSetBuilder = isStatisticsSetQuestion();
+	const useNumericAnswerBuilder = isNumericAnswerQuestion();
 	openglBuilder.hidden = !useOpenGLBuilder;
 	tableAnswerBuilder.hidden = !useMeshTableBuilder;
 	statisticsSetBuilder.hidden = !useStatisticsSetBuilder;
+	numericAnswerBuilder.hidden = !useNumericAnswerBuilder;
 	answersEl.hidden =
-		useOpenGLBuilder || useMeshTableBuilder || useStatisticsSetBuilder;
+		useOpenGLBuilder ||
+		useMeshTableBuilder ||
+		useStatisticsSetBuilder ||
+		useNumericAnswerBuilder;
 	if (useOpenGLBuilder) resetOpenGLBuilder();
 	if (useMeshTableBuilder) resetMeshTableBuilder();
 	if (useStatisticsSetBuilder) resetStatisticsSetBuilder();
+	if (useNumericAnswerBuilder) resetNumericAnswerBuilder();
 	answersEl.innerHTML = "";
 	const answerLabels = [
 		"A",
@@ -3267,6 +3741,12 @@ function renderQuestion(forcedAnswerOrder = null) {
 		tableAnswerScroll.querySelector("input")?.focus();
 	} else if (useStatisticsSetBuilder) {
 		statisticsSetInputs[0]?.focus();
+	} else if (useNumericAnswerBuilder) {
+		if (isStatisticsPracticeQuiz) {
+			statisticsPracticeWorkspace.focus({ preventScroll: true });
+		} else {
+			numericAnswerInput.focus();
+		}
 	} else if (firstAnswer) {
 		firstAnswer.focus();
 	}
@@ -3275,6 +3755,81 @@ function renderQuestion(forcedAnswerOrder = null) {
 	feedback.className = "feedback";
 	answered = false;
 	updateMeta();
+	updateStatisticsPracticeProgress();
+	animateStatisticsPracticeQuestionIn();
+}
+
+function updateStatisticsPracticeProgress() {
+	if (!isStatisticsPracticeQuiz || !current) return;
+	const section = current.interaction?.section;
+	statisticsPracticeSectionName.textContent = (
+		statisticsPracticeSectionNames[section] || "Statistics"
+	).toUpperCase();
+	statisticsPracticeProgressText.textContent = `${sequencePosition + 1} OF ${selectedQuestionCount}`;
+	const progress = Math.round(
+		((sequencePosition + 1) / selectedQuestionCount) * 100,
+	);
+	statisticsPracticeProgressTrack.setAttribute(
+		"aria-valuenow",
+		String(progress),
+	);
+	statisticsPracticeProgressBar.style.width = "100%";
+	statisticsPracticeProgressBar.style.height = `${progress}%`;
+	statisticsPracticeBullet.textContent = `QUESTION ${sequencePosition + 1}`;
+}
+
+function animateStatisticsPracticeQuestionIn() {
+	if (!isStatisticsPracticeQuiz || !statisticsPracticeQuestionCard) return;
+	if (statisticsPracticeIntroPending) return;
+	if (statisticsPracticeEntranceTimer !== null) {
+		clearTimeout(statisticsPracticeEntranceTimer);
+	}
+	statisticsPracticeQuestionCard.classList.remove(
+		"question-exit",
+		"question-enter",
+	);
+	statisticsPracticeBullet.classList.remove("bullet-firing");
+	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+	void statisticsPracticeQuestionCard.offsetWidth;
+	statisticsPracticeQuestionCard.classList.add("question-enter");
+	statisticsPracticeBullet.classList.add("bullet-reloading");
+	statisticsPracticeEntranceTimer = setTimeout(() => {
+		statisticsPracticeQuestionCard.classList.remove("question-enter");
+		statisticsPracticeBullet.classList.remove("bullet-reloading");
+		statisticsPracticeEntranceTimer = null;
+	}, 520);
+}
+
+function advanceStatisticsPracticeQuestion() {
+	if (statisticsPracticeAdvancePending || quizEnded) return;
+	if (statisticsPracticeEntranceTimer !== null) {
+		clearTimeout(statisticsPracticeEntranceTimer);
+		statisticsPracticeEntranceTimer = null;
+	}
+	statisticsPracticeQuestionCard.classList.remove("question-enter");
+	const shouldAnimate = !window.matchMedia("(prefers-reduced-motion: reduce)")
+		.matches;
+	if (shouldAnimate) void statisticsPracticeQuestionCard.offsetWidth;
+	statisticsPracticeAdvancePending = true;
+	skipButton.disabled = true;
+	nextButton.disabled = true;
+	if (shouldAnimate) {
+		statisticsPracticeWorkspace.classList.add("question-advancing");
+		statisticsPracticeQuestionCard.classList.add("question-exit");
+		statisticsPracticeBullet.classList.add("bullet-firing");
+	}
+	statisticsPracticeAdvanceTimer = setTimeout(
+		() => {
+			statisticsPracticeAdvanceTimer = null;
+			if (quizEnded) return;
+			statisticsPracticeWorkspace.classList.remove("question-advancing");
+			statisticsPracticeQuestionCard.classList.remove("question-exit");
+			statisticsPracticeAdvancePending = false;
+			sequencePosition++;
+			loadQuestion();
+		},
+		shouldAnimate ? 420 : 0,
+	);
 }
 
 function loadQuestion() {
@@ -3334,18 +3889,36 @@ function loadQuestion() {
 	} else {
 		renderQuestion();
 	}
-	startQuestionTimer();
-	beginPartyQuestion();
+	if (!statisticsPracticeIntroPending) {
+		startQuestionTimer();
+		beginPartyQuestion();
+	}
 }
 
 function finishQuiz(reason = "complete") {
 	if (quizEnded) return;
 	quizEnded = true;
-	if (
-		cheatAlwaysPerfectScore &&
-		!partyModeActive &&
-		!networkPartyActive
-	) {
+	if (statisticsPracticeStartTimer !== null) {
+		clearTimeout(statisticsPracticeStartTimer);
+		statisticsPracticeStartTimer = null;
+	}
+	statisticsPracticeIntroPending = false;
+	content.inert = false;
+	content.removeAttribute("aria-busy");
+	if (statisticsPracticeGameOverTimer !== null) {
+		clearTimeout(statisticsPracticeGameOverTimer);
+		statisticsPracticeGameOverTimer = null;
+	}
+	if (statisticsPracticeAdvanceTimer !== null) {
+		clearTimeout(statisticsPracticeAdvanceTimer);
+		statisticsPracticeAdvanceTimer = null;
+	}
+	if (statisticsPracticeEntranceTimer !== null) {
+		clearTimeout(statisticsPracticeEntranceTimer);
+		statisticsPracticeEntranceTimer = null;
+	}
+	statisticsPracticeAdvancePending = false;
+	if (cheatAlwaysPerfectScore && !partyModeActive && !networkPartyActive) {
 		score = selectedQuestionCount;
 		history = history.map((entry) => ({ ...entry, correct: true }));
 		updateMeta();
@@ -3371,7 +3944,10 @@ function finishQuiz(reason = "complete") {
 		quizType: requestedQuiz || "reviewQuiz",
 		score,
 		longestCombo,
-		total: selectedQuestionCount,
+		total:
+			isStatisticsPracticeQuiz && reason === "game-over"
+				? history.length
+				: selectedQuestionCount,
 		timeLimitMinutes,
 		perQuestionTimeMinutes,
 		isRetake: miniQuizMode,
@@ -3398,6 +3974,9 @@ function finishQuiz(reason = "complete") {
 		...(socIndiReviewSections
 			? { reviewSections: selectedReviewSections }
 			: {}),
+		...(isStatisticsPracticeQuiz
+			? { wrongEntries: statisticsPracticeWrongEntries }
+			: {}),
 		history,
 	};
 
@@ -3411,7 +3990,7 @@ function finishQuiz(reason = "complete") {
 }
 
 function endQuiz(reason = "ended") {
-	if (!quizStarted || quizEnded) return;
+	if (!quizStarted || quizEnded || statisticsPracticeGameOverPending) return;
 	finishQuiz(reason);
 }
 
@@ -3427,6 +4006,10 @@ function revealQuestion(resultType, selectedIndex = null) {
 	}
 	if (isStatisticsSetQuestion()) {
 		finishStatisticsSetResponse(resultType, false);
+		return;
+	}
+	if (isNumericAnswerQuestion()) {
+		finishNumericAnswerResponse(resultType, false);
 		return;
 	}
 	stopQuestionTimer();
@@ -3533,7 +4116,7 @@ function chooseAnswer(index) {
 }
 
 function goNext() {
-	if (!quizStarted || quizEnded) return;
+	if (!quizStarted || quizEnded || statisticsPracticeGameOverPending) return;
 	if (networkPartyActive && !canControlPartyQuiz) return;
 
 	if (!answered) {
@@ -3553,13 +4136,24 @@ function goNext() {
 		return;
 	}
 
+	if (isStatisticsPracticeQuiz) {
+		advanceStatisticsPracticeQuestion();
+		return;
+	}
+
 	if (sequencePosition + 1 < questionSequence.length) slideComboPopupOut();
 	sequencePosition++;
 	loadQuestion();
 }
 
 function skip() {
-	if (!quizStarted || quizEnded || answered) return;
+	if (
+		!quizStarted ||
+		quizEnded ||
+		answered ||
+		statisticsPracticeGameOverPending
+	)
+		return;
 	if (networkPartyActive && !canControlPartyQuiz) return;
 	if (networkPartyActive && hostDisplayAnswerer) {
 		skipNetworkQuestion();
@@ -3591,6 +4185,7 @@ function exitSetup() {
 }
 
 function quit() {
+	if (statisticsPracticeGameOverPending) return;
 	// END QUIZ intentionally goes straight to the result screen and preserves
 	// only the questions that have been displayed and recorded in history.
 	if (networkPartyActive) {
@@ -3754,6 +4349,21 @@ function validateSetup() {
 		return false;
 	}
 
+	if (isStatisticsPracticeQuiz) {
+		const heartLimit = statisticsPracticeHeartLimitInput.value;
+		if (
+			heartLimit !== "unlimited" &&
+			(!Number.isInteger(Number(heartLimit)) ||
+				Number(heartLimit) < 1 ||
+				Number(heartLimit) > 10)
+		) {
+			setupError.textContent = "Choose between 1 and 10 hearts, or unlimited.";
+			return false;
+		}
+		statisticsPracticeHeartLimit =
+			heartLimit === "unlimited" ? null : Number(heartLimit);
+	}
+
 	selectedQuestionCount = requested;
 	const selectedOrder = document.querySelector('input[name="order"]:checked');
 	orderMode = forceStaticQuestionOrder
@@ -3786,7 +4396,34 @@ function beginQuiz() {
 	} else if (!validateSetup()) {
 		return;
 	} else {
+		if (isStatisticsPracticeQuiz) {
+			try {
+				bank = window.QuizHubStatisticsPractice.generateQuestions(
+					selectedQuestionCount,
+					[...selectedStatisticsPracticeSections],
+				);
+			} catch (error) {
+				setupError.textContent = `Could not generate practice questions: ${error.message}`;
+				return;
+			}
+		}
 		buildQuestionSequence();
+	}
+	if (isStatisticsPracticeQuiz) {
+		statisticsPracticeGameOverPending = false;
+		if (statisticsPracticeGameOverTimer !== null) {
+			clearTimeout(statisticsPracticeGameOverTimer);
+			statisticsPracticeGameOverTimer = null;
+		}
+		statisticsPracticeWorkspace.classList.remove("game-over-pending");
+		statisticsPracticeGameOverOverlay.hidden = true;
+		statisticsPracticeGameOverOverlay.classList.remove(
+			"is-active",
+			"is-zooming-in",
+		);
+		statisticsPracticeHeartsRemaining = statisticsPracticeHeartLimit ?? 0;
+		statisticsPracticeWrongEntries = 0;
+		updateStatisticsPracticeMeters();
 	}
 	lastLautestCorrectAnswerPosition = null;
 
@@ -3819,13 +4456,59 @@ function beginQuiz() {
 	quizStarted = true;
 	if (isSoftEngi) document.body.classList.add("softengi-active");
 	if (isCompGFX) transitionCompGFXIntoQuiz();
-	if (forceStaticQuestionOrder) startLautestQuizMusic();
+	if (isStatisticsPracticeQuiz) startStatisticsPracticeMusic();
+	else if (forceStaticQuestionOrder) startLautestQuizMusic();
 	else if (isDataSciLautest) startDataSciLautestMusic();
 	else startQuizMusic();
-	setup.hidden = true;
-	content.hidden = false;
-	startTimer();
-	loadQuestion(false);
+	const revealQuiz = () => {
+		setup.hidden = true;
+		content.hidden = false;
+		if (isStatisticsPracticeQuiz) {
+			const prefersReducedMotion = window.matchMedia(
+				"(prefers-reduced-motion: reduce)",
+			).matches;
+			if (prefersReducedMotion) {
+				loadQuestion();
+				startTimer();
+				startQuestionTimer();
+				beginPartyQuestion();
+				return;
+			}
+			statisticsPracticeIntroPending = true;
+			content.inert = true;
+			content.setAttribute("aria-busy", "true");
+			content.classList.add("statistics-practice-entering");
+			loadQuestion();
+			statisticsPracticeStartTimer = setTimeout(() => {
+				content.classList.remove("statistics-practice-entering");
+				content.inert = false;
+				content.removeAttribute("aria-busy");
+				statisticsPracticeIntroPending = false;
+				statisticsPracticeStartTimer = null;
+				startTimer();
+				startQuestionTimer();
+				beginPartyQuestion();
+			}, 2200);
+			document.querySelector(".panel").scrollTop = 0;
+			return;
+		}
+		startTimer();
+		loadQuestion();
+	};
+	if (
+		isStatisticsPracticeQuiz &&
+		!window.matchMedia("(prefers-reduced-motion: reduce)").matches
+	) {
+		beginButton.disabled = true;
+		setup.classList.add("statistics-practice-exiting");
+		statisticsPracticeStartTimer = setTimeout(() => {
+			statisticsPracticeStartTimer = null;
+			setup.classList.remove("statistics-practice-exiting");
+			revealQuiz();
+		}, 420);
+		return;
+	}
+	revealQuiz();
 }
 
 nextButton.addEventListener("click", goNext);
@@ -4052,8 +4735,7 @@ questionJumpDialog.addEventListener("click", (event) => {
 window.addEventListener("quizhub:dev-menu-context-request", (event) => {
 	const modifiersAvailable = !partyModeActive && !networkPartyActive;
 	event.detail.quizModifiersAvailable = modifiersAvailable;
-	event.detail.quizCanModify =
-		modifiersAvailable && quizStarted && !quizEnded;
+	event.detail.quizCanModify = modifiersAvailable && quizStarted && !quizEnded;
 	event.detail.quizJumpAvailable =
 		(!networkPartyActive || partyHost) &&
 		quizStarted &&
@@ -4070,11 +4752,7 @@ window.addEventListener("quizhub:dev-menu-context-request", (event) => {
 window.addEventListener("quizhub:dev-menu-action", (event) => {
 	const { action, name, value } = event.detail;
 	if (action === "quiz-jump") {
-		if (
-			quizStarted &&
-			!quizEnded &&
-			(!networkPartyActive || partyHost)
-		)
+		if (quizStarted && !quizEnded && (!networkPartyActive || partyHost))
 			showQuestionJumpDialog();
 		return;
 	}
@@ -4129,7 +4807,7 @@ updateCheatDisplayMode();
 countInput.addEventListener("input", () => {
 	setupError.textContent = "";
 	const value = Number.parseInt(countInput.value, 10);
-	if (Number.isFinite(value) && value > totalAvailable)
+	if (totalAvailable && Number.isFinite(value) && value > totalAvailable)
 		countInput.value = totalAvailable;
 	if (Number.isFinite(value) && value < 1) countInput.value = 1;
 	publishPartySettings();

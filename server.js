@@ -125,9 +125,18 @@ function publicRoom(room) {
     question: room.question && {
       questionNumber: room.question.questionNumber,
       questionIndex: room.question.questionIndex,
-      answerOrder: room.question.answerOrder
+      answerOrder: room.question.answerOrder,
+      ...(room.question.procedural ? {
+        procedural: true,
+        prompt: room.question.prompt,
+        challenge: room.question.challenge,
+        badge: room.question.badge,
+        answerKind: room.question.answerKind,
+        ...(room.question.displayBits ? { displayBits: room.question.displayBits } : {})
+      } : {})
     },
     answersLocked: room.answersLocked,
+    activity: [...(room.activity || new Map()).entries()].map(([playerId, status]) => ({ playerId, status })),
     reveal: room.reveal,
     players: [...room.players.values()].map(({ id, name, color, photo, ready, host, score, overallScore, fakePlayer, socket }) => ({
       id, name, color, photo, ready, host, score, overallScore, fakePlayer: fakePlayer === true,
@@ -199,6 +208,41 @@ function sendError(socket, message) {
 
 function revealRoomAnswers(room) {
   if (!room.question || room.reveal || room.answers.size !== room.players.size) return;
+  if (room.question.procedural) {
+    const normalizeAnswer = (answer) => {
+      if (typeof answer !== "string") return "";
+      const trimmed = answer.trim();
+      if (room.question.answerKind === "binary") return trimmed;
+      if (room.question.answerKind === "number") {
+        const number = Number(trimmed);
+        return Number.isFinite(number) ? String(number) : trimmed;
+      }
+      return trimmed.toUpperCase().replace(/^0X/, "").replace(/^0+(?=[0-9A-F])/, "");
+    };
+    const correctAnswer = normalizeAnswer(room.question.correctAnswer);
+    const firstCorrectPlayerId = room.firstCorrectPlayerId;
+    const answerDetails = [...room.players.values()].map((member) => {
+      const selected = room.answers.get(member.id);
+      const answer = typeof selected === "string" ? selected : "";
+      const correct = answer !== "" && normalizeAnswer(answer) === correctAnswer;
+      const pointsEarned = correct
+        ? room.partyOptions.earlyPointBonus && member.id === firstCorrectPlayerId ? 3 : 1
+        : 0;
+      member.score += pointsEarned;
+      member.overallScore += pointsEarned;
+      return {
+        playerId: member.id,
+        answer,
+        correct,
+        pointsEarned,
+        score: member.score,
+        overallScore: member.overallScore
+      };
+    });
+    room.reveal = { correctAnswer: room.question.correctAnswer, answers: answerDetails };
+    broadcast(room, { type: "reveal", ...room.reveal });
+    return;
+  }
   const correctIndex = room.question.correctIndex;
   const firstCorrectPlayerId = room.firstCorrectPlayerId;
   const answerDetails = [...room.players.values()].map((member) => {
@@ -228,6 +272,7 @@ function removePlayer(room, player) {
   if (player.expireTimer) clearTimeout(player.expireTimer);
   room.players.delete(player.id);
   room.answers?.delete(player.id);
+  room.activity?.delete(player.id);
   if (player.host) {
     for (const [playerId, member] of room.players) {
       if (!member.fakePlayer) continue;
@@ -298,7 +343,7 @@ function handleMessage(socket, rawMessage) {
       const room = {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
         excludedQuizzesEnabled: false,
-        question: null, answersLocked: [], reveal: null, quizConfig: null, mixedSources: null,
+        question: null, answersLocked: [], activity: new Map(), reveal: null, quizConfig: null, mixedSources: null,
         hostDisplay: false, hostDisplayPlayerId: null, quizTheme: null,
         partyOptions: { showPlayerScores: true, showLockedAnswers: false, earlyPointBonus: true }
       };
@@ -490,7 +535,7 @@ function handleMessage(socket, rawMessage) {
         return sendError(socket, "Select a valid quiz style.");
       }
       const validQuizzes = {
-        CompArch: ["quiz1", "test1"],
+        CompArch: ["quiz1", "test1", "binary", "hexadecimal"],
         CompGFX: ["test1", ...(room.excludedQuizzesEnabled ? ["lautest"] : [])],
         CloudComp: ["quiz1", "quiz2", "test1"],
         SocIndi: ["reviewQuiz", "textbookQuiz"],
@@ -655,6 +700,34 @@ function handleMessage(socket, rawMessage) {
           !config.questionSequence.every((index) => Number.isInteger(index) && index >= 0)) {
         return sendError(socket, "Invalid quiz question sequence.");
       }
+      const proceduralType = room.category === "CompArch" && room.quiz === "binary" ? "binary"
+        : room.category === "CompArch" && room.quiz === "hexadecimal" ? "hexadecimal" : null;
+      if ((proceduralType && (config.proceduralType !== proceduralType ||
+          !config.proceduralSettings || typeof config.proceduralSettings !== "object" ||
+          Array.isArray(config.proceduralSettings))) ||
+          (!proceduralType && config.proceduralType !== undefined)) {
+        return sendError(socket, "Invalid procedural quiz settings.");
+      }
+      if (proceduralType) {
+        const settings = config.proceduralSettings;
+        const gameTypes = proceduralType === "binary"
+          ? ["conversion", "operation", "twos"] : ["conversion", "operation"];
+        const operations = ["+", "-", "*", "/"];
+        const validQuestions = settings.questions === "endless" ||
+          Number.isInteger(settings.questions) && settings.questions >= 1 && settings.questions <= maxQuizQuestions;
+        const validTimer = settings.timerLimit === 0 ||
+          Number.isInteger(settings.timerLimit) && settings.timerLimit >= 1 && settings.timerLimit <= 60;
+        const validSettings = gameTypes.includes(settings.gameType) &&
+          operations.includes(settings.operation) && validQuestions && validTimer &&
+          typeof settings.guide === "boolean" && typeof settings.decimal === "boolean" &&
+          (proceduralType !== "hexadecimal" ||
+            (["b2h", "h2d", "d2h", "h2b"].includes(settings.conversionMode) &&
+              typeof settings.hexGuide === "boolean"));
+        if (!validSettings || config.questionSequence.length !==
+            (settings.questions === "endless" ? maxQuizQuestions : settings.questions)) {
+          return sendError(socket, "Invalid procedural quiz settings.");
+        }
+      }
       room.quizConfig = { ...config, partyOptions: room.partyOptions };
       room.stage = "quiz";
       room.questionNumber = -1;
@@ -680,6 +753,7 @@ function handleMessage(socket, rawMessage) {
       room.question = null;
       room.answers = new Map();
       room.answersLocked = [];
+      room.activity = new Map();
       room.firstCorrectPlayerId = null;
       room.reveal = null;
       broadcast(room, { type: "dev-jump-question", questionNumber });
@@ -687,6 +761,64 @@ function handleMessage(socket, rawMessage) {
     }
     case "question": {
       if (!player.host || room.stage !== "quiz") return sendError(socket, "Only the host can advance questions.");
+      if (room.quizConfig.proceduralType) {
+        const { questionNumber, prompt, challenge, badge, answerKind, correctAnswer, displayBits } = message;
+        if (!Number.isInteger(questionNumber) || questionNumber !== room.questionNumber + 1 ||
+            questionNumber >= room.quizConfig.questionSequence.length ||
+            room.quizConfig.questionSequence[questionNumber] !== questionNumber ||
+            typeof prompt !== "string" || !prompt.trim() || prompt.length > 180 ||
+            typeof challenge !== "string" || !challenge.trim() || challenge.length > 160 ||
+            typeof badge !== "string" || !badge.trim() || badge.length > 48 ||
+            !["binary", "number", "text"].includes(answerKind) ||
+            typeof correctAnswer !== "string" || correctAnswer.length > 24 ||
+            !correctAnswer.trim() ||
+            (displayBits !== undefined && (typeof displayBits !== "string" || !/^[01]{8}$/.test(displayBits)))) {
+          return sendError(socket, "Invalid procedural quiz question.");
+        }
+        room.questionNumber = questionNumber;
+        room.question = {
+          procedural: true,
+          questionNumber,
+          prompt: prompt.trim(),
+          challenge: challenge.trim(),
+          badge: badge.trim(),
+          answerKind,
+          correctAnswer: correctAnswer.trim(),
+          ...(displayBits ? { displayBits } : {})
+        };
+        room.answers = new Map();
+        room.answersLocked = [];
+        room.activity = new Map();
+        room.players.forEach((member) => {
+          room.activity.set(member.id, room.hostDisplay && member.host ? "answered" : "thinking");
+        });
+        if (room.hostDisplay) {
+          room.answers.set(player.id, null);
+          room.answersLocked.push(player.id);
+        }
+        const fakePlayers = [...room.players.values()].filter((member) => member.fakePlayer);
+        fakePlayers.forEach((fakePlayer) => {
+          room.answers.set(fakePlayer.id, "0");
+          room.answersLocked.push(fakePlayer.id);
+          room.activity.set(fakePlayer.id, "answered");
+        });
+        room.firstCorrectPlayerId = null;
+        room.reveal = null;
+        broadcast(room, {
+          type: "question",
+          questionNumber,
+          procedural: true,
+          prompt: room.question.prompt,
+          challenge: room.question.challenge,
+          badge: room.question.badge,
+          answerKind: room.question.answerKind,
+          ...(room.question.displayBits ? { displayBits: room.question.displayBits } : {})
+        });
+        if (room.answers.size === room.players.size) {
+          revealRoomAnswers(room);
+        }
+        break;
+      }
       const { questionNumber, questionIndex, answerOrder } = message;
       if (!Number.isInteger(questionNumber) || questionNumber !== room.questionNumber + 1 ||
           questionNumber >= room.quizConfig.questionSequence.length ||
@@ -703,6 +835,7 @@ function handleMessage(socket, rawMessage) {
       }
       room.question = { questionNumber, questionIndex, answerOrder, correctIndex };
       room.answersLocked = [];
+      room.activity = new Map();
       room.answers = new Map();
       if (room.hostDisplay) {
         room.answers.set(player.id, null);
@@ -751,6 +884,38 @@ function handleMessage(socket, rawMessage) {
       }
       if (message.questionNumber !== room.questionNumber) return sendError(socket, "That question is no longer open.");
       if (room.answers.has(player.id)) return sendError(socket, "Your answer is already locked in.");
+      if (room.question.procedural) {
+        if (typeof message.answer !== "string" || message.answer.length > 24) {
+          return sendError(socket, "Enter a valid answer.");
+        }
+        const answer = message.answer.trim();
+        if ((room.question.answerKind === "binary" && !/^[01]{8}$/.test(answer)) ||
+            (room.question.answerKind === "number" && !/^\d{1,3}$/.test(answer)) ||
+            (room.question.answerKind === "text" && !/^[0-9a-fA-F]{1,6}$/.test(answer))) {
+          return sendError(socket, "Enter an answer in the requested format.");
+        }
+        room.answers.set(player.id, answer);
+        room.activity.set(player.id, "answered");
+        if (room.question.answerKind === "binary"
+            ? answer === room.question.correctAnswer
+            : room.question.answerKind === "number"
+              ? Number(answer) === Number(room.question.correctAnswer)
+              : answer.toUpperCase().replace(/^0X/, "").replace(/^0+(?=[0-9A-F])/, "") ===
+                room.question.correctAnswer.toUpperCase().replace(/^0X/, "").replace(/^0+(?=[0-9A-F])/, "")) {
+          if (room.firstCorrectPlayerId === null) room.firstCorrectPlayerId = player.id;
+        }
+        room.answersLocked = [...room.answers.keys()];
+        if (room.answers.size < room.players.size) {
+          broadcast(room, {
+            type: "answer-locked",
+            playerId: player.id,
+            lockedCount: room.answers.size
+          });
+          return;
+        }
+        revealRoomAnswers(room);
+        break;
+      }
       if (message.answerIndex !== null &&
           (!Number.isInteger(message.answerIndex) || !room.question.answerOrder.includes(message.answerIndex))) {
         return sendError(socket, "Choose one of the available answers.");
@@ -770,6 +935,16 @@ function handleMessage(socket, rawMessage) {
         return;
       }
       revealRoomAnswers(room);
+      break;
+    }
+    case "player-progress": {
+      if (room.stage !== "quiz" || !room.question?.procedural ||
+          !["thinking", "answering"].includes(message.status) ||
+          room.answers.has(player.id) || (room.hostDisplay && player.host)) {
+        return sendError(socket, "That activity update is not available.");
+      }
+      room.activity.set(player.id, message.status);
+      broadcast(room, { type: "player-progress", playerId: player.id, status: message.status });
       break;
     }
     case "skip-question": {
@@ -811,6 +986,7 @@ function handleMessage(socket, rawMessage) {
       } else {
         room.reveal = null;
         room.question = null;
+        room.activity = new Map();
         broadcast(room, { type: "next-question" });
       }
       break;
@@ -829,7 +1005,7 @@ function handleMessage(socket, rawMessage) {
       break;
     }
     case "leave": {
-      if (room.stage === "quiz" || room.stage === "setup") {
+      if (player.host && (room.stage === "quiz" || room.stage === "setup")) {
         room.stage = "results";
         broadcastExcept(room, {
           type: "game-over",
@@ -928,7 +1104,7 @@ webSocketServer.on("connection", (socket) => {
     if (room.stage === "results" || player.handoff) {
       player.expireTimer = setTimeout(() => {
         if (player.socket || room.players.get(player.id) !== player) return;
-        if (room.stage === "quiz" || room.stage === "setup") {
+        if (player.host && (room.stage === "quiz" || room.stage === "setup")) {
           room.stage = "results";
           broadcastExcept(room, {
             type: "game-over",
@@ -947,13 +1123,15 @@ webSocketServer.on("connection", (socket) => {
       return;
     }
     if (room.stage === "quiz" || room.stage === "setup") {
-      room.stage = "results";
-      broadcastExcept(room, {
-        type: "game-over",
-        players: publicRoom(room).players,
-        reason: "player-left",
-        departedPlayerId: player.id
-      }, player.id);
+      if (player.host) {
+        room.stage = "results";
+        broadcastExcept(room, {
+          type: "game-over",
+          players: publicRoom(room).players,
+          reason: "player-left",
+          departedPlayerId: player.id
+        }, player.id);
+      }
       removePlayer(room, player);
       return;
     }

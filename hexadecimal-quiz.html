@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="icon" type="image/png" href="assets/icon.png">
   <title>Hexadecimal Quiz</title>
-  <link rel="stylesheet" href="./css/hexadecimal-quiz.css">
+  <link rel="stylesheet" href="./css/hexadecimal-quiz.css?v=party-activity-2">
   <link rel="stylesheet" href="./css/preferences.css">
   <link rel="stylesheet" href="./css/cover-screen.css">
+  <link rel="stylesheet" href="./css/quiz-music-picker.css">
   <script src="./js/audio-focus.js" defer></script>
   <script src="./js/load-preferences.js"></script>
   <script src="./js/dev-scenes.js" defer></script>
   <script src="./js/dev.js" defer></script>
+  <script src="./js/party-client.js" defer></script>
+  <script src="./js/procedural-party.js?v=party-activity-2" defer></script>
 </head>
 <body>
   <main id="app">
@@ -157,6 +160,7 @@
             <button class="side-button" id="skipButton" type="button">Skip Question</button>
             <button class="side-button" id="musicButton" type="button">♫ Music: On</button>
             <button class="side-button" id="soundButton" type="button">🔊 Sound: On</button>
+            <button class="side-button" id="quizMusicCycle" type="button" aria-label="Change quiz song" title="Change quiz song">💿 Change Quiz Song</button>
             <button class="side-button danger hidden" id="nextQuestionButton" type="button">Next Question</button>
             <button class="side-button danger" id="endGameButton" type="button">End Game</button>
           </aside>
@@ -192,6 +196,7 @@
   </main>
 
   <audio id="music" src="./music/HexadecimalTrack.wav" loop preload="auto"></audio>
-  <script src="./js/hexadecimal-quiz.js" defer></script>
+  <script src="./js/quiz-music-picker.js" defer></script>
+  <script src="./js/hexadecimal-quiz.js?v=party-submit-fix" defer></script>
 </body>
 </html>

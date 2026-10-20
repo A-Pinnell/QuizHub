@@ -30,7 +30,12 @@
   const hostDisplayPlayerSelect=document.getElementById("partyHostDisplayPlayer");
   const hostDisplayAccountStatus=document.getElementById("partyHostDisplayAccountStatus");
   const quizCatalog={
-    CompArch:[["quiz1","First Slides Practice"],["test1","Midterm Practice"]],
+    CompArch:[
+      ["quiz1","First Slides Practice"],
+      ["test1","Midterm Practice"],
+      ["binary","Binary Quiz"],
+      ["hexadecimal","Hexadecimal Quiz"]
+    ],
     CompGFX:[["test1","Midterm Practice"]],
     CloudComp:[
       ["quiz1","First Slides Practice"],
@@ -260,7 +265,11 @@
       });
     sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(players));
     sessionStorage.setItem("quizHubPartyProfile",JSON.stringify(savedProfile||{}));
-    const target=new URL("quiz.html",location.href);
+    const target=new URL(
+      category==="CompArch"&&quiz==="binary"?"binary-quiz.html":
+      category==="CompArch"&&quiz==="hexadecimal"?"hexadecimal-quiz.html":"quiz.html",
+      location.href
+    );
     target.searchParams.set("category",category);
     target.searchParams.set("quiz",quiz);
     if(mixedSources) target.searchParams.set("mixedSources",JSON.stringify(mixedSources));
