@@ -3,6 +3,8 @@ services:
     name: quizhub-party-server
     runtime: node
     plan: free
+    branch: main
+    autoDeploy: true
     buildCommand: npm ci
     startCommand: npm start
-    healthCheckPath: /healthz
+    healthCheckPath: /api/nethub/healthz

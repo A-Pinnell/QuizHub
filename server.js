@@ -258,6 +258,10 @@ async function serveNetHub(request, response) {
     return;
   }
   try {
+    if (request.method === "GET" && url.pathname === "/api/nethub/healthz") {
+      netHubJson(response, 200, { status: "ok", netHub: true });
+      return;
+    }
     let database = readNetHubDatabase();
     const quizPath = url.pathname.match(/^\/api\/nethub\/quizzes(?:\/([0-9a-f-]{36}))?$/i);
     if (request.method === "GET" && url.pathname === "/api/nethub/quizzes") {

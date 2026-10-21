@@ -55,6 +55,14 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
     return { response, payload: await response.json() };
   }
 
+  const serviceHealth = await api("/api/nethub/healthz");
+  assert.equal(serviceHealth.response.status, 200);
+  assert.deepEqual(serviceHealth.payload, { status: "ok", netHub: true });
+  assert.equal(
+    serviceHealth.response.headers.get("access-control-allow-origin"),
+    "*"
+  );
+
   const firstAuth = await api("/api/nethub/auth", {
     method: "POST",
     body: JSON.stringify({ username: "QuizMaker", pin: "0427" })
