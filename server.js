@@ -281,6 +281,10 @@ function removePlayer(room, player) {
     }
   }
   room.answersLocked = room.answersLocked.filter((playerId) => room.players.has(playerId));
+  broadcast(room, {
+    type: "player-left",
+    player: { id: player.id, name: player.name }
+  });
   if (room.players.size === 0) {
     clearTimeout(room.expiration);
     rooms.delete(room.code);
@@ -368,7 +372,7 @@ function handleMessage(socket, rawMessage) {
   const code = typeof message.code === "string" ? message.code.toUpperCase() : "";
   const room = rooms.get(code);
   if (message.type === "check-room") {
-    if (!room || room.stage !== "lobby") {
+    if (!room || !["lobby", "setup", "quiz"].includes(room.stage)) {
       sendError(socket, "No active lobby has that room code.");
       return;
     }
@@ -378,6 +382,7 @@ function handleMessage(socket, rawMessage) {
         code: room.code,
         capacity: room.capacity,
         players: room.players.size,
+        stage: room.stage,
         profiles: [...room.players.values()].map(({ name, color }) => ({ name, color }))
       }
     });
@@ -403,8 +408,8 @@ function handleMessage(socket, rawMessage) {
       broadcastRoom(room);
       return;
     }
-    if (room.stage !== "lobby") {
-      sendError(socket, "This game has already started.");
+    if (!["lobby", "setup", "quiz"].includes(room.stage)) {
+      sendError(socket, "This game is no longer accepting players.");
       return;
     }
     if (room.players.size >= room.capacity) {
@@ -430,15 +435,24 @@ function handleMessage(socket, rawMessage) {
       id: randomUUID(),
       ready: true,
       host: false,
+      handoff: true,
       score: 0,
       overallScore: 0,
       socket,
       expireTimer: null
     };
     room.players.set(player.id, player);
+    if (room.question && !room.reveal) {
+      room.activity ||= new Map();
+      room.activity.set(player.id, "thinking");
+    }
     socket.roomCode = code;
     socket.playerId = player.id;
     send(socket, { type: "joined", playerId: player.id, room: publicRoom(room) });
+    broadcastExcept(room, {
+      type: "player-joined",
+      player: { id: player.id, name: player.name }
+    }, player.id);
     broadcastRoom(room);
     return;
   }

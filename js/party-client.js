@@ -1,6 +1,25 @@
 (function(){
   "use strict";
 
+  function showPlayerNotification(type, player) {
+    if (!["player-joined", "player-left"].includes(type) || !player?.name) return;
+    let container=document.querySelector(".party-notifications");
+    if(!container){
+      container=document.createElement("div");
+      container.className="party-notifications";
+      container.setAttribute("aria-live","polite");
+      container.setAttribute("aria-relevant","additions");
+      document.body.appendChild(container);
+    }
+    const notification=document.createElement("div");
+    notification.className="party-notification";
+    notification.textContent=type==="player-joined"
+      ? `${player.name} joined the party.`
+      : `${player.name} left the party.`;
+    container.appendChild(notification);
+    window.setTimeout(()=>notification.remove(),4500);
+  }
+
   class QuizHubPartyClient {
     constructor(){
       const configuredUrl=window.QUIZHUB_PARTY_SERVER_URL;
@@ -56,6 +75,7 @@
             console.error("Invalid party server response:",error);
             return;
           }
+          showPlayerNotification(message.type,message.player);
           (this.listeners.get(message.type)||[]).forEach((listener)=>listener(message));
         });
         socket.addEventListener("close",(event)=>{

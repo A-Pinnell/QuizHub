@@ -1846,16 +1846,24 @@ function buildNetworkAnswerOrder(question, questionNumberIndex, questionIndex) {
 
 function updateNetworkPlayers(players) {
 	if (!Array.isArray(players)) return;
-	players.forEach((updated) => {
-		const player = partyPlayers.find(
+	partyPlayers = players.map((updated) => {
+		const existing = partyPlayers.find(
 			(candidate) => candidate.id === updated.id,
 		);
-		if (!player) return;
-		if (Number.isFinite(Number(updated.score)))
-			player.score = Number(updated.score);
-		if (Number.isFinite(Number(updated.overallScore))) {
-			player.overallScore = Number(updated.overallScore);
-		}
+		const player = {
+			...existing,
+			...updated,
+			score: Number.isFinite(Number(updated.score))
+				? Number(updated.score)
+				: existing?.score || 0,
+			overallScore: Number.isFinite(Number(updated.overallScore))
+				? Number(updated.overallScore)
+				: existing?.overallScore || 0,
+		};
+		if (!partyComboStreaks.has(player.id)) partyComboStreaks.set(player.id, 0);
+		if (!partyLongestComboStreaks.has(player.id))
+			partyLongestComboStreaks.set(player.id, 0);
+		return player;
 	});
 	updatePartyScoreDisplay();
 }
@@ -2167,7 +2175,7 @@ function revealNetworkQuestion(message) {
 		ownPoints > 0
 			? ` You earned ${ownPoints} point${ownPoints === 1 ? "" : "s"}.`
 			: "";
-	const answeringPlayerCount = partyPlayers.length;
+	const answeringPlayerCount = message.answers.length;
 	feedback.textContent = `${correctCount} of ${answeringPlayerCount} players answered correctly. Correct answer: ${formatPowerText(correctAnswer)}.${pointsMessage}`;
 	feedback.className = `motivation visible ${ownAnswer?.correct ? "right" : "wrong"}`;
 	nextButton.disabled = !canControlPartyQuiz;

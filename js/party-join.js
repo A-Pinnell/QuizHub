@@ -145,7 +145,12 @@
         form.elements.roomCode.readOnly=true;
         assignSuggestedProfile(message.room.profiles||[]);
         profileFields.hidden=false;
-        roomAvailability.textContent=`${message.room.players} of ${message.room.capacity} spots are filled. Your suggested name is editable; choose a color and optional picture.`;
+        const gameStatus=message.room.stage==="quiz"
+          ?" The quiz is already in progress; you can answer if a question is open, otherwise join the next one."
+          :message.room.stage==="setup"
+            ?" Quiz setup has started; you can join now."
+            :"";
+        roomAvailability.textContent=`${message.room.players} of ${message.room.capacity} spots are filled.${gameStatus} Your suggested name is editable; choose a color and optional picture.`;
         checkRoomButton.hidden=true;
         document.getElementById("partyPlayerName").focus();
         client.close();
