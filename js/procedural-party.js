@@ -68,6 +68,7 @@
       const participants = players.filter((player) => !(hostDisplay && player.host));
       list.replaceChildren(...participants.map((player) => {
         const item = document.createElement("li");
+        if (player.leaving) item.classList.add("party-player-leaving");
         const name = document.createElement("span");
         name.textContent = savedPlayers.find((saved) => saved.id === player.id)?.name || player.name;
         const state = document.createElement("strong");
@@ -75,15 +76,30 @@
         state.textContent = activityState === "answering" ? "Answering"
           : activityState === "answered" ? "Answered" : "Thinking";
         state.className = `party-activity-${activityState}`;
-        item.append(name, state);
+        const score = document.createElement("span");
+        score.className = "party-player-current-score";
+        score.textContent = `Score: ${player.score || 0}`;
+        item.append(name, state, score);
         return item;
       }));
       roster.classList.remove("hidden");
     }
 
+    function syncPlayers(nextPlayers) {
+      const activePlayerIds = new Set(nextPlayers.map((player) => player.id));
+      const leavingPlayers = players.filter(
+        (player) => player.leaving && !activePlayerIds.has(player.id)
+      );
+      players = [
+        ...nextPlayers.map((player) => ({ ...player, leaving: false })),
+        ...leavingPlayers
+      ];
+      if (room) room.players = players;
+    }
+
     function renderRoom(nextRoom) {
       room = nextRoom;
-      players = room.players || [];
+      syncPlayers(room.players || []);
       document.body.classList.toggle("party-host-display", hostDisplay && isHost);
       renderRoster(room.activity || []);
       if (room.stage === "setup") {
@@ -109,11 +125,21 @@
     function renderReveal(reveal) {
       const list = results.querySelector("ul");
       results.querySelector(".party-correct-answer").textContent = reveal.correctAnswer;
+      reveal.answers.forEach((entry) => {
+        const player = players.find((candidate) => candidate.id === entry.playerId);
+        if (!player) return;
+        player.score = Number.isFinite(Number(entry.score)) ? Number(entry.score) : player.score;
+        player.overallScore = Number.isFinite(Number(entry.overallScore))
+          ? Number(entry.overallScore)
+          : player.overallScore;
+      });
       list.replaceChildren(...reveal.answers
         .filter((entry) => !(hostDisplay && players.find((player) => player.id === entry.playerId)?.host))
         .map((entry) => {
         const player = players.find((candidate) => candidate.id === entry.playerId);
         const item = document.createElement("li");
+        item.dataset.playerId = entry.playerId;
+        if (player?.leaving) item.classList.add("party-player-leaving");
         const name = document.createElement("span");
         name.textContent = savedPlayers.find((saved) => saved.id === entry.playerId)?.name || player?.name || "Player";
         const answer = document.createElement("strong");
@@ -159,6 +185,22 @@
       renderRoom(message.room);
     });
     client.on("room-state", (message) => renderRoom(message.room));
+    client.on("player-left", (message) => {
+      const player = players.find((candidate) => candidate.id === message.player?.id);
+      if (!player) return;
+      player.leaving = true;
+      renderRoster(room?.activity || []);
+      results.querySelectorAll("li[data-player-id]").forEach((item) => {
+        if (item.dataset.playerId === player.id) {
+          item.classList.add("party-player-leaving");
+        }
+      });
+      window.setTimeout(() => {
+        players = players.filter((candidate) => candidate.id !== player.id);
+        if (room) room.players = players;
+        renderRoster(room?.activity || []);
+      }, 700);
+    });
     client.on("quiz-start", (message) => {
       room = { ...room, stage: "quiz", quizConfig: message.config, players: message.players };
       players = room.players;

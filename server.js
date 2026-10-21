@@ -198,6 +198,26 @@ function cleanProfile(profile) {
   return { name, color, photo };
 }
 
+function normalizePlayerName(name) {
+  return name.normalize("NFKC").toLocaleLowerCase();
+}
+
+function rememberPlayerScore(room, player) {
+  if (player.fakePlayer) return;
+  room.playerHistory.set(normalizePlayerName(player.name), {
+    score: player.score,
+    overallScore: player.overallScore
+  });
+}
+
+function resetRoomQuizScores(room) {
+  room.playerHistory.forEach((scores) => { scores.score = 0; });
+  room.players.forEach((player) => {
+    player.score = 0;
+    rememberPlayerScore(room, player);
+  });
+}
+
 function findPlayer(room, playerId) {
   return typeof playerId === "string" ? room.players.get(playerId) : null;
 }
@@ -270,6 +290,7 @@ function removePlayer(room, player) {
   if (!player) return;
   if (room.players.get(player.id) !== player) return;
   if (player.expireTimer) clearTimeout(player.expireTimer);
+  rememberPlayerScore(room, player);
   room.players.delete(player.id);
   room.answers?.delete(player.id);
   room.activity?.delete(player.id);
@@ -347,11 +368,13 @@ function handleMessage(socket, rawMessage) {
       const hostDisplay = message.hostDisplay === true;
       const room = {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
+        playerHistory: new Map(),
         excludedQuizzesEnabled: false,
         question: null, answersLocked: [], activity: new Map(), reveal: null, quizConfig: null, mixedSources: null,
         hostDisplay: false, hostDisplayPlayerId: null, quizTheme: null,
         partyOptions: { showPlayerScores: true, showLockedAnswers: false, earlyPointBonus: true }
       };
+      rememberPlayerScore(room, player);
       room.expiration = setTimeout(() => {
         broadcast(room, { type: "error", message: "This room expired." });
         room.players.forEach((member) => member.socket?.close(4000, "Room expired"));
@@ -408,14 +431,6 @@ function handleMessage(socket, rawMessage) {
       broadcastRoom(room);
       return;
     }
-    if (!["lobby", "setup", "quiz"].includes(room.stage)) {
-      sendError(socket, "This game is no longer accepting players.");
-      return;
-    }
-    if (room.players.size >= room.capacity) {
-      sendError(socket, "This lobby is full.");
-      return;
-    }
     let profile;
     try {
       profile = cleanProfile(message.player);
@@ -423,25 +438,54 @@ function handleMessage(socket, rawMessage) {
       sendError(socket, error.message);
       return;
     }
-    const normalizedName=profile.name.toLocaleLowerCase();
-    if([...room.players.values()].some(
-      (existingPlayer)=>existingPlayer.name.toLocaleLowerCase()===normalizedName
-    )){
-      sendError(socket,"That player name is already in the room. Choose a different name.");
+    const normalizedName = normalizePlayerName(profile.name);
+    const disconnectedPlayer = [...room.players.values()].find(
+      (existingPlayer) => !existingPlayer.fakePlayer &&
+        !existingPlayer.host && !existingPlayer.socket &&
+        normalizePlayerName(existingPlayer.name) === normalizedName
+    );
+    if (disconnectedPlayer) {
+      if (disconnectedPlayer.expireTimer) clearTimeout(disconnectedPlayer.expireTimer);
+      disconnectedPlayer.expireTimer = null;
+      disconnectedPlayer.handoff = false;
+      disconnectedPlayer.socket = socket;
+      disconnectedPlayer.name = profile.name;
+      disconnectedPlayer.color = profile.color;
+      disconnectedPlayer.photo = profile.photo;
+      socket.roomCode = code;
+      socket.playerId = disconnectedPlayer.id;
+      send(socket, { type: "joined", playerId: disconnectedPlayer.id, room: publicRoom(room) });
+      broadcastRoom(room);
       return;
     }
+    if (!["lobby", "setup", "quiz"].includes(room.stage)) {
+      sendError(socket, "This game is no longer accepting players.");
+      return;
+    }
+    if ([...room.players.values()].some(
+      (existingPlayer) => normalizePlayerName(existingPlayer.name) === normalizedName
+    )) {
+      sendError(socket, "That player name is already in the room. Choose a different name.");
+      return;
+    }
+    if (room.players.size >= room.capacity) {
+      sendError(socket, "This lobby is full.");
+      return;
+    }
+    const restoredScore = room.playerHistory.get(normalizedName);
     const player = {
       ...profile,
       id: randomUUID(),
       ready: true,
       host: false,
       handoff: true,
-      score: 0,
-      overallScore: 0,
+      score: restoredScore?.score || 0,
+      overallScore: restoredScore?.overallScore || 0,
       socket,
       expireTimer: null
     };
     room.players.set(player.id, player);
+    rememberPlayerScore(room, player);
     if (room.question && !room.reveal) {
       room.activity ||= new Map();
       room.activity.set(player.id, "thinking");
@@ -640,9 +684,9 @@ function handleMessage(socket, rawMessage) {
       room.players.forEach((member) => {
         if (member.expireTimer) clearTimeout(member.expireTimer);
         member.expireTimer = null;
-        member.score = 0;
         member.handoff = true;
       });
+      resetRoomQuizScores(room);
       broadcast(room, {
         type: "replay",
         category: room.category,
@@ -673,9 +717,9 @@ function handleMessage(socket, rawMessage) {
       room.players.forEach((member) => {
         if (member.expireTimer) clearTimeout(member.expireTimer);
         member.expireTimer = null;
-        member.score = 0;
         member.handoff = true;
       });
+      resetRoomQuizScores(room);
       broadcast(room, { type: "choose-new-quiz" });
       broadcastRoom(room);
       break;

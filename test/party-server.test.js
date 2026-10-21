@@ -1398,6 +1398,12 @@ test("players can join an active procedural quiz and receive join and leave even
   const lateJoinedPromise = waitForMessage(latePlayer, "joined");
   const hostJoinNotice = waitForMessage(host, "player-joined");
   const guestJoinNotice = waitForMessage(guest, "player-joined");
+  const hostAfterJoin = waitForMessage(host, "room-state", (message) =>
+    message.room.players.some((player) => player.name === "Late Player")
+  );
+  const guestAfterJoin = waitForMessage(guest, "room-state", (message) =>
+    message.room.players.some((player) => player.name === "Late Player")
+  );
   send(latePlayer, {
     type: "join",
     code: hosted.room.code,
@@ -1409,6 +1415,9 @@ test("players can join an active procedural quiz and receive join and leave even
   assert.equal(lateJoin.room.activity.find((entry) => entry.playerId === lateJoin.playerId).status, "thinking");
   assert.equal((await hostJoinNotice).player.name, "Late Player");
   assert.equal((await guestJoinNotice).player.name, "Late Player");
+  const [hostJoinSnapshot, guestJoinSnapshot] = await Promise.all([hostAfterJoin, guestAfterJoin]);
+  assert.equal(hostJoinSnapshot.room.players.find((player) => player.name === "Late Player").score, 0);
+  assert.equal(guestJoinSnapshot.room.players.find((player) => player.name === "Late Player").score, 0);
 
   const lockedNotices = [host, guest].map((socket) =>
     waitForMessage(socket, "answer-locked", (message) => message.playerId === lateJoin.playerId)
@@ -1421,11 +1430,53 @@ test("players can join an active procedural quiz and receive join and leave even
   });
   await Promise.all(lockedNotices);
 
+  const revealMessages = [host, guest, latePlayer].map((socket) => waitForMessage(socket, "reveal"));
+  send(host, {
+    type: "answer",
+    code: hosted.room.code,
+    questionNumber: 0,
+    answer: "00000000"
+  });
+  send(guest, {
+    type: "answer",
+    code: hosted.room.code,
+    questionNumber: 0,
+    answer: "00000001"
+  });
+  const reveals = await Promise.all(revealMessages);
+  const lateAnswer = reveals[0].answers.find((entry) => entry.playerId === lateJoin.playerId);
+  assert.equal(lateAnswer.answer, "11111011");
+  assert.equal(lateAnswer.score, 3);
+
   const leftPromise = waitForMessage(latePlayer, "left");
   const hostLeftNotice = waitForMessage(host, "player-left");
   const guestLeftNotice = waitForMessage(guest, "player-left");
+  const hostAfterLeave = waitForMessage(host, "room-state", (message) =>
+    !message.room.players.some((player) => player.id === lateJoin.playerId)
+  );
+  const guestAfterLeave = waitForMessage(guest, "room-state", (message) =>
+    !message.room.players.some((player) => player.id === lateJoin.playerId)
+  );
   send(latePlayer, { type: "leave", code: hosted.room.code });
   await leftPromise;
   assert.equal((await hostLeftNotice).player.name, "Late Player");
   assert.equal((await guestLeftNotice).player.name, "Late Player");
+  await Promise.all([hostAfterLeave, guestAfterLeave]);
+
+  const returningPlayer = await connect();
+  const rejoined = waitForMessage(returningPlayer, "joined");
+  const hostAfterRejoin = waitForMessage(host, "room-state", (message) =>
+    message.room.players.some((player) => player.name === "Late Player")
+  );
+  send(returningPlayer, {
+    type: "join",
+    code: hosted.room.code,
+    player: { name: "Late Player", color: "#00ff00" }
+  });
+  const returned = await rejoined;
+  const restoredPlayer = returned.room.players.find((player) => player.name === "Late Player");
+  assert.equal(restoredPlayer.score, 3);
+  assert.equal(restoredPlayer.overallScore, 3);
+  assert.notEqual(restoredPlayer.id, lateJoin.playerId);
+  assert.ok((await hostAfterRejoin).room.players.some((player) => player.id === restoredPlayer.id));
 });

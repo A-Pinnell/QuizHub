@@ -20,10 +20,23 @@
 	text-align: center;
 	animation: party-notification-in 180ms ease-out;
 }
+.party-player-leaving {
+	animation: party-player-fade-out 700ms ease forwards;
+	pointer-events: none;
+}
+.party-player-current-score {
+	color: #716c62;
+	font-size: 0.85em;
+	white-space: nowrap;
+}
 @keyframes party-notification-in {
 	from { opacity: 0; transform: translateY(-8px); }
 	to { opacity: 1; transform: translateY(0); }
 }
+@keyframes party-player-fade-out {
+	to { opacity: 0; transform: translateX(14px); }
+}
 @media (prefers-reduced-motion: reduce) {
 	.party-notification { animation: none; }
+	.party-player-leaving { animation: none; opacity: 0; }
 }

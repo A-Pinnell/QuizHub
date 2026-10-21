@@ -276,14 +276,15 @@
       }
     });
   }
-  document.getElementById("partyReturnMenu").addEventListener("click",()=>{
+  document.getElementById("partyReturnMenu").addEventListener("click",(event)=>{
     if(results.onlineParty===true && partyClient){
+      event.preventDefault();
       partyClient.send({type:"leave",code:results.partyRoomCode}).catch((leaveError)=>{
         error.hidden=false;
         error.textContent=`Could not leave the party: ${leaveError.message}`;
+        window.location.href="index.html?fromWin=1";
       });
       return;
     }
-    window.location.href="index.html?fromWin=1";
   });
 })();

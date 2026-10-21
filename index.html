@@ -86,7 +86,7 @@
 				document.documentElement.classList.add("native-app");
 			}
 		</script>
-		<link rel="stylesheet" href="css/title.css" />
+		<link rel="stylesheet" href="css/title.css?v=course-label-data" />
 		<link rel="stylesheet" href="css/preferences.css" />
 		<link rel="stylesheet" href="css/offline-app.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
@@ -99,7 +99,7 @@
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
-		<script src="./js/index.js" defer></script>
+		<script src="./js/index.js?v=course-label-data" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
 	<body>
@@ -272,37 +272,61 @@
 					<div class="menu-viewport">
 						<div class="menu-track" id="menuTrack">
 							<section class="menu" aria-label="Quiz courses page 1">
-								<button class="card course-card" data-course="CompArch">
+								<button
+									class="card course-card"
+									data-course="CompArch"
+									data-label="false"
+									data-label-content="">
 									<div class="card-content">
 										<h2>COMP-2453</h2>
 										<p>Intro Comp Arch</p>
 									</div>
 								</button>
-								<button class="card course-card" data-course="CompGFX">
+								<button
+									class="card course-card"
+									data-course="CompGFX"
+									data-label="false"
+									data-label-content="">
 									<div class="card-content">
 										<h2>COMP-4471</h2>
 										<p>Computer Graphics</p>
 									</div>
 								</button>
-								<button class="card course-card" data-course="SocIndi">
+								<button
+									class="card course-card"
+									data-course="SocIndi"
+									data-label="false"
+									data-label-content="">
 									<div class="card-content">
 										<h2>SOCI-2755</h2>
 										<p>Tech Soc Indi People Can</p>
 									</div>
 								</button>
-								<button class="card course-card" data-course="CloudComp">
+								<button
+									class="card course-card"
+									data-course="CloudComp"
+									data-label="false"
+									data-label-content="">
 									<div class="card-content">
 										<h2>COMP-4312</h2>
 										<p>Cloud Computing</p>
 									</div>
 								</button>
-								<button class="card course-card" data-course="DataSci">
+								<button
+									class="card course-card"
+									data-course="DataSci"
+									data-label="true"
+									data-label-content="NEW">
 									<div class="card-content">
 										<h2>COMP-4112</h2>
 										<p>Intro Data Science</p>
 									</div>
 								</button>
-								<button class="card course-card" data-course="SoftEngi">
+								<button
+									class="card course-card"
+									data-course="SoftEngi"
+									data-label="false"
+									data-label-content="">
 									<div class="card-content">
 										<h2>COMP-3415</h2>
 										<p>Software Engineering</p>

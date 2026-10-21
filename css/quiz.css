@@ -3221,6 +3221,7 @@ body.party-mode .quiz-hud .score-display {
 	display: none;
 }
 .party-player-score-item {
+	display: inline-flex;
 	padding: 3px 8px;
 	border: 1px solid
 		color-mix(in srgb, var(--party-player-color), transparent 15%);

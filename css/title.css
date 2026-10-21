@@ -1105,6 +1105,31 @@ html.offline-mode .party-mode-toggle {
 .card-content {
 	text-align: center;
 }
+.course-card[data-label="true"][data-label-content]:not([data-label-content=""]) {
+	padding-left: 54px;
+}
+.course-card[data-label="true"][data-label-content]:not([data-label-content=""])::after {
+	content: attr(data-label-content);
+	position: absolute;
+	inset: 0 auto 0 0;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	width: 34px;
+	padding: 8px 5px;
+	overflow: hidden;
+	background: #c62828;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 900;
+	letter-spacing: 0.08em;
+	line-height: 1.1;
+	text-align: center;
+	text-overflow: ellipsis;
+	text-transform: uppercase;
+	white-space: nowrap;
+	writing-mode: vertical-rl;
+}
 .card h2 {
 	margin: 0;
 	font-size: clamp(24px, 2.8vw, 43px);

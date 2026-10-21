@@ -609,6 +609,7 @@ const miniQuizMode =
 const partyModeRequested =
 	params.get("partyMode") === "true" || networkPartyActive;
 let partyPlayers = [];
+const partyPlayerLeaveTimers = new Map();
 let partyConfigError = "";
 let partyHideLockedAnswers = false;
 let partyShowPlayerScores = true;
@@ -1655,7 +1656,7 @@ function updatePartyScoreDisplay() {
 	partyScoreDisplay.replaceChildren(
 		...visiblePlayers.map((player) => {
 			const score = document.createElement("span");
-			score.className = "party-player-score-item";
+			score.className = `party-player-score-item${player.leaving ? " party-player-leaving" : ""}`;
 			score.style.setProperty("--party-player-color", player.color);
 			score.textContent = `${networkPartyActive && !partyShowPlayerScores ? "Your score" : player.name}: ${player.score}`;
 			score.setAttribute(
@@ -1800,6 +1801,7 @@ function updatePartyAnswerMarker(button) {
 			if (player) {
 				const voter = document.createElement("span");
 				voter.className = "party-answer-voter";
+				if (player.leaving) voter.classList.add("party-player-leaving");
 				voter.setAttribute("role", "img");
 				voter.title = `${player.name} locked in this answer`;
 				voter.setAttribute(
@@ -1846,13 +1848,19 @@ function buildNetworkAnswerOrder(question, questionNumberIndex, questionIndex) {
 
 function updateNetworkPlayers(players) {
 	if (!Array.isArray(players)) return;
-	partyPlayers = players.map((updated) => {
+	const activePlayerIds = new Set(players.map((player) => player.id));
+	const leavingPlayers = partyPlayers.filter(
+		(player) => player.leaving && !activePlayerIds.has(player.id),
+	);
+	partyPlayers = [
+		...players.map((updated) => {
 		const existing = partyPlayers.find(
 			(candidate) => candidate.id === updated.id,
 		);
 		const player = {
 			...existing,
 			...updated,
+			leaving: false,
 			score: Number.isFinite(Number(updated.score))
 				? Number(updated.score)
 				: existing?.score || 0,
@@ -1864,10 +1872,34 @@ function updateNetworkPlayers(players) {
 		if (!partyLongestComboStreaks.has(player.id))
 			partyLongestComboStreaks.set(player.id, 0);
 		return player;
-	});
+		}),
+		...leavingPlayers,
+	];
 	updatePartyScoreDisplay();
 }
 
+function markNetworkPlayerLeaving(departingPlayer) {
+	const player = partyPlayers.find(
+		(candidate) => candidate.id === departingPlayer?.id,
+	);
+	if (!player) return;
+	player.leaving = true;
+	updatePartyScoreDisplay();
+	answersEl.querySelectorAll(".answer").forEach(updatePartyAnswerMarker);
+	const previousTimer = partyPlayerLeaveTimers.get(player.id);
+	if (previousTimer) clearTimeout(previousTimer);
+	partyPlayerLeaveTimers.set(
+		player.id,
+		setTimeout(() => {
+			partyPlayerLeaveTimers.delete(player.id);
+			partyPlayers = partyPlayers.filter(
+				(candidate) => candidate.id !== player.id,
+			);
+			updatePartyScoreDisplay();
+			answersEl.querySelectorAll(".answer").forEach(updatePartyAnswerMarker);
+		}, 700),
+	);
+}
 function startNetworkQuiz(config, roomSnapshot = null) {
 	if (
 		!config ||
@@ -4605,6 +4637,9 @@ if (networkPartyActive) {
 		syncHostDisplayControls(message.room);
 		updateNetworkPlayers(message.room.players);
 		updatePartySettingsSummary(message.room.quizConfig);
+	});
+	partyConnection.on("player-left", (message) => {
+		markNetworkPlayerLeaving(message.player);
 	});
 	partyConnection.on("error", (message) => {
 		if (skipQuestionPending) {

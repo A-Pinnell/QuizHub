@@ -64,6 +64,8 @@
     document.addEventListener(eventName,startLobbyMusic,{once:true});
   });
   let room=null;
+  const leavingPlayerTimers=new Map();
+  let leavingPlayers=[];
   const client=new window.QuizHubPartyClient();
   const savedProfile=(()=>{
     try{return JSON.parse(sessionStorage.getItem("quizHubPartyProfile")||"null");}
@@ -107,10 +109,16 @@
     isHost=room.players.some((player)=>player.id===playerId && player.host);
     hostControls.hidden=!isHost;
     renderPartyOptions();
-    playerList.replaceChildren(...room.players.map((player)=>{
+    const activePlayerIds=new Set(room.players.map((player)=>player.id));
+    leavingPlayers=leavingPlayers.filter((player)=>!activePlayerIds.has(player.id));
+    playerList.replaceChildren(...[
+      ...room.players,
+      ...leavingPlayers.filter((player)=>!activePlayerIds.has(player.id))
+    ].map((player)=>{
       const profile=displayProfile(player);
       const card=document.createElement("article");
       card.className=`party-player-card${player.fakePlayer?" fake-player":""}`;
+      if(player.leaving) card.classList.add("party-player-leaving");
       card.style.setProperty("--player-color",profile.color);
       const avatar=document.createElement("div");
       avatar.className="party-avatar";
@@ -412,6 +420,21 @@
   client.on("room-state",(message)=>{
     room=message.room;
     renderPlayers();
+  });
+  client.on("player-left",(message)=>{
+    const player=room?.players.find((candidate)=>candidate.id===message.player?.id);
+    if(!player) return;
+    const leavingPlayer={...player,leaving:true};
+    leavingPlayers=leavingPlayers.filter((candidate)=>candidate.id!==player.id);
+    leavingPlayers.push(leavingPlayer);
+    renderPlayers();
+    const previousTimer=leavingPlayerTimers.get(player.id);
+    if(previousTimer) clearTimeout(previousTimer);
+    leavingPlayerTimers.set(player.id,window.setTimeout(()=>{
+      leavingPlayerTimers.delete(player.id);
+      leavingPlayers=leavingPlayers.filter((candidate)=>candidate.id!==player.id);
+      renderPlayers();
+    },700));
   });
   client.on("all-ready",()=>{status.textContent="Everyone is ready.";});
   client.on("launch",(message)=>enterQuiz(
