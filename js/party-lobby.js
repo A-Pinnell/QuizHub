@@ -7,6 +7,15 @@
   const codeLabel=document.getElementById("partyRoomCode");
   const status=document.getElementById("partyRoomStatus");
   const playerList=document.getElementById("partyPlayerList");
+  const profileEditor=document.getElementById("partyProfileEditor");
+  const profileForm=document.getElementById("partyProfileForm");
+  const profileNameInput=document.getElementById("partyProfileName");
+  const profileColorInput=document.getElementById("partyProfileColor");
+  const profilePhotoInput=document.getElementById("partyProfilePhoto");
+  const profilePhotoPreview=document.getElementById("partyProfilePhotoPreview");
+  const profilePhotoRemoveButton=document.getElementById("partyProfileRemovePhoto");
+  const profileSaveButton=document.getElementById("partyProfileSave");
+  const profileStatus=document.getElementById("partyProfileStatus");
   const error=document.getElementById("partyLobbyError");
   const leaveButton=document.getElementById("partyLeaveButton");
   const hostControls=document.getElementById("partyHostControls");
@@ -67,10 +76,89 @@
   const leavingPlayerTimers=new Map();
   let leavingPlayers=[];
   const client=new window.QuizHubPartyClient();
-  const savedProfile=(()=>{
+  let savedProfile=(()=>{
     try{return JSON.parse(sessionStorage.getItem("quizHubPartyProfile")||"null");}
     catch(parseError){console.error("Could not restore your party profile:",parseError);return null;}
   })();
+  let profilePhoto="";
+  let pendingProfile=null;
+
+  function updateProfilePhotoPreview(name=profileNameInput.value){
+    profilePhotoPreview.replaceChildren();
+    profilePhotoPreview.style.setProperty("--player-color",profileColorInput.value);
+    if(profilePhoto){
+      const image=document.createElement("img");
+      image.src=profilePhoto;
+      image.alt="";
+      profilePhotoPreview.appendChild(image);
+    }else{
+      profilePhotoPreview.textContent=name.trim().charAt(0).toUpperCase()||"?";
+    }
+  }
+
+  function setProfileEditorEnabled(enabled){
+    profileNameInput.disabled=!enabled;
+    profileColorInput.disabled=!enabled;
+    profilePhotoInput.disabled=!enabled;
+    profilePhotoRemoveButton.disabled=!enabled;
+    profileSaveButton.disabled=!enabled;
+  }
+
+  function readProfilePhoto(file){
+    return new Promise((resolve,reject)=>{
+      if(!file.type.startsWith("image/") || file.size>10*1024*1024){
+        reject(new Error("Choose an image smaller than 10 MB."));
+        return;
+      }
+      const reader=new FileReader();
+      reader.onerror=()=>reject(new Error("Could not read that picture."));
+      reader.onload=()=>{
+        const imageData=String(reader.result);
+        if(file.type==="image/gif"){
+          if(imageData.length>450_000){
+            reject(new Error("Choose a GIF smaller than about 330 KB to preserve its animation."));
+            return;
+          }
+          resolve(imageData);
+          return;
+        }
+        const image=new Image();
+        image.onerror=()=>reject(new Error("Could not load that picture."));
+        image.onload=()=>{
+          const scale=Math.min(1,256/Math.max(image.naturalWidth,image.naturalHeight));
+          const canvas=document.createElement("canvas");
+          canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+          canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+          const context=canvas.getContext("2d");
+          if(!context){
+            reject(new Error("Could not process that picture."));
+            return;
+          }
+          context.drawImage(image,0,0,canvas.width,canvas.height);
+          resolve(canvas.toDataURL("image/jpeg",.8));
+        };
+        image.src=imageData;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderProfileEditor(ownPlayer){
+    profileEditor.hidden=!ownPlayer;
+    if(!ownPlayer) return;
+    if(!profileForm.dataset.initialized){
+      profileForm.dataset.initialized="true";
+      profileNameInput.value=ownPlayer.name;
+      profileColorInput.value=ownPlayer.color;
+      profilePhoto=ownPlayer.photo||"";
+      updateProfilePhotoPreview(ownPlayer.name);
+    }
+    const canEdit=room.stage==="lobby" && !pendingProfile;
+    setProfileEditorEnabled(canEdit);
+    if(room.stage!=="lobby"){
+      profileStatus.textContent="Your profile can only be changed while the room is in the lobby.";
+    }
+  }
 
   function displayProfile(player){
     if(!room?.hostDisplay || player.id!==room.hostDisplayPlayerId) return player;
@@ -167,6 +255,20 @@
     hostDisplayInput.addEventListener("change",saveHostDisplayOptions);
     hostDisplayPlayerSelect.addEventListener("change",saveHostDisplayOptions);
     const ownPlayer=room.players.find((player)=>player.id===playerId);
+    if(pendingProfile &&
+      ownPlayer?.name===pendingProfile.name &&
+      ownPlayer.color===pendingProfile.color &&
+      ownPlayer.photo===pendingProfile.photo){
+      savedProfile=pendingProfile;
+      sessionStorage.setItem("quizHubPartyProfile",JSON.stringify(savedProfile));
+      profilePhoto=savedProfile.photo;
+      profilePhotoInput.value="";
+      pendingProfile=null;
+      profileStatus.textContent="Your profile has been updated.";
+      profileStatus.classList.remove("error");
+      updateProfilePhotoPreview(savedProfile.name);
+    }
+    renderProfileEditor(ownPlayer);
     leaveButton.disabled=!ownPlayer;
     hostDisplayInput.checked=room.hostDisplay===true;
     hostDisplayInput.disabled=!isHost || room.stage!=="lobby";
@@ -237,6 +339,48 @@
       }
     }catch(sendError){
       updateDevMenuContext(sendError.message);
+    }
+  });
+
+  profileNameInput.addEventListener("input",()=>updateProfilePhotoPreview());
+  profileColorInput.addEventListener("input",()=>updateProfilePhotoPreview());
+  profilePhotoRemoveButton.addEventListener("click",()=>{
+    profilePhoto="";
+    profilePhotoInput.value="";
+    updateProfilePhotoPreview();
+    profileStatus.textContent="Picture removed. Save your profile to apply the change.";
+    profileStatus.classList.remove("error");
+  });
+  profileForm.addEventListener("submit",async(event)=>{
+    event.preventDefault();
+    if(!room || room.stage!=="lobby" || pendingProfile) return;
+    const name=profileNameInput.value.trim();
+    if(!name){
+      profileStatus.textContent="Enter a player name.";
+      profileStatus.classList.add("error");
+      profileNameInput.focus();
+      return;
+    }
+    setProfileEditorEnabled(false);
+    profileStatus.textContent="Saving profile…";
+    profileStatus.classList.remove("error");
+    try{
+      const selectedPhoto=profilePhotoInput.files?.[0];
+      if(selectedPhoto) profilePhoto=await readProfilePhoto(selectedPhoto);
+      const nextProfile={
+        name,
+        color:profileColorInput.value,
+        photo:profilePhoto
+      };
+      pendingProfile=nextProfile;
+      updateProfilePhotoPreview(name);
+      await client.send({type:"update-profile",code,player:nextProfile});
+    }catch(saveError){
+      pendingProfile=null;
+      profileStatus.textContent=saveError.message;
+      profileStatus.classList.add("error");
+      setProfileEditorEnabled(room?.stage==="lobby");
+      updateProfilePhotoPreview(name);
     }
   });
 
@@ -457,6 +601,12 @@
   });
   client.on("error",(message)=>{
     error.textContent=message.message;
+    if(pendingProfile){
+      pendingProfile=null;
+      profileStatus.textContent=message.message;
+      profileStatus.classList.add("error");
+      setProfileEditorEnabled(room?.stage==="lobby");
+    }
     updateDevMenuContext(message.message);
   });
   client.on("close",()=>{

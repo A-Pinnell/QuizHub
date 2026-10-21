@@ -126,7 +126,60 @@ function cleanNetHubQuestion(question, index) {
   if (!Number.isInteger(question.c) || question.c < 0 || question.c >= answers.length) {
     throw Object.assign(new Error(`Question ${index + 1} has an invalid correct-answer index.`), { status: 400 });
   }
-  return { q: prompt, a: answers.map((answer) => answer.trim()), c: question.c };
+  const cleanQuestion = {
+    q: prompt,
+    a: answers.map((answer) => answer.trim()),
+    c: question.c
+  };
+  for (const imageKey of ["i", "image"]) {
+    if (question[imageKey] === undefined) continue;
+    const image = typeof question[imageKey] === "string" ? question[imageKey].trim() : "";
+    let imageUrl;
+    try {
+      imageUrl = new URL(image, "https://quizhub.invalid");
+    } catch {
+      imageUrl = null;
+    }
+    if (!image || image.length > 2048 || !["http:", "https:"].includes(imageUrl?.protocol)) {
+      throw Object.assign(new Error(`Question ${index + 1} has an invalid image URL.`), { status: 400 });
+    }
+    cleanQuestion[imageKey] = image;
+  }
+  if (question.interaction !== undefined) {
+    const interaction = question.interaction;
+    if (!interaction || typeof interaction !== "object" || Array.isArray(interaction)) {
+      throw Object.assign(new Error(`Question ${index + 1} has invalid interaction data.`), { status: 400 });
+    }
+    if (interaction.type === "mesh-table") {
+      const validMeshTable =
+        ["vertices", "faces"].includes(interaction.table) &&
+        typeof interaction.rowPrefix === "string" &&
+        interaction.rowPrefix.length > 0 &&
+        interaction.rowPrefix.length <= 8 &&
+        Array.isArray(interaction.columnHeaders) &&
+        interaction.columnHeaders.length > 0 &&
+        interaction.columnHeaders.length <= 8 &&
+        interaction.columnHeaders.every(
+          (header) => typeof header === "string" && header.trim() && header.length <= 100
+        ) &&
+        Array.isArray(interaction.correctTable) &&
+        interaction.correctTable.length > 0 &&
+        interaction.correctTable.length <= 100 &&
+        interaction.correctTable.every(
+          (row) =>
+            Array.isArray(row) &&
+            row.length === interaction.columnHeaders.length &&
+            row.every(
+              (value) => typeof value === "string" && value.trim() && value.length <= 300
+            )
+        );
+      if (!validMeshTable) {
+        throw Object.assign(new Error(`Question ${index + 1} has an invalid mesh table.`), { status: 400 });
+      }
+    }
+    cleanQuestion.interaction = interaction;
+  }
+  return cleanQuestion;
 }
 
 function cleanNetHubMusic(music) {
@@ -898,6 +951,30 @@ function handleMessage(socket, rawMessage) {
   }
 
   switch (message.type) {
+    case "update-profile": {
+      if (room.stage !== "lobby") {
+        return sendError(socket, "Player profiles can only be changed in the lobby.");
+      }
+      let profile;
+      try {
+        profile = cleanProfile(message.player);
+      } catch (error) {
+        return sendError(socket, error.message);
+      }
+      const normalizedName = normalizePlayerName(profile.name);
+      if ([...room.players.values()].some(
+        (member) => member.id !== player.id &&
+          normalizePlayerName(member.name) === normalizedName
+      )) {
+        return sendError(socket, "That player name is already in the room. Choose a different name.");
+      }
+      const previousName = normalizePlayerName(player.name);
+      if (previousName !== normalizedName) room.playerHistory.delete(previousName);
+      Object.assign(player, profile);
+      rememberPlayerScore(room, player);
+      broadcastRoom(room);
+      break;
+    }
     case "dev-excluded-quizzes": {
       if (!player.host || room.stage !== "lobby") {
         return sendError(socket, "Only the host can change excluded quiz availability in the lobby.");

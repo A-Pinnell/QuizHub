@@ -5,6 +5,7 @@ const { once } = require("node:events");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
+const vm = require("node:vm");
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 
@@ -70,16 +71,25 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
   assert.equal(firstAuth.response.status, 200);
   assert.equal(firstAuth.payload.created, true);
   const firstToken = firstAuth.payload.token;
+  const tempQuestions = JSON.parse(
+    JSON.stringify(
+      vm.runInNewContext(
+        fs.readFileSync(path.join(process.cwd(), "js", "temp.js"), "utf8"),
+        {}
+      )
+    )
+  );
+  assert.ok(Array.isArray(tempQuestions));
+  assert.ok(tempQuestions.some((question) => question.i));
+  assert.ok(tempQuestions.some((question) => question.interaction?.type === "mesh-table"));
   const quizData = {
-    title: "Intro Quiz",
-    courseKey: "CloudComp",
-    courseName: "Cloud Computing",
+    title: "NetHub Temp Data Test",
+    courseKey: "CompGFX",
+    courseName: "Computer Graphics",
     theme: "blended",
     allowShortAnswer: true,
     music: { track: "BonusTrack" },
-    questions: [
-      { q: "Which is a cloud service?", a: ["IaaS", "Paper", "Chalk", "None"], c: 0 }
-    ]
+    questions: tempQuestions
   };
   const created = await api("/api/nethub/quizzes", {
     method: "POST",
@@ -92,6 +102,7 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
   assert.equal(publicList.payload.quizzes.length, 1);
   assert.equal(publicList.payload.quizzes[0].author, "QuizMaker");
   const publicQuiz = await api(`/api/nethub/quizzes/${quizId}`);
+  assert.equal(publicQuiz.payload.quiz.theme, quizData.theme);
   assert.deepEqual(publicQuiz.payload.quiz.questions, quizData.questions);
   assert.deepEqual(publicQuiz.payload.quiz.music, quizData.music);
 
@@ -157,6 +168,15 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
     body: JSON.stringify({ ...quizData, questions: [{ q: "bad", a: ["A"], c: 0 }] })
   }, firstToken);
   assert.equal(invalidQuiz.response.status, 400);
+
+  const invalidImage = await api("/api/nethub/quizzes", {
+    method: "POST",
+    body: JSON.stringify({
+      ...quizData,
+      questions: [{ ...tempQuestions.find((question) => question.i), i: "javascript:alert(1)" }]
+    })
+  }, firstToken);
+  assert.equal(invalidImage.response.status, 400);
 
   const invalidMusic = await api("/api/nethub/quizzes", {
     method: "POST",

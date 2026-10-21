@@ -91,7 +91,7 @@
 		<link rel="stylesheet" href="css/offline-app.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
 		<link rel="stylesheet" href="css/dev.css" />
-		<link rel="stylesheet" href="css/net-hub.css?v=nethub-code-stream" />
+		<link rel="stylesheet" href="css/net-hub.css?v=nethub-code-stream-v4" />
 		<script src="./js/audio-focus.js" defer></script>
 		<script src="./js/offline-app.js" defer></script>
 		<script src="./js/load-preferences.js"></script>
@@ -104,7 +104,7 @@
 		<script
 			src="./js/net-hub-storage.js?v=user-made-remove-music"
 			defer></script>
-		<script src="./js/net-hub.js?v=nethub-code-stream" defer></script>
+		<script src="./js/net-hub.js?v=nethub-code-stream-v5" defer></script>
 		<script src="./js/quiz-export.js?v=quiz-export-3" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
@@ -252,7 +252,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 3.0.1</div>
+						<div class="tagline">Version 3.1.1</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -418,7 +418,17 @@
 			<svg aria-hidden="true" viewBox="0 0 24 24">
 				<path d="M5 2.5h9l5 5v14H5zM14 2.5v5h5" />
 				<path d="M7.5 13.5h9" />
-				<text x="12" y="18.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="Arial, sans-serif" font-size="5" font-weight="700">PDF</text>
+				<text
+					x="12"
+					y="18.5"
+					text-anchor="middle"
+					fill="currentColor"
+					stroke="none"
+					font-family="Arial, sans-serif"
+					font-size="5"
+					font-weight="700">
+					PDF
+				</text>
 			</svg>
 			<span class="utility-button-label">Export</span>
 		</button>
@@ -429,7 +439,8 @@
 			aria-label="My uploads"
 			title="My uploads">
 			<svg aria-hidden="true" viewBox="0 0 24 24">
-				<path d="M20 16.5a4.5 4.5 0 0 0-.8-8.9A7 7 0 0 0 5.8 9.4 3.8 3.8 0 0 0 6 17h4" />
+				<path
+					d="M20 16.5a4.5 4.5 0 0 0-.8-8.9A7 7 0 0 0 5.8 9.4 3.8 3.8 0 0 0 6 17h4" />
 				<path d="M12 21v-9m0 0 3 3m-3-3-3 3" />
 			</svg>
 			<span class="utility-button-label">My Uploads</span>
@@ -635,7 +646,9 @@
 							placeholder='[{ q: "...", a: ["...", "...", "...", "..."], c: 0 }]'></textarea>
 						<small
 							>Paste a literal array only. The app checks its structure and
-							never runs the pasted JavaScript.</small
+							never runs the pasted JavaScript. Questions may also use
+							<code>i</code> or <code>image</code> for an image path and
+							<code>interaction</code> metadata such as a mesh table.</small
 						>
 					</label>
 					<fieldset class="net-hub-account-fields">
@@ -708,8 +721,8 @@
 						<span
 							class="net-hub-sphere-latitude net-hub-sphere-latitude-e"></span>
 						<div class="net-hub-network-nodes">
-							<span></span><span></span><span></span><span></span>
-							<span></span><span></span><span></span><span></span>
+							<span></span><span></span><span></span><span></span> <span></span
+							><span></span><span></span><span></span>
 						</div>
 					</div>
 					<div class="net-hub-code-console">

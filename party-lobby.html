@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="icon" type="image/png" href="assets/icon.png">
 <title>QuizHub Party Lobby</title>
-<link rel="stylesheet" href="css/party-lobby.css">
+<link rel="stylesheet" href="css/party-lobby.css?v=party-profile-edit-v1">
 <link rel="stylesheet" href="css/party-notifications.css?v=party-score-fade">
 <link rel="stylesheet" href="css/preferences.css">
 <link rel="stylesheet" href="css/cover-screen.css">
@@ -16,7 +16,7 @@
 <script src="js/mixed-study.js" defer></script>
 <script src="js/party-config.js" defer></script>
 <script src="js/party-client.js?v=join-leave-notices" defer></script>
-<script src="js/party-lobby.js?v=party-score-fade" defer></script>
+<script src="js/party-lobby.js?v=party-profile-edit-v1" defer></script>
 </head>
 <body>
 <audio id="partyLobbyMusic" src="music/Party.mp3" loop preload="auto"></audio>
@@ -62,6 +62,25 @@
     </div>
   </section>
   <section class="party-player-list" id="partyPlayerList" aria-label="Players in this lobby"></section>
+  <section class="party-profile-editor" id="partyProfileEditor" hidden>
+    <h2>Your player profile</h2>
+    <form id="partyProfileForm">
+      <label for="partyProfileName">Your name in this party</label>
+      <input id="partyProfileName" type="text" maxlength="24" autocomplete="nickname" required>
+      <div class="party-profile-row">
+        <label for="partyProfileColor">Player color</label>
+        <input id="partyProfileColor" type="color" value="#3686e8">
+      </div>
+      <label for="partyProfilePhoto">Player picture</label>
+      <input id="partyProfilePhoto" type="file" accept="image/*">
+      <div class="party-photo-preview" id="partyProfilePhotoPreview" aria-hidden="true">?</div>
+      <div class="party-profile-actions">
+        <button class="party-secondary" id="partyProfileRemovePhoto" type="button">REMOVE PICTURE</button>
+        <button class="party-primary" id="partyProfileSave" type="submit">SAVE PROFILE</button>
+      </div>
+      <p class="party-profile-status" id="partyProfileStatus" role="status" aria-live="polite"></p>
+    </form>
+  </section>
   <div class="party-lobby-controls">
     <button class="party-secondary" id="partyLeaveButton" type="button" disabled>LEAVE LOBBY</button>
     <p class="party-error" id="partyLobbyError" role="status" aria-live="polite"></p>

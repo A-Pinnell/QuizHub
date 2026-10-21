@@ -128,6 +128,78 @@ h2 {
 	display: grid;
 	gap: 10px;
 }
+.party-profile-editor {
+	margin-top: 16px;
+	padding: 16px;
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.045);
+}
+.party-profile-editor[hidden] {
+	display: none;
+}
+.party-profile-editor h2 {
+	margin: 0 0 12px;
+}
+.party-profile-editor label {
+	display: block;
+	margin: 12px 0 6px;
+	font-weight: 800;
+}
+.party-profile-editor input[type="text"] {
+	width: 100%;
+	min-height: 44px;
+	padding: 8px 12px;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 10px;
+	background: #142544;
+	color: #fff;
+	font: inherit;
+}
+.party-profile-editor input[type="file"] {
+	max-width: 100%;
+	color: #d4d8e7;
+}
+.party-profile-editor .party-profile-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 10px;
+	font-weight: 800;
+}
+.party-profile-editor .party-profile-row label {
+	margin: 0;
+}
+.party-profile-editor .party-profile-row input {
+	width: 48px;
+	height: 38px;
+	border: 0;
+	background: transparent;
+}
+.party-profile-editor .party-photo-preview {
+	--player-color: #3686e8;
+	margin: 12px auto;
+	width: 64px;
+	height: 64px;
+}
+.party-profile-actions {
+	display: flex;
+	gap: 10px;
+}
+.party-profile-actions > * {
+	flex: 1;
+}
+.party-profile-actions .party-secondary {
+	padding-inline: 8px;
+}
+.party-profile-status {
+	min-height: 1.2em;
+	margin: 10px 0 0;
+	color: #cbd4e9;
+}
+.party-profile-status.error {
+	color: #ffb3ad;
+}
 .party-player-card {
 	display: grid;
 	grid-template-columns: 52px 1fr auto;

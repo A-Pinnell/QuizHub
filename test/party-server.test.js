@@ -153,6 +153,70 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.equal(joined.room.players.length, 2);
   assert.equal(joined.room.players.every((player) => player.ready), true);
 
+  const updatedGuestPhoto = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+  const updatedGuestProfile = {
+    name: "Guest Updated",
+    color: "#21ab65",
+    photo: updatedGuestPhoto
+  };
+  const guestProfileUpdate = waitForMessage(
+    guest,
+    "room-state",
+    (message) => message.room.players.some(
+      (player) => player.id === joined.playerId && player.name === updatedGuestProfile.name
+    )
+  );
+  const hostSeesGuestProfileUpdate = waitForMessage(
+    host,
+    "room-state",
+    (message) => message.room.players.some(
+      (player) => player.id === joined.playerId && player.name === updatedGuestProfile.name
+    )
+  );
+  send(guest, { type: "update-profile", code: hosted.room.code, player: updatedGuestProfile });
+  const [guestProfileState, hostGuestProfileState] = await Promise.all([
+    guestProfileUpdate,
+    hostSeesGuestProfileUpdate
+  ]);
+  for (const state of [guestProfileState, hostGuestProfileState]) {
+    const updatedPlayer = state.room.players.find((player) => player.id === joined.playerId);
+    assert.equal(updatedPlayer.name, updatedGuestProfile.name);
+    assert.equal(updatedPlayer.color, updatedGuestProfile.color);
+    assert.equal(updatedPlayer.photo, updatedGuestProfile.photo);
+    assert.equal(updatedPlayer.ready, true);
+    assert.equal(updatedPlayer.score, 0);
+  }
+
+  const updatedHostProfile = {
+    name: "Host Updated",
+    color: "#bd32a7",
+    photo: updatedGuestPhoto
+  };
+  const hostProfileUpdate = waitForMessage(
+    host,
+    "room-state",
+    (message) => message.room.players.some(
+      (player) => player.id === hosted.playerId && player.name === updatedHostProfile.name
+    )
+  );
+  const guestSeesHostProfileUpdate = waitForMessage(
+    guest,
+    "room-state",
+    (message) => message.room.players.some(
+      (player) => player.id === hosted.playerId && player.name === updatedHostProfile.name
+    )
+  );
+  send(host, { type: "update-profile", code: hosted.room.code, player: updatedHostProfile });
+  await Promise.all([hostProfileUpdate, guestSeesHostProfileUpdate]);
+
+  const duplicateProfileName = waitForMessage(guest, "error");
+  send(guest, {
+    type: "update-profile",
+    code: hosted.room.code,
+    player: { ...updatedGuestProfile, name: " host updated " }
+  });
+  assert.match((await duplicateProfileName).message, /name is already in the room/i);
+
   const guestFakePlayersRejected = waitForMessage(guest, "error");
   send(guest, { type: "dev-add-fake-players", code: hosted.room.code, count: 1 });
   assert.match((await guestFakePlayersRejected).message, /only the host/i);
@@ -186,7 +250,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   send(duplicateNameClient,{
     type:"join",
     code:hosted.room.code,
-    player:{name:"gUEST",color:"#ff00ff",photo:""}
+    player:{name:"hOST uPDATED",color:"#ff00ff",photo:""}
   });
   assert.match((await duplicateNameError).message,/name is already in the room/i);
   duplicateNameClient.close();
@@ -245,7 +309,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   send(guest, {
     type: "join",
     code: hosted.room.code,
-    player: { name: "Guest", color: "#0000ff", photo: "" }
+    player: { name: "Guest Updated", color: "#0000ff", photo: "" }
   });
   joined = await rejoinedPromise;
   await rejoinRoomUpdate;
@@ -256,7 +320,10 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   send(guest, { type: "check-room", code: hosted.room.code });
   const checkedRoom=(await checkRoomPromise).room;
   assert.equal(checkedRoom.players, 2);
-  assert.deepEqual(checkedRoom.profiles.map((profile)=>profile.name).sort(),["Guest","Host"]);
+  assert.deepEqual(
+    checkedRoom.profiles.map((profile)=>profile.name).sort(),
+    ["Guest Updated","Host Updated"]
+  );
 
   const invalidMixedLaunch = waitForMessage(host, "error");
   send(host, {
@@ -277,6 +344,13 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     quiz: "quiz2"
   });
   await Promise.all([hostLaunch, guestLaunch]);
+  const profileUpdateAfterLaunch = waitForMessage(guest, "error");
+  send(guest, {
+    type: "update-profile",
+    code: hosted.room.code,
+    player: { name: "Too Late", color: "#000000", photo: "" }
+  });
+  assert.match((await profileUpdateAfterLaunch).message, /only be changed in the lobby/i);
 
   const hostSettings = waitForMessage(host, "room-state");
   const guestSettings = waitForMessage(guest, "room-state");

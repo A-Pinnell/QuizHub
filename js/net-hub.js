@@ -91,13 +91,20 @@
 		codeStream.textContent = "";
 		let lineIndex = 0;
 		let characterIndex = 0;
+		let scrollOnLineStart = false;
 		function typeNext() {
 			if (run !== codeStreamRun || !browseModal.classList.contains("open")) return;
 			const line = netHubCodeLines[lineIndex];
 			if (characterIndex < line.length) {
 				codeStream.textContent += line[characterIndex];
 				characterIndex += 1;
-				codeStream.parentElement.scrollTop = codeStream.parentElement.scrollHeight;
+				if (scrollOnLineStart) {
+					scrollOnLineStart = false;
+					codeStream.parentElement.scrollTo({
+						top: codeStream.parentElement.scrollHeight,
+						behavior: "smooth",
+					});
+				}
 				codeStreamTimer = window.setTimeout(typeNext, 34);
 				return;
 			}
@@ -105,8 +112,8 @@
 				codeStream.textContent += "\n";
 				lineIndex += 1;
 				characterIndex = 0;
-				codeStream.parentElement.scrollTop = codeStream.parentElement.scrollHeight;
-				codeStreamTimer = window.setTimeout(typeNext, 175);
+				scrollOnLineStart = true;
+				codeStreamTimer = window.setTimeout(typeNext, 430);
 				return;
 			}
 			codeStreamTimer = window.setTimeout(() => {
@@ -115,6 +122,7 @@
 				codeStream.parentElement.scrollTop = 0;
 				lineIndex = 0;
 				characterIndex = 0;
+				scrollOnLineStart = false;
 				codeStreamTimer = window.setTimeout(typeNext, 700);
 			}, 4200);
 		}
@@ -441,11 +449,13 @@
 			"Match this QuizHub questionBank format exactly:",
 			'[{ q: "Question text", a: ["Choice A", "Choice B", "Choice C", "Choice D"], c: 0 }]',
 			"Each object must have q (question string), a (array of 2–4 answer strings), and c (zero-based index of the correct choice).",
+			'Optional supported fields: i or image for a relative image path or HTTPS image URL; interaction for supported interactive formats, including mesh-table.',
+			'For vertex tables, use interaction: { type: "mesh-table", table: "vertices", rowPrefix: "v", columnHeaders: ["X", "Y", "Z"], correctTable: [["0", "0", "0"]] }. For face tables, use table: "faces", rowPrefix: "f", one column header, and comma-separated vertex IDs in each row.',
 			allowShortAnswer
 				? "Make the correct answer understandable as a short written response too, since players may choose written or mixed presentation."
 				: "The quiz is multiple choice only.",
 			`Requested QuizHub theme: ${theme}.`,
-			"Do not add HTML, images, external links, or any extra properties.",
+			"Do not add HTML, executable code, or unrelated links. Include no optional fields unless they are supported by QuizHub.",
 		].join("\n");
 		promptField.value = prompt;
 	}
@@ -588,6 +598,10 @@
 		skipSpace();
 		const value = readValue();
 		skipSpace();
+		if (source[position] === ";") {
+			position++;
+			skipSpace();
+		}
 		if (position !== source.length) {
 			throw new Error(
 				`Only a JavaScript array literal is accepted (unexpected text near character ${position + 1}).`,
@@ -633,7 +647,33 @@
 					`Question ${index + 1} has an invalid correct-answer index.`,
 				);
 			}
-			return { q, a: answers.map((answer) => answer.trim()), c: question.c };
+			const cleanQuestion = {
+				q,
+				a: answers.map((answer) => answer.trim()),
+				c: question.c,
+			};
+			for (const imageKey of ["i", "image"]) {
+				if (question[imageKey] === undefined) continue;
+				if (
+					typeof question[imageKey] !== "string" ||
+					!question[imageKey].trim() ||
+					question[imageKey].length > 2048
+				) {
+					throw new Error(`Question ${index + 1} has an invalid image URL.`);
+				}
+				cleanQuestion[imageKey] = question[imageKey].trim();
+			}
+			if (question.interaction !== undefined) {
+				if (
+					!question.interaction ||
+					typeof question.interaction !== "object" ||
+					Array.isArray(question.interaction)
+				) {
+					throw new Error(`Question ${index + 1} has invalid interaction data.`);
+				}
+				cleanQuestion.interaction = question.interaction;
+			}
+			return cleanQuestion;
 		});
 	}
 

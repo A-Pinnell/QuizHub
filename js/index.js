@@ -2020,6 +2020,10 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 3.1.1
+- NetHub will now support images and other interaction extensions such as the mesh-table used in Computer Graphics.
+- NetHub will now correctly use themes
+
 Version 3.1.0
 - The export to pdf option will now include images, if the quiz contains images
 - Clicking music rotation again during a quiz will now reshuffle the music
