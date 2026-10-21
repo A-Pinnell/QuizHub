@@ -17,6 +17,44 @@
 			.replace(/\s+/g, " ");
 	}
 
+	function getTrueFalseShortAnswer(question) {
+		if (
+			!question ||
+			typeof question.q !== "string" ||
+			!Array.isArray(question.a) ||
+			!question.a.some(
+				(answer) => String(answer).trim().toLowerCase() === "true",
+			) ||
+			!question.a.some(
+				(answer) => String(answer).trim().toLowerCase() === "false",
+			) ||
+			String(question.a[question.c]).trim().toLowerCase() !== "true"
+		) {
+			return null;
+		}
+
+		const statement = question.q
+			.replace(/^true\s+or\s+false\s*:\s*/i, "")
+			.trim()
+			.replace(/[.!?]+$/, "");
+		const match = statement.match(
+			/^(.+?)\s+(is|are)\s+described\b.*?\bas\s+(.+)$/i,
+		);
+		if (!match) return null;
+
+		const [, subject, verb, rawAnswer] = match;
+		const answer = rawAnswer
+			.trim()
+			.replace(/[.!?]+$/, "")
+			.replace(/^(?:a|an|the)\s+/i, "");
+		if (!subject.trim() || !answer) return null;
+
+		return {
+			question: `What ${verb.toLowerCase()} ${subject.trim()} described as?`,
+			answer,
+		};
+	}
+
 	function getEditSimilarity(left, right) {
 		const previousRow = Array.from(
 			{ length: right.length + 1 },
@@ -81,7 +119,13 @@
 			return 0;
 		}
 		const textPoints =
-			similarity >= 0.9 ? 3 : similarity >= 0.7 ? 2 : similarity >= 0.45 ? 1 : 0;
+			similarity >= 0.9
+				? 3
+				: similarity >= 0.7
+					? 2
+					: similarity >= 0.45
+						? 1
+						: 0;
 		const semanticPoints =
 			Number.isFinite(semanticSimilarity) && semanticSimilarity >= 0
 				? semanticSimilarity >= 0.78
@@ -95,5 +139,9 @@
 		return Math.max(textPoints, semanticPoints);
 	}
 
-	return { getAnswerSimilarity, getShortAnswerPoints };
+	return {
+		getAnswerSimilarity,
+		getShortAnswerPoints,
+		getTrueFalseShortAnswer,
+	};
 });

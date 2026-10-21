@@ -6,14 +6,54 @@ const shortAnswer = require("../js/short-answer.js");
 
 test("short-answer scoring awards three points for an exact answer", () => {
 	assert.equal(
-		shortAnswer.getShortAnswerPoints("Most Significant Bit", "Most Significant Bit"),
+		shortAnswer.getShortAnswerPoints(
+			"Most Significant Bit",
+			"Most Significant Bit",
+		),
 		3,
+	);
+});
+
+test("true statements described as a fact become short-answer questions", () => {
+	assert.deepEqual(
+		shortAnswer.getTrueFalseShortAnswer({
+			q: "OpenGL is described in the slideshow as a multi-platform graphics library used in applications such as virtual reality and video games.",
+			a: ["True", "False", "BLANK", "BLANK"],
+			c: 0,
+		}),
+		{
+			question: "What is OpenGL described as?",
+			answer:
+				"multi-platform graphics library used in applications such as virtual reality and video games",
+		},
+	);
+});
+
+test("false or unsupported true-false statements are not rewritten", () => {
+	assert.equal(
+		shortAnswer.getTrueFalseShortAnswer({
+			q: "OpenGL is described in the slideshow as a graphics library.",
+			a: ["True", "False", "BLANK", "BLANK"],
+			c: 1,
+		}),
+		null,
+	);
+	assert.equal(
+		shortAnswer.getTrueFalseShortAnswer({
+			q: "OpenGL can convert mathematical descriptions into pixels.",
+			a: ["True", "False", "BLANK", "BLANK"],
+			c: 0,
+		}),
+		null,
 	);
 });
 
 test("short-answer scoring ignores capitalization, punctuation, and articles", () => {
 	assert.equal(
-		shortAnswer.getShortAnswerPoints("The MOST significant bit!", "Most Significant Bit"),
+		shortAnswer.getShortAnswerPoints(
+			"The MOST significant bit!",
+			"Most Significant Bit",
+		),
 		3,
 	);
 });
@@ -24,13 +64,19 @@ test("short-answer scoring awards partial points for close answers", () => {
 		1,
 	);
 	assert.equal(
-		shortAnswer.getShortAnswerPoints("Most significant", "Most Significant Bit"),
+		shortAnswer.getShortAnswerPoints(
+			"Most significant",
+			"Most Significant Bit",
+		),
 		2,
 	);
 });
 
 test("short-answer scoring gives no points for unrelated or empty answers", () => {
-	assert.equal(shortAnswer.getShortAnswerPoints("graphics card", "Most Significant Bit"), 0);
+	assert.equal(
+		shortAnswer.getShortAnswerPoints("graphics card", "Most Significant Bit"),
+		0,
+	);
 	assert.equal(shortAnswer.getShortAnswerPoints("", "Most Significant Bit"), 0);
 	assert.equal(shortAnswer.getShortAnswerPoints("bit", ""), 0);
 });
@@ -47,9 +93,30 @@ test("semantic similarity awards full credit for paraphrases", () => {
 });
 
 test("semantic similarity awards partial credit by meaning", () => {
-	assert.equal(shortAnswer.getShortAnswerPoints("A graphics card", "Most Significant Bit", 0.7), 2);
-	assert.equal(shortAnswer.getShortAnswerPoints("A graphics card", "Most Significant Bit", 0.52), 1);
-	assert.equal(shortAnswer.getShortAnswerPoints("A graphics card", "Most Significant Bit", 0.2), 0);
+	assert.equal(
+		shortAnswer.getShortAnswerPoints(
+			"A graphics card",
+			"Most Significant Bit",
+			0.7,
+		),
+		2,
+	);
+	assert.equal(
+		shortAnswer.getShortAnswerPoints(
+			"A graphics card",
+			"Most Significant Bit",
+			0.52,
+		),
+		1,
+	);
+	assert.equal(
+		shortAnswer.getShortAnswerPoints(
+			"A graphics card",
+			"Most Significant Bit",
+			0.2,
+		),
+		0,
+	);
 });
 
 test("semantic similarity does not override an explicitly contradictory restriction", () => {

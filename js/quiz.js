@@ -163,21 +163,21 @@ const quizMusicFile = forceStaticQuestionOrder
 	? resolveAssetUrl("./music/Challenge_Intro.mp3")
 	: isStatisticsPracticeQuiz
 		? resolveAssetUrl("./music/Trial_Setup.mp3")
-	: requestedMusicCategory === "DataSci"
-		? resolveAssetUrl("./music/DataSciMusic.wav")
-		: requestedMusicCategory === "Practice1"
-			? resolveAssetUrl("./music/BinaryTrack.wav")
-			: requestedMusicCategory === "Practice2"
-				? resolveAssetUrl("./music/HexadecimalTrack.wav")
-				: requestedMusicCategory === "CloudComp"
-					? resolveAssetUrl("./music/CloudCompMusic.wav")
-					: requestedMusicCategory === "SoftEngi"
-						? resolveAssetUrl("./music/SoftEngiMusic.wav")
-						: requestedMusicCategory === "CompGFX"
-							? resolveAssetUrl("./music/CompGFXMusic.wav")
-							: requestedMusicCategory === "SocIndi"
-								? resolveAssetUrl("./music/SocIndiMusic.wav")
-								: resolveAssetUrl("./music/QuizMusic.wav");
+		: requestedMusicCategory === "DataSci"
+			? resolveAssetUrl("./music/DataSciMusic.wav")
+			: requestedMusicCategory === "Practice1"
+				? resolveAssetUrl("./music/BinaryTrack.wav")
+				: requestedMusicCategory === "Practice2"
+					? resolveAssetUrl("./music/HexadecimalTrack.wav")
+					: requestedMusicCategory === "CloudComp"
+						? resolveAssetUrl("./music/CloudCompMusic.wav")
+						: requestedMusicCategory === "SoftEngi"
+							? resolveAssetUrl("./music/SoftEngiMusic.wav")
+							: requestedMusicCategory === "CompGFX"
+								? resolveAssetUrl("./music/CompGFXMusic.wav")
+								: requestedMusicCategory === "SocIndi"
+									? resolveAssetUrl("./music/SocIndiMusic.wav")
+									: resolveAssetUrl("./music/QuizMusic.wav");
 let quizMusicDefaultSource = quizMusicFile;
 const quizMusic = isDataSciLautest
 	? new Audio()
@@ -228,7 +228,10 @@ function startQuizMusic() {
 	if (isPreloadedQuiz || musicMuted || !hostDisplayMusicAllowed) return;
 	if (isDataSciLautest && !dataSciLautestMusicStarted) return;
 	quizMusic.loop = !window.quizHubPreferences.isQuizMusicRotation;
-	if (forceStaticQuestionOrder && !window.quizHubPreferences.isQuizMusicRotation) {
+	if (
+		forceStaticQuestionOrder &&
+		!window.quizHubPreferences.isQuizMusicRotation
+	) {
 		startLautestLoopingMusic();
 		return;
 	}
@@ -609,8 +612,12 @@ const miniQuizMode =
 	params.get("miniQuiz") === "true" || customQuestionSequence.length > 0;
 const partyModeRequested =
 	params.get("partyMode") === "true" || networkPartyActive;
-const compArchMidtermQuestionTypes =
-	category === "CompArch" && requestedQuiz === "test1" && !partyModeRequested;
+const supportsQuestionPresentation =
+	!partyModeRequested &&
+	((["CompArch", "CloudComp"].includes(category) &&
+		requestedQuiz === "test1") ||
+		(["DataSci", "CompGFX"].includes(category) &&
+			["test1", "lautest"].includes(requestedQuiz)));
 let partyPlayers = [];
 const partyPlayerLeaveTimers = new Map();
 let partyConfigError = "";
@@ -821,7 +828,7 @@ const beginButton = document.getElementById("beginQuiz");
 const questionPresentationOptions = document.getElementById(
 	"questionPresentationOptions",
 );
-questionPresentationOptions.hidden = !compArchMidtermQuestionTypes;
+questionPresentationOptions.hidden = !supportsQuestionPresentation;
 const shortAnswerBuilder = document.getElementById("shortAnswerBuilder");
 const shortAnswerInput = document.getElementById("shortAnswerInput");
 const shortAnswerSubmit = document.getElementById("shortAnswerSubmit");
@@ -1054,6 +1061,7 @@ let questionSequence = [];
 let sequencePosition = 0;
 let activeQuestionPresentation = "multiple-choice";
 let currentQuestionPresentation = "multiple-choice";
+let currentShortAnswerQuestion = null;
 let shortAnswerModelLoadPromise = null;
 let current = null;
 let currentQuestionIndex = null;
@@ -1461,7 +1469,7 @@ function updateMeta() {
 	if (scoreDisplay) {
 		const maximumScore = getMaximumPossibleScore();
 		scoreDisplay.textContent =
-			compArchMidtermQuestionTypes && quizStarted
+			supportsQuestionPresentation && quizStarted
 				? `Score: ${score} / ${maximumScore}`
 				: `Score: ${score}`;
 	}
@@ -1511,7 +1519,7 @@ function getQuestionPresentation(position = sequencePosition) {
 }
 
 function getMaximumPossibleScore() {
-	if (!compArchMidtermQuestionTypes || !questionSequence.length) {
+	if (!supportsQuestionPresentation || !questionSequence.length) {
 		return selectedQuestionCount;
 	}
 	return questionSequence.reduce(
@@ -1934,24 +1942,25 @@ function updateNetworkPlayers(players) {
 	);
 	partyPlayers = [
 		...players.map((updated) => {
-		const existing = partyPlayers.find(
-			(candidate) => candidate.id === updated.id,
-		);
-		const player = {
-			...existing,
-			...updated,
-			leaving: false,
-			score: Number.isFinite(Number(updated.score))
-				? Number(updated.score)
-				: existing?.score || 0,
-			overallScore: Number.isFinite(Number(updated.overallScore))
-				? Number(updated.overallScore)
-				: existing?.overallScore || 0,
-		};
-		if (!partyComboStreaks.has(player.id)) partyComboStreaks.set(player.id, 0);
-		if (!partyLongestComboStreaks.has(player.id))
-			partyLongestComboStreaks.set(player.id, 0);
-		return player;
+			const existing = partyPlayers.find(
+				(candidate) => candidate.id === updated.id,
+			);
+			const player = {
+				...existing,
+				...updated,
+				leaving: false,
+				score: Number.isFinite(Number(updated.score))
+					? Number(updated.score)
+					: existing?.score || 0,
+				overallScore: Number.isFinite(Number(updated.overallScore))
+					? Number(updated.overallScore)
+					: existing?.overallScore || 0,
+			};
+			if (!partyComboStreaks.has(player.id))
+				partyComboStreaks.set(player.id, 0);
+			if (!partyLongestComboStreaks.has(player.id))
+				partyLongestComboStreaks.set(player.id, 0);
+			return player;
 		}),
 		...leavingPlayers,
 	];
@@ -3319,6 +3328,10 @@ function fitCompGFXQuestionTitle() {
 
 function showQuestionTitle() {
 	if (!questionTitle || !current) return;
+	const questionText =
+		currentQuestionPresentation === "short-answer"
+			? currentShortAnswerQuestion?.question || current.q
+			: current.q;
 	updateQuestionImage();
 	if (questionTypingTimer !== null) {
 		clearInterval(questionTypingTimer);
@@ -3327,21 +3340,21 @@ function showQuestionTitle() {
 
 	if (!isSoftEngi) {
 		if (isCompGFX) {
-			const titleLength = Array.from(current.q).length;
+			const titleLength = Array.from(questionText).length;
 			questionTitle.classList.toggle("gfx-question-long", titleLength > 90);
 			questionTitle.classList.toggle(
 				"gfx-question-very-long",
 				titleLength > 150,
 			);
 		}
-		questionTitle.textContent = formatPowerText(current.q);
+		questionTitle.textContent = formatPowerText(questionText);
 		if (isCompGFX) requestAnimationFrame(fitCompGFXQuestionTitle);
 		return;
 	}
 
 	const emojis = ["✨", "💡", "🧠", "🚀", "🎯"];
 	const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-	const title = `${formatPowerText(current.q)} ${emoji}`;
+	const title = `${formatPowerText(questionText)} ${emoji}`;
 	const titleLength = Array.from(title).length;
 	questionTitle.classList.toggle("question-long", titleLength > 100);
 	questionTitle.classList.toggle("question-very-long", titleLength > 160);
@@ -3742,6 +3755,9 @@ function renderQuestion(forcedAnswerOrder = null) {
 	if (!current) return;
 	currentQuestionPresentation = getQuestionPresentation();
 	const useShortAnswer = currentQuestionPresentation === "short-answer";
+	currentShortAnswerQuestion = useShortAnswer
+		? window.QuizHubShortAnswer.getTrueFalseShortAnswer(current)
+		: null;
 	if (cheatRotationEnabled) {
 		const quizPage = document.querySelector(".quiz-page");
 		if (quizPage) {
@@ -4095,7 +4111,7 @@ function finishQuiz(reason = "complete") {
 		category,
 		quizType: requestedQuiz || "reviewQuiz",
 		score,
-		...(compArchMidtermQuestionTypes
+		...(supportsQuestionPresentation
 			? { maxScore: getMaximumPossibleScore() }
 			: {}),
 		longestCombo,
@@ -4175,6 +4191,14 @@ function revealQuestion(
 	answered = true;
 
 	const correctIndex = current.c;
+	const displayedQuestion =
+		currentQuestionPresentation === "short-answer"
+			? currentShortAnswerQuestion?.question || current.q
+			: current.q;
+	const correctAnswer =
+		currentQuestionPresentation === "short-answer"
+			? currentShortAnswerQuestion?.answer || current.a[correctIndex]
+			: current.a[correctIndex];
 	const answerIndex =
 		resultType === "answer" && cheatAlwaysRightAnswer
 			? correctIndex
@@ -4208,18 +4232,18 @@ function revealQuestion(
 	}
 
 	history.push({
-		question: current.q,
+		question: displayedQuestion,
 		questionIndex: currentQuestionIndex,
 		selected: shortAnswerResult
 			? shortAnswerResult.answer
 			: resultType === "answer"
 				? current.a[answerIndex]
 				: "",
-		correctAnswer: current.a[correctIndex],
+		correctAnswer,
 		correct: isCorrect,
 		skipped: resultType === "skip",
 		timedOut: resultType === "timeout",
-		...(compArchMidtermQuestionTypes
+		...(supportsQuestionPresentation
 			? {
 					questionPresentation: currentQuestionPresentation,
 					points: shortAnswerResult
@@ -4255,13 +4279,13 @@ function revealQuestion(
 
 	if (resultType === "skip" || resultType === "timeout") {
 		const outcome = resultType === "timeout" ? "Time expired" : "Skipped";
-		feedback.textContent = `${outcome} — the correct answer was: ${formatPowerText(current.a[correctIndex])}`;
+		feedback.textContent = `${outcome} — the correct answer was: ${formatPowerText(correctAnswer)}`;
 		feedback.className = "motivation visible wrong";
 	} else if (shortAnswerResult) {
 		const stars =
 			"★".repeat(shortAnswerResult.points) +
 			"☆".repeat(3 - shortAnswerResult.points);
-		feedback.textContent = `${stars} ${shortAnswerResult.points}/3 points. Correct answer: ${formatPowerText(current.a[correctIndex])}`;
+		feedback.textContent = `${stars} ${shortAnswerResult.points}/3 points. Correct answer: ${formatPowerText(correctAnswer)}`;
 		feedback.className = `motivation visible ${isCorrect ? "right" : "wrong"}`;
 	} else if (isCorrect) {
 		feedback.textContent = [
@@ -4578,7 +4602,7 @@ function beginQuiz() {
 		'input[name="questionPresentation"]:checked',
 	)?.value;
 	activeQuestionPresentation =
-		compArchMidtermQuestionTypes &&
+		supportsQuestionPresentation &&
 		["short-answer", "mixed"].includes(selectedPresentation)
 			? selectedPresentation
 			: "multiple-choice";
@@ -4734,7 +4758,8 @@ shortAnswerSubmit.addEventListener("click", async () => {
 	}
 	shortAnswerSubmit.disabled = true;
 	shortAnswerStatus.textContent = "Checking how closely your answer matches...";
-	const correctAnswer = current.a[current.c];
+	const correctAnswer =
+		currentShortAnswerQuestion?.answer ?? current.a[current.c];
 	let semanticSimilarity = null;
 	if (await loadShortAnswerModel()) {
 		try {

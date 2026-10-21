@@ -1748,7 +1748,7 @@ function updateQuizMusicTrackName() {
 	const courseMusicNames = {
 		default: "Track selected automatically for each course",
 		run: "Closer by Nine Inch Nails [Instrumental]",
-		BonusTrack: "Bonus Track",
+		BonusTrack: "Koneko no Paya Paya (Off Vocal)",
 		CompArch: "What Would Sonic Do? ... from The Murder of Sonic the Hedgehog",
 		Practice1: "Blue Spheres ... from Sonic Mania [QuizHub Mix]",
 		Practice2: "Special Stage ... from Sonic 3D Blast (Genesis) [QuizHub Mix]",
