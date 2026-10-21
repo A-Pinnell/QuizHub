@@ -1748,7 +1748,8 @@ function updateQuizMusicTrackName() {
 	const courseMusicNames = {
 		default: "Track selected automatically for each course",
 		run: "Closer by Nine Inch Nails [Instrumental]",
-		CompArch: "What Would Sonic Do? ... from The Murder of Sonic The Hedgehog",
+		BonusTrack: "Bonus Track",
+		CompArch: "What Would Sonic Do? ... from The Murder of Sonic the Hedgehog",
 		Practice1: "Blue Spheres ... from Sonic Mania [QuizHub Mix]",
 		Practice2: "Special Stage ... from Sonic 3D Blast (Genesis) [QuizHub Mix]",
 		CompGFX: "Craterscape ... from Wild 9",
@@ -1975,6 +1976,13 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 2.7.4
+- Players can now leave a party mode game without it closing the game for everyone else.
+- Players can rejoin/join a party mode game while it is in progress
+- Various party mode enhancements
+- An experimental Short Answer mode has been added to Computer Architecture, which allows you to type in your answer instead of selecting from multiple choice. This mode is not available in Party Mode.
+- A bonus track has been added
+
 Version 2.7.3
 - A new main menu theme has been added for Exam days.
 - Music rotation is now an option, allowing a different song to play throughout your quizzing

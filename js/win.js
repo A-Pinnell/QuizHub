@@ -136,6 +136,9 @@ window.addEventListener("load", function(){
   const score = Number.isFinite(Number(data.score))
     ? Number(data.score)
     : 0;
+  const maxScore = Number.isFinite(Number(data.maxScore)) && Number(data.maxScore) > 0
+    ? Number(data.maxScore)
+    : total;
   const longestCombo = Number.isFinite(Number(data.longestCombo))
     ? Math.max(0, Number(data.longestCombo))
     : 0;
@@ -170,12 +173,12 @@ window.addEventListener("load", function(){
     resultsKicker.textContent = "STATISTIC PRACTICE / GAME OVER";
   }
 
-  scoreEl.textContent = score + " / " + total;
+  scoreEl.textContent = score + " / " + maxScore;
   longestComboEl.textContent = `Longest combo: ${longestCombo}`;
 
   // Passing = at least 50%.
   const passed =
-    !statisticsPracticeGameOver && total > 0 && score / total >= 0.5;
+    !statisticsPracticeGameOver && maxScore > 0 && score / maxScore >= 0.5;
   resultsTitle.textContent = statisticsPracticeGameOver
     ? "TRIAL OVER"
     : passed
@@ -192,8 +195,8 @@ window.addEventListener("load", function(){
   summaryEl.textContent = statisticsPracticeGameOver
     ? `Out of hearts after ${data.wrongEntries} incorrect entr${data.wrongEntries === 1 ? "y" : "ies"} across ${data.history.length} question${data.history.length === 1 ? "" : "s"}. Adjust the heart limit and take another run.`
     : passed
-      ? `You passed! ${correctCount} correct and ${incorrectCount} missed.`
-      : `Keep practicing — ${incorrectCount} missed questions are ready to retry.`;
+      ? `You passed! ${correctCount} correct and ${incorrectCount} missed.${maxScore !== total ? ` You earned ${score} of ${maxScore} points.` : ""}`
+      : `Keep practicing — ${incorrectCount} missed questions are ready to retry.${maxScore !== total ? ` You earned ${score} of ${maxScore} points.` : ""}`;
 
   function resolveQuizBank(course, quizType){
     const source = window.questionBank && window.questionBank[course]

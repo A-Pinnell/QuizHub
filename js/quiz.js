@@ -86,7 +86,7 @@ function unlockQuizAudio() {
 	updateMeta();
 }
 
-function playSound(name) {
+function playSound(name, playbackRate = 1) {
 	if (soundsMuted) return;
 	if (
 		name === "highlight" &&
@@ -115,6 +115,7 @@ function playSound(name) {
 	if (name === "highlight") activeHighlightSound = sound;
 	try {
 		sound.currentTime = 0;
+		sound.playbackRate = playbackRate;
 		sound.play().catch(() => {});
 	} catch (error) {
 		console.warn("Could not play sound:", error);
@@ -608,6 +609,8 @@ const miniQuizMode =
 	params.get("miniQuiz") === "true" || customQuestionSequence.length > 0;
 const partyModeRequested =
 	params.get("partyMode") === "true" || networkPartyActive;
+const compArchMidtermQuestionTypes =
+	category === "CompArch" && requestedQuiz === "test1" && !partyModeRequested;
 let partyPlayers = [];
 const partyPlayerLeaveTimers = new Map();
 let partyConfigError = "";
@@ -815,6 +818,17 @@ const questionJumpDialog = document.getElementById("questionJumpDialog");
 const questionJumpClose = document.getElementById("questionJumpClose");
 const questionJumpList = document.getElementById("questionJumpList");
 const beginButton = document.getElementById("beginQuiz");
+const questionPresentationOptions = document.getElementById(
+	"questionPresentationOptions",
+);
+questionPresentationOptions.hidden = !compArchMidtermQuestionTypes;
+const shortAnswerBuilder = document.getElementById("shortAnswerBuilder");
+const shortAnswerInput = document.getElementById("shortAnswerInput");
+const shortAnswerSubmit = document.getElementById("shortAnswerSubmit");
+const shortAnswerStatus = document.getElementById("shortAnswerStatus");
+const shortAnswerModelStatus = document.getElementById(
+	"shortAnswerModelStatus",
+);
 const setupTitle = document.getElementById("setupTitle");
 const exitSetupButton = document.getElementById("exitSetup");
 const timer = document.getElementById("timer");
@@ -1038,6 +1052,9 @@ let perQuestionTimeMinutes = initialQuestionTimeLimit;
 let selectedQuestionCount = totalAvailable;
 let questionSequence = [];
 let sequencePosition = 0;
+let activeQuestionPresentation = "multiple-choice";
+let currentQuestionPresentation = "multiple-choice";
+let shortAnswerModelLoadPromise = null;
 let current = null;
 let currentQuestionIndex = null;
 let cheatAlwaysRightAnswer = false;
@@ -1441,7 +1458,13 @@ function updateCheatDisplayMode() {
 }
 
 function updateMeta() {
-	if (scoreDisplay) scoreDisplay.textContent = `Score: ${score}`;
+	if (scoreDisplay) {
+		const maximumScore = getMaximumPossibleScore();
+		scoreDisplay.textContent =
+			compArchMidtermQuestionTypes && quizStarted
+				? `Score: ${score} / ${maximumScore}`
+				: `Score: ${score}`;
+	}
 	if (comboDisplay) comboDisplay.textContent = `Combo: ${combo}`;
 	updateStatisticsPracticeMeters();
 	if (questionDisplay) {
@@ -1478,6 +1501,63 @@ function updateMeta() {
 	}
 	updatePartyScoreDisplay();
 }
+
+function getQuestionPresentation(position = sequencePosition) {
+	if (activeQuestionPresentation === "short-answer") return "short-answer";
+	if (activeQuestionPresentation === "mixed") {
+		return position % 2 === 1 ? "short-answer" : "multiple-choice";
+	}
+	return "multiple-choice";
+}
+
+function getMaximumPossibleScore() {
+	if (!compArchMidtermQuestionTypes || !questionSequence.length) {
+		return selectedQuestionCount;
+	}
+	return questionSequence.reduce(
+		(maximum, _questionIndex, position) =>
+			maximum + (getQuestionPresentation(position) === "short-answer" ? 3 : 1),
+		0,
+	);
+}
+
+function loadShortAnswerModel() {
+	if (shortAnswerModelLoadPromise) return shortAnswerModelLoadPromise;
+	if (!window.QuizHubSemanticShortAnswer?.initialize) {
+		const error = new Error("The local semantic model runtime is unavailable.");
+		console.error("Could not load the local short-answer model:", error);
+		shortAnswerModelStatus.textContent =
+			"Semantic checker unavailable; short answers will use basic text matching.";
+		shortAnswerModelLoadPromise = Promise.resolve(false);
+		return shortAnswerModelLoadPromise;
+	}
+	shortAnswerModelStatus.textContent =
+		"Loading the local semantic checker (about 50 MB)...";
+	shortAnswerModelLoadPromise = window.QuizHubSemanticShortAnswer.initialize()
+		.then(() => {
+			shortAnswerModelStatus.textContent =
+				"Local semantic checker is ready. Answers stay on this device.";
+			return true;
+		})
+		.catch((error) => {
+			console.error("Could not load the local short-answer model:", error);
+			shortAnswerModelStatus.textContent =
+				"Semantic checker unavailable; short answers will use basic text matching.";
+			return false;
+		});
+	return shortAnswerModelLoadPromise;
+}
+
+questionPresentationOptions.addEventListener("change", () => {
+	const presentation = document.querySelector(
+		'input[name="questionPresentation"]:checked',
+	)?.value;
+	if (["short-answer", "mixed"].includes(presentation)) {
+		void loadShortAnswerModel();
+	} else {
+		shortAnswerModelStatus.textContent = "";
+	}
+});
 
 function updateStatisticsPracticeMeters() {
 	if (
@@ -3660,6 +3740,8 @@ comboPopup.addEventListener("animationend", (event) => {
 
 function renderQuestion(forcedAnswerOrder = null) {
 	if (!current) return;
+	currentQuestionPresentation = getQuestionPresentation();
+	const useShortAnswer = currentQuestionPresentation === "short-answer";
 	if (cheatRotationEnabled) {
 		const quizPage = document.querySelector(".quiz-page");
 		if (quizPage) {
@@ -3703,11 +3785,17 @@ function renderQuestion(forcedAnswerOrder = null) {
 	const useMeshTableBuilder = isMeshTableQuestion();
 	const useStatisticsSetBuilder = isStatisticsSetQuestion();
 	const useNumericAnswerBuilder = isNumericAnswerQuestion();
+	shortAnswerBuilder.hidden = !useShortAnswer;
+	shortAnswerInput.value = "";
+	shortAnswerInput.disabled = false;
+	shortAnswerSubmit.disabled = false;
+	shortAnswerStatus.textContent = "";
 	openglBuilder.hidden = !useOpenGLBuilder;
 	tableAnswerBuilder.hidden = !useMeshTableBuilder;
 	statisticsSetBuilder.hidden = !useStatisticsSetBuilder;
 	numericAnswerBuilder.hidden = !useNumericAnswerBuilder;
 	answersEl.hidden =
+		useShortAnswer ||
 		useOpenGLBuilder ||
 		useMeshTableBuilder ||
 		useStatisticsSetBuilder ||
@@ -3809,6 +3897,8 @@ function renderQuestion(forcedAnswerOrder = null) {
 		} else {
 			numericAnswerInput.focus();
 		}
+	} else if (useShortAnswer) {
+		shortAnswerInput.focus();
 	} else if (firstAnswer) {
 		firstAnswer.focus();
 	}
@@ -3981,7 +4071,7 @@ function finishQuiz(reason = "complete") {
 	}
 	statisticsPracticeAdvancePending = false;
 	if (cheatAlwaysPerfectScore && !partyModeActive && !networkPartyActive) {
-		score = selectedQuestionCount;
+		score = getMaximumPossibleScore();
 		history = history.map((entry) => ({ ...entry, correct: true }));
 		updateMeta();
 	}
@@ -4005,6 +4095,9 @@ function finishQuiz(reason = "complete") {
 		category,
 		quizType: requestedQuiz || "reviewQuiz",
 		score,
+		...(compArchMidtermQuestionTypes
+			? { maxScore: getMaximumPossibleScore() }
+			: {}),
 		longestCombo,
 		total:
 			isStatisticsPracticeQuiz && reason === "game-over"
@@ -4056,7 +4149,11 @@ function endQuiz(reason = "ended") {
 	finishQuiz(reason);
 }
 
-function revealQuestion(resultType, selectedIndex = null) {
+function revealQuestion(
+	resultType,
+	selectedIndex = null,
+	shortAnswerResult = null,
+) {
 	if (answered || quizEnded) return;
 	if (isOpenGLBuilderQuestion()) {
 		finishOpenGLResponse(resultType, false);
@@ -4082,10 +4179,12 @@ function revealQuestion(resultType, selectedIndex = null) {
 		resultType === "answer" && cheatAlwaysRightAnswer
 			? correctIndex
 			: selectedIndex;
-	const isCorrect = shouldCountAsCorrect(
-		resultType,
-		resultType === "answer" && answerIndex === correctIndex,
-	);
+	const isCorrect = shortAnswerResult
+		? shortAnswerResult.points === 3
+		: shouldCountAsCorrect(
+				resultType,
+				resultType === "answer" && answerIndex === correctIndex,
+			);
 
 	if (isCorrect) {
 		combo++;
@@ -4096,19 +4195,45 @@ function revealQuestion(resultType, selectedIndex = null) {
 	}
 
 	if (resultType === "answer") {
-		playSound(isCorrect ? "correct" : "incorrect");
-		if (isCorrect) score++;
+		if (shortAnswerResult) {
+			playSound(
+				shortAnswerResult.points > 0 ? "correct" : "incorrect",
+				shortAnswerResult.points >= 2 ? 1.15 : 1,
+			);
+		} else {
+			playSound(isCorrect ? "correct" : "incorrect");
+		}
+		if (shortAnswerResult) score += shortAnswerResult.points;
+		else if (isCorrect) score++;
 	}
 
 	history.push({
 		question: current.q,
 		questionIndex: currentQuestionIndex,
-		selected: resultType === "answer" ? current.a[answerIndex] : "",
+		selected: shortAnswerResult
+			? shortAnswerResult.answer
+			: resultType === "answer"
+				? current.a[answerIndex]
+				: "",
 		correctAnswer: current.a[correctIndex],
 		correct: isCorrect,
 		skipped: resultType === "skip",
 		timedOut: resultType === "timeout",
+		...(compArchMidtermQuestionTypes
+			? {
+					questionPresentation: currentQuestionPresentation,
+					points: shortAnswerResult
+						? shortAnswerResult.points
+						: isCorrect
+							? 1
+							: 0,
+				}
+			: {}),
 	});
+	if (currentQuestionPresentation === "short-answer") {
+		shortAnswerInput.disabled = true;
+		shortAnswerSubmit.disabled = true;
+	}
 
 	const buttons = [...answersEl.querySelectorAll(".answer")];
 	buttons.forEach((button) => {
@@ -4132,6 +4257,12 @@ function revealQuestion(resultType, selectedIndex = null) {
 		const outcome = resultType === "timeout" ? "Time expired" : "Skipped";
 		feedback.textContent = `${outcome} — the correct answer was: ${formatPowerText(current.a[correctIndex])}`;
 		feedback.className = "motivation visible wrong";
+	} else if (shortAnswerResult) {
+		const stars =
+			"★".repeat(shortAnswerResult.points) +
+			"☆".repeat(3 - shortAnswerResult.points);
+		feedback.textContent = `${stars} ${shortAnswerResult.points}/3 points. Correct answer: ${formatPowerText(current.a[correctIndex])}`;
+		feedback.className = `motivation visible ${isCorrect ? "right" : "wrong"}`;
 	} else if (isCorrect) {
 		feedback.textContent = [
 			"Excellent! Keep it going! 🔥",
@@ -4443,6 +4574,14 @@ function beginQuiz() {
 	if (networkPartyActive && !partyHost) return;
 	if (partyStartPending) return;
 	readTimingSettings();
+	const selectedPresentation = document.querySelector(
+		'input[name="questionPresentation"]:checked',
+	)?.value;
+	activeQuestionPresentation =
+		compArchMidtermQuestionTypes &&
+		["short-answer", "mixed"].includes(selectedPresentation)
+			? selectedPresentation
+			: "multiple-choice";
 
 	if (miniQuizMode && customQuestionSequence.length) {
 		const validIndexes = customQuestionSequence.filter(
@@ -4577,6 +4716,56 @@ nextButton.addEventListener("click", goNext);
 skipButton.addEventListener("click", skip);
 quitButton.addEventListener("click", quit);
 beginButton.addEventListener("click", beginQuiz);
+shortAnswerSubmit.addEventListener("click", async () => {
+	if (
+		!quizStarted ||
+		quizEnded ||
+		answered ||
+		currentQuestionPresentation !== "short-answer"
+	) {
+		return;
+	}
+	const answer = shortAnswerInput.value.trim();
+	if (!answer) {
+		feedback.textContent = "Type an answer before submitting.";
+		feedback.className = "feedback error";
+		shortAnswerInput.focus();
+		return;
+	}
+	shortAnswerSubmit.disabled = true;
+	shortAnswerStatus.textContent = "Checking how closely your answer matches...";
+	const correctAnswer = current.a[current.c];
+	let semanticSimilarity = null;
+	if (await loadShortAnswerModel()) {
+		try {
+			semanticSimilarity =
+				await window.QuizHubSemanticShortAnswer.getSimilarity(
+					answer,
+					correctAnswer,
+				);
+		} catch (error) {
+			console.error("Could not compare the short answer semantically:", error);
+			shortAnswerModelStatus.textContent =
+				"Semantic checker unavailable; short answers will use basic text matching.";
+		}
+	}
+	const points = window.QuizHubShortAnswer.getShortAnswerPoints(
+		answer,
+		correctAnswer,
+		semanticSimilarity,
+	);
+	shortAnswerStatus.textContent =
+		semanticSimilarity === null
+			? "Used basic text matching because the local semantic checker was unavailable."
+			: "";
+	revealQuestion("answer", current.c, { answer, points });
+});
+shortAnswerInput.addEventListener("keydown", (event) => {
+	if (event.key === "Enter") {
+		event.preventDefault();
+		shortAnswerSubmit.click();
+	}
+});
 exitSetupButton.addEventListener("click", exitSetup);
 
 if (networkPartyActive) {
