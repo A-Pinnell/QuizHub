@@ -1,0 +1,593 @@
+.net-hub-account-button,
+.net-hub-user-made-tab {
+	position: fixed;
+	z-index: 70;
+	border: 2px solid rgba(255, 255, 255, 0.85);
+	border-radius: 12px;
+	background: linear-gradient(145deg, #253d72, #151e3b);
+	color: #fff;
+	font: 700 14px/1.2 "TradeGothic", Arial, sans-serif;
+	letter-spacing: 0.5px;
+	padding: 12px 16px;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+	cursor: pointer;
+}
+.net-hub-account-button {
+	right: 18px;
+	bottom: 18px;
+}
+.quiz-export-open-button {
+	position: fixed;
+	left: 18px;
+	bottom: 18px;
+	z-index: 70;
+	border: 2px solid rgba(255, 255, 255, 0.85);
+	border-radius: 12px;
+	padding: 12px 16px;
+	background: linear-gradient(145deg, #17695e, #123c3a);
+	color: #fff;
+	font: 700 14px/1.2 "TradeGothic", Arial, sans-serif;
+	letter-spacing: 0.5px;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+	cursor: pointer;
+}
+.quiz-export-open-button:hover {
+	background: linear-gradient(145deg, #258b7c, #17534d);
+}
+.quiz-export-modal {
+	z-index: 205;
+}
+.quiz-export-panel {
+	display: flex;
+	flex-direction: column;
+	width: min(900px, 100%);
+	max-height: min(88vh, 900px);
+}
+.quiz-export-panel > p {
+	margin: 0 48px 14px 0;
+}
+.quiz-export-tabs {
+	display: flex;
+	gap: 8px;
+	margin: 4px 0 10px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.quiz-export-tabs button {
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-bottom: 0;
+	border-radius: 10px 10px 0 0;
+	padding: 11px 18px;
+	background: rgba(5, 10, 23, 0.5);
+	color: #d7e0f2;
+	font: 700 15px/1.2 "TradeGothic", Arial, sans-serif;
+	cursor: pointer;
+}
+.quiz-export-tabs button[aria-selected="true"] {
+	border-color: #83aaff;
+	background: #2b4d89;
+	color: #fff;
+}
+.quiz-export-status {
+	flex: 0 0 auto;
+}
+.quiz-export-list {
+	display: grid;
+	flex: 1 1 auto;
+	align-content: start;
+	gap: 10px;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 2px 3px 4px 0;
+}
+.quiz-export-list[hidden] {
+	display: none;
+}
+.quiz-export-course {
+	margin: 14px 0 0;
+	padding-bottom: 8px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+	color: #a9e7ee;
+	font-size: 15px;
+	letter-spacing: 0.04em;
+}
+.quiz-export-course:first-child {
+	margin-top: 0;
+}
+.quiz-export-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 18px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 12px;
+	padding: 14px 16px;
+	background: rgba(6, 11, 25, 0.56);
+}
+.quiz-export-card h3 {
+	margin: 0 0 4px;
+	color: #fff;
+	font-size: 17px;
+}
+.quiz-export-card p {
+	margin: 0;
+	color: #c3cde1;
+	font: 13px/1.45 Arial, sans-serif;
+}
+.quiz-export-actions {
+	display: flex;
+	flex: 0 0 auto;
+	gap: 8px;
+}
+.quiz-export-card .net-hub-quiz-action:disabled {
+	cursor: not-allowed;
+}
+.quiz-export-empty {
+	color: #c3cde1;
+	font: 14px/1.5 Arial, sans-serif;
+}
+.net-hub-user-made-tab {
+	left: 0;
+	top: 50%;
+	border-radius: 0 12px 12px 0;
+	transform: translateY(-50%);
+	writing-mode: vertical-rl;
+	rotate: 180deg;
+	padding: 16px 10px;
+}
+.net-hub-account-button:hover,
+.net-hub-user-made-tab:hover {
+	background: linear-gradient(145deg, #3e64b2, #1b2b55);
+}
+.net-hub-user-made-tab[hidden] {
+	display: none;
+}
+.net-hub-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 200;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+.net-hub-modal.open {
+	display: flex;
+}
+#netHubBrowseModal {
+	align-items: stretch;
+	padding: 0;
+}
+.net-hub-backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(6, 10, 22, 0.78);
+	backdrop-filter: blur(5px);
+}
+.net-hub-panel {
+	position: relative;
+	isolation: isolate;
+	z-index: 1;
+	width: min(900px, 100%);
+	max-height: min(90vh, 900px);
+	overflow-y: auto;
+	border: 2px solid rgba(255, 255, 255, 0.45);
+	border-radius: 22px;
+	padding: clamp(22px, 4vw, 38px);
+	background: linear-gradient(150deg, #1b2c52, #11172a 70%);
+	color: #f7f8ff;
+	box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55);
+	font-family: "TradeGothic", Arial, sans-serif;
+}
+.net-hub-create-panel {
+	border-color: rgba(184, 139, 255, 0.7);
+	background:
+		radial-gradient(ellipse at 100% 0, rgba(132, 76, 220, 0.32), transparent 52%),
+		linear-gradient(150deg, #271c4b, #11172a 72%);
+}
+.net-hub-browse-panel {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	width: 100vw;
+	height: 100%;
+	height: 100dvh;
+	max-height: none;
+	overflow: hidden;
+	border: 0;
+	border-radius: 0;
+	padding: clamp(26px, 4vh, 48px) clamp(24px, 5vw, 76px);
+	background:
+		radial-gradient(ellipse at 88% 12%, rgba(8, 110, 132, 0.22), transparent 48%),
+		linear-gradient(150deg, #102f42, #11172a 72%);
+}
+.net-hub-browse-panel > :not(.net-hub-sphere-stage):not(.net-hub-close) {
+	position: relative;
+	z-index: 1;
+}
+.net-hub-browse-panel .net-hub-close {
+	position: absolute;
+	top: 14px;
+	right: 16px;
+	z-index: 2;
+}
+.net-hub-sphere-stage {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	perspective: 1000px;
+	perspective-origin: 72% 48%;
+	pointer-events: none;
+}
+.net-hub-sphere-rotator {
+	position: absolute;
+	top: 50%;
+	right: clamp(32px, 12vw, 210px);
+	width: clamp(260px, 34vw, 470px);
+	aspect-ratio: 1;
+	transform-style: preserve-3d;
+	animation: netHubSphereSpin 22s linear infinite;
+}
+.net-hub-sphere {
+	position: absolute;
+	inset: 0;
+	border: 1px solid rgba(112, 240, 255, 0.38);
+	border-radius: 50%;
+	background:
+		radial-gradient(ellipse at 34% 29%, rgba(104, 238, 247, 0.68), rgba(12, 139, 177, 0.42) 25%, rgba(12, 59, 112, 0.72) 62%, rgba(3, 14, 37, 0.94) 100%);
+	box-shadow:
+		inset -28px -12px 48px rgba(0, 4, 23, 0.78),
+		inset 10px 8px 28px rgba(182, 255, 255, 0.2),
+		0 0 58px rgba(23, 197, 232, 0.18);
+	backface-visibility: hidden;
+}
+.net-hub-sphere-rotator > span {
+	position: absolute;
+	border: 1px solid rgba(129, 246, 255, 0.52);
+	border-radius: 50%;
+	box-shadow: 0 0 9px rgba(74, 226, 255, 0.18);
+	backface-visibility: visible;
+}
+.net-hub-sphere-meridian {
+	inset: 0;
+}
+.net-hub-sphere-meridian-a {
+	transform: rotateY(35deg);
+}
+.net-hub-sphere-meridian-b {
+	transform: rotateY(70deg);
+}
+.net-hub-sphere-meridian-c {
+	transform: rotateY(125deg);
+}
+.net-hub-sphere-latitude {
+	left: 0;
+	width: 100%;
+	height: 38%;
+}
+.net-hub-sphere-latitude-a {
+	top: 10%;
+	transform: rotateX(76deg);
+}
+.net-hub-sphere-latitude-b {
+	top: 31%;
+	height: 42%;
+	transform: rotateX(76deg);
+}
+.net-hub-sphere-latitude-c {
+	top: 52%;
+	transform: rotateX(76deg);
+}
+@keyframes netHubSphereSpin {
+	from {
+		transform: translateY(-50%) rotateX(-18deg) rotateY(0deg);
+	}
+	to {
+		transform: translateY(-50%) rotateX(-18deg) rotateY(360deg);
+	}
+}
+.net-hub-create-panel {
+	width: min(760px, 100%);
+}
+.net-hub-panel h2 {
+	margin: 6px 44px 10px 0;
+	font: 700 clamp(27px, 5vw, 38px)/1.1 "Ethnocentric", Arial, sans-serif;
+}
+.net-hub-panel > p,
+.net-hub-panel form > p {
+	color: #d3ddf3;
+	line-height: 1.5;
+}
+.net-hub-close {
+	position: absolute;
+	top: 14px;
+	right: 16px;
+	width: 42px;
+	height: 42px;
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	border-radius: 50%;
+	background: #27395f;
+	color: #fff;
+	font-size: 28px;
+	cursor: pointer;
+}
+.net-hub-field {
+	display: grid;
+	gap: 7px;
+	margin: 16px 0;
+	color: #fff;
+	font-weight: 700;
+}
+.net-hub-field input,
+.net-hub-field select,
+.net-hub-field textarea {
+	width: 100%;
+	border: 1px solid rgba(255, 255, 255, 0.34);
+	border-radius: 10px;
+	padding: 11px 12px;
+	background: #0d1427;
+	color: #fff;
+	font: 16px/1.45 Arial, sans-serif;
+}
+.net-hub-field textarea {
+	resize: vertical;
+	min-height: 120px;
+}
+.net-hub-field small,
+.net-hub-checkbox small {
+	display: block;
+	color: #bdc9e0;
+	font: 13px/1.45 Arial, sans-serif;
+}
+.net-hub-theme-field,
+.net-hub-music-field,
+.net-hub-account-fields {
+	display: grid;
+	gap: 10px;
+	margin: 18px 0;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 12px;
+	padding: 16px;
+}
+.net-hub-theme-field legend,
+.net-hub-music-field legend,
+.net-hub-account-fields legend {
+	padding: 0 8px;
+	font-weight: 700;
+}
+.net-hub-theme-field label,
+.net-hub-music-field label,
+.net-hub-checkbox {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	line-height: 1.4;
+}
+.net-hub-music-field .net-hub-field {
+	display: grid;
+	margin: 4px 0 10px;
+}
+.net-hub-music-preview-row {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+.net-hub-music-status {
+	color: #cbd7ee;
+	font: 13px/1.4 Arial, sans-serif;
+}
+.net-hub-theme-field input,
+.net-hub-checkbox input {
+	accent-color: #73a4ff;
+	margin-top: 3px;
+}
+.net-hub-checkbox {
+	margin: 18px 0;
+}
+.net-hub-checkbox strong {
+	display: block;
+}
+.net-hub-prompt-section {
+	margin: 20px 0;
+	border-top: 1px solid rgba(255, 255, 255, 0.18);
+	padding-top: 10px;
+}
+.net-hub-prompt-section h3 {
+	margin-bottom: 6px;
+}
+.net-hub-prompt-section > p,
+.net-hub-account-fields > p,
+.net-hub-sign-in > p {
+	color: #bdc9e0;
+	line-height: 1.45;
+}
+.net-hub-primary,
+.net-hub-secondary,
+.net-hub-quiz-action {
+	border: 1px solid rgba(255, 255, 255, 0.45);
+	border-radius: 10px;
+	padding: 11px 16px;
+	color: #fff;
+	font: 700 14px/1.2 "TradeGothic", Arial, sans-serif;
+	cursor: pointer;
+}
+.net-hub-primary {
+	width: 100%;
+	background: linear-gradient(135deg, #4386ee, #2457ae);
+}
+.net-hub-create-panel .net-hub-primary {
+	background: linear-gradient(135deg, #a76af2, #6735bd);
+}
+.net-hub-create-panel .net-hub-field input:focus,
+.net-hub-create-panel .net-hub-field select:focus,
+.net-hub-create-panel .net-hub-field textarea:focus {
+	border-color: #c295ff;
+	outline: 2px solid rgba(174, 122, 255, 0.35);
+}
+.net-hub-browse-panel .net-hub-quiz-card {
+	backdrop-filter: blur(4px);
+}
+.net-hub-secondary,
+.net-hub-quiz-action {
+	background: #283a60;
+}
+.net-hub-primary:hover,
+.net-hub-secondary:hover,
+.net-hub-quiz-action:hover {
+	filter: brightness(1.2);
+}
+.net-hub-primary:disabled,
+.net-hub-secondary:disabled,
+.net-hub-quiz-action:disabled {
+	opacity: 0.58;
+	cursor: wait;
+}
+.net-hub-status {
+	min-height: 1.3em;
+	color: #dbe6ff;
+	line-height: 1.4;
+}
+.net-hub-layout {
+	display: grid;
+	grid-template-columns: 190px minmax(0, 1fr);
+	gap: 18px;
+	flex: 1;
+	min-height: 0;
+	margin-top: 12px;
+}
+.net-hub-browse-panel .net-hub-layout {
+	grid-template-columns: minmax(160px, 220px) minmax(0, 1fr);
+}
+.net-hub-list-wrap {
+	min-height: 0;
+	overflow-y: auto;
+}
+.net-hub-tabs {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.net-hub-tabs button {
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 10px;
+	padding: 12px;
+	background: rgba(5, 10, 23, 0.5);
+	color: #d7e0f2;
+	text-align: left;
+	font: 700 14px/1.3 "TradeGothic", Arial, sans-serif;
+	cursor: pointer;
+}
+.net-hub-tabs button.active {
+	border-color: #83aaff;
+	background: #2b4d89;
+	color: #fff;
+}
+.net-hub-list {
+	display: grid;
+	gap: 12px;
+}
+.net-hub-quiz-card {
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	border-radius: 13px;
+	padding: 16px;
+	background: rgba(6, 11, 25, 0.52);
+}
+.net-hub-quiz-card h3 {
+	margin: 0 0 7px;
+	color: #fff;
+	font-size: 19px;
+}
+.net-hub-quiz-card p {
+	margin: 5px 0;
+	color: #c3cde1;
+	font: 14px/1.45 Arial, sans-serif;
+}
+.net-hub-quiz-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 13px;
+}
+.net-hub-quiz-action.danger {
+	background: #6a2936;
+}
+.net-hub-dashboard-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+.net-hub-sign-in {
+	max-width: 450px;
+}
+.net-hub-modal [hidden] {
+	display: none !important;
+}
+@media (max-width: 640px) {
+	.net-hub-account-button {
+		right: 10px;
+		bottom: 10px;
+		padding: 10px 12px;
+		font-size: 12px;
+	}
+	.quiz-export-open-button {
+		bottom: 10px;
+		left: 10px;
+		padding: 10px 12px;
+		font-size: 12px;
+	}
+	.net-hub-user-made-tab {
+		font-size: 12px;
+	}
+	.quiz-export-panel {
+		max-height: 94vh;
+		padding: 22px 16px;
+	}
+	.quiz-export-card {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 10px;
+		padding: 12px;
+	}
+	.quiz-export-actions {
+		flex-wrap: wrap;
+	}
+	.net-hub-layout {
+		grid-template-columns: 1fr;
+	}
+	.net-hub-browse-panel {
+		padding: max(68px, calc(env(safe-area-inset-top) + 56px)) 18px max(20px, env(safe-area-inset-bottom));
+	}
+	#netHubBrowseModal .net-hub-browse-panel {
+		max-height: none;
+	}
+	.net-hub-browse-panel .net-hub-layout {
+		grid-template-columns: 1fr;
+	}
+	.net-hub-browse-panel .net-hub-tabs {
+		flex-direction: row;
+		overflow-x: auto;
+	}
+	.net-hub-tabs {
+		flex-direction: row;
+		overflow-x: auto;
+	}
+	.net-hub-tabs button {
+		flex: 1 0 max-content;
+	}
+	.net-hub-panel {
+		max-height: 94vh;
+		padding: 22px 18px;
+	}
+	.net-hub-sphere-rotator {
+		top: 36%;
+		right: -95px;
+		width: min(68vw, 310px);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.net-hub-sphere-rotator {
+		animation: none;
+	}
+}

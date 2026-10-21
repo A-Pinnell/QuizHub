@@ -91,6 +91,7 @@
 		<link rel="stylesheet" href="css/offline-app.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
 		<link rel="stylesheet" href="css/dev.css" />
+		<link rel="stylesheet" href="css/net-hub.css" />
 		<script src="./js/audio-focus.js" defer></script>
 		<script src="./js/offline-app.js" defer></script>
 		<script src="./js/load-preferences.js"></script>
@@ -100,6 +101,11 @@
 		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
 		<script src="./js/index.js?v=course-label-data" defer></script>
+		<script
+			src="./js/net-hub-storage.js?v=user-made-remove-music"
+			defer></script>
+		<script src="./js/net-hub.js?v=user-made-remove" defer></script>
+		<script src="./js/quiz-export.js?v=quiz-export-3" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
 	<body>
@@ -246,7 +252,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 2.7.4</div>
+						<div class="tagline">Version 3.0.0</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -334,7 +340,19 @@
 								</button>
 							</section>
 							<section class="menu" aria-label="Quiz courses page 2">
-								<button
+								<button class="card course-card" data-net-hub-action="create">
+									<div class="card-content">
+										<h2>+ Create</h2>
+										<p>Create your own quiz!</p>
+									</div>
+								</button>
+								<button class="card course-card" data-net-hub-action="browse">
+									<div class="card-content">
+										<h2>NetHub</h2>
+										<p>The world of quizzes!</p>
+									</div>
+								</button>
+								<!-- <button
 									class="card course-card coming-soon"
 									data-coming-soon="true">
 									<div class="card-content">
@@ -365,23 +383,7 @@
 										<h2>COMING SOON</h2>
 										<p>Suggestion? Mention in #quizhub!</p>
 									</div>
-								</button>
-								<button
-									class="card course-card coming-soon"
-									data-coming-soon="true">
-									<div class="card-content">
-										<h2>COMING SOON</h2>
-										<p>Suggestion? Mention in #quizhub!</p>
-									</div>
-								</button>
-								<button
-									class="card course-card coming-soon"
-									data-coming-soon="true">
-									<div class="card-content">
-										<h2>COMING SOON</h2>
-										<p>Suggestion? Mention in #quizhub!</p>
-									</div>
-								</button>
+								</button> -->
 							</section>
 						</div>
 					</div>
@@ -395,7 +397,384 @@
 				<button class="patchnotes-button" id="patchnotesButton" type="button">
 					PATCH NOTES
 				</button>
+				<button
+					class="quiz-export-open-button"
+					id="quizExportOpenButton"
+					type="button"
+					aria-haspopup="dialog"
+					aria-controls="quizExportModal">
+					Export
+				</button>
+				<button
+					class="net-hub-account-button"
+					id="netHubAccountButton"
+					type="button">
+					My Uploads
+				</button>
+				<button
+					class="net-hub-user-made-tab"
+					id="netHubUserMadeTab"
+					type="button"
+					hidden>
+					Saved NetHub Quizzes
+				</button>
 			</div>
+		</div>
+
+		<div
+			class="net-hub-modal quiz-export-modal"
+			id="quizExportModal"
+			aria-hidden="true">
+			<div class="net-hub-backdrop" data-close-quiz-export></div>
+			<section
+				class="net-hub-panel quiz-export-panel"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="quizExportTitle">
+				<button
+					class="net-hub-close"
+					type="button"
+					data-close-quiz-export
+					aria-label="Close quiz export">
+					&times;
+				</button>
+				<div class="quiz-menu-kicker">PRINTABLE STUDY GUIDES</div>
+				<h2 id="quizExportTitle">Export</h2>
+				<p>
+					Choose a quiz to download its complete question bank as a printable
+					exam-style PDF, with the answer key starting on a separate page, or
+					the raw JSON file.
+				</p>
+				<div
+					class="quiz-export-tabs"
+					role="tablist"
+					aria-label="Quiz collections">
+					<button
+						type="button"
+						id="quizExportQuizHubTab"
+						role="tab"
+						aria-selected="true"
+						aria-controls="quizExportQuizHubList"
+						data-quiz-export-tab="quizhub">
+						QuizHub
+					</button>
+					<button
+						type="button"
+						id="quizExportNetHubTab"
+						role="tab"
+						aria-selected="false"
+						aria-controls="quizExportNetHubList"
+						data-quiz-export-tab="nethub">
+						NetHub
+					</button>
+				</div>
+				<p
+					class="net-hub-status quiz-export-status"
+					id="quizExportStatus"
+					role="status"
+					aria-live="polite"></p>
+				<div
+					class="quiz-export-list"
+					id="quizExportQuizHubList"
+					role="tabpanel"
+					aria-labelledby="quizExportQuizHubTab"></div>
+				<div
+					class="quiz-export-list"
+					id="quizExportNetHubList"
+					role="tabpanel"
+					aria-labelledby="quizExportNetHubTab"
+					hidden></div>
+			</section>
+		</div>
+
+		<div class="net-hub-modal" id="netHubCreateModal" aria-hidden="true">
+			<div class="net-hub-backdrop" data-close-net-hub></div>
+			<section
+				class="net-hub-panel net-hub-create-panel"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="netHubCreateTitle">
+				<button
+					class="net-hub-close"
+					type="button"
+					data-close-net-hub
+					aria-label="Close quiz creator">
+					&times;
+				</button>
+				<div class="quiz-menu-kicker">QUIZ CREATOR</div>
+				<h2 id="netHubCreateTitle">Create a Quiz</h2>
+				<p>
+					Choose a course and style, ask an AI to make your questions, then
+					paste the JavaScript array here.
+				</p>
+				<form id="netHubCreateForm">
+					<label class="net-hub-field"
+						>Quiz title
+						<input
+							id="netHubQuizTitle"
+							maxlength="64"
+							required
+							placeholder="e.g. Intro to networking" />
+					</label>
+					<label class="net-hub-field"
+						>Course
+						<select id="netHubCourse" required>
+							<option value="CompArch">COMP-2453 · Intro Comp Arch</option>
+							<option value="CompGFX">COMP-4471 · Computer Graphics</option>
+							<option value="SocIndi">
+								SOCI-2755 · Tech Soc Indi People Can
+							</option>
+							<option value="CloudComp">COMP-4312 · Cloud Computing</option>
+							<option value="DataSci">COMP-4112 · Intro Data Science</option>
+							<option value="SoftEngi">COMP-3415 · Software Engineering</option>
+							<option value="__new">Create a new course…</option>
+						</select>
+					</label>
+					<label class="net-hub-field" id="netHubNewCourseField" hidden
+						>New course name
+						<input
+							id="netHubNewCourseName"
+							maxlength="64"
+							placeholder="e.g. Biology 101" />
+					</label>
+					<fieldset class="net-hub-theme-field">
+						<legend>Quiz theme</legend>
+						<label
+							><input type="radio" name="netHubTheme" value="quizhub" checked />
+							QuizHub Style</label
+						>
+						<label
+							><input type="radio" name="netHubTheme" value="ai-model" /> AI
+							Model Style</label
+						>
+						<label
+							><input type="radio" name="netHubTheme" value="blended" /> Blended
+							Style</label
+						>
+						<label
+							><input type="radio" name="netHubTheme" value="default" /> Default
+							course theme</label
+						>
+					</fieldset>
+					<fieldset class="net-hub-music-field">
+						<legend>Quiz music</legend>
+						<label class="net-hub-field" for="netHubMusicTrack">
+							Choose an included QuizHub track
+							<select id="netHubMusicTrack"></select>
+						</label>
+						<label class="net-hub-field" for="netHubMusicFile">
+							Or upload your own MP3 or WAV
+							<input
+								id="netHubMusicFile"
+								type="file"
+								accept=".mp3,.wav,audio/mpeg,audio/wav,audio/x-wav" />
+							<small
+								>Maximum 10 MB. Uploaded audio is included with your NetHub quiz
+								so it plays for everyone.</small
+							>
+						</label>
+						<div class="net-hub-music-preview-row">
+							<button
+								class="net-hub-secondary"
+								id="netHubMusicPreview"
+								type="button">
+								Preview music
+							</button>
+							<span
+								class="net-hub-music-status"
+								id="netHubMusicStatus"
+								role="status"
+								aria-live="polite"></span>
+						</div>
+					</fieldset>
+					<label class="net-hub-checkbox">
+						<input id="netHubShortAnswer" type="checkbox" />
+						<span
+							><strong>Allow short-answer questions</strong
+							><small
+								>Players can choose written answers or a mix of written and
+								multiple choice when they play.</small
+							></span
+						>
+					</label>
+					<section class="net-hub-prompt-section">
+						<h3>1. Give this prompt to an AI</h3>
+						<p>
+							The prompt includes the selected course, theme, and short-answer
+							setting.
+						</p>
+						<textarea id="netHubPrompt" readonly rows="12"></textarea>
+						<button
+							class="net-hub-secondary"
+							id="netHubCopyPrompt"
+							type="button">
+							Copy AI prompt
+						</button>
+					</section>
+					<label class="net-hub-field" for="netHubQuestions"
+						>2. Paste the JavaScript question array
+						<textarea
+							id="netHubQuestions"
+							required
+							rows="12"
+							spellcheck="false"
+							placeholder='[{ q: "...", a: ["...", "...", "...", "..."], c: 0 }]'></textarea>
+						<small
+							>Paste a literal array only. The app checks its structure and
+							never runs the pasted JavaScript.</small
+						>
+					</label>
+					<fieldset class="net-hub-account-fields">
+						<legend>3. Upload to your account</legend>
+						<p>
+							Use an existing username and 4-digit password, or choose new ones
+							to create an account. There is no password recovery.
+						</p>
+						<label class="net-hub-field"
+							>Username
+							<input
+								id="netHubUsername"
+								required
+								minlength="3"
+								maxlength="20"
+								autocomplete="username"
+								pattern="[A-Za-z0-9_\-]{3,20}" />
+						</label>
+						<label class="net-hub-field"
+							>4-digit password
+							<input
+								id="netHubPin"
+								required
+								inputmode="numeric"
+								autocomplete="current-password"
+								pattern="[0-9]{4}"
+								maxlength="4" />
+						</label>
+					</fieldset>
+					<p
+						class="net-hub-status"
+						id="netHubCreateStatus"
+						role="status"
+						aria-live="polite"></p>
+					<button class="net-hub-primary" id="netHubUploadButton" type="submit">
+						Upload to NetHub
+					</button>
+				</form>
+			</section>
+		</div>
+
+		<div class="net-hub-modal" id="netHubBrowseModal" aria-hidden="true">
+			<div class="net-hub-backdrop" data-close-net-hub></div>
+			<section
+				class="net-hub-panel net-hub-browse-panel"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="netHubBrowseTitle">
+				<div class="net-hub-sphere-stage" aria-hidden="true">
+					<div class="net-hub-sphere-rotator">
+						<div class="net-hub-sphere"></div>
+						<span
+							class="net-hub-sphere-meridian net-hub-sphere-meridian-a"></span>
+						<span
+							class="net-hub-sphere-meridian net-hub-sphere-meridian-b"></span>
+						<span
+							class="net-hub-sphere-meridian net-hub-sphere-meridian-c"></span>
+						<span
+							class="net-hub-sphere-latitude net-hub-sphere-latitude-a"></span>
+						<span
+							class="net-hub-sphere-latitude net-hub-sphere-latitude-b"></span>
+						<span
+							class="net-hub-sphere-latitude net-hub-sphere-latitude-c"></span>
+					</div>
+				</div>
+				<button
+					class="net-hub-close"
+					type="button"
+					data-close-net-hub
+					aria-label="Close NetHub">
+					&times;
+				</button>
+				<div class="quiz-menu-kicker">COMMUNITY QUIZZES</div>
+				<h2 id="netHubBrowseTitle">NetHub</h2>
+				<div class="net-hub-layout">
+					<nav class="net-hub-tabs" aria-label="NetHub quiz collections">
+						<button type="button" class="active" data-net-hub-tab="community">
+							NetHub Quizzes
+						</button>
+						<button type="button" data-net-hub-tab="user-made">
+							Saved NetHub Quizzes
+						</button>
+					</nav>
+					<div class="net-hub-list-wrap">
+						<p
+							class="net-hub-status"
+							id="netHubBrowseStatus"
+							role="status"
+							aria-live="polite"></p>
+						<div class="net-hub-list" id="netHubQuizList"></div>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<div class="net-hub-modal" id="netHubAccountModal" aria-hidden="true">
+			<div class="net-hub-backdrop" data-close-net-hub></div>
+			<section
+				class="net-hub-panel"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="netHubAccountTitle">
+				<button
+					class="net-hub-close"
+					type="button"
+					data-close-net-hub
+					aria-label="Close My Uploads">
+					&times;
+				</button>
+				<div class="quiz-menu-kicker">YOUR QUIZZES</div>
+				<h2 id="netHubAccountTitle">My Uploads</h2>
+				<form id="netHubSignInForm" class="net-hub-sign-in">
+					<p>
+						Sign in with the username and 4-digit password used when uploading.
+						If the username is new, this will create it.
+					</p>
+					<label class="net-hub-field"
+						>Username
+						<input
+							id="netHubSignInUsername"
+							required
+							minlength="3"
+							maxlength="20"
+							autocomplete="username"
+							pattern="[A-Za-z0-9_\-]{3,20}" />
+					</label>
+					<label class="net-hub-field"
+						>4-digit password
+						<input
+							id="netHubSignInPin"
+							required
+							inputmode="numeric"
+							autocomplete="current-password"
+							pattern="[0-9]{4}"
+							maxlength="4" />
+					</label>
+					<p
+						class="net-hub-status"
+						id="netHubAccountStatus"
+						role="status"
+						aria-live="polite"></p>
+					<button class="net-hub-primary" type="submit">Sign in</button>
+				</form>
+				<div id="netHubAccountDashboard" hidden>
+					<div class="net-hub-dashboard-head">
+						<p>Signed in as <strong id="netHubSignedInName"></strong></p>
+						<button class="net-hub-secondary" id="netHubSignOut" type="button">
+							Sign out
+						</button>
+					</div>
+					<div class="net-hub-list" id="netHubMyQuizList"></div>
+				</div>
+			</section>
 		</div>
 
 		<div class="quiz-modal" id="quizModal" aria-hidden="true">

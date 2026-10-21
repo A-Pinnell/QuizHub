@@ -1,0 +1,212 @@
+"use strict";
+
+const { spawn } = require("node:child_process");
+const { once } = require("node:events");
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
+const { test } = require("node:test");
+const assert = require("node:assert/strict");
+
+test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizzes", async (t) => {
+  const port = 19000 + Math.floor(Math.random() * 1000);
+  const dataDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "quizhub-nethub-"));
+  let server;
+  async function startServer() {
+    server = spawn(process.execPath, ["server.js"], {
+      cwd: process.cwd(),
+      env: { ...process.env, PORT: String(port), QUIZHUB_DATA_DIR: dataDirectory },
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+    let output = "";
+    server.stdout.on("data", (chunk) => { output += chunk.toString(); });
+    server.stderr.on("data", (chunk) => { output += chunk.toString(); });
+    for (let attempt = 0; attempt < 40; attempt++) {
+      if (server.exitCode !== null) throw new Error(`NetHub server exited: ${output}`);
+      try {
+        const response = await fetch(`http://localhost:${port}/healthz`);
+        if (response.ok) return;
+      } catch {}
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    throw new Error(`NetHub server did not start: ${output}`);
+  }
+  function stopServer() {
+    if (server && server.exitCode === null) {
+      server.kill();
+      return once(server, "exit");
+    }
+  }
+  t.after(async () => {
+    await stopServer();
+    fs.rmSync(dataDirectory, { recursive: true, force: true });
+  });
+
+  await startServer();
+  async function api(route, options = {}, token = "") {
+    const response = await fetch(`http://localhost:${port}${route}`, {
+      ...options,
+      headers: {
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers
+      }
+    });
+    return { response, payload: await response.json() };
+  }
+
+  const firstAuth = await api("/api/nethub/auth", {
+    method: "POST",
+    body: JSON.stringify({ username: "QuizMaker", pin: "0427" })
+  });
+  assert.equal(firstAuth.response.status, 200);
+  assert.equal(firstAuth.payload.created, true);
+  const firstToken = firstAuth.payload.token;
+  const quizData = {
+    title: "Intro Quiz",
+    courseKey: "CloudComp",
+    courseName: "Cloud Computing",
+    theme: "blended",
+    allowShortAnswer: true,
+    music: { track: "BonusTrack" },
+    questions: [
+      { q: "Which is a cloud service?", a: ["IaaS", "Paper", "Chalk", "None"], c: 0 }
+    ]
+  };
+  const created = await api("/api/nethub/quizzes", {
+    method: "POST",
+    body: JSON.stringify(quizData)
+  }, firstToken);
+  assert.equal(created.response.status, 201);
+  const quizId = created.payload.quiz.id;
+
+  const publicList = await api("/api/nethub/quizzes");
+  assert.equal(publicList.payload.quizzes.length, 1);
+  assert.equal(publicList.payload.quizzes[0].author, "QuizMaker");
+  const publicQuiz = await api(`/api/nethub/quizzes/${quizId}`);
+  assert.deepEqual(publicQuiz.payload.quiz.questions, quizData.questions);
+  assert.deepEqual(publicQuiz.payload.quiz.music, quizData.music);
+
+  const unauthorized = await api(`/api/nethub/quizzes/${quizId}`, {
+    method: "PUT",
+    body: JSON.stringify({ ...quizData, title: "Hijacked" })
+  });
+  assert.equal(unauthorized.response.status, 401);
+  const otherAuth = await api("/api/nethub/auth", {
+    method: "POST",
+    body: JSON.stringify({ username: "AnotherUser", pin: "9931" })
+  });
+  const forbiddenUpdate = await api(`/api/nethub/quizzes/${quizId}`, {
+    method: "PUT",
+    body: JSON.stringify({ ...quizData, title: "Hijacked" })
+  }, otherAuth.payload.token);
+  assert.equal(forbiddenUpdate.response.status, 403);
+
+  const updated = await api(`/api/nethub/quizzes/${quizId}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      ...quizData,
+      title: "Updated Quiz",
+      music: {
+        upload: {
+          name: "my-song.mp3",
+          type: "audio/mpeg",
+          data: `data:audio/mpeg;base64,${Buffer.from("ID3QuizHub test audio").toString("base64")}`
+        }
+      }
+    })
+  }, firstToken);
+  assert.equal(updated.response.status, 200);
+  assert.equal(updated.payload.quiz.title, "Updated Quiz");
+  const uploadedMusicQuiz = await api(`/api/nethub/quizzes/${quizId}`);
+  assert.equal(uploadedMusicQuiz.payload.quiz.music.upload.name, "my-song.mp3");
+  assert.equal(uploadedMusicQuiz.payload.quiz.music.upload.type, "audio/mpeg");
+  const ownedQuizzes = await api("/api/nethub/mine", {}, firstToken);
+  assert.equal(ownedQuizzes.payload.quizzes[0].music.upload.name, "my-song.mp3");
+
+  const maxSizeAudio = Buffer.concat([
+    Buffer.from("ID3"),
+    Buffer.alloc(10 * 1024 * 1024 - 3)
+  ]);
+  const maxSizeMusic = await api("/api/nethub/quizzes", {
+    method: "POST",
+    body: JSON.stringify({
+      ...quizData,
+      title: "10 MB Music Quiz",
+      music: {
+        upload: {
+          name: "max-size.mp3",
+          type: "audio/mpeg",
+          data: `data:audio/mpeg;base64,${maxSizeAudio.toString("base64")}`
+        }
+      }
+    })
+  }, firstToken);
+  assert.equal(maxSizeMusic.response.status, 201);
+
+  const invalidQuiz = await api("/api/nethub/quizzes", {
+    method: "POST",
+    body: JSON.stringify({ ...quizData, questions: [{ q: "bad", a: ["A"], c: 0 }] })
+  }, firstToken);
+  assert.equal(invalidQuiz.response.status, 400);
+
+  const invalidMusic = await api("/api/nethub/quizzes", {
+    method: "POST",
+    body: JSON.stringify({
+      ...quizData,
+      music: {
+        upload: {
+          name: "not-audio.mp3",
+          type: "audio/mpeg",
+          data: `data:audio/mpeg;base64,${Buffer.from("not an audio file").toString("base64")}`
+        }
+      }
+    })
+  }, firstToken);
+  assert.equal(invalidMusic.response.status, 400);
+
+  const oversizedAudio = Buffer.concat([
+    Buffer.from("ID3"),
+    Buffer.alloc(10 * 1024 * 1024 - 2)
+  ]);
+  const oversizedMusic = await api("/api/nethub/quizzes", {
+    method: "POST",
+    body: JSON.stringify({
+      ...quizData,
+      music: {
+        upload: {
+          name: "too-big.mp3",
+          type: "audio/mpeg",
+          data: `data:audio/mpeg;base64,${oversizedAudio.toString("base64")}`
+        }
+      }
+    })
+  }, firstToken);
+  assert.equal(oversizedMusic.response.status, 400);
+
+  await stopServer();
+  await startServer();
+  const persisted = await api("/api/nethub/quizzes");
+  assert.equal(persisted.payload.quizzes.length, 2);
+  const persistedUploadedQuiz = await api(`/api/nethub/quizzes/${quizId}`);
+  assert.equal(persistedUploadedQuiz.payload.quiz.music.upload.name, "my-song.mp3");
+  assert.equal(
+    persistedUploadedQuiz.payload.quiz.music.upload.data,
+    `data:audio/mpeg;base64,${Buffer.from("ID3QuizHub test audio").toString("base64")}`
+  );
+  const storedDatabase = JSON.parse(fs.readFileSync(path.join(dataDirectory, "nethub.json"), "utf8"));
+  assert.equal(storedDatabase.users[0].pinHash.length, 128);
+  assert.equal(Object.hasOwn(storedDatabase.users[0], "pin"), false);
+
+  const deleted = await api(`/api/nethub/quizzes/${quizId}`, { method: "DELETE" }, firstToken);
+  assert.equal(deleted.response.status, 401);
+  const ownerAfterRestart = await api("/api/nethub/auth", {
+    method: "POST",
+    body: JSON.stringify({ username: "quizmaker", pin: "0427" })
+  });
+  assert.equal(ownerAfterRestart.payload.created, false);
+  const deletedByOwner = await api(`/api/nethub/quizzes/${quizId}`, {
+    method: "DELETE"
+  }, ownerAfterRestart.payload.token);
+  assert.equal(deletedByOwner.payload.deleted, true);
+});

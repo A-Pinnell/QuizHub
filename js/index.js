@@ -127,6 +127,8 @@ const normalMenuMusicSource = resolveAssetUrl("music/MenuMusic.wav");
 const specialMenuMusicSource = resolveAssetUrl("music/SpecialMenu.wav");
 const stressMenuMusicSource = resolveAssetUrl("music/StressMenu.mp3");
 const secretMenuMusicSource = resolveAssetUrl("secret/HUB.wav");
+const netHubMenuMusicSource = resolveAssetUrl("music/BonusTrack.wav");
+let activeMenuTheme = "";
 const stressMenuDates = new Set(["2026-10-20", "2026-10-21", "2026-10-22"]);
 const specialMenuMusicDates = new Set([
 	"2026-10-12",
@@ -144,12 +146,16 @@ quizPreviewMusic.loop = true;
 quizPreviewMusic.preload = "auto";
 quizPreviewMusic.volume = 0.45;
 let quizPreviewPlaying = false;
+let netHubMusicPreviewPlaying = false;
 let menuVisible = false;
 let menuMusicFadeFrame = null;
 let menuMusicFadePending = false;
 menuMusic.loop = true;
 menuMusic.volume = 0.45;
 function getMenuMusicSource(date = new Date()) {
+	if (activeMenuTheme === "create" || activeMenuTheme === "nethub") {
+		return netHubMenuMusicSource;
+	}
 	if (isStressMenuDate(date)) return stressMenuMusicSource;
 	if (window.quizHubPreferences.secretMode) return secretMenuMusicSource;
 	return isSpecialMenuMusicDate(date)
@@ -256,7 +262,13 @@ function stopQuizMusicPreview(resumeMenuMusic = true) {
 }
 function startMenuMusic(fadeIn = false) {
 	if (fadeIn) menuMusicFadePending = true;
-	if (!menuVisible || musicMuted || quizPreviewPlaying) return;
+	if (
+		!menuVisible ||
+		musicMuted ||
+		quizPreviewPlaying ||
+		netHubMusicPreviewPlaying
+	)
+		return;
 
 	const menuMusicSource = getMenuMusicSource();
 	if (menuMusic.src !== menuMusicSource) {
@@ -298,6 +310,36 @@ function startMenuMusic(fadeIn = false) {
 		})
 		.catch(() => {});
 }
+window.addEventListener("quizhub:nethubmusicpreview", (event) => {
+	netHubMusicPreviewPlaying = event.detail?.active === true;
+	if (netHubMusicPreviewPlaying) {
+		if (menuMusicFadeFrame !== null) {
+			cancelAnimationFrame(menuMusicFadeFrame);
+			menuMusicFadeFrame = null;
+		}
+		menuMusic.pause();
+		return;
+	}
+	startMenuMusic();
+});
+window.addEventListener("quizhub:menuthemechange", (event) => {
+	const theme = event.detail?.theme;
+	activeMenuTheme = ["create", "nethub"].includes(theme) ? theme : "";
+	document.body.classList.toggle(
+		"create-quiz-theme",
+		activeMenuTheme === "create",
+	);
+	document.body.classList.toggle(
+		"nethub-menu-theme",
+		activeMenuTheme === "nethub",
+	);
+	if (activeMenuTheme) {
+		quizPreviewPlaying = false;
+		quizPreviewMusic.pause();
+		updateQuizMusicPreview();
+	}
+	startMenuMusic();
+});
 scheduleMenuMusicDateRefresh();
 musicToggle.addEventListener("click", () => {
 	setMusicMuted(!musicMuted);
@@ -1976,6 +2018,12 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 3.0.0
+- You can now create your own quizzes through the "Create" menu!
+- NetHub is here! Share your creations on the NetHub, and explore quizzes made by other users.
+- You can now export your quizzes as a studyable PDF (similar to a textbook or exam-like question sheet, with answers on the last page) or as the raw JSON for any other uses.
+- Short answer has been added to Data Science, Computer Graphics, and Cloud Computing (Midterm Practice)
+
 Version 2.7.4
 - Players can now leave a party mode game without it closing the game for everyone else.
 - Players can rejoin/join a party mode game while it is in progress

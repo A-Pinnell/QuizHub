@@ -211,6 +211,11 @@ test("quiz music options expose named, persistent track selections", () => {
 	assert.equal(state.values.get("quizHubQuizMusic"), "BonusTrack");
 	assert.equal(state.preferences.getQuizMusicName(), "Bonus Track");
 	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "CompArch"),
+		/\/music\/QuizMusic\.wav$/,
+	);
+	assert.equal(state.preferences.quizMusic, "BonusTrack");
+	assert.match(
 		state.preferences.resolveQuizMusic("fallback.mp3"),
 		/\/music\/BonusTrack\.wav$/,
 	);

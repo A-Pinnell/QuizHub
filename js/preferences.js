@@ -474,11 +474,11 @@
 				window.location.href,
 			).toString();
 		},
-		resolveQuizMusic(defaultSource) {
-			if (preferences.quizMusic === "rotation") {
+		resolveQuizMusic(defaultSource, selection = preferences.quizMusic) {
+			if (selection === "rotation") {
 				return this.getNextQuizMusic(null, defaultSource);
 			}
-			const selectedSource = quizMusicSources[preferences.quizMusic];
+			const selectedSource = quizMusicSources[selection];
 			return new URL(
 				selectedSource || defaultSource,
 				window.location.href,

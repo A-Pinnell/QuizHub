@@ -51,6 +51,7 @@
 				label: "Statistic Practice",
 				detail: "Math-focused statistics review",
 				partyMode: false,
+				downloadable: false,
 			},
 		],
 		SoftEngi: [

@@ -179,13 +179,29 @@ const quizMusicFile = forceStaticQuestionOrder
 									? resolveAssetUrl("./music/SocIndiMusic.wav")
 									: resolveAssetUrl("./music/QuizMusic.wav");
 let quizMusicDefaultSource = quizMusicFile;
+const netHubQuizMusic = window.quizHubNetHubQuiz?.music;
+function resolveQuizMusicSource() {
+	if (netHubQuizMusic?.upload?.sourceUrl) {
+		return netHubQuizMusic.upload.sourceUrl;
+	}
+	if (netHubQuizMusic?.upload?.data) return netHubQuizMusic.upload.data;
+	if (netHubQuizMusic?.upload) return "";
+	if (typeof netHubQuizMusic?.track === "string") {
+		return window.quizHubPreferences.resolveQuizMusic(
+			quizMusicDefaultSource,
+			netHubQuizMusic.track,
+		);
+	}
+	return window.quizHubPreferences.resolveQuizMusic(quizMusicDefaultSource);
+}
 const quizMusic = isDataSciLautest
 	? new Audio()
-	: new Audio(
-			window.quizHubPreferences.resolveQuizMusic(quizMusicDefaultSource),
-		);
+	: netHubQuizMusic?.upload && !netHubQuizMusic.upload.data
+		? new Audio()
+		: new Audio(resolveQuizMusicSource());
 const isPreloadedQuiz = window.self !== window.top;
 let quizMusicPending = false;
+let netHubMusicLoadStarted = false;
 let lautestQuizMusicStarted = false;
 let dataSciLautestMusicStarted = false;
 let lautestLoopContext = null;
@@ -193,8 +209,10 @@ const lautestLoopBuffers = new Map();
 let lautestLoopSource = null;
 let lautestLoopSourceUrl = "";
 let lautestLoopGeneration = 0;
-quizMusic.loop = !window.quizHubPreferences.isQuizMusicRotation;
-quizMusic.volume = 0.45;
+quizMusic.loop =
+	Boolean(netHubQuizMusic) || !window.quizHubPreferences.isQuizMusicRotation;
+quizMusic.volume =
+	0.45 * (netHubQuizMusic?.upload ? 10 ** (-12 / 20) : 1);
 function updateMusicToggle() {
 	musicToggle.textContent = musicMuted ? "♫̸" : "♫";
 	musicToggle.disabled = false;
@@ -217,17 +235,49 @@ window.QuizHubMusicPicker.attach({
 	},
 	onTrackSelected(shouldPlay) {
 		if (isDataSciLautest && !dataSciLautestMusicStarted) return;
-		quizMusic.src = window.quizHubPreferences.resolveQuizMusic(
-			quizMusicDefaultSource,
-		);
+		quizMusic.src = resolveQuizMusicSource();
 		quizMusic.load();
 		if (shouldPlay) startQuizMusic();
 	},
 });
+if (netHubQuizMusic) {
+	document.getElementById("quizMusicCycle").hidden = true;
+}
 function startQuizMusic() {
 	if (isPreloadedQuiz || musicMuted || !hostDisplayMusicAllowed) return;
 	if (isDataSciLautest && !dataSciLautestMusicStarted) return;
-	quizMusic.loop = !window.quizHubPreferences.isQuizMusicRotation;
+	if (
+		netHubQuizMusic?.upload &&
+		!netHubQuizMusic.upload.data &&
+		!netHubQuizMusic.upload.sourceUrl
+	) {
+		if (netHubMusicLoadStarted) return;
+		netHubMusicLoadStarted = true;
+		const musicPromise = window.quizHubNetHubMusicPromise;
+		if (!musicPromise) {
+			netHubMusicLoadStarted = false;
+			console.error("Could not load saved quiz music: no storage request was started.");
+			return;
+		}
+		musicPromise
+			.then(() => {
+				if (musicMuted || !hostDisplayMusicAllowed) {
+					netHubMusicLoadStarted = false;
+					return;
+				}
+				quizMusic.src = resolveQuizMusicSource();
+				quizMusic.load();
+				startQuizMusic();
+			})
+			.catch((error) => {
+				console.error("Could not load saved quiz music:", error);
+				netHubMusicLoadStarted = false;
+				setupError.textContent = `Could not load uploaded quiz music: ${error.message}`;
+			});
+		return;
+	}
+	quizMusic.loop =
+		Boolean(netHubQuizMusic) || !window.quizHubPreferences.isQuizMusicRotation;
 	if (
 		forceStaticQuestionOrder &&
 		!window.quizHubPreferences.isQuizMusicRotation
@@ -245,7 +295,7 @@ function startQuizMusic() {
 		});
 }
 quizMusic.addEventListener("ended", () => {
-	if (!window.quizHubPreferences.isQuizMusicRotation) return;
+	if (netHubQuizMusic || !window.quizHubPreferences.isQuizMusicRotation) return;
 	quizMusic.src = window.quizHubPreferences.getNextQuizMusic(
 		quizMusic.currentSrc || quizMusic.src,
 		quizMusicDefaultSource,
@@ -478,7 +528,12 @@ const category =
 		: defaultCategory;
 const requestedPartyQuizTheme = params.get("partyQuizTheme");
 const selectedQuizTheme =
-	hostDisplayEnabled &&
+	window.quizHubNetHubQuiz &&
+	["default", "quizhub", "ai-model", "blended"].includes(
+		window.quizHubNetHubQuiz.theme,
+	)
+		? window.quizHubNetHubQuiz.theme
+		: hostDisplayEnabled &&
 	["default", "quizhub", "ai-model", "blended"].includes(
 		requestedPartyQuizTheme,
 	)
@@ -614,7 +669,8 @@ const partyModeRequested =
 	params.get("partyMode") === "true" || networkPartyActive;
 const supportsQuestionPresentation =
 	!partyModeRequested &&
-	((["CompArch", "CloudComp"].includes(category) &&
+	(window.quizHubNetHubQuiz?.allowShortAnswer === true ||
+		(["CompArch", "CloudComp"].includes(category) &&
 		requestedQuiz === "test1") ||
 		(["DataSci", "CompGFX"].includes(category) &&
 			["test1", "lautest"].includes(requestedQuiz)));
@@ -693,7 +749,15 @@ let partyConnectionReady = false;
 let partyStartPending = false;
 let skipQuestionPending = false;
 
-const theme = themes[category] ||
+const netHubThemePalettes = {
+	quizhub: themes.CompArch,
+	"ai-model": themes.SoftEngi,
+	blended: themes.CompGFX,
+	default: themes[category] || themes.Default,
+};
+const theme = (window.quizHubNetHubQuiz
+	? netHubThemePalettes[window.quizHubNetHubQuiz.theme]
+	: themes[category]) ||
 	themes.CompArch || {
 		pageBg: "#6f7d86",
 		visualBg: "#348ac0",
@@ -994,11 +1058,16 @@ if (networkPartyActive) {
 	}
 }
 
-courseCode.textContent = mixedStudyActive
+courseCode.textContent = window.quizHubNetHubQuiz
+	? window.quizHubNetHubQuiz.courseName
+	: mixedStudyActive
 	? "MIXED STUDY"
 	: isStatisticsPracticeQuiz
 		? "STATISTICS LAB"
 		: `${codes[category] || category}`;
+if (window.quizHubNetHubQuiz) {
+	document.title = `${window.quizHubNetHubQuiz.title} - Quiz Hub`;
+}
 let totalAvailable = isStatisticsPracticeQuiz ? 1000 : bank.length;
 countInput.max = Math.max(1, totalAvailable);
 countInput.value = Math.max(1, totalAvailable);

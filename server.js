@@ -3,7 +3,13 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
-const { randomUUID, randomInt } = require("node:crypto");
+const {
+  randomUUID,
+  randomInt,
+  randomBytes,
+  scryptSync,
+  timingSafeEqual
+} = require("node:crypto");
 const { WebSocket, WebSocketServer } = require("ws");
 const mixedStudy = require("./js/mixed-study.js");
 
@@ -32,6 +38,380 @@ const rooms = new Map();
 const presenceSessions = new Map();
 const presenceLifetimeMs = 90_000;
 const quizThemes = new Set(["default", "quizhub", "ai-model", "blended"]);
+const netHubDataDirectory = process.env.QUIZHUB_DATA_DIR || path.join(root, "data");
+const netHubDatabasePath = path.join(netHubDataDirectory, "nethub.json");
+const netHubSessions = new Map();
+const netHubLoginFailures = new Map();
+const netHubPinSaltBytes = 16;
+const netHubPinHashBytes = 64;
+const netHubLoginWindowMs = 15 * 60 * 1000;
+const netHubMaxLoginFailures = 5;
+const netHubMaxRequestBytes = 16 * 1024 * 1024;
+const netHubMaxMusicBytes = 10 * 1024 * 1024;
+const netHubMaxQuestions = 250;
+const netHubMusicTracks = new Set([
+  "default", "BonusTrack", "Practice1", "Practice2", "CompArch", "CloudComp",
+  "DataSci", "StatisticPractice", "DataSciLautest", "SoftEngi", "CompGFX",
+  "CompGFXLautest", "SocIndi"
+]);
+
+function readNetHubDatabase() {
+  if (!fs.existsSync(netHubDatabasePath)) return { users: [], quizzes: [] };
+  const database = JSON.parse(fs.readFileSync(netHubDatabasePath, "utf8"));
+  if (!database || !Array.isArray(database.users) || !Array.isArray(database.quizzes)) {
+    throw new Error("The NetHub database has an invalid format.");
+  }
+  return database;
+}
+
+function writeNetHubDatabase(database) {
+  fs.mkdirSync(netHubDataDirectory, { recursive: true });
+  const temporaryPath = `${netHubDatabasePath}.${randomUUID()}.tmp`;
+  fs.writeFileSync(temporaryPath, JSON.stringify(database), { mode: 0o600 });
+  fs.renameSync(temporaryPath, netHubDatabasePath);
+}
+
+function netHubJson(response, status, payload) {
+  response.writeHead(status, {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Cache-Control": "no-store",
+    "Content-Type": "application/json; charset=utf-8",
+    "X-Content-Type-Options": "nosniff"
+  });
+  response.end(status === 204 ? undefined : JSON.stringify(payload));
+}
+
+function readNetHubRequestBody(request) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+    let tooLarge = false;
+    request.on("data", (chunk) => {
+      if (tooLarge) return;
+      body += chunk.toString();
+      if (body.length > netHubMaxRequestBytes) {
+        tooLarge = true;
+        body = "";
+      }
+    });
+    request.on("error", reject);
+    request.on("end", () => {
+      if (tooLarge) {
+        reject(Object.assign(new Error("Request body is too large."), { status: 413 }));
+        return;
+      }
+      try {
+        resolve(JSON.parse(body || "{}"));
+      } catch {
+        reject(Object.assign(new Error("Request body must be valid JSON."), { status: 400 }));
+      }
+    });
+  });
+}
+
+function cleanNetHubQuestion(question, index) {
+  if (!question || typeof question !== "object" || Array.isArray(question)) {
+    throw Object.assign(new Error(`Question ${index + 1} must be an object.`), { status: 400 });
+  }
+  const prompt = typeof question.q === "string" ? question.q.trim() : "";
+  const answers = question.a;
+  if (!prompt || prompt.length > 1200) {
+    throw Object.assign(new Error(`Question ${index + 1} needs text (up to 1,200 characters).`), { status: 400 });
+  }
+  if (!Array.isArray(answers) || answers.length < 2 || answers.length > 4 ||
+      !answers.every((answer) => typeof answer === "string" && answer.trim() && answer.length <= 300)) {
+    throw Object.assign(new Error(`Question ${index + 1} must have 2–4 answer choices, each up to 300 characters.`), { status: 400 });
+  }
+  if (!Number.isInteger(question.c) || question.c < 0 || question.c >= answers.length) {
+    throw Object.assign(new Error(`Question ${index + 1} has an invalid correct-answer index.`), { status: 400 });
+  }
+  return { q: prompt, a: answers.map((answer) => answer.trim()), c: question.c };
+}
+
+function cleanNetHubMusic(music) {
+  if (!music || typeof music !== "object" || Array.isArray(music)) {
+    throw Object.assign(new Error("Choose a valid quiz music track."), { status: 400 });
+  }
+  if (music.upload !== undefined) {
+    const upload = music.upload;
+    if (!upload || typeof upload !== "object" || Array.isArray(upload) ||
+        typeof upload.name !== "string" || !upload.name.trim() || upload.name.length > 120) {
+      throw Object.assign(new Error("The uploaded music file has invalid metadata."), { status: 400 });
+    }
+    const extension = upload.name.toLowerCase().split(".").pop();
+    const match = typeof upload.data === "string"
+      ? upload.data.match(/^data:(audio\/(?:mpeg|wav));base64,([A-Za-z0-9+/]*={0,2})$/)
+      : null;
+    if (!match || match[1] !== upload.type ||
+        (match[1] === "audio/mpeg" && extension !== "mp3") ||
+        (match[1] === "audio/wav" && extension !== "wav")) {
+      throw Object.assign(new Error("Upload a valid MP3 or WAV audio file."), { status: 400 });
+    }
+    const audio = Buffer.from(match[2], "base64");
+    const isWav = match[1] === "audio/wav" &&
+      audio.length >= 12 &&
+      audio.toString("ascii", 0, 4) === "RIFF" &&
+      audio.toString("ascii", 8, 12) === "WAVE";
+    const isMp3 = match[1] === "audio/mpeg" &&
+      audio.length >= 2 &&
+      (audio.toString("ascii", 0, 3) === "ID3" ||
+        (audio[0] === 0xff && (audio[1] & 0xe0) === 0xe0));
+    if (audio.length > netHubMaxMusicBytes) {
+      throw Object.assign(new Error("Quiz music must be no larger than 10 MB."), { status: 400 });
+    }
+    if (!audio.length || (!isWav && !isMp3)) {
+      throw Object.assign(new Error("Upload a valid MP3 or WAV audio file."), { status: 400 });
+    }
+    return {
+      upload: {
+        name: upload.name.trim(),
+        type: match[1],
+        data: `data:${match[1]};base64,${audio.toString("base64")}`
+      }
+    };
+  }
+  if (typeof music.track !== "string" || !netHubMusicTracks.has(music.track)) {
+    throw Object.assign(new Error("Choose a valid quiz music track."), { status: 400 });
+  }
+  return { track: music.track };
+}
+
+function cleanNetHubQuiz(payload) {
+  const title = typeof payload?.title === "string" ? payload.title.trim() : "";
+  const courseName = typeof payload?.courseName === "string" ? payload.courseName.trim() : "";
+  const courseKey = typeof payload?.courseKey === "string" ? payload.courseKey.trim() : "";
+  const theme = payload?.theme;
+  if (!title || title.length > 64 || !courseName || courseName.length > 64 ||
+      !/^[A-Za-z0-9_-]{1,48}$/.test(courseKey)) {
+    throw Object.assign(new Error("Enter a quiz title and course name (up to 64 characters)."), { status: 400 });
+  }
+  if (!quizThemes.has(theme)) {
+    throw Object.assign(new Error("Choose a valid quiz theme."), { status: 400 });
+  }
+  if (!Array.isArray(payload.questions) || payload.questions.length < 1 ||
+      payload.questions.length > netHubMaxQuestions) {
+    throw Object.assign(new Error(`A quiz must contain 1–${netHubMaxQuestions} questions.`), { status: 400 });
+  }
+  const cleanQuiz = {
+    title,
+    courseName,
+    courseKey,
+    theme,
+    allowShortAnswer: payload.allowShortAnswer === true,
+    questions: payload.questions.map(cleanNetHubQuestion)
+  };
+  if (payload.music !== undefined) cleanQuiz.music = cleanNetHubMusic(payload.music);
+  return cleanQuiz;
+}
+
+function netHubQuizSummary(quiz, users) {
+  const owner = users.find((user) => user.id === quiz.ownerId);
+  return {
+    id: quiz.id,
+    title: quiz.title,
+    courseName: quiz.courseName,
+    courseKey: quiz.courseKey,
+    theme: quiz.theme,
+    allowShortAnswer: quiz.allowShortAnswer,
+    questionCount: quiz.questions.length,
+    author: owner?.username || "QuizHub user",
+    createdAt: quiz.createdAt,
+    updatedAt: quiz.updatedAt
+  };
+}
+
+function netHubAuthorizedUser(request, database) {
+  const authorization = request.headers.authorization || "";
+  const token = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+  const userId = netHubSessions.get(token);
+  return userId ? database.users.find((user) => user.id === userId) || null : null;
+}
+
+function hashNetHubPin(pin, salt = randomBytes(netHubPinSaltBytes)) {
+  return {
+    salt: salt.toString("hex"),
+    hash: scryptSync(pin, salt, netHubPinHashBytes).toString("hex")
+  };
+}
+
+function verifyNetHubPin(pin, user) {
+  const salt = Buffer.from(user.pinSalt, "hex");
+  const expected = Buffer.from(user.pinHash, "hex");
+  if (salt.length !== netHubPinSaltBytes || expected.length !== netHubPinHashBytes) return false;
+  const actual = scryptSync(pin, salt, netHubPinHashBytes);
+  return timingSafeEqual(actual, expected);
+}
+
+function cleanNetHubUsername(value) {
+  const username = typeof value === "string" ? value.trim() : "";
+  if (!/^[A-Za-z0-9_-]{3,20}$/.test(username)) {
+    throw Object.assign(new Error("Username must be 3–20 letters, numbers, underscores, or hyphens."), { status: 400 });
+  }
+  return username;
+}
+
+async function serveNetHub(request, response) {
+  const url = new URL(request.url, "http://localhost");
+  if (request.method === "OPTIONS") {
+    netHubJson(response, 204, {});
+    return;
+  }
+  try {
+    let database = readNetHubDatabase();
+    const quizPath = url.pathname.match(/^\/api\/nethub\/quizzes(?:\/([0-9a-f-]{36}))?$/i);
+    if (request.method === "GET" && url.pathname === "/api/nethub/quizzes") {
+      netHubJson(response, 200, {
+        quizzes: database.quizzes
+          .slice()
+          .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
+          .map((quiz) => netHubQuizSummary(quiz, database.users))
+      });
+      return;
+    }
+    if (request.method === "GET" && quizPath?.[1]) {
+      const quiz = database.quizzes.find((item) => item.id === quizPath[1]);
+      if (!quiz) {
+        netHubJson(response, 404, { error: "Quiz not found." });
+        return;
+      }
+      netHubJson(response, 200, {
+        quiz: { ...netHubQuizSummary(quiz, database.users), questions: quiz.questions, music: quiz.music }
+      });
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/nethub/auth") {
+      const payload = await readNetHubRequestBody(request);
+      database = readNetHubDatabase();
+      const username = cleanNetHubUsername(payload.username);
+      const pin = typeof payload.pin === "string" ? payload.pin : "";
+      if (!/^\d{4}$/.test(pin)) {
+        netHubJson(response, 400, { error: "Password must be exactly four digits." });
+        return;
+      }
+      const normalizedUsername = username.toLocaleLowerCase("en");
+      const rateKey = `${request.socket.remoteAddress || "unknown"}:${normalizedUsername}`;
+      const attempts = netHubLoginFailures.get(rateKey);
+      if (attempts && attempts.expiresAt > Date.now() && attempts.count >= netHubMaxLoginFailures) {
+        netHubJson(response, 429, { error: "Too many incorrect passwords. Try again in 15 minutes." });
+        return;
+      }
+      const existing = database.users.find((user) => user.normalizedUsername === normalizedUsername);
+      let user = existing;
+      let created = false;
+      if (existing) {
+        if (!verifyNetHubPin(pin, existing)) {
+          const current = attempts && attempts.expiresAt > Date.now()
+            ? attempts
+            : { count: 0, expiresAt: Date.now() + netHubLoginWindowMs };
+          current.count++;
+          netHubLoginFailures.set(rateKey, current);
+          netHubJson(response, 401, { error: "Username or 4-digit password is incorrect." });
+          return;
+        }
+      } else {
+        const pinHash = hashNetHubPin(pin);
+        user = {
+          id: randomUUID(),
+          username,
+          normalizedUsername,
+          pinSalt: pinHash.salt,
+          pinHash: pinHash.hash,
+          createdAt: new Date().toISOString()
+        };
+        database.users.push(user);
+        writeNetHubDatabase(database);
+        created = true;
+      }
+      netHubLoginFailures.delete(rateKey);
+      const token = randomBytes(32).toString("base64url");
+      netHubSessions.set(token, user.id);
+      netHubJson(response, 200, { token, username: user.username, created });
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/nethub/logout") {
+      const token = (request.headers.authorization || "").replace(/^Bearer /, "");
+      if (token) netHubSessions.delete(token);
+      netHubJson(response, 200, { signedOut: true });
+      return;
+    }
+    const user = netHubAuthorizedUser(request, database);
+    if (request.method === "GET" && url.pathname === "/api/nethub/mine") {
+      if (!user) {
+        netHubJson(response, 401, { error: "Sign in to view your uploads." });
+        return;
+      }
+      netHubJson(response, 200, {
+        quizzes: database.quizzes
+          .filter((quiz) => quiz.ownerId === user.id)
+          .map((quiz) => ({
+            ...netHubQuizSummary(quiz, database.users),
+            questions: quiz.questions,
+            music: quiz.music
+          }))
+      });
+      return;
+    }
+    if ((request.method === "POST" && url.pathname === "/api/nethub/quizzes") ||
+        (["PUT", "DELETE"].includes(request.method) && quizPath?.[1])) {
+      if (!user) {
+        netHubJson(response, 401, { error: "Sign in to manage your uploads." });
+        return;
+      }
+      if (request.method === "DELETE") {
+        const index = database.quizzes.findIndex((quiz) => quiz.id === quizPath[1]);
+        if (index === -1) {
+          netHubJson(response, 404, { error: "Quiz not found." });
+          return;
+        }
+        if (database.quizzes[index].ownerId !== user.id) {
+          netHubJson(response, 403, { error: "You can only delete your own quizzes." });
+          return;
+        }
+        database.quizzes.splice(index, 1);
+        writeNetHubDatabase(database);
+        netHubJson(response, 200, { deleted: true });
+        return;
+      }
+      const payload = await readNetHubRequestBody(request);
+      database = readNetHubDatabase();
+      const cleanQuiz = cleanNetHubQuiz(payload);
+      if (request.method === "PUT") {
+        const quiz = database.quizzes.find((item) => item.id === quizPath[1]);
+        if (!quiz) {
+          netHubJson(response, 404, { error: "Quiz not found." });
+          return;
+        }
+        if (quiz.ownerId !== user.id) {
+          netHubJson(response, 403, { error: "You can only edit your own quizzes." });
+          return;
+        }
+        Object.assign(quiz, cleanQuiz, { updatedAt: new Date().toISOString() });
+        writeNetHubDatabase(database);
+        netHubJson(response, 200, { quiz: netHubQuizSummary(quiz, database.users) });
+        return;
+      }
+      const quiz = {
+        id: randomUUID(),
+        ownerId: user.id,
+        ...cleanQuiz,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      database.quizzes.push(quiz);
+      writeNetHubDatabase(database);
+      netHubJson(response, 201, { quiz: netHubQuizSummary(quiz, database.users) });
+      return;
+    }
+    netHubJson(response, 404, { error: "NetHub endpoint not found." });
+  } catch (error) {
+    const status = Number.isInteger(error.status) ? error.status : 500;
+    if (status === 500) console.error("NetHub request failed:", error);
+    netHubJson(response, status, {
+      error: status === 500 ? "NetHub is temporarily unavailable." : error.message
+    });
+  }
+}
 
 function removeExpiredPresenceSessions(now = Date.now()) {
   for (const [sessionId, lastSeen] of presenceSessions) {
@@ -1112,7 +1492,7 @@ function serveStatic(request, response) {
   const filePath = path.resolve(root, `.${pathname}`);
   const privateFiles = new Set(["package.json", "package-lock.json", "server.js"]);
   if (!filePath.startsWith(root + path.sep) ||
-      pathParts.some((part) => part.startsWith(".") || part === "node_modules" || part === "test") ||
+      pathParts.some((part) => part.startsWith(".") || ["node_modules", "test", "data"].includes(part)) ||
       privateFiles.has(pathParts[0])) {
     response.writeHead(404).end("Not found");
     return;
@@ -1134,6 +1514,10 @@ function serveStatic(request, response) {
 
 const server = http.createServer((request, response) => {
   const pathname = new URL(request.url, "http://localhost").pathname;
+  if (pathname.startsWith("/api/nethub/")) {
+    serveNetHub(request, response);
+    return;
+  }
   if (pathname === "/presence") {
     serveStatic(request, response);
     return;
