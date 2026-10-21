@@ -492,8 +492,7 @@ h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: .95; }
 .party-host-display .feedback,
 .party-host-display .submit-answer,
 .party-host-display .decimal-answer-input,
-.party-host-display .user-bits-host,
-.party-host-display .party-quiz-roster { display: none !important; }
+.party-host-display .user-bits-host { display: none !important; }
 .party-host-display .side-panel {
   position: fixed;
   top: 12px;
@@ -508,7 +507,10 @@ h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: .95; }
 .party-host-display .side-panel #musicButton,
 .party-host-display .side-panel #soundButton,
 .party-host-display .side-panel #quizMusicCycle { width: auto; padding: 8px 10px; }
-.party-host-display .party-game-layout { width: min(1100px, 100%); grid-template-columns: minmax(0, 1fr); }
+.party-host-display .party-game-layout {
+  width: min(1100px, 100%);
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 260px);
+}
 .party-host-display .game-content { min-height: 100vh; grid-template-columns: 1fr; padding: 24px; }
 .party-host-display .problem-panel { min-height: calc(100vh - 48px); }
 .party-host-display .problem { margin-top: 0; }

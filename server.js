@@ -334,6 +334,7 @@ function handleMessage(socket, rawMessage) {
         id: randomUUID(),
         ready: true,
         host: true,
+        handoff: true,
         score: 0,
         overallScore: 0,
         socket,
@@ -760,7 +761,10 @@ function handleMessage(socket, rawMessage) {
       break;
     }
     case "question": {
-      if (!player.host || room.stage !== "quiz") return sendError(socket, "Only the host can advance questions.");
+      const isDisplayPlayer = room.hostDisplay && player.id === room.hostDisplayPlayerId;
+      if ((!player.host && !isDisplayPlayer) || room.stage !== "quiz") {
+        return sendError(socket, "Only the host or selected Host Display player can advance questions.");
+      }
       if (room.quizConfig.proceduralType) {
         const { questionNumber, prompt, challenge, badge, answerKind, correctAnswer, displayBits } = message;
         if (!Number.isInteger(questionNumber) || questionNumber !== room.questionNumber + 1 ||

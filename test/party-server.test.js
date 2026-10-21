@@ -1096,6 +1096,169 @@ test("procedural party quizzes track activity and reveal submitted answers", asy
   assert.equal("correctAnswer" in questionForGuest, false);
   assert.equal("correctAnswer" in questionForHost, false);
 
+  await t.test("selected Host Display players can advance binary and hexadecimal quizzes", async (t) => {
+  const port = 20080 + Math.floor(Math.random() * 1000);
+  const server = spawn(process.execPath, ["server.js"], {
+    cwd: process.cwd(),
+    env: { ...process.env, PORT: String(port) },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  const sockets = [];
+  let serverOutput = "";
+  server.stdout.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  server.stderr.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  t.after(() => {
+    sockets.forEach((socket) => socket.close());
+    server.kill();
+  });
+
+  let ready = false;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    if (server.exitCode !== null) throw new Error(`Party server exited: ${serverOutput}`);
+    try {
+      const response = await fetch(`http://localhost:${port}/healthz`);
+      if (response.ok) {
+        ready = true;
+        break;
+      }
+    } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  assert.equal(ready, true, `Party server did not start: ${serverOutput}`);
+
+  async function connect() {
+    const socket = new WebSocket(`ws://localhost:${port}/party`);
+    sockets.push(socket);
+    await once(socket, "open");
+    return socket;
+  }
+
+  for (const quiz of ["binary", "hexadecimal"]) {
+    const host = await connect();
+    const hostedPromise = waitForMessage(host, "hosted");
+    send(host, {
+      type: "host",
+      capacity: 3,
+      player: { name: `${quiz} Host`, color: "#ff0000" }
+    });
+    const hosted = await hostedPromise;
+
+    const displayPlayer = await connect();
+    const displayJoinedPromise = waitForMessage(displayPlayer, "joined");
+    send(displayPlayer, {
+      type: "join",
+      code: hosted.room.code,
+      player: { name: `${quiz} Display`, color: "#0000ff" }
+    });
+    const displayJoined = await displayJoinedPromise;
+
+    const otherPlayer = await connect();
+    const otherJoinedPromise = waitForMessage(otherPlayer, "joined");
+    send(otherPlayer, {
+      type: "join",
+      code: hosted.room.code,
+      player: { name: `${quiz} Other`, color: "#00ff00" }
+    });
+    await otherJoinedPromise;
+
+    const hostDisplayState = waitForMessage(host, "room-state", (message) =>
+      message.room.hostDisplay &&
+      message.room.hostDisplayPlayerId === displayJoined.playerId
+    );
+    send(host, {
+      type: "host-display-options",
+      code: hosted.room.code,
+      enabled: true,
+      playerId: displayJoined.playerId
+    });
+    await hostDisplayState;
+
+    const launchPromises = [host, displayPlayer, otherPlayer]
+      .map((socket) => waitForMessage(socket, "launch"));
+    send(host, {
+      type: "launch",
+      code: hosted.room.code,
+      category: "CompArch",
+      quiz
+    });
+    await Promise.all(launchPromises);
+
+    const settings = {
+      gameType: "conversion",
+      operation: "+",
+      questions: 2,
+      timerLimit: 0,
+      guide: false,
+      decimal: false,
+      ...(quiz === "hexadecimal" ? { conversionMode: "b2h", hexGuide: false } : {})
+    };
+    const startPromises = [host, displayPlayer, otherPlayer]
+      .map((socket) => waitForMessage(socket, "quiz-start"));
+    send(host, {
+      type: "quiz-start",
+      code: hosted.room.code,
+      config: {
+        proceduralType: quiz,
+        proceduralSettings: settings,
+        questionSequence: [0, 1]
+      }
+    });
+    await Promise.all(startPromises);
+
+    const answerKind = quiz === "binary" ? "number" : "text";
+    const correctAnswer = quiz === "binary" ? "42" : "A";
+    const questionPromises = [host, displayPlayer, otherPlayer]
+      .map((socket) => waitForMessage(socket, "question"));
+    send(host, {
+      type: "question",
+      code: hosted.room.code,
+      questionNumber: 0,
+      badge: quiz.toUpperCase(),
+      prompt: "Solve this party question",
+      challenge: "Question 1 = ?",
+      answerKind,
+      correctAnswer
+    });
+    await Promise.all(questionPromises);
+
+    const revealPromises = [host, displayPlayer, otherPlayer]
+      .map((socket) => waitForMessage(socket, "reveal"));
+    send(displayPlayer, {
+      type: "answer",
+      code: hosted.room.code,
+      questionNumber: 0,
+      answer: correctAnswer
+    });
+    send(otherPlayer, {
+      type: "answer",
+      code: hosted.room.code,
+      questionNumber: 0,
+      answer: quiz === "binary" ? "43" : "B"
+    });
+    await Promise.all(revealPromises);
+
+    const nextPromises = [host, displayPlayer, otherPlayer]
+      .map((socket) => waitForMessage(socket, "next-question"));
+    send(displayPlayer, { type: "next-question", code: hosted.room.code });
+    await Promise.all(nextPromises);
+
+    const secondQuestionPromises = [host, displayPlayer, otherPlayer]
+      .map((socket) => waitForMessage(socket, "question"));
+    send(displayPlayer, {
+      type: "question",
+      code: hosted.room.code,
+      questionNumber: 1,
+      badge: quiz.toUpperCase(),
+      prompt: "Solve this party question",
+      challenge: "Question 2 = ?",
+      answerKind,
+      correctAnswer
+    });
+    const secondQuestions = await Promise.all(secondQuestionPromises);
+    assert.ok(secondQuestions.every((message) => message.questionNumber === 1));
+  }
+  });
+
   const activity = waitForMessage(host, "player-progress");
   send(guest, { type: "player-progress", code: hosted.room.code, status: "answering" });
   assert.deepEqual(await activity.then(({ playerId, status }) => ({

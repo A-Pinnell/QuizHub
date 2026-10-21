@@ -671,6 +671,7 @@
         showFeedback("Enter an answer first.", false);
         return;
       }
+      showFeedback("Submitting answer…", true);
       party.sendAnswer(partyQuestion?.answerKind === "text" ? answer.replace(/^0x/i, "") : answer);
       return;
     }
@@ -865,6 +866,8 @@
     $("operationBadge").textContent = question.badge;
     $("conversionProblem").classList.remove("hidden");
     $("operationProblem").classList.add("hidden");
+    $("feedback").textContent = "";
+    $("feedback").className = "feedback";
     const host = $("conversionProblem");
     host.replaceChildren();
     const title = document.createElement("div");
@@ -973,6 +976,8 @@
       }
       setNextButtonVisible(party.canAdvance);
     },
+    onAnswerLocked: () => showFeedback("Answer locked in. Waiting for everyone else.", true),
+    onError: (message) => showFeedback(message, false),
     finishGame: () => finishGame("QUIZ COMPLETE")
   });
 

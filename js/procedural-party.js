@@ -132,6 +132,7 @@
 
     function showServerError(message) {
       status.textContent = message;
+      options.onError?.(message);
       console.error("Party quiz error:", message);
     }
 
@@ -194,6 +195,7 @@
       activity.set(message.playerId, "answered");
       if (room) room.activity = [...activity].map(([id, playerStatus]) => ({ playerId: id, status: playerStatus }));
       renderRoster(room?.activity || []);
+      if (message.playerId === playerId) options.onAnswerLocked?.();
     });
     client.on("reveal", renderReveal);
     client.on("next-question", () => {
