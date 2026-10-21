@@ -1,0 +1,14 @@
+The short-answer semantic checker includes:
+
+- all-MiniLM-L6-v2 ONNX model, from Xenova/all-MiniLM-L6-v2
+  https://huggingface.co/Xenova/all-MiniLM-L6-v2
+  The model is licensed under Apache License 2.0.
+- Transformers.js, from Hugging Face
+  https://github.com/huggingface/transformers.js
+  Licensed under Apache License 2.0.
+- ONNX Runtime Web
+  https://github.com/microsoft/onnxruntime
+  Licensed under MIT License.
+
+The model and runtime execute locally in the browser. Short-answer text is not
+sent to the model publisher or any other remote service.

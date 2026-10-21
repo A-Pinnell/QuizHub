@@ -29,6 +29,9 @@ window.addEventListener("load", function(){
 
   const questionCount = Math.max(1, Number(results.total) || results.history.length);
   const score = Number.isFinite(Number(results.score)) ? Number(results.score) : 0;
+  const maxScore = Number.isFinite(Number(results.maxScore)) && Number(results.maxScore) > 0
+    ? Number(results.maxScore)
+    : questionCount;
   const category = typeof results.category === "string" ? results.category : "Mixed STEM";
   const quizType = typeof results.quizType === "string" ? results.quizType : "reviewQuiz";
   const numberTrack = document.getElementById("numberTrack");
@@ -46,7 +49,7 @@ window.addEventListener("load", function(){
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const minimalMotion = motionMode === "minimal" && !reducedMotion;
   const colors = ["#53e27c", "#ffe16b", "#59d8ff", "#ff75b8", "#ffffff", "#b38cff"];
-  perfectScore.textContent = `SCORE ${score} / ${questionCount}`;
+  perfectScore.textContent = `SCORE ${score} / ${maxScore}`;
   let currentNumber = 0;
   let confettiInterval = null;
   let verificationTimer = null;

@@ -19,12 +19,14 @@ const mimeTypes = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
   ".mp3": "audio/mpeg",
   ".ogg": "audio/ogg",
   ".otf": "font/otf",
   ".png": "image/png",
   ".svg": "image/svg+xml",
-  ".wav": "audio/wav"
+  ".wav": "audio/wav",
+  ".wasm": "application/wasm"
 };
 const rooms = new Map();
 const presenceSessions = new Map();

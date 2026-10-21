@@ -56,7 +56,9 @@
 		<link rel="stylesheet" href="css/preferences.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
 		<link rel="stylesheet" href="css/quiz-music-picker.css" />
-		<link rel="stylesheet" href="css/party-notifications.css?v=party-score-fade" />
+		<link
+			rel="stylesheet"
+			href="css/party-notifications.css?v=party-score-fade" />
 		<link rel="stylesheet" href="css/dev.css" />
 		<script src="./js/audio-focus.js" defer></script>
 		<script src="./js/load-preferences.js"></script>
@@ -68,6 +70,10 @@
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/party-client.js?v=join-leave-notices" defer></script>
 		<script src="./js/quiz-music-picker.js" defer></script>
+		<script src="./js/short-answer.js" defer></script>
+		<script
+			type="module"
+			src="./js/semantic-short-answer-runtime.js?v=semantic-local-7"></script>
 		<script src="./js/quiz.js?v=party-score-fade" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
@@ -261,9 +267,7 @@
 			</button>
 
 			<main class="panel">
-				<div
-					class="statistics-practice-background"
-					aria-hidden="true"></div>
+				<div class="statistics-practice-background" aria-hidden="true"></div>
 				<section class="quiz-setup" id="quizSetup" aria-labelledby="setupTitle">
 					<div class="setup-kicker">QUIZ SETUP</div>
 					<h1 id="setupTitle">Customize Your Quiz</h1>
@@ -275,12 +279,42 @@
 						<legend>Choose your focus areas</legend>
 						<p>Select one or more topics to build your practice set.</p>
 						<div class="statistics-practice-focus-grid">
-							<label><input type="checkbox" value="central-tendency" checked /><span>Central tendency<small>Mean, median, mode</small></span></label>
-							<label><input type="checkbox" value="spread" checked /><span>Spread and variability<small>Range, variance, standard deviation, IQR</small></span></label>
-							<label><input type="checkbox" value="correlation" checked /><span>Correlation<small>Pearson correlation</small></span></label>
-							<label><input type="checkbox" value="frequency" checked /><span>Frequency distributions<small>Frequency and relative frequency</small></span></label>
-							<label><input type="checkbox" value="skewness" checked /><span>Skewness<small>Bowley's skewness coefficient</small></span></label>
-							<label><input type="checkbox" value="normalized-data" checked /><span>Normalized data<small>Min-max scaling and z-scores</small></span></label>
+							<label
+								><input type="checkbox" value="central-tendency" checked /><span
+									>Central tendency<small>Mean, median, mode</small></span
+								></label
+							>
+							<label
+								><input type="checkbox" value="spread" checked /><span
+									>Spread and variability<small
+										>Range, variance, standard deviation, IQR</small
+									></span
+								></label
+							>
+							<label
+								><input type="checkbox" value="correlation" checked /><span
+									>Correlation<small>Pearson correlation</small></span
+								></label
+							>
+							<label
+								><input type="checkbox" value="frequency" checked /><span
+									>Frequency distributions<small
+										>Frequency and relative frequency</small
+									></span
+								></label
+							>
+							<label
+								><input type="checkbox" value="skewness" checked /><span
+									>Skewness<small>Bowley's skewness coefficient</small></span
+								></label
+							>
+							<label
+								><input type="checkbox" value="normalized-data" checked /><span
+									>Normalized data<small
+										>Min-max scaling and z-scores</small
+									></span
+								></label
+							>
 						</div>
 						<p
 							class="statistics-practice-focus-status"
@@ -302,110 +336,150 @@
 					</button>
 
 					<div class="statistics-practice-settings">
-					<label class="setup-label" for="questionCount"
-						>Number of questions</label
-					>
-					<div class="count-row">
-						<input
-							id="questionCount"
-							type="number"
-							min="1"
-							value="6"
-							inputmode="numeric" />
-						<span id="countMax">of 6</span>
-					</div>
-
-					<fieldset
-						class="setup-group statistics-practice-heart-settings"
-						id="statisticsPracticeHeartSettings"
-						hidden>
-						<legend>Wrong-answer hearts</legend>
-						<label class="setup-label" for="statisticsPracticeHeartLimit">
-							Hearts before game over
-						</label>
+						<label class="setup-label" for="questionCount"
+							>Number of questions</label
+						>
 						<div class="count-row">
-							<select id="statisticsPracticeHeartLimit">
-								<option value="1">1 heart</option>
-								<option value="2">2 hearts</option>
-								<option value="3">3 hearts</option>
-								<option value="4">4 hearts</option>
-								<option value="5" selected>5 hearts</option>
-								<option value="6">6 hearts</option>
-								<option value="7">7 hearts</option>
-								<option value="8">8 hearts</option>
-								<option value="9">9 hearts</option>
-								<option value="10">10 hearts</option>
-								<option value="unlimited">Unlimited</option>
+							<input
+								id="questionCount"
+								type="number"
+								min="1"
+								value="6"
+								inputmode="numeric" />
+							<span id="countMax">of 6</span>
+						</div>
+
+						<fieldset
+							class="setup-group"
+							id="questionPresentationOptions"
+							hidden>
+							<legend>Question presentation</legend>
+							<p>
+								Short answers earn up to 3 stars based on how closely their
+								meaning matches the correct answer. A local semantic model
+								and runtime (about 50 MB) load when short answer is selected.
+							</p>
+							<label class="choice"
+								><input
+									type="radio"
+									name="questionPresentation"
+									value="multiple-choice"
+									checked /><span>Multiple choice</span></label
+							>
+							<label class="choice"
+								><input
+									type="radio"
+									name="questionPresentation"
+									value="short-answer" /><span
+									>Written (experimental)</span
+								></label
+							>
+							<label class="choice"
+								><input
+									type="radio"
+									name="questionPresentation"
+									value="mixed" /><span>Mixed (experimental)</span></label
+							>
+						</fieldset>
+						<p
+							class="short-answer-model-status"
+							id="shortAnswerModelStatus"
+							role="status"
+							aria-live="polite"></p>
+
+						<fieldset
+							class="setup-group statistics-practice-heart-settings"
+							id="statisticsPracticeHeartSettings"
+							hidden>
+							<legend>Wrong-answer hearts</legend>
+							<label class="setup-label" for="statisticsPracticeHeartLimit">
+								Hearts before game over
+							</label>
+							<div class="count-row">
+								<select id="statisticsPracticeHeartLimit">
+									<option value="1">1 heart</option>
+									<option value="2">2 hearts</option>
+									<option value="3">3 hearts</option>
+									<option value="4">4 hearts</option>
+									<option value="5" selected>5 hearts</option>
+									<option value="6">6 hearts</option>
+									<option value="7">7 hearts</option>
+									<option value="8">8 hearts</option>
+									<option value="9">9 hearts</option>
+									<option value="10">10 hearts</option>
+									<option value="unlimited">Unlimited</option>
+								</select>
+							</div>
+							<p class="statistics-practice-heart-help">
+								Each incorrect answer uses one heart. Skipping does not.
+							</p>
+						</fieldset>
+
+						<fieldset class="setup-group">
+							<legend>Question order</legend>
+							<label class="choice"
+								><input type="radio" name="order" value="random" checked /><span
+									>Random order</span
+								></label
+							>
+							<label class="choice"
+								><input type="radio" name="order" value="static" /><span
+									>Static order</span
+								></label
+							>
+						</fieldset>
+
+						<fieldset class="setup-group">
+							<legend>Time limit</legend>
+							<label class="choice"
+								><input
+									type="radio"
+									name="timeLimit"
+									value="none"
+									checked /><span>No time limit</span></label
+							>
+							<label class="choice"
+								><input type="radio" name="timeLimit" value="10" /><span
+									>10 minutes</span
+								></label
+							>
+							<label class="choice"
+								><input type="radio" name="timeLimit" value="20" /><span
+									>20 minutes</span
+								></label
+							>
+							<label class="choice"
+								><input type="radio" name="timeLimit" value="30" /><span
+									>30 minutes</span
+								></label
+							>
+							<label class="choice"
+								><input type="radio" name="timeLimit" value="60" /><span
+									>60 minutes</span
+								></label
+							>
+						</fieldset>
+						<fieldset class="setup-group" id="socIndiTimeLimits" hidden>
+							<legend>SocIndi review time limit</legend>
+							<label class="choice"
+								><input type="radio" name="timeLimit" value="100" /><span
+									>100 minutes</span
+								></label
+							>
+							<label class="choice"
+								><input type="radio" name="timeLimit" value="150" /><span
+									>150 minutes</span
+								></label
+							>
+						</fieldset>
+						<label class="setup-label" for="perQuestionTimeLimit"
+							>Time limit per question</label
+						>
+						<div class="count-row">
+							<select id="perQuestionTimeLimit">
+								<option value="none">No per-question limit</option>
 							</select>
 						</div>
-						<p class="statistics-practice-heart-help">
-							Each incorrect answer uses one heart. Skipping does not.
-						</p>
-					</fieldset>
-
-					<fieldset class="setup-group">
-						<legend>Question order</legend>
-						<label class="choice"
-							><input type="radio" name="order" value="random" checked /><span
-								>Random order</span
-							></label
-						>
-						<label class="choice"
-							><input type="radio" name="order" value="static" /><span
-								>Static order</span
-							></label
-						>
-					</fieldset>
-
-					<fieldset class="setup-group">
-						<legend>Time limit</legend>
-						<label class="choice"
-							><input type="radio" name="timeLimit" value="none" checked /><span
-								>No time limit</span
-							></label
-						>
-						<label class="choice"
-							><input type="radio" name="timeLimit" value="10" /><span
-								>10 minutes</span
-							></label
-						>
-						<label class="choice"
-							><input type="radio" name="timeLimit" value="20" /><span
-								>20 minutes</span
-							></label
-						>
-						<label class="choice"
-							><input type="radio" name="timeLimit" value="30" /><span
-								>30 minutes</span
-							></label
-						>
-						<label class="choice"
-							><input type="radio" name="timeLimit" value="60" /><span
-								>60 minutes</span
-							></label
-						>
-					</fieldset>
-					<fieldset class="setup-group" id="socIndiTimeLimits" hidden>
-						<legend>SocIndi review time limit</legend>
-						<label class="choice"
-							><input type="radio" name="timeLimit" value="100" /><span
-								>100 minutes</span
-							></label
-						>
-						<label class="choice"
-							><input type="radio" name="timeLimit" value="150" /><span
-								>150 minutes</span
-							></label
-						>
-					</fieldset>
-					<label class="setup-label" for="perQuestionTimeLimit"
-						>Time limit per question</label
-					>
-					<div class="count-row">
-						<select id="perQuestionTimeLimit">
-							<option value="none">No per-question limit</option>
-						</select>
-					</div>
 					</div>
 
 					<p class="setup-error" id="setupError" aria-live="polite"></p>
@@ -428,10 +502,17 @@
 						hidden>
 						<header class="statistics-practice-topbar">
 							<div class="statistics-practice-brand">
-								<span class="statistics-practice-brand-mark" aria-hidden="true">◆</span>
-								<div><strong>STATISTICS TRIAL</strong><span>DATA SCIENCE / NUMERIC PRACTICE</span></div>
+								<span class="statistics-practice-brand-mark" aria-hidden="true"
+									>◆</span
+								>
+								<div>
+									<strong>STATISTICS TRIAL</strong
+									><span>DATA SCIENCE / NUMERIC PRACTICE</span>
+								</div>
 							</div>
-							<div class="statistics-practice-session-meta" id="statisticsPracticeHud">
+							<div
+								class="statistics-practice-session-meta"
+								id="statisticsPracticeHud">
 								<div
 									class="statistics-practice-hearts"
 									id="statisticsPracticeHeartsMeter"
@@ -443,7 +524,9 @@
 									role="img"
 									aria-label="Combo meter: 0 correct in a row">
 									<span class="statistics-practice-meter-label">COMBO</span>
-									<span class="statistics-practice-combo-stars" aria-hidden="true">
+									<span
+										class="statistics-practice-combo-stars"
+										aria-hidden="true">
 										<span class="statistics-practice-combo-star">★</span>
 										<span class="statistics-practice-combo-star">★</span>
 										<span class="statistics-practice-combo-star">★</span>
@@ -455,9 +538,15 @@
 						</header>
 						<div class="statistics-practice-session">
 							<div class="statistics-practice-question-card">
-								<div class="statistics-practice-question-heading" id="statisticsPracticeQuestionHeading"></div>
-								<div class="statistics-practice-response" id="statisticsPracticeResponse"></div>
-								<div class="statistics-practice-feedback" id="statisticsPracticeFeedback"></div>
+								<div
+									class="statistics-practice-question-heading"
+									id="statisticsPracticeQuestionHeading"></div>
+								<div
+									class="statistics-practice-response"
+									id="statisticsPracticeResponse"></div>
+								<div
+									class="statistics-practice-feedback"
+									id="statisticsPracticeFeedback"></div>
 							</div>
 							<nav
 								class="statistics-practice-controls"
@@ -501,7 +590,9 @@
 							<span
 								class="statistics-practice-bullet"
 								aria-hidden="true"
-								id="statisticsPracticeBullet">QUESTION 1</span>
+								id="statisticsPracticeBullet"
+								>QUESTION 1</span
+							>
 						</div>
 						<span id="statisticsPracticeSectionName">CENTRAL TENDENCY</span>
 						<div class="statistics-practice-trial-bars" aria-hidden="true">
@@ -517,7 +608,8 @@
 							<div class="statistics-practice-game-over-plate">
 								<p aria-hidden="true">
 									<span>G</span><span>A</span><span>M</span><span>E</span>
-									<span class="game-over-word-gap">O</span><span>V</span><span>E</span><span>R</span>
+									<span class="game-over-word-gap">O</span><span>V</span
+									><span>E</span><span>R</span>
 								</p>
 							</div>
 						</div>
@@ -696,6 +788,29 @@
 							<button class="answer"></button>
 							<button class="answer"></button>
 							<button class="answer"></button>
+						</section>
+						<section
+							class="short-answer-builder"
+							id="shortAnswerBuilder"
+							aria-label="Short answer"
+							hidden>
+							<label for="shortAnswerInput">Type your answer</label>
+							<input
+								class="short-answer-input"
+								id="shortAnswerInput"
+								type="text"
+								autocomplete="off"
+								aria-describedby="shortAnswerStatus feedback" />
+							<p
+								class="short-answer-status"
+								id="shortAnswerStatus"
+								aria-live="polite"></p>
+							<button
+								class="control short-answer-submit"
+								id="shortAnswerSubmit"
+								type="button">
+								SUBMIT ANSWER
+							</button>
 						</section>
 
 						<div class="motivation" id="feedback" aria-live="polite"></div>

@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node server.js",
+    "build:semantic-short-answer": "esbuild js/semantic-short-answer-entry.js --bundle --minify --format=esm --external:./transformers-web.js --target=es2022 --outfile=js/semantic-short-answer-runtime.js",
     "desktop": "electron .",
     "package:win": "electron-builder --win nsis",
     "package:linux": "electron-builder --linux AppImage",
@@ -22,8 +23,10 @@
     "@capacitor/android": "^8.5.3",
     "@capacitor/cli": "^8.5.3",
     "@capacitor/core": "^8.5.3",
+    "@huggingface/transformers": "^4.3.1",
     "electron": "^44.7.0",
-    "electron-builder": "^26.15.3"
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.2"
   },
   "build": {
     "appId": "com.quizhub.desktop",

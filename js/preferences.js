@@ -24,6 +24,7 @@
 			: `quizHub${name[0].toUpperCase()}${name.slice(1)}`;
 	const quizMusicSources = {
 		run: "./secret/RUN.mp3",
+		BonusTrack: "./music/BonusTrack.wav",
 		Practice1: "./music/BinaryTrack.wav",
 		Practice2: "./music/HexadecimalTrack.wav",
 		CompArch: "./music/QuizMusic.wav",
@@ -43,12 +44,14 @@
 	];
 	const secretQuizMusicOptions = [
 		"run",
+		"BonusTrack",
 		...regularQuizMusicOptions,
 	];
 	const quizMusicNames = {
 		default: "Course default",
 		rotation: "Music Rotation",
 		run: "Run",
+		BonusTrack: "Bonus Track",
 		Practice1: "Binary",
 		Practice2: "Hexadecimal",
 		CompArch: "Computer Architecture",
