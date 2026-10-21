@@ -15,6 +15,7 @@
 	};
 	const createModal = document.getElementById("netHubCreateModal");
 	const browseModal = document.getElementById("netHubBrowseModal");
+	const codeStream = document.getElementById("netHubCodeStream");
 	const accountModal = document.getElementById("netHubAccountModal");
 	const createForm = document.getElementById("netHubCreateForm");
 	const createStatus = document.getElementById("netHubCreateStatus");
@@ -39,6 +40,86 @@
 	let editingQuizId = "";
 	let existingUploadedMusic = null;
 	let musicPreview = null;
+	let codeStreamTimer = null;
+	let codeStreamRun = 0;
+	const netHubCodeLines = [
+		"const network = await NetHub.connect();",
+		"const peers = await network.discover();",
+		"interface QuizNode {",
+		"  id: string;",
+		"  owner: PeerAddress;",
+		"  questions: Question[];",
+		"  sharedAt: Timestamp;",
+		"}",
+		"",
+		"for await (const peer of peers) {",
+		"  const signal = await peer.ping();",
+		"  if (!signal.available) continue;",
+		"",
+		"  const channel = peer.openChannel({",
+		'    protocol: "quizhub/1",',
+		"    encrypted: true,",
+		"  });",
+		"",
+		"  channel.on('quiz:published', (event) => {",
+		"    index.add(event.quiz);",
+		"    graph.link(peer.id, event.quiz.id);",
+		"  });",
+		"}",
+		"",
+		"await index.sync({ scope: 'community' });",
+		"status = 'connected';",
+	];
+
+	function stopCodeStream() {
+		codeStreamRun += 1;
+		if (codeStreamTimer !== null) {
+			window.clearTimeout(codeStreamTimer);
+			codeStreamTimer = null;
+		}
+	}
+
+	function startCodeStream() {
+		if (!codeStream) return;
+		stopCodeStream();
+		const run = codeStreamRun;
+		const fullText = netHubCodeLines.join("\n");
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+			codeStream.textContent = fullText;
+			return;
+		}
+		codeStream.textContent = "";
+		let lineIndex = 0;
+		let characterIndex = 0;
+		function typeNext() {
+			if (run !== codeStreamRun || !browseModal.classList.contains("open")) return;
+			const line = netHubCodeLines[lineIndex];
+			if (characterIndex < line.length) {
+				codeStream.textContent += line[characterIndex];
+				characterIndex += 1;
+				codeStream.parentElement.scrollTop = codeStream.parentElement.scrollHeight;
+				codeStreamTimer = window.setTimeout(typeNext, 34);
+				return;
+			}
+			if (lineIndex < netHubCodeLines.length - 1) {
+				codeStream.textContent += "\n";
+				lineIndex += 1;
+				characterIndex = 0;
+				codeStream.parentElement.scrollTop = codeStream.parentElement.scrollHeight;
+				codeStreamTimer = window.setTimeout(typeNext, 175);
+				return;
+			}
+			codeStreamTimer = window.setTimeout(() => {
+				if (run !== codeStreamRun) return;
+				codeStream.textContent = "";
+				codeStream.parentElement.scrollTop = 0;
+				lineIndex = 0;
+				characterIndex = 0;
+				codeStreamTimer = window.setTimeout(typeNext, 700);
+			}, 4200);
+		}
+		typeNext();
+	}
 
 	const defaultCourseMusic = {
 		CompArch: "./music/QuizMusic.wav",
@@ -265,6 +346,7 @@
 	function openModal(modal, initialFocus) {
 		modal.classList.add("open");
 		modal.setAttribute("aria-hidden", "false");
+		if (modal === browseModal) startCodeStream();
 		document.body.classList.add("net-hub-open");
 		const theme =
 			modal === createModal ? "create" : modal === browseModal ? "nethub" : "";
@@ -275,6 +357,7 @@
 	}
 
 	function closeModals() {
+		stopCodeStream();
 		stopMusicPreview();
 		document.querySelectorAll(".net-hub-modal.open").forEach((modal) => {
 			modal.classList.remove("open");

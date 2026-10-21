@@ -1,7 +1,32 @@
 .net-hub-account-button,
-.net-hub-user-made-tab {
+.net-hub-user-made-tab,
+.quiz-export-open-button {
 	position: fixed;
 	z-index: 70;
+	cursor: pointer;
+}
+.net-hub-account-button {
+	right: 18px;
+	bottom: 18px;
+}
+.quiz-export-open-button {
+	right: 70px;
+	bottom: 18px;
+}
+.net-hub-account-button,
+.quiz-export-open-button {
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.88);
+	color: #102a52;
+	box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+}
+.net-hub-user-made-tab {
 	border: 2px solid rgba(255, 255, 255, 0.85);
 	border-radius: 12px;
 	background: linear-gradient(145deg, #253d72, #151e3b);
@@ -10,29 +35,45 @@
 	letter-spacing: 0.5px;
 	padding: 12px 16px;
 	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-	cursor: pointer;
 }
-.net-hub-account-button {
-	right: 18px;
-	bottom: 18px;
+.net-hub-account-button svg,
+.quiz-export-open-button svg {
+	width: 22px;
+	height: 22px;
+	fill: none;
+	stroke: currentColor;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-width: 2;
 }
-.quiz-export-open-button {
-	position: fixed;
-	left: 18px;
-	bottom: 18px;
-	z-index: 70;
-	border: 2px solid rgba(255, 255, 255, 0.85);
-	border-radius: 12px;
-	padding: 12px 16px;
-	background: linear-gradient(145deg, #17695e, #123c3a);
-	color: #fff;
-	font: 700 14px/1.2 "TradeGothic", Arial, sans-serif;
-	letter-spacing: 0.5px;
-	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-	cursor: pointer;
+.quiz-export-open-button svg {
+	width: 26px;
+	height: 26px;
 }
-.quiz-export-open-button:hover {
-	background: linear-gradient(145deg, #258b7c, #17534d);
+.quiz-export-open-button svg text {
+	fill: currentColor;
+	stroke: none;
+}
+.utility-button-label {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	clip-path: inset(50%);
+}
+.net-hub-account-button:hover,
+.net-hub-account-button:focus-visible,
+.quiz-export-open-button:hover,
+.quiz-export-open-button:focus-visible {
+	background: #fff;
+	transform: scale(1.06);
+}
+.net-hub-account-button:focus-visible,
+.quiz-export-open-button:focus-visible {
+	outline: 2px solid #f5c542;
+	outline-offset: 3px;
 }
 .quiz-export-modal {
 	z-index: 205;
@@ -134,7 +175,6 @@
 	rotate: 180deg;
 	padding: 16px 10px;
 }
-.net-hub-account-button:hover,
 .net-hub-user-made-tab:hover {
 	background: linear-gradient(145deg, #3e64b2, #1b2b55);
 }
@@ -156,6 +196,9 @@
 #netHubBrowseModal {
 	align-items: stretch;
 	padding: 0;
+}
+#netHubBrowseModal.open {
+	animation: netHubBackdropIn 420ms ease-out both;
 }
 .net-hub-backdrop {
 	position: absolute;
@@ -197,55 +240,153 @@
 	border-radius: 0;
 	padding: clamp(26px, 4vh, 48px) clamp(24px, 5vw, 76px);
 	background:
-		radial-gradient(ellipse at 88% 12%, rgba(8, 110, 132, 0.22), transparent 48%),
+		radial-gradient(ellipse at 85% 32%, rgba(8, 110, 132, 0.26), transparent 48%),
 		linear-gradient(150deg, #102f42, #11172a 72%);
+	animation: netHubPanelIn 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .net-hub-browse-panel > :not(.net-hub-sphere-stage):not(.net-hub-close) {
 	position: relative;
-	z-index: 1;
+	z-index: 2;
 }
 .net-hub-browse-panel .net-hub-close {
 	position: absolute;
 	top: 14px;
 	right: 16px;
-	z-index: 2;
+	z-index: 3;
 }
 .net-hub-sphere-stage {
 	position: absolute;
 	inset: 0;
-	z-index: 0;
+	z-index: 1;
 	overflow: hidden;
 	perspective: 1000px;
 	perspective-origin: 72% 48%;
 	pointer-events: none;
 }
+.net-hub-sphere-stage::before,
+.net-hub-sphere-stage::after {
+	position: absolute;
+	inset: 0;
+	content: "";
+}
+.net-hub-sphere-stage::before {
+	background-image:
+		linear-gradient(rgba(70, 225, 255, 0.055) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(70, 225, 255, 0.055) 1px, transparent 1px),
+		radial-gradient(ellipse at 74% 48%, transparent 0 20%, rgba(25, 205, 245, 0.12) 20.1% 20.3%, transparent 20.4% 34%, rgba(25, 205, 245, 0.08) 34.1% 34.3%, transparent 34.4%);
+	background-size: 48px 48px, 48px 48px, 100% 100%;
+	mask-image: linear-gradient(90deg, transparent 20%, #000 68%);
+	animation: netHubGridDrift 28s linear infinite;
+}
+.net-hub-sphere-stage::after {
+	left: 25%;
+	width: 1px;
+	background: linear-gradient(transparent, rgba(96, 241, 255, 0.3), transparent);
+	box-shadow: 0 0 22px rgba(69, 225, 255, 0.35);
+	animation: netHubSignalSweep 7s ease-in-out infinite alternate;
+}
+@keyframes netHubGridDrift {
+	to { background-position: 48px 48px, 48px 48px, 0 0; }
+}
+@keyframes netHubSignalSweep {
+	from { opacity: 0; transform: translateX(0); }
+	35%, 70% { opacity: 1; }
+	to { opacity: 0; transform: translateX(68vw); }
+}
 .net-hub-sphere-rotator {
 	position: absolute;
 	top: 50%;
 	right: clamp(32px, 12vw, 210px);
+	z-index: 1;
 	width: clamp(260px, 34vw, 470px);
 	aspect-ratio: 1;
 	transform-style: preserve-3d;
-	animation: netHubSphereSpin 22s linear infinite;
+	animation: netHubSphereSpin 30s linear infinite;
+}
+.net-hub-code-console {
+	position: absolute;
+	top: 19%;
+	bottom: 13%;
+	left: clamp(18px, 3vw, 46px);
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	width: clamp(220px, 27vw, 360px);
+	overflow: hidden;
+	border: 1px solid rgba(91, 230, 255, 0.2);
+	border-radius: 12px;
+	background: linear-gradient(110deg, rgba(3, 13, 29, 0.66), rgba(3, 13, 29, 0.22));
+	box-shadow:
+		inset 0 0 35px rgba(36, 201, 232, 0.055),
+		0 0 32px rgba(18, 193, 227, 0.08);
+	color: rgba(135, 241, 255, 0.72);
+	font: 10px/1.55 "Consolas", "Courier New", monospace;
+	mask-image: linear-gradient(180deg, transparent, #000 7%, #000 92%, transparent);
+}
+.net-hub-code-console-heading {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 12px 8px;
+	border-bottom: 1px solid rgba(91, 230, 255, 0.14);
+	color: rgba(117, 236, 255, 0.7);
+	font-size: 9px;
+	letter-spacing: 0.16em;
+}
+.net-hub-code-indicator {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #50f0d0;
+	box-shadow: 0 0 9px #50f0d0;
+}
+.net-hub-code-viewport {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: hidden;
+	padding: 10px 12px;
+	mask-image: linear-gradient(180deg, #000 80%, transparent);
+}
+.net-hub-code-viewport pre {
+	margin: 0;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	text-shadow: 0 0 8px rgba(85, 235, 255, 0.34);
+}
+.net-hub-code-viewport pre::after {
+	display: inline-block;
+	width: 7px;
+	height: 1em;
+	margin-left: 2px;
+	background: #68f5ff;
+	box-shadow: 0 0 9px rgba(85, 235, 255, 0.8);
+	content: "";
+	vertical-align: -2px;
+	animation: netHubCodeCursor 900ms steps(2, start) infinite;
+}
+@keyframes netHubCodeCursor {
+	to { visibility: hidden; }
 }
 .net-hub-sphere {
 	position: absolute;
 	inset: 0;
-	border: 1px solid rgba(112, 240, 255, 0.38);
+	border: 1px solid rgba(112, 240, 255, 0.62);
 	border-radius: 50%;
 	background:
-		radial-gradient(ellipse at 34% 29%, rgba(104, 238, 247, 0.68), rgba(12, 139, 177, 0.42) 25%, rgba(12, 59, 112, 0.72) 62%, rgba(3, 14, 37, 0.94) 100%);
+		radial-gradient(ellipse at 35% 28%, rgba(112, 240, 255, 0.09), transparent 45%),
+		radial-gradient(ellipse at 50% 50%, transparent 64%, rgba(3, 14, 37, 0.28) 100%);
 	box-shadow:
-		inset -28px -12px 48px rgba(0, 4, 23, 0.78),
-		inset 10px 8px 28px rgba(182, 255, 255, 0.2),
-		0 0 58px rgba(23, 197, 232, 0.18);
+		inset -18px -8px 40px rgba(0, 4, 23, 0.42),
+		inset 10px 8px 28px rgba(182, 255, 255, 0.12),
+		0 0 58px rgba(23, 197, 232, 0.22);
 	backface-visibility: hidden;
 }
 .net-hub-sphere-rotator > span {
 	position: absolute;
-	border: 1px solid rgba(129, 246, 255, 0.52);
+	border: 1px solid rgba(129, 246, 255, 0.68);
 	border-radius: 50%;
-	box-shadow: 0 0 9px rgba(74, 226, 255, 0.18);
+	box-shadow: 0 0 9px rgba(74, 226, 255, 0.28);
 	backface-visibility: visible;
 }
 .net-hub-sphere-meridian {
@@ -259,6 +400,12 @@
 }
 .net-hub-sphere-meridian-c {
 	transform: rotateY(125deg);
+}
+.net-hub-sphere-meridian-d {
+	transform: rotateY(145deg);
+}
+.net-hub-sphere-meridian-e {
+	transform: rotateY(165deg);
 }
 .net-hub-sphere-latitude {
 	left: 0;
@@ -277,6 +424,52 @@
 .net-hub-sphere-latitude-c {
 	top: 52%;
 	transform: rotateX(76deg);
+}
+.net-hub-sphere-latitude-d {
+	top: 22%;
+	height: 56%;
+	transform: rotateX(76deg);
+}
+.net-hub-sphere-latitude-e {
+	top: 42%;
+	height: 56%;
+	transform: rotateX(76deg);
+}
+.net-hub-network-nodes {
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	transform: translateZ(1px);
+}
+.net-hub-network-nodes span {
+	position: absolute;
+	width: 7px;
+	height: 7px;
+	border: 1px solid rgba(210, 255, 255, 0.95);
+	border-radius: 50%;
+	background: #46edff;
+	box-shadow: 0 0 12px 3px rgba(39, 224, 255, 0.65);
+	animation: netHubNodePulse 2.8s ease-in-out infinite alternate;
+}
+.net-hub-network-nodes span:nth-child(1) { top: 17%; left: 34%; }
+.net-hub-network-nodes span:nth-child(2) { top: 28%; left: 68%; animation-delay: -1.2s; }
+.net-hub-network-nodes span:nth-child(3) { top: 46%; left: 21%; animation-delay: -0.6s; }
+.net-hub-network-nodes span:nth-child(4) { top: 57%; left: 53%; animation-delay: -1.8s; }
+.net-hub-network-nodes span:nth-child(5) { top: 72%; left: 75%; animation-delay: -0.9s; }
+.net-hub-network-nodes span:nth-child(6) { top: 79%; left: 39%; animation-delay: -2.1s; }
+.net-hub-network-nodes span:nth-child(7) { top: 38%; left: 83%; animation-delay: -1.5s; }
+.net-hub-network-nodes span:nth-child(8) { top: 61%; left: 15%; animation-delay: -0.3s; }
+@keyframes netHubNodePulse {
+	from { opacity: 0.45; transform: scale(0.72); }
+	to { opacity: 1; transform: scale(1.2); }
+}
+@keyframes netHubBackdropIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+@keyframes netHubPanelIn {
+	from { opacity: 0; transform: translateY(22px) scale(0.985); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes netHubSphereSpin {
 	from {
@@ -427,6 +620,14 @@
 }
 .net-hub-browse-panel .net-hub-quiz-card {
 	backdrop-filter: blur(4px);
+	animation: netHubCardIn 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.net-hub-browse-panel .net-hub-quiz-card:nth-child(2) { animation-delay: 70ms; }
+.net-hub-browse-panel .net-hub-quiz-card:nth-child(3) { animation-delay: 140ms; }
+.net-hub-browse-panel .net-hub-quiz-card:nth-child(4) { animation-delay: 210ms; }
+@keyframes netHubCardIn {
+	from { opacity: 0; transform: translateY(12px); }
+	to { opacity: 1; transform: translateY(0); }
 }
 .net-hub-secondary,
 .net-hub-quiz-action {
@@ -483,6 +684,34 @@
 	background: #2b4d89;
 	color: #fff;
 }
+.net-hub-browse-panel .net-hub-tabs button {
+	position: relative;
+	overflow: hidden;
+	transition:
+		border-color 180ms ease,
+		background 180ms ease,
+		transform 180ms ease;
+}
+.net-hub-browse-panel .net-hub-tabs button::after {
+	position: absolute;
+	top: 0;
+	left: -120%;
+	width: 70%;
+	height: 100%;
+	background: linear-gradient(100deg, transparent, rgba(120, 245, 255, 0.18), transparent);
+	content: "";
+	transform: skewX(-18deg);
+}
+.net-hub-browse-panel .net-hub-tabs button:hover {
+	transform: translateX(3px);
+}
+.net-hub-browse-panel .net-hub-tabs button:hover::after,
+.net-hub-browse-panel .net-hub-tabs button.active::after {
+	animation: netHubTabSignal 1.3s ease-in-out;
+}
+@keyframes netHubTabSignal {
+	to { left: 150%; }
+}
 .net-hub-list {
 	display: grid;
 	gap: 12px;
@@ -528,14 +757,14 @@
 	.net-hub-account-button {
 		right: 10px;
 		bottom: 10px;
-		padding: 10px 12px;
-		font-size: 12px;
+		width: 40px;
+		height: 40px;
 	}
 	.quiz-export-open-button {
 		bottom: 10px;
-		left: 10px;
-		padding: 10px 12px;
-		font-size: 12px;
+		right: 58px;
+		width: 40px;
+		height: 40px;
 	}
 	.net-hub-user-made-tab {
 		font-size: 12px;
@@ -585,8 +814,30 @@
 		right: -95px;
 		width: min(68vw, 310px);
 	}
+	.net-hub-code-console {
+		top: 22%;
+		bottom: 14%;
+		left: 12px;
+		width: min(34vw, 270px);
+		font-size: 9px;
+	}
 }
 @media (prefers-reduced-motion: reduce) {
+	#netHubBrowseModal.open,
+	.net-hub-browse-panel,
+	.net-hub-browse-panel .net-hub-quiz-card,
+	.net-hub-browse-panel .net-hub-tabs button::after,
+	.net-hub-sphere-stage::before,
+	.net-hub-sphere-stage::after,
+	.net-hub-network-nodes span {
+		animation: none;
+	}
+	.net-hub-code-viewport pre::after {
+		animation: none;
+	}
+	.net-hub-browse-panel .net-hub-tabs button {
+		transition: none;
+	}
 	.net-hub-sphere-rotator {
 		animation: none;
 	}

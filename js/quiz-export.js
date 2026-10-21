@@ -135,7 +135,7 @@
 		);
 	}
 
-	function makePdfDocument(title, course) {
+	function makePdfDocument(title, course, images = []) {
 		const pages = [];
 		let page;
 		let pageNumber = 0;
@@ -187,18 +187,42 @@
 		}
 
 		function addQuestion(question, index) {
-			const questionLines = wrapText(question.q, 89);
+			const image = images.find((entry) => entry.index === index);
+			const imageScale = image
+				? Math.min(120 / image.width, 120 / image.height)
+				: 0;
+			const imageSize = image
+				? { width: image.width * imageScale, height: image.height * imageScale }
+				: null;
+			const questionLines = wrapText(question.q, imageSize ? 48 : 89);
 			const optionLines = (question.a || []).flatMap((answer, optionIndex) =>
 				wrapText(`${String.fromCharCode(65 + optionIndex)}. ${answer}`, 82),
 			);
 			const totalHeight =
-				questionLines.length * 13 +
+				Math.max(questionLines.length * 13, imageSize?.height || 0) +
 				(question.a || []).length * 3 +
 				optionLines.length * 12 +
-				15;
+				(imageSize ? 18 : 15);
 			ensureQuestionSpace(totalHeight);
 			addText(page, margin, y, `${index + 1}.`, 10, "F2", "0.12 0.34 0.38");
-			y = textBlock(question.q, margin + 24, y, 89, 10, "F1", "0.08 0.1 0.12", 13);
+			const questionTop = y;
+			const questionEnd = textBlock(
+				question.q,
+				margin + 24,
+				y,
+				imageSize ? 48 : 89,
+				10,
+				"F1",
+				"0.08 0.1 0.12",
+				13,
+			);
+			if (imageSize) {
+				const imageX = pageWidth - margin - imageSize.width;
+				page.push(
+					`q ${imageSize.width.toFixed(2)} 0 0 ${imageSize.height.toFixed(2)} ${imageX.toFixed(2)} ${(pageHeight - questionTop - imageSize.height).toFixed(2)} cm /Im${index} Do Q`,
+				);
+			}
+			y = Math.max(questionEnd, questionTop + (imageSize?.height || 0));
 			y += 3;
 			(question.a || []).forEach((answer, optionIndex) => {
 				y = textBlock(
@@ -269,15 +293,30 @@
 			objects[4] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>";
 			objects[5] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>";
 			const pageReferences = [];
+			const firstImageId = 6 + pages.length * 2;
+			const imageReferences = images.map((image, index) => `${firstImageId + index} 0 R`);
 			pages.forEach((operations, index) => {
 				const pageId = 6 + index * 2;
 				const streamId = pageId + 1;
 				pageReferences.push(`${pageId} 0 R`);
 				const stream = operations.join("\n");
+				const imageResources = images.length
+					? `/XObject << ${images
+							.map((image, imageIndex) => `/Im${image.index} ${imageReferences[imageIndex]}`)
+							.join(" ")} >>`
+					: "";
 				objects[pageId] =
 					`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] ` +
-					`/Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents ${streamId} 0 R >>`;
+					`/Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> ${imageResources} >> /Contents ${streamId} 0 R >>`;
 				objects[streamId] = `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`;
+			});
+			images.forEach((image, index) => {
+				const imageId = firstImageId + index;
+				const imageHex = Array.from(image.data, (byte) => byte.toString(16).padStart(2, "0")).join("");
+				objects[imageId] =
+					`<< /Type /XObject /Subtype /Image /Width ${image.width} /Height ${image.height} ` +
+					`/ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter [/ASCIIHexDecode /DCTDecode] ` +
+					`/Length ${imageHex.length + 1} >>\nstream\n${imageHex}>\nendstream`;
 			});
 			objects[2] = `<< /Type /Pages /Kids [${pageReferences.join(" ")}] /Count ${pages.length} >>`;
 			let output = "%PDF-1.4\n";
@@ -298,23 +337,88 @@
 		return { addQuestion, addAnswerKey, toBytes };
 	}
 
-	function createPdf(quiz) {
+	function validatePdfQuiz(quiz) {
 		if (quiz?.downloadable === false) {
 			throw new Error("Downloads are disabled for this quiz.");
 		}
 		if (!quiz || typeof quiz.title !== "string" || !Array.isArray(quiz.questions) || !quiz.questions.length) {
 			throw new Error("This quiz does not contain any questions to export.");
 		}
-		const course = plainText(quiz.courseName || quiz.course || "QuizHub");
-		const document = makePdfDocument(plainText(quiz.title), course);
 		quiz.questions.forEach((question, index) => {
 			if (!question || typeof question.q !== "string" || !Array.isArray(question.a)) {
 				throw new Error(`Question ${index + 1} has an unsupported format.`);
 			}
+		});
+	}
+
+	function createPdf(quiz, images = []) {
+		validatePdfQuiz(quiz);
+		const course = plainText(quiz.courseName || quiz.course || "QuizHub");
+		const document = makePdfDocument(plainText(quiz.title), course, images);
+		quiz.questions.forEach((question, index) => {
 			document.addQuestion(question, index);
 		});
 		document.addAnswerKey(quiz.questions);
 		return document.toBytes();
+	}
+
+	async function loadQuestionImage(source, windowObject) {
+		const image = new windowObject.Image();
+		const imageUrl = new URL(source, windowObject.location.href);
+		if (
+			(imageUrl.protocol === "http:" || imageUrl.protocol === "https:") &&
+			imageUrl.origin !== windowObject.location.origin
+		) {
+			image.crossOrigin = "anonymous";
+		}
+		image.src = imageUrl.href;
+		try {
+			await image.decode();
+		} catch (error) {
+			throw new Error(`Could not load question image "${source}": ${error.message}`);
+		}
+		if (!image.naturalWidth || !image.naturalHeight) {
+			throw new Error(`Question image "${source}" has invalid dimensions.`);
+		}
+		const canvas = windowObject.document.createElement("canvas");
+		canvas.width = image.naturalWidth;
+		canvas.height = image.naturalHeight;
+		const context = canvas.getContext("2d");
+		if (!context) throw new Error("Could not prepare a question image for PDF export.");
+		context.drawImage(image, 0, 0);
+		const blob = await new Promise((resolve, reject) => {
+			canvas.toBlob(
+				(value) => (value ? resolve(value) : reject(new Error("Could not encode a question image."))),
+				"image/jpeg",
+				0.9,
+			);
+		});
+		return {
+			index: -1,
+			width: image.naturalWidth,
+			height: image.naturalHeight,
+			data: new Uint8Array(await blob.arrayBuffer()),
+		};
+	}
+
+	async function createPdfWithImages(quiz, windowObject) {
+		validatePdfQuiz(quiz);
+		const imageEntries = await Promise.all(
+			quiz.questions.map(async (question, index) => {
+				const source =
+					typeof question.image === "string"
+						? question.image
+						: typeof question.i === "string"
+							? question.i
+							: "";
+				if (!source) return null;
+				return { ...(await loadQuestionImage(source, windowObject)), index };
+			}),
+		);
+		return createPdf(
+			quiz,
+			imageEntries.filter(Boolean),
+		);
 	}
 
 	function createJson(quiz) {
@@ -452,7 +556,7 @@
 				actions.className = "quiz-export-actions";
 				const pdfButton = makeButton("Download PDF", () =>
 					withButtonStatus(pdfButton, async () => {
-						const bytes = createPdf(quiz);
+						const bytes = await createPdfWithImages(quiz, windowObject);
 						downloadBlob(new Blob([bytes], { type: "application/pdf" }), filenameFor(quiz, "pdf"));
 						status.textContent = `Downloaded ${quiz.title} as a PDF.`;
 					}),
@@ -680,6 +784,7 @@
 		answerForQuestion,
 		createJson,
 		createPdf,
+		createPdfWithImages,
 		initialize,
 		plainText,
 		wrapText,

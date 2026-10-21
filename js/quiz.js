@@ -233,9 +233,15 @@ window.QuizHubMusicPicker.attach({
 			quizMusicPending = false;
 		}
 	},
-	onTrackSelected(shouldPlay) {
+	onTrackSelected(shouldPlay, reshuffle) {
 		if (isDataSciLautest && !dataSciLautestMusicStarted) return;
-		quizMusic.src = resolveQuizMusicSource();
+		quizMusic.src =
+			reshuffle && window.quizHubPreferences.isQuizMusicRotation
+				? window.quizHubPreferences.getNextQuizMusic(
+						quizMusic.currentSrc || quizMusic.src,
+						quizMusicDefaultSource,
+					)
+				: resolveQuizMusicSource();
 		quizMusic.load();
 		if (shouldPlay) startQuizMusic();
 	},

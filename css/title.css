@@ -1856,13 +1856,13 @@ body.compgfx-loading.welcome-out .welcome > div {
 		top: auto;
 		left: auto;
 		right: 14px;
-		bottom: 14px;
+		bottom: 64px;
 	}
 	.music-toggle {
 		top: auto;
 		left: auto;
 		right: 64px;
-		bottom: 14px;
+		bottom: 64px;
 	}
 }
 .options-toggle {

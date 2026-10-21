@@ -2,7 +2,7 @@
 
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
-const { createJson, createPdf, wrapText } = require("../js/quiz-export.js");
+const { createJson, createPdf, createPdfWithImages, wrapText } = require("../js/quiz-export.js");
 const { quizCatalog } = require("../js/dev-scenes.js");
 
 function pdfPageStreams(pdfBytes) {
@@ -68,6 +68,49 @@ test("quiz PDF answer key includes structured table solutions", () => {
 	const answerKey = streams.find((stream) => stream.includes("(ANSWER KEY)"));
 	assert.match(answerKey, /\(1\. v0: 1, 2, 3\)/);
 	assert.match(answerKey, /\(v1: 4, 5, 6\)/);
+});
+
+test("quiz PDF embeds question images beside their questions", async () => {
+	class MockImage {
+		naturalWidth = 2;
+		naturalHeight = 1;
+
+		async decode() {}
+	}
+	const windowObject = {
+		Image: MockImage,
+		location: {
+			href: "https://quizhub.test/export",
+			origin: "https://quizhub.test",
+		},
+		document: {
+			createElement() {
+				return {
+					width: 0,
+					height: 0,
+					getContext: () => ({ drawImage() {} }),
+					toBlob(callback) {
+						callback(new Blob([Uint8Array.from([0xff, 0xd8, 0xff, 0xd9])]));
+					},
+				};
+			},
+		},
+	};
+	const pdf = await createPdfWithImages(
+		{
+			title: "Image Questions",
+			questions: [
+				{ q: "Identify this image.", a: ["A diagram"], c: 0, i: "diagram.png" },
+			],
+		},
+		windowObject,
+	);
+	const pdfText = Buffer.from(pdf).toString("ascii");
+	const questionPage = pdfPageStreams(pdf).find((stream) => stream.includes("(Identify this image.)"));
+
+	assert.match(pdfText, /\/Subtype \/Image \/Width 2 \/Height 1/);
+	assert.match(pdfText, /ffd8ffd9>/);
+	assert.match(questionPage, /\/Im0 Do/);
 });
 
 test("question JSON export includes the resolved correct answer", () => {

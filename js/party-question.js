@@ -110,6 +110,25 @@
 		return { score, place: playersAhead + 1 };
 	}
 
+	function getPlayerStandings(players, scoreKey = "score") {
+		if (!Array.isArray(players)) return [];
+		const standings = players.map((player, index) => ({
+			player,
+			score: Number.isFinite(Number(player?.[scoreKey]))
+				? Math.max(0, Number(player[scoreKey]))
+				: 0,
+			index,
+		}));
+		standings.sort((first, second) => second.score - first.score || first.index - second.index);
+		let place = 0;
+		let previousScore = null;
+		return standings.map((entry, index) => {
+			if (entry.score !== previousScore) place = index + 1;
+			previousScore = entry.score;
+			return { player: entry.player, score: entry.score, place };
+		});
+	}
+
 	function isTrueFalseQuestion(question) {
 		if (!question || !Array.isArray(question.a)) return false;
 		const answers = question.a.filter((answer) => answer !== "BLANK");
@@ -125,6 +144,7 @@
 		isValidAnswerOrder,
 		getAnswerButtonText,
 		getPlayerStanding,
+		getPlayerStandings,
 		isTrueFalseQuestion,
 	};
 });

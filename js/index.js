@@ -127,7 +127,8 @@ const normalMenuMusicSource = resolveAssetUrl("music/MenuMusic.wav");
 const specialMenuMusicSource = resolveAssetUrl("music/SpecialMenu.wav");
 const stressMenuMusicSource = resolveAssetUrl("music/StressMenu.mp3");
 const secretMenuMusicSource = resolveAssetUrl("secret/HUB.wav");
-const netHubMenuMusicSource = resolveAssetUrl("music/BonusTrack.wav");
+const createMenuMusicSource = resolveAssetUrl("music/BonusTrack.wav");
+const netHubMenuMusicSource = resolveAssetUrl("music/NetHub.mp3");
 let activeMenuTheme = "";
 const stressMenuDates = new Set(["2026-10-20", "2026-10-21", "2026-10-22"]);
 const specialMenuMusicDates = new Set([
@@ -153,9 +154,10 @@ let menuMusicFadePending = false;
 menuMusic.loop = true;
 menuMusic.volume = 0.45;
 function getMenuMusicSource(date = new Date()) {
-	if (activeMenuTheme === "create" || activeMenuTheme === "nethub") {
+	if (activeMenuTheme === "nethub") {
 		return netHubMenuMusicSource;
 	}
+	if (activeMenuTheme === "create") return createMenuMusicSource;
 	if (isStressMenuDate(date)) return stressMenuMusicSource;
 	if (window.quizHubPreferences.secretMode) return secretMenuMusicSource;
 	return isSpecialMenuMusicDate(date)
@@ -2018,6 +2020,12 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 3.1.0
+- The export to pdf option will now include images, if the quiz contains images
+- Clicking music rotation again during a quiz will now reshuffle the music
+- Playing multiple quizzes with the same party will now show overall placements
+- The NetHub menu has been enhanced, with new visuals and music
+
 Version 3.0.0
 - You can now create your own quizzes through the "Create" menu!
 - NetHub is here! Share your creations on the NetHub, and explore quizzes made by other users.

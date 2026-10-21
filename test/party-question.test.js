@@ -90,6 +90,37 @@ test("Host Display player standing ranks current scores and shares tied places",
 	assert.equal(partyQuestion.getPlayerStanding(players, "missing"), null);
 });
 
+test("party standings sort by current or cumulative score and keep tied placements", () => {
+	const players = [
+		{ id: "first", score: 2, overallScore: 8 },
+		{ id: "second", score: 5, overallScore: 3 },
+		{ id: "third", score: 5, overallScore: 8 },
+	];
+
+	assert.deepEqual(
+		partyQuestion.getPlayerStandings(players).map(({ player, score, place }) => ({
+			id: player.id,
+			score,
+			place,
+		})),
+		[
+			{ id: "second", score: 5, place: 1 },
+			{ id: "third", score: 5, place: 1 },
+			{ id: "first", score: 2, place: 3 },
+		],
+	);
+	assert.deepEqual(
+		partyQuestion.getPlayerStandings(players, "overallScore").map(
+			({ player, score, place }) => ({ id: player.id, score, place }),
+		),
+		[
+			{ id: "first", score: 8, place: 1 },
+			{ id: "third", score: 8, place: 1 },
+			{ id: "second", score: 3, place: 3 },
+		],
+	);
+});
+
 test("true/false Party Mode is recognized for answer-button labels", () => {
 	assert.equal(partyQuestion.isTrueFalseQuestion({ a: ["True", "False"] }), true);
 	assert.equal(

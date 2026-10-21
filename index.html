@@ -91,7 +91,7 @@
 		<link rel="stylesheet" href="css/offline-app.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
 		<link rel="stylesheet" href="css/dev.css" />
-		<link rel="stylesheet" href="css/net-hub.css" />
+		<link rel="stylesheet" href="css/net-hub.css?v=nethub-code-stream" />
 		<script src="./js/audio-focus.js" defer></script>
 		<script src="./js/offline-app.js" defer></script>
 		<script src="./js/load-preferences.js"></script>
@@ -100,11 +100,11 @@
 		<script src="./js/party-config.js" defer></script>
 		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
-		<script src="./js/index.js?v=course-label-data" defer></script>
+		<script src="./js/index.js?v=nethub-menu-audio" defer></script>
 		<script
 			src="./js/net-hub-storage.js?v=user-made-remove-music"
 			defer></script>
-		<script src="./js/net-hub.js?v=user-made-remove" defer></script>
+		<script src="./js/net-hub.js?v=nethub-code-stream" defer></script>
 		<script src="./js/quiz-export.js?v=quiz-export-3" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
@@ -161,7 +161,7 @@
 			title="Download the standalone app">
 			<svg viewBox="0 0 24 24" aria-hidden="true">
 				<path
-					d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v4h14v-4"
+					d="M2.5 8.5a15 15 0 0 1 19 0M5.5 12a10 10 0 0 1 13 0m-9.5 3.5a5 5 0 0 1 6 0"
 					fill="none"
 					stroke="currentColor"
 					stroke-width="2"
@@ -180,7 +180,7 @@
 			title="Download QuizHub for offline play">
 			<svg viewBox="0 0 24 24" aria-hidden="true">
 				<path
-					d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v4h14v-4"
+					d="M2.5 8.5a15 15 0 0 1 19 0M5.5 12a10 10 0 0 1 13 0m-9.5 3.5a5 5 0 0 1 6 0M3 3l18 18"
 					fill="none"
 					stroke="currentColor"
 					stroke-width="2"
@@ -252,7 +252,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 3.0.0</div>
+						<div class="tagline">Version 3.0.1</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -398,20 +398,6 @@
 					PATCH NOTES
 				</button>
 				<button
-					class="quiz-export-open-button"
-					id="quizExportOpenButton"
-					type="button"
-					aria-haspopup="dialog"
-					aria-controls="quizExportModal">
-					Export
-				</button>
-				<button
-					class="net-hub-account-button"
-					id="netHubAccountButton"
-					type="button">
-					My Uploads
-				</button>
-				<button
 					class="net-hub-user-made-tab"
 					id="netHubUserMadeTab"
 					type="button"
@@ -420,6 +406,34 @@
 				</button>
 			</div>
 		</div>
+
+		<button
+			class="quiz-export-open-button"
+			id="quizExportOpenButton"
+			type="button"
+			aria-label="Export quizzes"
+			title="Export quizzes"
+			aria-haspopup="dialog"
+			aria-controls="quizExportModal">
+			<svg aria-hidden="true" viewBox="0 0 24 24">
+				<path d="M5 2.5h9l5 5v14H5zM14 2.5v5h5" />
+				<path d="M7.5 13.5h9" />
+				<text x="12" y="18.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="Arial, sans-serif" font-size="5" font-weight="700">PDF</text>
+			</svg>
+			<span class="utility-button-label">Export</span>
+		</button>
+		<button
+			class="net-hub-account-button"
+			id="netHubAccountButton"
+			type="button"
+			aria-label="My uploads"
+			title="My uploads">
+			<svg aria-hidden="true" viewBox="0 0 24 24">
+				<path d="M20 16.5a4.5 4.5 0 0 0-.8-8.9A7 7 0 0 0 5.8 9.4 3.8 3.8 0 0 0 6 17h4" />
+				<path d="M12 21v-9m0 0 3 3m-3-3-3 3" />
+			</svg>
+			<span class="utility-button-label">My Uploads</span>
+		</button>
 
 		<div
 			class="net-hub-modal quiz-export-modal"
@@ -680,11 +694,32 @@
 						<span
 							class="net-hub-sphere-meridian net-hub-sphere-meridian-c"></span>
 						<span
+							class="net-hub-sphere-meridian net-hub-sphere-meridian-d"></span>
+						<span
+							class="net-hub-sphere-meridian net-hub-sphere-meridian-e"></span>
+						<span
 							class="net-hub-sphere-latitude net-hub-sphere-latitude-a"></span>
 						<span
 							class="net-hub-sphere-latitude net-hub-sphere-latitude-b"></span>
 						<span
 							class="net-hub-sphere-latitude net-hub-sphere-latitude-c"></span>
+						<span
+							class="net-hub-sphere-latitude net-hub-sphere-latitude-d"></span>
+						<span
+							class="net-hub-sphere-latitude net-hub-sphere-latitude-e"></span>
+						<div class="net-hub-network-nodes">
+							<span></span><span></span><span></span><span></span>
+							<span></span><span></span><span></span><span></span>
+						</div>
+					</div>
+					<div class="net-hub-code-console">
+						<div class="net-hub-code-console-heading">
+							<span class="net-hub-code-indicator"></span>
+							NETWORK / LIVE FEED
+						</div>
+						<div class="net-hub-code-viewport">
+							<pre id="netHubCodeStream"></pre>
+						</div>
 					</div>
 				</div>
 				<button

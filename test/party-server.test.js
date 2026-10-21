@@ -423,7 +423,26 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     code: hosted.room.code,
     config: { questionSequence: [0], orderMode: "static", timeLimitMinutes: null, perQuestionTimeMinutes: null }
   });
-  await Promise.all([hostReplayStart, guestReplayStart]);
+  const [hostReplayStartMessage, guestReplayStartMessage] = await Promise.all([
+    hostReplayStart,
+    guestReplayStart
+  ]);
+  for (const player of hostReplayStartMessage.players) {
+    assert.equal(player.score, 0, "replay starts with a fresh current-quiz score");
+    assert.equal(player.overallScore, player.id === joined.playerId ? 3 : 1);
+  }
+  assert.deepEqual(
+    guestReplayStartMessage.players.map(({ id, score, overallScore }) => ({
+      id,
+      score,
+      overallScore
+    })),
+    hostReplayStartMessage.players.map(({ id, score, overallScore }) => ({
+      id,
+      score,
+      overallScore
+    }))
+  );
   const hostReplayEnded = waitForMessage(host, "game-over", (message) => message.reason === "ended");
   const guestReplayEnded = waitForMessage(guest, "game-over", (message) => message.reason === "ended");
   send(host, { type: "end-game", code: hosted.room.code, reason: "ended" });

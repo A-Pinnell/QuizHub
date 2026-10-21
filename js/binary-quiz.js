@@ -213,8 +213,13 @@
     isSoundEnabled: () => state.sound,
     isMusicEnabled: () => state.music && !state.paused,
     onSelectionStart: () => music.pause(),
-    onTrackSelected: (shouldPlay) => {
-      music.src = window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
+    onTrackSelected: (shouldPlay, reshuffle) => {
+      music.src = reshuffle
+        ? window.quizHubPreferences.getNextQuizMusic(
+            music.currentSrc || music.src,
+            defaultMusicSource
+          )
+        : window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
       music.load();
       if (shouldPlay) updateMusic();
     }

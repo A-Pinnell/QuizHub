@@ -64,12 +64,15 @@
 		}
 
 		function selectTrack(value) {
-			if (value === window.quizHubPreferences.quizMusic) {
+			const reshuffle =
+				value === "rotation" &&
+				value === window.quizHubPreferences.quizMusic;
+			if (value === window.quizHubPreferences.quizMusic && !reshuffle) {
 				closeDialog();
 				return;
 			}
 
-			window.quizHubPreferences.setQuizMusic(value);
+			if (!reshuffle) window.quizHubPreferences.setQuizMusic(value);
 			updateButtonLabel();
 			renderOptions();
 			status.textContent = "Loading selected disc…";
@@ -85,7 +88,7 @@
 				if (currentSelection !== selectionId) return;
 				discLoadSound.pause();
 				discLoadSound.currentTime = 0;
-				onTrackSelected(isMusicEnabled());
+				onTrackSelected(isMusicEnabled(), reshuffle);
 				closeDialog();
 			};
 			if (!isSoundEnabled()) {
