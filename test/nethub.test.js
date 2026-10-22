@@ -16,7 +16,12 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
   async function startServer() {
     server = spawn(process.execPath, ["server.js"], {
       cwd: process.cwd(),
-      env: { ...process.env, PORT: String(port), QUIZHUB_DATA_DIR: dataDirectory },
+      env: {
+        ...process.env,
+        PORT: String(port),
+        DATABASE_URL: "",
+        QUIZHUB_DATA_DIR: dataDirectory
+      },
       stdio: ["ignore", "pipe", "pipe"]
     });
     let output = "";
@@ -237,4 +242,37 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
     method: "DELETE"
   }, ownerAfterRestart.payload.token);
   assert.equal(deletedByOwner.payload.deleted, true);
+});
+
+test("NetHub reports an unavailable configured PostgreSQL database", async (t) => {
+  const port = 21000 + Math.floor(Math.random() * 1000);
+  const server = spawn(process.execPath, ["server.js"], {
+    cwd: process.cwd(),
+    env: {
+      ...process.env,
+      PORT: String(port),
+      DATABASE_URL: "postgres://quizhub:quizhub@127.0.0.1:1/quizhub?sslmode=disable"
+    },
+    stdio: ["ignore", "ignore", "ignore"]
+  });
+  t.after(async () => {
+    if (server.exitCode === null) {
+      server.kill();
+      await once(server, "exit");
+    }
+  });
+
+  let response;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    if (server.exitCode !== null) throw new Error("NetHub server exited unexpectedly.");
+    try {
+      response = await fetch(`http://localhost:${port}/api/nethub/healthz`);
+      break;
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  }
+  assert.ok(response, "NetHub server did not start.");
+  assert.equal(response.status, 500);
+  assert.deepEqual(await response.json(), { error: "NetHub is temporarily unavailable." });
 });

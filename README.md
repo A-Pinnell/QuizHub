@@ -10,8 +10,8 @@ GitHub Pages hosts the static QuizHub site. Online party games additionally conn
 2. Create an account at [render.com](https://render.com/) and sign in with GitHub. Authorize Render to access the `A-Pinnell/QuizHub` repository when prompted.
 3. In the Render Dashboard, select **New +** → **Blueprint**.
 4. Connect the `A-Pinnell/QuizHub` repository and select the branch you publish from. If Render asks for the Blueprint file, use `render.yaml` at the repository root.
-5. Review the service named `quizhub-party-server`, then select **Apply** to create it. The Blueprint configures the Node start command and `/healthz` health check.
-6. Wait for the first deploy to finish and the service to show **Live**. Open its `onrender.com` URL followed by `/healthz`; it should return `{"status":"ok"}`.
+5. Review the service named `quizhub-party-server`. Before selecting **Apply**, create the Supabase project and run the schema setup described under [NetHub quizzes](#nethub-quizzes); enter its database connection URI when Render prompts for `DATABASE_URL`. For an existing service, set `DATABASE_URL` in the Render environment settings before deploying this change. The Blueprint configures the Node start command and `/api/nethub/healthz` health check.
+6. Wait for the first deploy to finish and the service to show **Live**. Open its `onrender.com` URL followed by `/api/nethub/healthz`; it should return `{"status":"ok","netHub":true}`.
 7. The browser client defaults to `https://quizhub-party-server.onrender.com`. If Render shows a different service URL, update the URL in `js/party-config.js` to that service's HTTPS address and push the change to GitHub.
 8. Enable the static site in GitHub: open the repository's **Settings** → **Pages**, choose **Deploy from a branch**, select the published branch and `/ (root)`, and save. Use the Pages URL shown there to open QuizHub. All players visit the Pages site; it connects to the shared Render service at `/party`.
 
@@ -33,7 +33,9 @@ Choose **+ CREATE** to get an AI prompt tailored to a QuizHub course, theme, and
 
 Choose **Export** from the main menu to browse the QuizHub and NetHub collections. Each quiz can be downloaded as an exam-style PDF with all questions followed by a separate answer-key section, or as JSON question data. NetHub exports include hosted quizzes and quizzes saved on the current device. Procedural Binary and Hexadecimal practice do not have a fixed question bank to export.
 
-NetHub's accounts and quizzes are stored in a JSON database at `data/nethub.json` by default (or in the directory set by `QUIZHUB_DATA_DIR`). Passwords are stored as salted scrypt hashes. A 4-digit password is intentionally low-entropy and is rate-limited; do not reuse a password or store sensitive information in a quiz. Accounts have no password recovery. For a hosted Render deployment, point `QUIZHUB_DATA_DIR` at a persistent disk mount to keep accounts and uploads across deploys and instance restarts. The default free service filesystem is not durable, so it is not suitable for production persistence without that storage configuration.
+NetHub uses `data/nethub.json` for local development when `DATABASE_URL` is not set. For hosted use, it stores accounts and quizzes in Supabase Postgres. Create a Supabase project, run [`scripts/nethub-schema.sql`](./scripts/nethub-schema.sql) in its SQL Editor, then copy the Session pooler connection URI from the Supabase dashboard and set it as the Render service's `DATABASE_URL`. Use the session-mode pooler for this long-running Render server, keep the URI private, and never commit it or put it in browser-side code. Render's Blueprint declares this variable as secret configuration. If the connected database is empty and `data/nethub.json` exists, NetHub imports that file once on first access.
+
+Passwords are stored as salted scrypt hashes. A 4-digit password is intentionally low-entropy and is rate-limited; do not reuse a password or store sensitive information in a quiz. Accounts have no password recovery. Check the current Supabase free-plan quotas and inactivity policies for your project; export important quizzes regularly as a backup.
 
 ### Host Display
 

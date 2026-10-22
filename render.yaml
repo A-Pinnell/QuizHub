@@ -8,3 +8,8 @@ services:
     buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /api/nethub/healthz
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: QUIZHUB_REQUIRE_DATABASE
+        value: "true"
