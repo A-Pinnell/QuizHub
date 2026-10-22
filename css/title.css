@@ -2686,6 +2686,12 @@ html.motion-minimal .party-mode-toggle.party-rainbow {
 	);
 	box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
 	color: #fff;
+	transform: translateY(12px) scale(0.97);
+	transition: transform 0.22s ease;
+}
+.party-mode-modal.open .party-mode-panel,
+.no-connection-modal.open .party-mode-panel {
+	transform: translateY(0) scale(1);
 }
 .party-mode-panel [hidden] {
 	display: none !important;

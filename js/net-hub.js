@@ -352,6 +352,19 @@
 	}
 
 	function openModal(modal, initialFocus) {
+		if (modal !== accountModal) {
+			let rippleScreen = modal.querySelector(".net-hub-ripple-screen");
+			if (!rippleScreen) {
+				rippleScreen = document.createElement("div");
+				rippleScreen.className = "net-hub-ripple-screen";
+				rippleScreen.setAttribute("aria-hidden", "true");
+				for (let index = 0; index < 9; index++) {
+					rippleScreen.appendChild(document.createElement("span"));
+				}
+				modal.appendChild(rippleScreen);
+			}
+		}
+		modal.classList.remove("closing");
 		modal.classList.add("open");
 		modal.setAttribute("aria-hidden", "false");
 		if (modal === browseModal) startCodeStream();
@@ -369,7 +382,29 @@
 		stopMusicPreview();
 		document.querySelectorAll(".net-hub-modal.open").forEach((modal) => {
 			modal.classList.remove("open");
+			modal.classList.add("closing");
 			modal.setAttribute("aria-hidden", "true");
+			const rippleScreen = modal.querySelector(".net-hub-ripple-screen");
+			const finishClosing = (event) => {
+				if (
+					event.target !== rippleScreen ||
+					event.animationName !== "netHubRippleOut"
+				) return;
+				modal.classList.remove("closing");
+				rippleScreen.removeEventListener("animationend", finishClosing);
+			};
+			rippleScreen?.addEventListener("animationend", finishClosing);
+			const closeDuration = window.matchMedia(
+				"(prefers-reduced-motion: reduce)",
+			).matches
+				? 0
+				: modal === accountModal
+					? 220
+					: 360;
+			window.setTimeout(() => {
+				modal.classList.remove("closing");
+				rippleScreen?.removeEventListener("animationend", finishClosing);
+			}, closeDuration);
 		});
 		document.body.classList.remove("net-hub-open");
 		window.dispatchEvent(

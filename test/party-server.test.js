@@ -66,7 +66,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     return socket;
   }
 
-  async function verifyPartyQuizLaunch(category, quiz) {
+  async function verifyPartyQuizLaunch(category, quiz, netHubQuizId = null) {
     const quizHost = await connect();
     const hostedPromise = waitForMessage(quizHost, "hosted");
     send(quizHost, {
@@ -90,7 +90,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
       type: "launch",
       code: hostedRoom.room.code,
       category,
-      quiz
+      quiz,
+      ...(netHubQuizId ? { netHubQuizId } : {})
     });
     const [hostLaunchMessage, guestLaunchMessage] = await Promise.all([
       hostLaunchPromise,
@@ -99,6 +100,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     for (const launch of [hostLaunchMessage, guestLaunchMessage]) {
       assert.equal(launch.category, category);
       assert.equal(launch.quiz, quiz);
+      assert.equal(launch.netHubQuizId, netHubQuizId);
     }
     quizHost.close();
     quizGuest.close();
@@ -108,6 +110,12 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   await verifyPartyQuizLaunch("CloudComp", "test1");
   await verifyPartyQuizLaunch("CompArch", "binary");
   await verifyPartyQuizLaunch("CompArch", "hexadecimal");
+  const netHubQuizId = "123e4567-e89b-42d3-a456-426614174000";
+  await verifyPartyQuizLaunch(
+    "NetHub",
+    `nethub_${netHubQuizId.replaceAll("-", "")}`,
+    netHubQuizId
+  );
 
   const host = await connect();
   const missingRoomError = waitForMessage(host, "error");

@@ -620,6 +620,7 @@ function publicRoom(room) {
     partyOptions: room.partyOptions,
     category: room.category,
     quiz: room.quiz,
+    netHubQuizId: room.netHubQuizId,
     quizTheme: room.quizTheme,
     mixedSources: room.mixedSources,
     quizConfig: room.quizConfig,
@@ -873,6 +874,7 @@ function handleMessage(socket, rawMessage) {
         excludedQuizzesEnabled: false,
         question: null, answersLocked: [], activity: new Map(), reveal: null, quizConfig: null, mixedSources: null,
         hostDisplay: false, hostDisplayPlayerId: null, quizTheme: null,
+        netHubQuizId: null,
         partyOptions: { showPlayerScores: true, showLockedAnswers: false, earlyPointBonus: true }
       };
       rememberPlayerScore(room, player);
@@ -1115,6 +1117,9 @@ function handleMessage(socket, rawMessage) {
       }
       const category = typeof message.category === "string" ? message.category : "";
       const quiz = typeof message.quiz === "string" ? message.quiz : "";
+      const netHubQuizId = typeof message.netHubQuizId === "string"
+        ? message.netHubQuizId
+        : null;
       if (message.quizTheme !== undefined && !quizThemes.has(message.quizTheme)) {
         return sendError(socket, "Select a valid quiz style.");
       }
@@ -1127,18 +1132,25 @@ function handleMessage(socket, rawMessage) {
         SoftEngi: ["test1"]
       };
       let mixedSources = null;
+      if (category === "NetHub") {
+        if (!netHubQuizId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(netHubQuizId) ||
+            quiz !== `nethub_${netHubQuizId.replaceAll("-", "").toLowerCase()}`) {
+          return sendError(socket, "Select a valid NetHub quiz.");
+        }
+      }
       if (category === "MixedStudy" && quiz === "mixed") {
         try {
           mixedSources = mixedStudy.normalizeSources(message.mixedSources);
         } catch (error) {
           return sendError(socket, error.message);
         }
-      } else if (!validQuizzes[category]?.includes(quiz)) {
+      } else if (category !== "NetHub" && !validQuizzes[category]?.includes(quiz)) {
         return sendError(socket, "Select a valid course and quiz.");
       }
       room.stage = "setup";
       room.category = category;
       room.quiz = quiz;
+      room.netHubQuizId = category === "NetHub" ? netHubQuizId : null;
       room.quizTheme = message.quizTheme || "default";
       room.mixedSources = mixedSources;
       room.quizConfig = null;
@@ -1147,6 +1159,7 @@ function handleMessage(socket, rawMessage) {
         type: "launch",
         category,
         quiz,
+        netHubQuizId: room.netHubQuizId,
         quizTheme: room.quizTheme,
         mixedSources
       });
@@ -1216,6 +1229,7 @@ function handleMessage(socket, rawMessage) {
         type: "replay",
         category: room.category,
         quiz: room.quiz,
+        netHubQuizId: room.netHubQuizId,
         quizTheme: room.quizTheme,
         mixedSources: room.mixedSources
       });
@@ -1231,6 +1245,7 @@ function handleMessage(socket, rawMessage) {
       room.stage = "lobby";
       room.category = null;
       room.quiz = null;
+      room.netHubQuizId = null;
       room.quizTheme = null;
       room.mixedSources = null;
       room.quizConfig = null;

@@ -1,49 +1,73 @@
 (function () {
 	"use strict";
 
-	const params = new URLSearchParams(window.location.search);
-	const quizId = params.get("netHubQuiz");
-	if (!quizId) return;
-	try {
-		const quiz = JSON.parse(
-			sessionStorage.getItem(`quizHubNetHubQuiz:${quizId}`) || "null",
-		);
+	async function loadNetHubQuiz() {
+		const params = new URLSearchParams(window.location.search);
+		const quizId = params.get("netHubQuiz");
+		if (!quizId) return;
+		const quizKey = params.get("quiz");
+		if (
+			!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(quizId) ||
+			!quizKey ||
+			!/^nethub_[a-f0-9]{32}$/.test(quizKey)
+		) {
+			throw new Error("The uploaded quiz link is invalid.");
+		}
+
+		let quiz = null;
+		if (params.get("partyMode") !== "true") {
+			try {
+				quiz = JSON.parse(
+					sessionStorage.getItem(`quizHubNetHubQuiz:${quizId}`) || "null",
+				);
+			} catch (error) {
+				console.error("Could not restore the saved NetHub quiz:", error);
+			}
+		}
 		if (
 			!quiz ||
 			typeof quiz.courseKey !== "string" ||
 			!Array.isArray(quiz.questions)
 		) {
-			throw new Error("The uploaded quiz is not available in this browser session.");
+			const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
+			const apiBase = window.QUIZHUB_PARTY_SERVER_URL ||
+				(localHosts.has(window.location.hostname)
+					? window.location.origin
+					: "https://quizhub-party-server.onrender.com");
+			const response = await fetch(
+				`${apiBase}/api/nethub/quizzes/${encodeURIComponent(quizId)}`,
+				{ cache: "no-store" },
+			);
+			const payload = await response.json();
+			if (!response.ok) {
+				throw new Error(payload.error || "Could not load the uploaded quiz.");
+			}
+			quiz = payload.quiz;
 		}
+		if (
+			!quiz ||
+			typeof quiz.courseKey !== "string" ||
+			!Array.isArray(quiz.questions)
+		) {
+			throw new Error("The uploaded quiz data is invalid.");
+		}
+
 		const bank = window.questionBank || (window.questionBank = {});
-		const course = bank[quiz.courseKey] || (bank[quiz.courseKey] = {});
-		const quizKey = params.get("quiz");
-		if (!quizKey || !/^nethub_[a-f0-9]{32}$/.test(quizKey)) {
-			throw new Error("The uploaded quiz link is invalid.");
-		}
+		const category = params.get("category") === "NetHub" ? "NetHub" : quiz.courseKey;
+		const course = bank[category] || (bank[category] = {});
 		course[quizKey] = quiz.questions;
 		window.quizHubNetHubQuiz = quiz;
 		if (quiz.music?.upload && !quiz.music.upload.data) {
 			const storageKey = quiz.music.upload.storageKey;
 			if (typeof storageKey !== "string" || !window.QuizHubNetHubStorage) {
-				throw new Error("The saved quiz music is not available.");
+				throw new Error("The saved quiz music is not available on this device.");
 			}
-			window.quizHubNetHubMusicPromise = window.QuizHubNetHubStorage
-				.getMusicUrl(storageKey)
-				.then((sourceUrl) => {
-					quiz.music.upload.sourceUrl = sourceUrl;
-					return sourceUrl;
-				})
-				.catch((error) => {
-					window.quizHubNetHubQuizError = error.message;
-					throw error;
-				});
-			window.quizHubNetHubMusicPromise.catch(() => {});
-		} else {
-			window.quizHubNetHubMusicPromise = Promise.resolve();
+			quiz.music.upload.sourceUrl = await window.QuizHubNetHubStorage.getMusicUrl(storageKey);
 		}
-	} catch (error) {
+	}
+
+	window.quizHubNetHubQuizPromise = loadNetHubQuiz().catch((error) => {
 		console.error("Could not load the NetHub quiz:", error);
 		window.quizHubNetHubQuizError = error.message;
-	}
+	});
 })();

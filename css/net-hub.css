@@ -190,15 +190,13 @@
 	justify-content: center;
 	padding: 20px;
 }
-.net-hub-modal.open {
+.net-hub-modal.open,
+.net-hub-modal.closing {
 	display: flex;
 }
 #netHubBrowseModal {
 	align-items: stretch;
 	padding: 0;
-}
-#netHubBrowseModal.open {
-	animation: netHubBackdropIn 420ms ease-out both;
 }
 .net-hub-backdrop {
 	position: absolute;
@@ -221,6 +219,108 @@
 	box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55);
 	font-family: "TradeGothic", Arial, sans-serif;
 }
+.net-hub-modal.open {
+	animation: netHubModalIn 420ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+.net-hub-modal.closing {
+	animation: netHubModalOut 340ms cubic-bezier(0.4, 0, 0.8, 0.25) both;
+}
+.net-hub-modal.open .net-hub-backdrop {
+	animation: netHubBackdropIn 480ms ease-out both;
+}
+.net-hub-modal.closing .net-hub-backdrop {
+	animation: netHubBackdropOut 320ms ease-in both;
+}
+.net-hub-modal.open .net-hub-panel {
+	animation: netHubPanelIn 520ms 55ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.net-hub-modal.closing .net-hub-panel {
+	animation: netHubPanelOut 300ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+.net-hub-ripple-screen {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	visibility: hidden;
+	pointer-events: none;
+}
+.net-hub-modal.open .net-hub-ripple-screen {
+	visibility: visible;
+	animation: netHubRippleCurtain 1.25s ease-in both;
+}
+.net-hub-modal.closing .net-hub-ripple-screen {
+	visibility: visible;
+	animation: netHubRippleOut 280ms ease-in both;
+}
+.net-hub-ripple-screen span {
+	position: absolute;
+	top: var(--ripple-y);
+	left: var(--ripple-x);
+	width: 50vmax;
+	height: 50vmax;
+	border: 2px solid rgba(114, 246, 255, 0.9);
+	border-radius: 50%;
+	background:
+		radial-gradient(circle, transparent 0 65%, rgba(28, 194, 211, 0.2) 67% 68%, rgba(8, 26, 50, 0.16) 70% 100%);
+	box-shadow:
+		0 0 28px rgba(51, 231, 255, 0.75),
+		inset 0 0 24px rgba(61, 224, 255, 0.4);
+	opacity: 0;
+	transform: translate(-50%, -50%) scale(0);
+}
+.net-hub-ripple-screen span:nth-child(1) { --ripple-x: 0%; --ripple-y: 0%; --ripple-delay: 0ms; }
+.net-hub-ripple-screen span:nth-child(2) { --ripple-x: 50%; --ripple-y: 0%; --ripple-delay: 55ms; }
+.net-hub-ripple-screen span:nth-child(3) { --ripple-x: 100%; --ripple-y: 0%; --ripple-delay: 110ms; }
+.net-hub-ripple-screen span:nth-child(4) { --ripple-x: 0%; --ripple-y: 50%; --ripple-delay: 165ms; }
+.net-hub-ripple-screen span:nth-child(5) { --ripple-x: 50%; --ripple-y: 50%; --ripple-delay: 220ms; }
+.net-hub-ripple-screen span:nth-child(6) { --ripple-x: 100%; --ripple-y: 50%; --ripple-delay: 275ms; }
+.net-hub-ripple-screen span:nth-child(7) { --ripple-x: 0%; --ripple-y: 100%; --ripple-delay: 330ms; }
+.net-hub-ripple-screen span:nth-child(8) { --ripple-x: 50%; --ripple-y: 100%; --ripple-delay: 385ms; }
+.net-hub-ripple-screen span:nth-child(9) { --ripple-x: 100%; --ripple-y: 100%; --ripple-delay: 440ms; }
+.net-hub-modal.open .net-hub-ripple-screen span {
+	animation: netHubRippleExpand 900ms var(--ripple-delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.quiz-export-modal,
+#netHubAccountModal {
+	display: flex;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition:
+		opacity 0.22s ease,
+		visibility 0.22s ease;
+}
+.quiz-export-modal.open,
+#netHubAccountModal.open {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+#netHubAccountModal.closing {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+}
+.quiz-export-modal.open,
+.quiz-export-modal.open .net-hub-backdrop,
+.quiz-export-modal.open .net-hub-panel,
+#netHubAccountModal.open,
+#netHubAccountModal.closing,
+#netHubAccountModal .net-hub-backdrop,
+#netHubAccountModal .net-hub-panel,
+#netHubAccountModal .net-hub-ripple-screen {
+	animation: none;
+}
+.quiz-export-modal .net-hub-panel,
+#netHubAccountModal .net-hub-panel {
+	transform: translateY(12px) scale(0.97);
+	transition: transform 0.22s ease;
+}
+.quiz-export-modal.open .net-hub-panel,
+#netHubAccountModal.open .net-hub-panel {
+	transform: translateY(0) scale(1);
+}
 .net-hub-create-panel {
 	border-color: rgba(184, 139, 255, 0.7);
 	background:
@@ -242,7 +342,6 @@
 	background:
 		radial-gradient(ellipse at 85% 32%, rgba(8, 110, 132, 0.26), transparent 48%),
 		linear-gradient(150deg, #102f42, #11172a 72%);
-	animation: netHubPanelIn 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .net-hub-browse-panel > :not(.net-hub-sphere-stage):not(.net-hub-close) {
 	position: relative;
@@ -467,13 +566,61 @@
 	from { opacity: 0.45; transform: scale(0.72); }
 	to { opacity: 1; transform: scale(1.2); }
 }
-@keyframes netHubBackdropIn {
+@keyframes netHubModalIn {
 	from { opacity: 0; }
 	to { opacity: 1; }
 }
+@keyframes netHubModalOut {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+@keyframes netHubBackdropIn {
+	from { opacity: 0; backdrop-filter: blur(0); }
+	to { opacity: 1; backdrop-filter: blur(8px); }
+}
+@keyframes netHubBackdropOut {
+	from { opacity: 1; backdrop-filter: blur(8px); }
+	to { opacity: 0; backdrop-filter: blur(0); }
+}
 @keyframes netHubPanelIn {
-	from { opacity: 0; transform: translateY(22px) scale(0.985); }
-	to { opacity: 1; transform: translateY(0) scale(1); }
+	from {
+		opacity: 0;
+		filter: blur(4px);
+		transform: translate3d(0, 22px, 0) scale(0.985);
+	}
+	to {
+		opacity: 1;
+		filter: blur(0);
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+}
+@keyframes netHubPanelOut {
+	from {
+		opacity: 1;
+		filter: blur(0);
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+	to {
+		opacity: 0;
+		filter: blur(2px);
+		transform: translate3d(0, 8px, 0) scale(0.99);
+	}
+}
+@keyframes netHubRippleCurtain {
+	0% { opacity: 0; }
+	14% { opacity: 0.65; }
+	68% { opacity: 0.45; }
+	100% { opacity: 0; visibility: hidden; }
+}
+@keyframes netHubRippleOut {
+	from { opacity: 0.45; }
+	to { opacity: 0; visibility: hidden; }
+}
+@keyframes netHubRippleExpand {
+	0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+	18% { opacity: 0.72; }
+	68% { opacity: 0.56; transform: translate(-50%, -50%) scale(6); }
+	100% { opacity: 0; transform: translate(-50%, -50%) scale(6); }
 }
 @keyframes netHubSphereSpin {
 	from {
@@ -828,6 +975,16 @@
 }
 @media (prefers-reduced-motion: reduce) {
 	#netHubBrowseModal.open,
+	.net-hub-modal.open,
+	.net-hub-modal.closing,
+	.net-hub-modal.open .net-hub-panel,
+	.net-hub-modal.closing .net-hub-panel,
+	.net-hub-modal.open .net-hub-backdrop,
+	.net-hub-modal.closing .net-hub-backdrop,
+	.net-hub-modal.open .net-hub-ripple-screen,
+	.net-hub-modal.closing .net-hub-ripple-screen,
+	.net-hub-modal.open .net-hub-ripple-screen span,
+	.net-hub-modal.closing .net-hub-ripple-screen span,
 	.net-hub-browse-panel,
 	.net-hub-browse-panel .net-hub-quiz-card,
 	.net-hub-browse-panel .net-hub-tabs button::after,
@@ -835,6 +992,9 @@
 	.net-hub-sphere-stage::after,
 	.net-hub-network-nodes span {
 		animation: none;
+	}
+	.net-hub-ripple-screen {
+		display: none;
 	}
 	.net-hub-code-viewport pre::after {
 		animation: none;

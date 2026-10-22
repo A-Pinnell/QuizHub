@@ -2020,6 +2020,11 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 3.1.2
+- NetHub now uses a proper database, ensuring quizzes are saved properly
+- NetHub quizzes can now be played in Party Mode
+- Menu transitions have been improved
+
 Version 3.1.1
 - NetHub will now support images and other interaction extensions such as the mesh-table used in Computer Graphics.
 - NetHub will now correctly use themes

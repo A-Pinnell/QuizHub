@@ -276,3 +276,44 @@ test("NetHub reports an unavailable configured PostgreSQL database", async (t) =
   assert.equal(response.status, 500);
   assert.deepEqual(await response.json(), { error: "NetHub is temporarily unavailable." });
 });
+
+test("party NetHub quiz links load quiz data and music from the party API", async () => {
+  const quizId = "123e4567-e89b-42d3-a456-426614174000";
+  const quizKey = `nethub_${quizId.replaceAll("-", "")}`;
+  const quiz = {
+    id: quizId,
+    title: "Party NetHub Quiz",
+    courseKey: "CompGFX",
+    courseName: "Computer Graphics",
+    theme: "blended",
+    questions: [{ q: "Question?", a: ["Yes", "No"], c: 0 }],
+    music: { upload: { name: "song.mp3", type: "audio/mpeg", data: "data:audio/mpeg;base64,SUQz" } }
+  };
+  let requestedUrl = "";
+  const context = {
+    URLSearchParams,
+    fetch: async (url) => {
+      requestedUrl = url;
+      return { ok: true, json: async () => ({ quiz }) };
+    },
+    window: {
+      location: {
+        hostname: "localhost",
+        origin: "http://localhost:8080",
+        search: `?category=NetHub&quiz=${quizKey}&netHubQuiz=${quizId}&partyMode=true`
+      }
+    }
+  };
+  vm.runInNewContext(
+    fs.readFileSync(path.join(process.cwd(), "js", "net-hub-quiz.js"), "utf8"),
+    context
+  );
+  await context.window.quizHubNetHubQuizPromise;
+
+  assert.equal(requestedUrl, `http://localhost:8080/api/nethub/quizzes/${quizId}`);
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(context.window.questionBank.NetHub[quizKey])),
+    quiz.questions
+  );
+  assert.equal(context.window.quizHubNetHubQuiz.music.upload.data, quiz.music.upload.data);
+});

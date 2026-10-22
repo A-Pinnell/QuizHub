@@ -151,7 +151,7 @@
     }
   }
 
-  function openQuiz(category,quiz,playerId,isHost,mixedSources=null,hostDisplayPlayerId=null){
+  function openQuiz(category,quiz,playerId,isHost,mixedSources=null,hostDisplayPlayerId=null,netHubQuizId=null){
     if(hostDisplayPlayerId && room){
       const displayHost=room.players.find((player)=>player.host);
       if(!displayHost){
@@ -176,6 +176,7 @@
     target.searchParams.set("category",category);
     target.searchParams.set("quiz",quiz);
     if(mixedSources) target.searchParams.set("mixedSources",JSON.stringify(mixedSources));
+    if(netHubQuizId) target.searchParams.set("netHubQuiz",netHubQuizId);
     target.searchParams.set("partyMode","true");
     target.searchParams.set("partyRoom",results.partyRoomCode);
     target.searchParams.set("partyPlayer",playerId);
@@ -225,13 +226,13 @@
       }else if((room.stage==="setup" || room.stage==="quiz") && room.category && room.quiz){
         openQuiz(room.category,room.quiz,partyActionPlayerId,
           room.players.some((player)=>player.id===partyActionPlayerId && player.host),
-          room.mixedSources,room.hostDisplay?room.hostDisplayPlayerId:null);
+          room.mixedSources,room.hostDisplay?room.hostDisplayPlayerId:null,room.netHubQuizId);
       }
     });
     client.on("replay",(message)=>{
       const current=room?.players.find((player)=>player.id===partyActionPlayerId);
       openQuiz(message.category,message.quiz,partyActionPlayerId,Boolean(current?.host),
-        message.mixedSources,room?.hostDisplay?room.hostDisplayPlayerId:null);
+        message.mixedSources,room?.hostDisplay?room.hostDisplayPlayerId:null,message.netHubQuizId);
     });
     client.on("choose-new-quiz",()=>{
       const current=room?.players.find((player)=>player.id===partyActionPlayerId);

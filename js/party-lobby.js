@@ -55,6 +55,7 @@
     DataSci:[["test1","Test 1 Practice"]],
     SoftEngi:[["test1","Lectures 1–6 Practice"]]
   };
+  const netHubApiBase=window.QUIZHUB_PARTY_SERVER_URL||window.location.origin;
   if(!/^[A-Z]{4}$/.test(code) || !playerId){
     location.replace("index.html");
     return;
@@ -292,7 +293,7 @@
     const minimumPlayers=room.hostDisplay?3:2;
     const allReady=room.players.length>=minimumPlayers && room.players.length<=room.capacity &&
       room.players.every((player)=>player.ready && (player.connected || player.fakePlayer));
-    if(room.stage==="lobby") renderQuizOptions();
+    if(room.stage==="lobby"&&categorySelect.value!=="NetHub") renderQuizOptions();
     status.textContent=room.stage==="lobby"
       ? room.players.length<minimumPlayers
         ? room.hostDisplay
@@ -307,9 +308,7 @@
     const selectedDisplayPlayer=room.players.find(
       (player)=>player.id===room.hostDisplayPlayerId && !player.host && player.connected
     );
-    launchButton.disabled=!allReady || Boolean(
-      room.hostDisplay && !selectedDisplayPlayer
-    );
+    updateLaunchAvailability(allReady,selectedDisplayPlayer);
     updateDevMenuContext();
   }
 
@@ -401,7 +400,7 @@
       :"Only the host can change these settings.";
   }
 
-  function enterQuiz(category,quiz,mixedSources=null,quizTheme=room?.quizTheme){
+  function enterQuiz(category,quiz,mixedSources=null,quizTheme=room?.quizTheme,netHubQuizId=room?.netHubQuizId){
     if(!room) return;
     const players=room.players
       .filter((player)=>!room.hostDisplay || !player.host)
@@ -424,6 +423,7 @@
     );
     target.searchParams.set("category",category);
     target.searchParams.set("quiz",quiz);
+    if(netHubQuizId) target.searchParams.set("netHubQuiz",netHubQuizId);
     if(mixedSources) target.searchParams.set("mixedSources",JSON.stringify(mixedSources));
     target.searchParams.set("partyMode","true");
     target.searchParams.set("partyRoom",code);
@@ -439,8 +439,41 @@
     location.href=target.toString();
   }
 
-  function renderQuizOptions(){
+  async function renderQuizOptions(){
     const previousSelection=quizSelect.value;
+    if(categorySelect.value==="NetHub"){
+      const requestedCategory=categorySelect.value;
+      quizSelect.disabled=true;
+      quizSelect.replaceChildren(new Option("Loading NetHub quizzes…",""));
+      try{
+        const response=await fetch(`${netHubApiBase}/api/nethub/quizzes`,{cache:"no-store"});
+        const payload=await response.json();
+        if(!response.ok) throw new Error(payload.error||"Could not load NetHub quizzes.");
+        if(!Array.isArray(payload.quizzes)) throw new Error("The NetHub quiz list is invalid.");
+        if(categorySelect.value!==requestedCategory) return;
+        const options=payload.quizzes
+          .filter((quiz)=>typeof quiz.id==="string"&&/^[0-9a-f-]{36}$/i.test(quiz.id))
+          .map((quiz)=>[
+            quiz.id,
+            `${quiz.title} · ${quiz.courseName}`,
+          ]);
+        quizSelect.replaceChildren(...(options.length
+          ? options.map(([id,label])=>new Option(label,id))
+          : [new Option("No NetHub quizzes available","")]));
+        if(options.some(([id])=>id===previousSelection)) quizSelect.value=previousSelection;
+        error.textContent="";
+      }catch(loadError){
+        if(categorySelect.value!==requestedCategory) return;
+        quizSelect.replaceChildren(new Option("Could not load NetHub quizzes",""));
+        error.textContent=`Could not load NetHub quizzes: ${loadError.message}`;
+      }finally{
+        if(categorySelect.value===requestedCategory){
+          quizSelect.disabled=false;
+          updateLaunchAvailability();
+        }
+      }
+      return;
+    }
     const options=[...(quizCatalog[categorySelect.value]||[])];
     if(room?.excludedQuizzesEnabled){
       if(categorySelect.value==="CompGFX"){
@@ -456,14 +489,37 @@
       return option;
     }));
     if(options.some(([id])=>id===previousSelection)) quizSelect.value=previousSelection;
+    quizSelect.disabled=false;
+    updateLaunchAvailability();
+  }
+  function updateLaunchAvailability(allReady=null,selectedDisplayPlayer=null){
+    if(!room) return;
+    const validQuiz=quizModeSelect.value==="mixed" ||
+      (categorySelect.value==="NetHub"
+        ? /^[0-9a-f-]{36}$/i.test(quizSelect.value)
+        : Boolean(quizSelect.value));
+    const minimumPlayers=room.hostDisplay?3:2;
+    const playersReady=allReady??(
+      room.players.length>=minimumPlayers&&room.players.length<=room.capacity&&
+      room.players.every((player)=>player.ready&&(player.connected||player.fakePlayer))
+    );
+    const displayPlayer=selectedDisplayPlayer??room.players.find(
+      (player)=>player.id===room.hostDisplayPlayerId&&!player.host&&player.connected
+    );
+    launchButton.disabled=!validQuiz||!playersReady||Boolean(room.hostDisplay&&!displayPlayer);
   }
   function renderQuizMode(){
     const mixed=quizModeSelect.value==="mixed";
     courseQuizPanel.hidden=mixed;
     mixedStudyPanel.hidden=!mixed;
     mixedStudyError.textContent="";
+    updateLaunchAvailability();
   }
-  categorySelect.addEventListener("change",renderQuizOptions);
+  categorySelect.addEventListener("change",()=>{
+    renderQuizOptions();
+    updateLaunchAvailability();
+  });
+  quizSelect.addEventListener("change",()=>updateLaunchAvailability());
   quizModeSelect.addEventListener("change",renderQuizMode);
   window.QuizHubMixedStudy.renderSourceChoices(mixedStudyChoices);
   renderQuizOptions();
@@ -492,11 +548,13 @@
           quizTheme:window.quizHubPreferences.quizTheme
         });
       }else{
+        const isNetHub=categorySelect.value==="NetHub";
         await client.send({
           type:"launch",
           code,
-          category:categorySelect.value,
-          quiz:quizSelect.value,
+          category:isNetHub?"NetHub":categorySelect.value,
+          quiz:isNetHub?`nethub_${quizSelect.value.replaceAll("-","")}`:quizSelect.value,
+          ...(isNetHub?{netHubQuizId:quizSelect.value}:{}),
           quizTheme:window.quizHubPreferences.quizTheme
         });
       }
@@ -558,7 +616,7 @@
     room=message.room;
     renderPlayers();
     if(room.stage==="setup" || room.stage==="quiz"){
-      enterQuiz(room.category,room.quiz,room.mixedSources,room.quizTheme);
+      enterQuiz(room.category,room.quiz,room.mixedSources,room.quizTheme,room.netHubQuizId);
     }
   });
   client.on("room-state",(message)=>{
@@ -586,6 +644,7 @@
     message.quiz,
     message.mixedSources,
     message.quizTheme,
+    message.netHubQuizId,
   ));
   client.on("left",()=>location.replace("index.html"));
   client.on("host-changed",(message)=>{
