@@ -1,0 +1,15 @@
+{
+	"$schema": "../node_modules/wrangler/config-schema.json",
+	"name": "quizhub-nethub",
+	"main": "worker.mjs",
+	"compatibility_date": "2026-10-26",
+	"workers_dev": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "quizhub-nethub",
+			"database_id": "199d1ea4-9852-455b-ad9c-34b54801b9d6",
+			"migrations_dir": "migrations"
+		}
+	]
+}

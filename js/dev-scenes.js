@@ -21,6 +21,7 @@
 				detail: "Standalone hexadecimal practice",
 				external: "hexadecimal-quiz.html",
 			},
+			{ id: "quiz2", label: "5a & 5b Practice", detail: "for Nov 2" },
 		],
 		CloudComp: [
 			{ id: "quiz1", label: "First Slides Practice", detail: "for Sept 24" },
@@ -99,7 +100,11 @@
 			label: "Secret Message Screen",
 			href: "secret-message.html?returnTo=index.html",
 		},
-		{ id: "dev-menu", label: "Standalone Developer Menu", href: "dev-menu.html" },
+		{
+			id: "dev-menu",
+			label: "Standalone Developer Menu",
+			href: "dev-menu.html",
+		},
 	];
 
 	function getSceneGroups() {
@@ -210,9 +215,15 @@
 				);
 			}
 		} else if (scene.result === "passed" || scene.result === "failed") {
-			target.searchParams.set("results", JSON.stringify(createResults(scene.result)));
+			target.searchParams.set(
+				"results",
+				JSON.stringify(createResults(scene.result)),
+			);
 		} else if (scene.result === "perfect") {
-			target.searchParams.set("results", JSON.stringify(createResults("perfect")));
+			target.searchParams.set(
+				"results",
+				JSON.stringify(createResults("perfect")),
+			);
 		} else if (scene.result === "party") {
 			window.sessionStorage.setItem(
 				"lakeheadQuizResults",

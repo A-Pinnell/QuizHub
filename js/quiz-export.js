@@ -627,7 +627,8 @@
 		}
 
 		async function getNetHubQuizzes() {
-			const apiBase = windowObject.QUIZHUB_PARTY_SERVER_URL || windowObject.location.origin;
+			const apiBase = windowObject.quizHubNetHubApiBase();
+			if (!apiBase) throw new Error("NetHub's D1 API is not configured.");
 			const response = await fetch(`${apiBase}/api/nethub/quizzes`);
 			let payload;
 			try {
@@ -656,7 +657,8 @@
 
 		async function fetchNetHubQuiz(summary) {
 			if (Array.isArray(summary.questions)) return summary;
-			const apiBase = windowObject.QUIZHUB_PARTY_SERVER_URL || windowObject.location.origin;
+			const apiBase = windowObject.quizHubNetHubApiBase();
+			if (!apiBase) throw new Error("NetHub's D1 API is not configured.");
 			const response = await fetch(`${apiBase}/api/nethub/quizzes/${encodeURIComponent(summary.id)}`);
 			let payload;
 			try {

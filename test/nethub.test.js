@@ -93,7 +93,7 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
     courseName: "Computer Graphics",
     theme: "blended",
     allowShortAnswer: true,
-    music: { track: "BonusTrack" },
+    music: { track: "NetHubBonus1" },
     questions: tempQuestions
   };
   const created = await api("/api/nethub/quizzes", {
@@ -110,7 +110,6 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
   assert.equal(publicQuiz.payload.quiz.theme, quizData.theme);
   assert.deepEqual(publicQuiz.payload.quiz.questions, quizData.questions);
   assert.deepEqual(publicQuiz.payload.quiz.music, quizData.music);
-
   const unauthorized = await api(`/api/nethub/quizzes/${quizId}`, {
     method: "PUT",
     body: JSON.stringify({ ...quizData, title: "Hijacked" })
@@ -244,7 +243,7 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
   assert.equal(deletedByOwner.payload.deleted, true);
 });
 
-test("NetHub reports an unavailable configured PostgreSQL database", async (t) => {
+test("NetHub API runs without a PostgreSQL connection", async (t) => {
   const port = 21000 + Math.floor(Math.random() * 1000);
   const server = spawn(process.execPath, ["server.js"], {
     cwd: process.cwd(),
@@ -273,11 +272,11 @@ test("NetHub reports an unavailable configured PostgreSQL database", async (t) =
     }
   }
   assert.ok(response, "NetHub server did not start.");
-  assert.equal(response.status, 500);
-  assert.deepEqual(await response.json(), { error: "NetHub is temporarily unavailable." });
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { status: "ok", netHub: true });
 });
 
-test("party NetHub quiz links load quiz data and music from the party API", async () => {
+test("party NetHub quiz links load quiz data and music from the D1 Worker API", async () => {
   const quizId = "123e4567-e89b-42d3-a456-426614174000";
   const quizKey = `nethub_${quizId.replaceAll("-", "")}`;
   const quiz = {
@@ -297,6 +296,7 @@ test("party NetHub quiz links load quiz data and music from the party API", asyn
       return { ok: true, json: async () => ({ quiz }) };
     },
     window: {
+      quizHubNetHubApiBase: () => "https://quizhub-nethub.example.workers.dev",
       location: {
         hostname: "localhost",
         origin: "http://localhost:8080",
@@ -310,7 +310,10 @@ test("party NetHub quiz links load quiz data and music from the party API", asyn
   );
   await context.window.quizHubNetHubQuizPromise;
 
-  assert.equal(requestedUrl, `http://localhost:8080/api/nethub/quizzes/${quizId}`);
+  assert.equal(
+    requestedUrl,
+    `https://quizhub-nethub.example.workers.dev/api/nethub/quizzes/${quizId}`,
+  );
   assert.deepEqual(
     JSON.parse(JSON.stringify(context.window.questionBank.NetHub[quizKey])),
     quiz.questions

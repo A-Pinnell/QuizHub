@@ -36,11 +36,15 @@
 		CompGFX: "./music/CompGFXMusic.wav",
 		CompGFXLautest: "./music/Challenge.mp3",
 		SocIndi: "./music/SocIndiMusic.wav",
+		NetHubBonus1: "./music/NetHubBonus/Net1.mp3",
+		NetHubBonus2: "./music/NetHubBonus/Net2.mp3",
 	};
 	const regularQuizMusicOptions = [
 		"default",
 		"rotation",
-		...Object.keys(quizMusicSources).filter((source) => source !== "run"),
+		...Object.keys(quizMusicSources).filter(
+			(source) => source !== "run" && !source.startsWith("NetHubBonus"),
+		),
 	];
 	const secretQuizMusicOptions = [
 		"run",
@@ -63,6 +67,8 @@
 		CompGFX: "Computer Graphics",
 		CompGFXLautest: "Dr. Lau's Practice (Computer Graphics)",
 		SocIndi: "Society and Individuals",
+		NetHubBonus1: "NetHub Track 1",
+		NetHubBonus2: "NetHub Track 2",
 	};
 	const secretMode = storage.getItem("quizHubSecretMode") === "true";
 	const savedQuizMusic = storage.getItem("quizHubQuizMusic");
@@ -488,7 +494,11 @@
 			const rotationSources = [
 				...new Set([
 					...Object.values(quizMusicSources)
-						.filter((source) => source !== quizMusicSources.run)
+						.filter(
+							(source) =>
+								source !== quizMusicSources.run &&
+								!source.startsWith("./music/NetHubBonus/"),
+						)
 						.map((source) =>
 							new URL(source, window.location.href).toString(),
 						),

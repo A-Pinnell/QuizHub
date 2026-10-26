@@ -91,21 +91,23 @@
 		<link rel="stylesheet" href="css/offline-app.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
 		<link rel="stylesheet" href="css/dev.css" />
-		<link rel="stylesheet" href="css/net-hub.css?v=nethub-ripple-curtain" />
+		<link
+			rel="stylesheet"
+			href="css/net-hub.css?v=nethub-responsive-menus-v3" />
 		<script src="./js/audio-focus.js" defer></script>
 		<script src="./js/offline-app.js" defer></script>
 		<script src="./js/load-preferences.js"></script>
 		<script src="./js/dev-scenes.js" defer></script>
 		<script src="./js/dev.js" defer></script>
-		<script src="./js/party-config.js" defer></script>
+		<script src="./js/party-config.js?v=nethub-d1-v1" defer></script>
 		<script src="./js/mixed-study.js" defer></script>
 		<script src="./js/party-client.js" defer></script>
 		<script src="./js/index.js?v=nethub-menu-audio" defer></script>
 		<script
 			src="./js/net-hub-storage.js?v=user-made-remove-music"
 			defer></script>
-		<script src="./js/net-hub.js?v=nethub-ripple-curtain" defer></script>
-		<script src="./js/quiz-export.js?v=quiz-export-3" defer></script>
+		<script src="./js/net-hub.js?v=nethub-track-collections-v1" defer></script>
+		<script src="./js/quiz-export.js?v=nethub-d1-v1" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
 	<body>
@@ -252,7 +254,7 @@
 							><span class="stem-letter">b</span
 							><span class="stem-letter">!</span>
 						</h1>
-						<div class="tagline">Version 3.1.2</div>
+						<div class="tagline">Version 3.1.3</div>
 						<a
 							class="textbook-library-link"
 							id="textbookLibraryLink"
@@ -281,7 +283,7 @@
 								<button
 									class="card course-card"
 									data-course="CompArch"
-									data-label="true"
+									data-label="false"
 									data-label-content="UPDATED!">
 									<div class="card-content">
 										<h2>COMP-2453</h2>
@@ -291,7 +293,7 @@
 								<button
 									class="card course-card"
 									data-course="CompGFX"
-									data-label="true"
+									data-label="false"
 									data-label-content="UPDATED!">
 									<div class="card-content">
 										<h2>COMP-4471</h2>
@@ -311,7 +313,7 @@
 								<button
 									class="card course-card"
 									data-course="CloudComp"
-									data-label="true"
+									data-label="false"
 									data-label-content="UPDATED!">
 									<div class="card-content">
 										<h2>COMP-4312</h2>
@@ -321,7 +323,7 @@
 								<button
 									class="card course-card"
 									data-course="DataSci"
-									data-label="true"
+									data-label="false"
 									data-label-content="UPDATED!">
 									<div class="card-content">
 										<h2>COMP-4112</h2>
@@ -583,8 +585,15 @@
 					</fieldset>
 					<fieldset class="net-hub-music-field">
 						<legend>Quiz music</legend>
+						<label class="net-hub-field" for="netHubMusicCollection">
+							Choose a track collection
+							<select id="netHubMusicCollection">
+								<option value="quizhub">QuizHub Tracks</option>
+								<option value="nethub">NetHub Tracks</option>
+							</select>
+						</label>
 						<label class="net-hub-field" for="netHubMusicTrack">
-							Choose an included QuizHub track
+							Choose a track
 							<select id="netHubMusicTrack"></select>
 						</label>
 						<label class="net-hub-field" for="netHubMusicFile">
@@ -594,8 +603,8 @@
 								type="file"
 								accept=".mp3,.wav,audio/mpeg,audio/wav,audio/x-wav" />
 							<small
-								>Maximum 10 MB. Uploaded audio is included with your NetHub quiz
-								so it plays for everyone.</small
+								>Local NetHub only: MP3/WAV up to 10 MB. Hosted quizzes use
+								QuizHub or NetHub tracks.</small
 							>
 						</label>
 						<div class="net-hub-music-preview-row">

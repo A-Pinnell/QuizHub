@@ -55,7 +55,10 @@
     DataSci:[["test1","Test 1 Practice"]],
     SoftEngi:[["test1","Lectures 1–6 Practice"]]
   };
-  const netHubApiBase=window.QUIZHUB_PARTY_SERVER_URL||window.location.origin;
+  const localNetHubHosts=new Set(["localhost","127.0.0.1","::1"]);
+  const netHubApiBase=window.QUIZHUB_NETHUB_API_URL?.trim()
+    ?window.QUIZHUB_NETHUB_API_URL.trim().replace(/\/+$/,"")
+    :localNetHubHosts.has(window.location.hostname)?window.location.origin:"";
   if(!/^[A-Z]{4}$/.test(code) || !playerId){
     location.replace("index.html");
     return;
@@ -446,6 +449,7 @@
       quizSelect.disabled=true;
       quizSelect.replaceChildren(new Option("Loading NetHub quizzes…",""));
       try{
+        if(!netHubApiBase) throw new Error("NetHub's D1 API is not configured. Set QUIZHUB_NETHUB_API_URL in js/party-config.js.");
         const response=await fetch(`${netHubApiBase}/api/nethub/quizzes`,{cache:"no-store"});
         const payload=await response.json();
         if(!response.ok) throw new Error(payload.error||"Could not load NetHub quizzes.");

@@ -29,11 +29,10 @@
 			typeof quiz.courseKey !== "string" ||
 			!Array.isArray(quiz.questions)
 		) {
-			const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
-			const apiBase = window.QUIZHUB_PARTY_SERVER_URL ||
-				(localHosts.has(window.location.hostname)
-					? window.location.origin
-					: "https://quizhub-party-server.onrender.com");
+			const apiBase = window.quizHubNetHubApiBase();
+			if (!apiBase) {
+				throw new Error("NetHub's D1 API is not configured.");
+			}
 			const response = await fetch(
 				`${apiBase}/api/nethub/quizzes/${encodeURIComponent(quizId)}`,
 				{ cache: "no-store" },
@@ -59,6 +58,10 @@
 		window.quizHubNetHubQuiz = quiz;
 		if (quiz.music?.upload && !quiz.music.upload.data) {
 			const storageKey = quiz.music.upload.storageKey;
+			if (quiz.music.upload.url) {
+				quiz.music.upload.sourceUrl = quiz.music.upload.url;
+				return;
+			}
 			if (typeof storageKey !== "string" || !window.QuizHubNetHubStorage) {
 				throw new Error("The saved quiz music is not available on this device.");
 			}

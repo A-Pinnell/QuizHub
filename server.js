@@ -10,7 +10,6 @@ const {
   scryptSync,
   timingSafeEqual
 } = require("node:crypto");
-const { Pool } = require("pg");
 const { WebSocket, WebSocketServer } = require("ws");
 const mixedStudy = require("./js/mixed-study.js");
 
@@ -41,17 +40,6 @@ const presenceLifetimeMs = 90_000;
 const quizThemes = new Set(["default", "quizhub", "ai-model", "blended"]);
 const netHubDataDirectory = process.env.QUIZHUB_DATA_DIR || path.join(root, "data");
 const netHubDatabasePath = path.join(netHubDataDirectory, "nethub.json");
-if (process.env.QUIZHUB_REQUIRE_DATABASE === "true" && !process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL must be configured for this deployment.");
-}
-const netHubPool = process.env.DATABASE_URL
-  ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      max: 5,
-      connectionTimeoutMillis: 10_000,
-      idleTimeoutMillis: 30_000
-    })
-  : null;
 const netHubSessions = new Map();
 let netHubMutationQueue = Promise.resolve();
 const netHubLoginFailures = new Map();
@@ -65,7 +53,7 @@ const netHubMaxQuestions = 250;
 const netHubMusicTracks = new Set([
   "default", "BonusTrack", "Practice1", "Practice2", "CompArch", "CloudComp",
   "DataSci", "StatisticPractice", "DataSciLautest", "SoftEngi", "CompGFX",
-  "CompGFXLautest", "SocIndi"
+  "CompGFXLautest", "SocIndi", "NetHubBonus1", "NetHubBonus2"
 ]);
 
 function validateNetHubDatabase(database) {
@@ -81,38 +69,10 @@ function readLocalNetHubDatabase() {
 }
 
 async function readNetHubDatabase() {
-  if (!netHubPool) return readLocalNetHubDatabase();
-  const existing = await netHubPool.query(
-    "SELECT data FROM public.nethub_state WHERE id = 1"
-  );
-  if (existing.rows.length) return validateNetHubDatabase(existing.rows[0].data);
-
-  const initialDatabase = readLocalNetHubDatabase();
-  await netHubPool.query(
-    `INSERT INTO public.nethub_state (id, data)
-     VALUES (1, $1::jsonb)
-     ON CONFLICT (id) DO NOTHING`,
-    [JSON.stringify(initialDatabase)]
-  );
-  const initialized = await netHubPool.query(
-    "SELECT data FROM public.nethub_state WHERE id = 1"
-  );
-  if (!initialized.rows.length) {
-    throw new Error("The NetHub database could not be initialized.");
-  }
-  return validateNetHubDatabase(initialized.rows[0].data);
+  return readLocalNetHubDatabase();
 }
 
 async function writeNetHubDatabase(database) {
-  if (netHubPool) {
-    await netHubPool.query(
-      `INSERT INTO public.nethub_state (id, data)
-       VALUES (1, $1::jsonb)
-       ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data`,
-      [JSON.stringify(database)]
-    );
-    return;
-  }
   fs.mkdirSync(netHubDataDirectory, { recursive: true });
   const temporaryPath = `${netHubDatabasePath}.${randomUUID()}.tmp`;
   fs.writeFileSync(temporaryPath, JSON.stringify(database), { mode: 0o600 });
@@ -360,7 +320,7 @@ async function serveNetHub(request, response) {
   }
   try {
     if (request.method === "GET" && url.pathname === "/api/nethub/healthz") {
-      await readNetHubDatabase();
+      readLocalNetHubDatabase();
       netHubJson(response, 200, { status: "ok", netHub: true });
       return;
     }

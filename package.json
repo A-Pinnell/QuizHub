@@ -14,10 +14,12 @@
     "package:win": "electron-builder --win nsis",
     "package:linux": "electron-builder --linux AppImage",
     "android:sync": "cap sync android",
-    "test": "node --test"
+    "test": "node --test",
+    "nethub:dev": "wrangler --config cloudflare/wrangler.jsonc dev",
+    "nethub:deploy": "wrangler --config cloudflare/wrangler.jsonc deploy",
+    "nethub:migrate:remote": "wrangler --config cloudflare/wrangler.jsonc d1 migrations apply quizhub-nethub --remote"
   },
   "dependencies": {
-    "pg": "^8.23.1",
     "ws": "^8.18.3"
   },
   "devDependencies": {
@@ -27,7 +29,9 @@
     "@huggingface/transformers": "^4.3.1",
     "electron": "^44.7.0",
     "electron-builder": "^26.15.3",
-    "esbuild": "^0.28.2"
+    "esbuild": "^0.28.2",
+    "pg": "^8.23.1",
+    "wrangler": "^4.153.0"
   },
   "build": {
     "appId": "com.quizhub.desktop",

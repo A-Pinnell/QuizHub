@@ -2,3 +2,5 @@ node_modules/
 dist/
 desktop-dist/
 data/
+cloudflare/.dev.vars
+cloudflare/.wrangler/

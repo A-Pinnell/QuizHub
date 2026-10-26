@@ -187,6 +187,18 @@ test("quiz music options expose named, persistent track selections", () => {
 			"SocIndi",
 		],
 	);
+		assert.doesNotMatch(
+			state.preferences.getQuizMusicOptions().map((option) => option.value).join(","),
+			/NetHubBonus/,
+		);
+		assert.match(
+			state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus1"),
+			/\/music\/NetHubBonus\/Net1\.mp3$/,
+		);
+		assert.match(
+			state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus2"),
+			/\/music\/NetHubBonus\/Net2\.mp3$/,
+		);
 	state.preferences.setQuizMusic("rotation");
 	assert.equal(state.values.get("quizHubQuizMusic"), "rotation");
 	assert.equal(state.preferences.isQuizMusicRotation, true);

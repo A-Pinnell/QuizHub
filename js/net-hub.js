@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	const apiBase = window.QUIZHUB_PARTY_SERVER_URL || window.location.origin;
+	const apiBase = window.quizHubNetHubApiBase();
 	const accountTokenKey = "quizHubNetHubToken";
 	const accountNameKey = "quizHubNetHubUsername";
 	const userMadeKey = "quizHubNetHubUserMade";
@@ -26,6 +26,7 @@
 	const quizList = document.getElementById("netHubQuizList");
 	const myQuizList = document.getElementById("netHubMyQuizList");
 	const courseSelect = document.getElementById("netHubCourse");
+	const musicCollectionSelect = document.getElementById("netHubMusicCollection");
 	const newCourseField = document.getElementById("netHubNewCourseField");
 	const newCourseInput = document.getElementById("netHubNewCourseName");
 	const promptField = document.getElementById("netHubPrompt");
@@ -35,6 +36,7 @@
 	const musicFileInput = document.getElementById("netHubMusicFile");
 	const musicStatus = document.getElementById("netHubMusicStatus");
 	const musicPreviewButton = document.getElementById("netHubMusicPreview");
+	const hostedNetHub = Boolean(window.QUIZHUB_NETHUB_API_URL?.trim());
 	const maxQuizMusicBytes = 10 * 1024 * 1024;
 	let activeBrowseTab = "community";
 	let editingQuizId = "";
@@ -42,6 +44,10 @@
 	let musicPreview = null;
 	let codeStreamTimer = null;
 	let codeStreamRun = 0;
+	if (hostedNetHub) {
+		musicFileInput.disabled = true;
+		musicFileInput.closest("label").hidden = true;
+	}
 	const netHubCodeLines = [
 		"const network = await NetHub.connect();",
 		"const peers = await network.discover();",
@@ -138,19 +144,31 @@
 		SoftEngi: "./music/SoftEngiMusic.wav",
 	};
 
-	function populateMusicTracks() {
+	const netHubMusicTracks = [
+		{ value: "NetHubBonus1", label: "NetHub Track 1" },
+		{ value: "NetHubBonus2", label: "NetHub Track 2" },
+	];
+
+	function populateMusicTracks(selectedTrack = "") {
 		const preferences = window.quizHubPreferences;
 		if (!preferences || !musicTrackSelect) return;
 		musicTrackSelect.replaceChildren();
-		preferences
-			.getQuizMusicOptions()
-			.filter((track) => !["rotation", "run"].includes(track.value))
-			.forEach((track) => {
-				const option = document.createElement("option");
-				option.value = track.value;
-				option.textContent = track.label;
-				musicTrackSelect.appendChild(option);
-			});
+		const isNetHubCollection = musicCollectionSelect.value === "nethub";
+		const tracks = isNetHubCollection
+			? netHubMusicTracks
+			: preferences
+					.getQuizMusicOptions()
+					.filter((track) => !["rotation", "run"].includes(track.value));
+		tracks.forEach((track) => {
+			const option = document.createElement("option");
+			option.value = track.value;
+			option.textContent = track.label;
+			musicTrackSelect.appendChild(option);
+		});
+		musicTrackSelect.value =
+			selectedTrack && tracks.some((track) => track.value === selectedTrack)
+				? selectedTrack
+				: tracks[0]?.value || "";
 	}
 
 	function stopMusicPreview() {
@@ -173,9 +191,15 @@
 		if (selectedFile) return URL.createObjectURL(selectedFile);
 		if (
 			musicTrackSelect.value === "__uploaded" &&
-			existingUploadedMusic?.data
+			(existingUploadedMusic?.data || existingUploadedMusic?.url)
 		) {
-			return existingUploadedMusic.data;
+			return existingUploadedMusic.data || existingUploadedMusic.url;
+		}
+		if (musicTrackSelect.value.startsWith("NetHubBonus")) {
+			return window.quizHubPreferences.resolveQuizMusic(
+				"",
+				musicTrackSelect.value,
+			);
 		}
 		const defaultPath =
 			defaultCourseMusic[courseSelect.value] || "./music/QuizMusic.wav";
@@ -185,18 +209,36 @@
 		);
 	}
 
-	function readSelectedMusic() {
+	async function uploadWithData(upload) {
+		if (upload.data) return upload;
+		if (!upload.url) {
+			throw new Error("The uploaded music is not available from the NetHub service.");
+		}
+		const response = await fetch(upload.url, { cache: "no-store" });
+		if (!response.ok) {
+			throw new Error(`Could not load uploaded quiz music (${response.status}).`);
+		}
+		const bytes = new Uint8Array(await response.arrayBuffer());
+		if (bytes.length > maxQuizMusicBytes) {
+			throw new Error("Quiz music must be no larger than 10 MB.");
+		}
+		let binary = "";
+		for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+			binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+		}
+		return { ...upload, data: `data:${upload.type};base64,${btoa(binary)}` };
+	}
+
+	async function readSelectedMusic() {
 		const file = musicFileInput.files?.[0];
 		if (!file) {
 			if (musicTrackSelect.value === "__uploaded" && existingUploadedMusic) {
-				return Promise.resolve({ upload: existingUploadedMusic });
+				return { upload: await uploadWithData(existingUploadedMusic) };
 			}
-			return Promise.resolve({ track: musicTrackSelect.value });
+			return { track: musicTrackSelect.value };
 		}
 		if (file.size > maxQuizMusicBytes) {
-			return Promise.reject(
-				new Error("Choose an MP3 or WAV file up to 10 MB."),
-			);
+			throw new Error("Choose an MP3 or WAV file up to 10 MB.");
 		}
 		const extension = file.name.toLowerCase().split(".").pop();
 		const type =
@@ -206,9 +248,7 @@
 					? "audio/wav"
 					: "";
 		if (!type) {
-			return Promise.reject(
-				new Error("Only MP3 and WAV music files are supported."),
-			);
+			throw new Error("Only MP3 and WAV music files are supported.");
 		}
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
@@ -257,10 +297,17 @@
 		if (musicTrackSelect.value !== "__uploaded") {
 			existingUploadedMusic = null;
 			musicTrackSelect.querySelector('option[value="__uploaded"]')?.remove();
-			musicStatus.textContent = "The selected QuizHub track will be used.";
+			musicStatus.textContent = `The selected ${musicCollectionSelect.value === "nethub" ? "NetHub" : "QuizHub"} track will be used.`;
 		} else {
 			musicStatus.textContent = "Existing uploaded music will be kept.";
 		}
+	});
+	musicCollectionSelect.addEventListener("change", () => {
+		stopMusicPreview();
+		populateMusicTracks();
+		musicStatus.textContent = musicCollectionSelect.value === "nethub"
+			? "Choose a NetHub track."
+			: "Choose a QuizHub track.";
 	});
 	musicFileInput.addEventListener("change", () => {
 		stopMusicPreview();
@@ -315,6 +362,9 @@
 	});
 
 	function apiUrl(path) {
+		if (!apiBase) {
+			throw new Error("NetHub's D1 API is not configured. Set QUIZHUB_NETHUB_API_URL in js/party-config.js.");
+		}
 		return `${apiBase}${path}`;
 	}
 
@@ -352,18 +402,6 @@
 	}
 
 	function openModal(modal, initialFocus) {
-		if (modal !== accountModal) {
-			let rippleScreen = modal.querySelector(".net-hub-ripple-screen");
-			if (!rippleScreen) {
-				rippleScreen = document.createElement("div");
-				rippleScreen.className = "net-hub-ripple-screen";
-				rippleScreen.setAttribute("aria-hidden", "true");
-				for (let index = 0; index < 9; index++) {
-					rippleScreen.appendChild(document.createElement("span"));
-				}
-				modal.appendChild(rippleScreen);
-			}
-		}
 		modal.classList.remove("closing");
 		modal.classList.add("open");
 		modal.setAttribute("aria-hidden", "false");
@@ -384,16 +422,6 @@
 			modal.classList.remove("open");
 			modal.classList.add("closing");
 			modal.setAttribute("aria-hidden", "true");
-			const rippleScreen = modal.querySelector(".net-hub-ripple-screen");
-			const finishClosing = (event) => {
-				if (
-					event.target !== rippleScreen ||
-					event.animationName !== "netHubRippleOut"
-				) return;
-				modal.classList.remove("closing");
-				rippleScreen.removeEventListener("animationend", finishClosing);
-			};
-			rippleScreen?.addEventListener("animationend", finishClosing);
 			const closeDuration = window.matchMedia(
 				"(prefers-reduced-motion: reduce)",
 			).matches
@@ -403,7 +431,6 @@
 					: 360;
 			window.setTimeout(() => {
 				modal.classList.remove("closing");
-				rippleScreen?.removeEventListener("animationend", finishClosing);
 			}, closeDuration);
 		});
 		document.body.classList.remove("net-hub-open");
@@ -417,8 +444,11 @@
 		createForm.reset();
 		stopMusicPreview();
 		existingUploadedMusic = quiz?.music?.upload || null;
-		musicTrackSelect.replaceChildren();
-		populateMusicTracks();
+		const savedTrack = quiz?.music?.track || "";
+		musicCollectionSelect.value = savedTrack.startsWith("NetHubBonus")
+			? "nethub"
+			: "quizhub";
+		populateMusicTracks(savedTrack);
 		if (existingUploadedMusic) {
 			const option = document.createElement("option");
 			option.value = "__uploaded";
@@ -427,8 +457,9 @@
 			musicTrackSelect.value = "__uploaded";
 			musicStatus.textContent = "Existing uploaded music will be kept.";
 		} else {
-			musicTrackSelect.value = "default";
-			musicStatus.textContent = "Use the selected course’s default music.";
+			musicStatus.textContent = hostedNetHub
+				? "Choose a track from either collection."
+				: "Use the selected course’s default music.";
 		}
 		createStatus.textContent = "";
 		document.getElementById("netHubUsername").value =
@@ -743,10 +774,40 @@
 		localStorage.setItem(accountNameKey, payload.username);
 	}
 
+	async function derivePinProof(username, pin) {
+		if (!/^\d{4}$/.test(pin)) {
+			throw new Error("Password must be exactly four digits.");
+		}
+		const normalizedUsername = username.trim().toLocaleLowerCase("en");
+		const key = await crypto.subtle.importKey(
+			"raw",
+			new TextEncoder().encode(pin),
+			"PBKDF2",
+			false,
+			["deriveBits"],
+		);
+		const proof = await crypto.subtle.deriveBits(
+			{
+				name: "PBKDF2",
+				salt: new TextEncoder().encode(`QuizHub NetHub PIN v2:${normalizedUsername}`),
+				iterations: 600_000,
+				hash: "SHA-256",
+			},
+			key,
+			256,
+		);
+		let binary = "";
+		for (const byte of new Uint8Array(proof)) binary += String.fromCharCode(byte);
+		return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+	}
+
 	async function authenticate(username, pin) {
+		const configuredWorker = Boolean(window.QUIZHUB_NETHUB_API_URL.trim());
 		const result = await request("/api/nethub/auth", {
 			method: "POST",
-			body: JSON.stringify({ username, pin }),
+			body: JSON.stringify(configuredWorker
+				? { username, pinProof: await derivePinProof(username, pin) }
+				: { username, pin }),
 		});
 		saveAccount(result);
 		return result;
@@ -894,9 +955,10 @@
 		const upload = quiz.music?.upload;
 		if (!upload) return quiz;
 		const storageKey = upload.storageKey || quiz.id;
-		if (upload.data) {
-			await window.QuizHubNetHubStorage.saveMusic(storageKey, upload);
-		}
+		await window.QuizHubNetHubStorage.saveMusic(
+			storageKey,
+			await uploadWithData(upload),
+		);
 		return {
 			...quiz,
 			music: {
@@ -913,6 +975,9 @@
 	async function restoreQuizMusic(quiz) {
 		const upload = quiz.music?.upload;
 		if (!upload || upload.data) return quiz;
+		if (upload.url) {
+			return { ...quiz, music: { ...quiz.music, upload: await uploadWithData(upload) } };
+		}
 		if (!upload.storageKey) {
 			throw new Error("The uploaded music is not saved on this device.");
 		}
@@ -1141,7 +1206,9 @@
 			});
 			createStatus.textContent = auth.created
 				? "Account created and quiz uploaded!"
-				: editingQuizId
+				: auth.reset
+					? "PIN reset and quiz uploaded!"
+					: editingQuizId
 					? "Quiz updated."
 					: "Quiz uploaded to NetHub!";
 			editingQuizId = "";
@@ -1168,7 +1235,9 @@
 				result.username;
 			accountStatus.textContent = result.created
 				? "Account created."
-				: "Signed in.";
+				: result.reset
+					? "PIN reset. You are signed in."
+					: "Signed in.";
 			renderMyQuizzes();
 		} catch (error) {
 			accountStatus.textContent = error.message;

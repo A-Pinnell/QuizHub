@@ -2020,6 +2020,10 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 3.1.3
+- NetHub has switched from Supabase to Cloudflare D1
+- A new quiz for Computer Architecture has been added, for practicing 5a and 5b slides
+
 Version 3.1.2
 - NetHub now uses a proper database, ensuring quizzes are saved properly
 - NetHub quizzes can now be played in Party Mode

@@ -4375,6 +4375,918 @@ window.questionBank = {
 				c: 2,
 			},
 		],
+		quiz2: [
+			{
+				q: "Why are CPU registers generally accessed before cache or RAM?",
+				a: [
+					"Registers are stored on the SSD",
+					"Registers are small storage locations directly inside the CPU and are typically fastest",
+					"Registers hold only program source code",
+					"Registers are slower than DRAM",
+				],
+				c: 1,
+			},
+			{
+				q: "A program repeatedly reads the same data in a short period. Which feature is most likely to reduce average access time?",
+				a: [
+					"Cache locality and cache hits",
+					"A slower clock",
+					"A larger monitor",
+					"More SSD capacity",
+				],
+				c: 0,
+			},
+			{
+				q: "A CPU requests data and finds it in L1 cache. What is this event called?",
+				a: ["Page fault", "Cache hit", "Cache miss", "Context switch"],
+				c: 1,
+			},
+			{
+				q: "If data is absent from the CPU caches, where is it commonly fetched from next?",
+				a: [
+					"The instruction decoder",
+					"The keyboard buffer only",
+					"The compiler's source file",
+					"Main memory (DRAM)",
+				],
+				c: 3,
+			},
+			{
+				q: "Which statement best describes the trade-off across registers, cache, DRAM, and SSD?",
+				a: [
+					"Capacity always decreases as access gets slower",
+					"Capacity generally grows while access becomes slower",
+					"SSD is faster than registers",
+					"All levels have equal latency",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the main role of a memory controller?",
+				a: [
+					"Translate Java into C",
+					"Manage communication between the processor and system memory",
+					"Predict every branch outcome",
+					"Perform all floating-point calculations",
+				],
+				c: 1,
+			},
+			{
+				q: "Which sequence best represents the usual instruction cycle?",
+				a: [
+					"Fetch, decode, fetch operands, execute, store result",
+					"Decode, power off, fetch, compile",
+					"Store, decode, boot, print",
+					"Execute, compile, fetch, delete",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the instruction pointer (such as RIP in x86-64) primarily identify?",
+				a: [
+					"The last value typed by the user",
+					"The current temperature of the CPU",
+					"The next instruction address to fetch",
+					"The size of the SSD",
+				],
+				c: 2,
+			},
+			{
+				q: "Why does the CPU decode an instruction after fetching it?",
+				a: [
+					"To change every instruction into floating point",
+					"To convert RAM into cache",
+					"To determine the operation, operands, and resources needed",
+					"To increase the number of CPU cores",
+				],
+				c: 2,
+			},
+			{
+				q: "Which component is most directly associated with arithmetic and logical operations such as addition and comparison?",
+				a: [
+					"SSD controller",
+					"Display adapter",
+					"Branch target buffer only",
+					"ALU",
+				],
+				c: 3,
+			},
+			{
+				q: "A compiler's role in the program execution path is to:",
+				a: [
+					"Execute every instruction itself while the program runs",
+					"Translate high-level source code into machine-level code",
+					"Store all data permanently",
+					"Replace the CPU's cache",
+				],
+				c: 1,
+			},
+			{
+				q: "Why does a CPU normally check cache before accessing DRAM?",
+				a: [
+					"The operating system forbids RAM access",
+					"Cache access is generally lower latency",
+					"Cache stores only archived files",
+					"DRAM cannot store binary data",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the main purpose of general-purpose registers?",
+				a: [
+					"Permanent storage after power loss",
+					"Replacing all main memory",
+					"Cooling the processor",
+					"Holding frequently used operands, addresses, and intermediate values",
+				],
+				c: 3,
+			},
+			{
+				q: "Which is a likely benefit of using a base or index register when accessing an array?",
+				a: [
+					"It disables virtual memory",
+					"It converts integers into IEEE exponents automatically",
+					"It makes addresses impossible to calculate",
+					"It allows address calculations using a base plus an offset/index",
+				],
+				c: 3,
+			},
+			{
+				q: "What information do status flags commonly communicate?",
+				a: [
+					"Results or conditions such as zero, carry, sign, or overflow",
+					"The source-code variable names",
+					"The monitor's refresh rate",
+					"The contents of the SSD filesystem",
+				],
+				c: 0,
+			},
+			{
+				q: "Why do modern CPUs provide user mode and kernel/supervisor mode?",
+				a: [
+					"To separate restricted application activity from privileged operating-system activity",
+					"To avoid using memory addresses",
+					"To eliminate interrupts",
+					"To make every application run with unrestricted hardware access",
+				],
+				c: 0,
+			},
+			{
+				q: "An application attempts to execute a privileged instruction while in user mode. What should the protection mechanism do?",
+				a: [
+					"Allow it unconditionally",
+					"Prevent the unauthorized operation and raise an appropriate fault/exception",
+					"Shut down the monitor",
+					"Convert it into a cache hit",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the key purpose of virtual memory?",
+				a: [
+					"Guarantee every memory access is a cache hit",
+					"Give each process a protected virtual address space that can be mapped to physical memory",
+					"Remove the need for RAM",
+					"Make all memory physically reside on the CPU die",
+				],
+				c: 1,
+			},
+			{
+				q: "What does a page table record?",
+				a: [
+					"Only floating-point rounding modes",
+					"Mappings and permissions for virtual memory pages",
+					"Only the current CPU clock frequency",
+					"The source code of every process",
+				],
+				c: 1,
+			},
+			{
+				q: "Why is a translation lookaside buffer (TLB) useful?",
+				a: [
+					"It is the CPU's largest storage level",
+					"It stores recently used address translations to avoid repeated page-table walks",
+					"It predicts arithmetic answers",
+					"It permanently stores files",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the difference between a virtual address and a physical address?",
+				a: [
+					"Virtual addresses are always 8 bits long",
+					"Physical addresses exist only in source code",
+					"There is no difference in any system",
+					"Virtual addresses are used by programs and translated; physical addresses identify locations in RAM",
+				],
+				c: 3,
+			},
+			{
+				q: "Why might a modern x86-64 CPU not implement all 64 bits of a theoretical virtual address?",
+				a: [
+					"Page tables only support decimal addresses",
+					"The CPU cannot represent binary numbers",
+					"The full address space is enormous and current systems need fewer implemented address bits",
+					"The operating system does not use memory",
+				],
+				c: 2,
+			},
+			{
+				q: "What is an interrupt typically used to signal?",
+				a: [
+					"That a cache is physically broken",
+					"That all instructions have been compiled",
+					"That a floating-point number is always negative",
+					"An external event requiring CPU attention",
+				],
+				c: 3,
+			},
+			{
+				q: "How does an exception differ from a typical external interrupt?",
+				a: [
+					"An exception is usually triggered by a condition during instruction execution, such as divide-by-zero",
+					"An interrupt always means the program is correct",
+					"There is no conceptual distinction",
+					"An exception can only come from a keyboard",
+				],
+				c: 0,
+			},
+			{
+				q: "What does instruction-level parallelism (ILP) describe?",
+				a: [
+					"The ability to execute independent instructions with overlapping or parallel activity",
+					"The size of a source-code file",
+					"The number of users logged into a website",
+					"The number of files stored on disk",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can a CPU execute independent instructions out of program order?",
+				a: [
+					"To keep execution units busy while preserving the program's correct architectural results",
+					"To change the program's meaning",
+					"To avoid decoding instructions",
+					"To ignore program dependencies",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a data dependency between two instructions?",
+				a: [
+					"One instruction needs a value produced or modified by another instruction",
+					"The CPU has two physical cores",
+					"The instructions were written in different languages",
+					"Two instructions have different colors in a diagram",
+				],
+				c: 0,
+			},
+			{
+				q: "What is register renaming designed to reduce?",
+				a: [
+					"All genuine data dependencies",
+					"False dependencies caused by multiple instructions using the same architectural register name",
+					"The number of bits in an address",
+					"The need for machine code",
+				],
+				c: 1,
+			},
+			{
+				q: "Why does a processor use branch prediction?",
+				a: [
+					"To store the entire program in registers",
+					"To guess a branch's likely direction so it can keep the pipeline busy",
+					"To replace the instruction set",
+					"To guarantee every guess is correct",
+				],
+				c: 1,
+			},
+			{
+				q: "What happens when a branch prediction is wrong?",
+				a: [
+					"The CPU must permanently stop",
+					"The CPU may discard work from the wrong path and restart from the correct path",
+					"The program's source code is rewritten",
+					"The SSD becomes cache",
+				],
+				c: 1,
+			},
+			{
+				q: "What is a CPU pipeline intended to achieve?",
+				a: [
+					"Overlap stages of multiple instructions to improve throughput",
+					"Make each instruction require more clock cycles by design",
+					"Convert all instructions to floating-point operations",
+					"Eliminate the need for registers",
+				],
+				c: 0,
+			},
+			{
+				q: "How does a superscalar processor improve throughput?",
+				a: [
+					"It executes only one instruction per program",
+					"It stores instructions only on SSD",
+					"It can issue or execute multiple instructions in a cycle when resources and dependencies permit",
+					"It removes the need for a clock",
+				],
+				c: 2,
+			},
+			{
+				q: "What is a primary advantage of multiple CPU cores?",
+				a: [
+					"They can run work in parallel, improving throughput for parallel workloads",
+					"They eliminate memory latency",
+					"They guarantee every single-threaded task runs twice as fast",
+					"They make software scheduling unnecessary",
+				],
+				c: 0,
+			},
+			{
+				q: "What does simultaneous multithreading (SMT) allow a core to do?",
+				a: [
+					"Keep resources busy by maintaining execution contexts for more than one hardware thread",
+					"Disable out-of-order execution",
+					"Make every instruction use SIMD",
+					"Turn one core into separate computers with independent RAM",
+				],
+				c: 0,
+			},
+			{
+				q: "Why might a processor combine performance cores and efficiency cores?",
+				a: [
+					"To remove the operating system scheduler",
+					"To ensure all cores have identical performance and power use",
+					"To balance high performance for demanding work with lower-power handling of background tasks",
+					"To prevent multithreading",
+				],
+				c: 2,
+			},
+			{
+				q: "Which workload is a natural fit for SIMD/vector instructions?",
+				a: [
+					"Loading a keyboard driver once",
+					"A single unpredictable file-open operation only",
+					"Changing a physical cable",
+					"Applying the same operation to many pixels or array elements",
+				],
+				c: 3,
+			},
+			{
+				q: "How does a GPU differ from a CPU in its typical strength?",
+				a: [
+					"A GPU is designed for high levels of parallel throughput; a CPU is optimized for broad general-purpose processing",
+					"A CPU cannot execute programs",
+					"A GPU is always used only for text editing",
+					"A GPU cannot perform arithmetic",
+				],
+				c: 0,
+			},
+			{
+				q: "What kind of task is an NPU typically designed to accelerate?",
+				a: [
+					"Keyboard input scanning only",
+					"Disk formatting only",
+					"AI and machine-learning operations",
+					"Branch prediction in every CPU instruction",
+				],
+				c: 2,
+			},
+			{
+				q: "Which statement best distinguishes ISA from microarchitecture?",
+				a: [
+					"ISA defines the software-visible instruction interface; microarchitecture is how a particular processor implements it",
+					"They always mean exactly the same thing",
+					"Microarchitecture is a programming language",
+					"ISA is the CPU's physical cooling design",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can two processors implement the same ISA but have different performance?",
+				a: [
+					"They must execute different machine code",
+					"An ISA specifies the exact physical layout of every transistor",
+					"They may use different pipelines, caches, execution units, and prediction strategies",
+					"Performance is determined only by case size",
+				],
+				c: 2,
+			},
+			{
+				q: "What three conceptual components describe a floating-point value?",
+				a: [
+					"Integer, pointer, and branch",
+					"Opcode, cache line, and page table",
+					"Byte order, file name, and clock",
+					"Sign, significand, and exponent",
+				],
+				c: 3,
+			},
+			{
+				q: "In binary scientific notation, what does the exponent control?",
+				a: [
+					"The byte order of an entire file",
+					"The number of CPU cores",
+					"Whether the CPU is in user mode",
+					"The position of the binary point by scaling with a power of two",
+				],
+				c: 3,
+			},
+			{
+				q: "In IEEE 754 single precision, how many bits are in the representation?",
+				a: ["64", "16", "32", "80"],
+				c: 2,
+			},
+			{
+				q: "How are the 32 bits of a standard single-precision value divided?",
+				a: [
+					"8 sign bits, 8 exponent bits, and 16 fraction bits",
+					"1 sign bit, 8 exponent bits, and 23 fraction bits",
+					"2 sign bits, 10 exponent bits, and 20 fraction bits",
+					"1 sign bit, 11 exponent bits, and 20 fraction bits",
+				],
+				c: 1,
+			},
+			{
+				q: "For a normalized single-precision number, what is the exponent bias?",
+				a: ["64", "127", "1023", "23"],
+				c: 1,
+			},
+			{
+				q: "A single-precision value has stored exponent 130. What is its unbiased exponent?",
+				a: ["130", "257", "127", "3"],
+				c: 3,
+			},
+			{
+				q: "If the IEEE 754 sign bit is 1, what does it indicate for an ordinary finite value?",
+				a: [
+					"The value is always NaN",
+					"The value is zero in every case",
+					"The exponent is negative",
+					"The value is negative",
+				],
+				c: 3,
+			},
+			{
+				q: "Why does normalized IEEE 754 binary representation usually omit the leading 1 of the significand?",
+				a: [
+					"It is implied for normalized binary values, saving a stored bit of precision",
+					"It stores the exponent twice",
+					"It makes all values integers",
+					"The leading bit is always the sign bit",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the normalized binary form of decimal 6.0?",
+				a: ["0.11 × 2³", "1.1 × 2³", "1.01 × 2¹", "1.1 × 2²"],
+				c: 3,
+			},
+			{
+				q: "What is the decimal value of binary 1.101?",
+				a: ["2.5", "1.75", "1.125", "1.625"],
+				c: 3,
+			},
+			{
+				q: "What is the decimal value of binary 0.101?",
+				a: ["0.625", "1.25", "0.5", "0.75"],
+				c: 0,
+			},
+			{
+				q: "A normalized single-precision value has sign 0, stored exponent 127, and a fraction field of all zeros. What value does it represent?",
+				a: ["−1.0", "+2.0", "+0.0", "+1.0"],
+				c: 3,
+			},
+			{
+				q: "A normalized single-precision value has sign 1, stored exponent 128, and fraction bits all zero. What value does it represent?",
+				a: ["−2.0", "−0.5", "+2.0", "−1.0"],
+				c: 0,
+			},
+			{
+				q: "When converting a normalized single-precision value to decimal, why is the bias subtracted from the stored exponent?",
+				a: [
+					"To remove the fraction bits",
+					"Because exponents are stored as ASCII",
+					"The stored exponent is biased; subtraction recovers the actual exponent",
+					"To convert the sign bit into decimal",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the value of (−1)^0 × 1.5 × 2²?",
+				a: ["6", "−6", "1.5", "3"],
+				c: 0,
+			},
+			{
+				q: "What is the value of (−1)^1 × 1.25 × 2¹?",
+				a: ["2.5", "−1.25", "−2.5", "−3.0"],
+				c: 2,
+			},
+			{
+				q: "Why can a decimal fraction such as 0.1 fail to have an exact finite binary floating-point representation?",
+				a: [
+					"The sign bit is missing",
+					"Its binary expansion repeats, so a finite field must approximate it",
+					"Binary numbers cannot represent fractions",
+					"The exponent bias is always zero",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the main consequence of storing a value that cannot be represented exactly in the available fraction bits?",
+				a: [
+					"The number becomes a page table",
+					"The program cannot execute any more instructions",
+					"The stored result is rounded to a representable value",
+					"The CPU automatically increases the format's bit width",
+				],
+				c: 2,
+			},
+			{
+				q: "Which IEEE 754 format normally has greater precision and range than single precision?",
+				a: ["A 4-bit integer", "A byte", "Double precision", "A status flag"],
+				c: 2,
+			},
+			{
+				q: "What is a subnormal (denormal) floating-point number useful for?",
+				a: [
+					"Representing nonzero values closer to zero than the smallest normalized value",
+					"Representing only positive infinity",
+					"Storing instruction opcodes",
+					"Avoiding all rounding",
+				],
+				c: 0,
+			},
+			{
+				q: "What does positive or negative infinity commonly represent in IEEE 754?",
+				a: [
+					"A cache address",
+					"A special value used for results such as overflow or division by zero in applicable cases",
+					"An empty FPU register only",
+					"An ordinary finite number with a normal exponent",
+				],
+				c: 1,
+			},
+			{
+				q: "What does NaN stand for?",
+				a: [
+					"Normalized Arithmetic Node",
+					"Negative Address Notation",
+					"New Allocation Number",
+					"Not a Number",
+				],
+				c: 3,
+			},
+			{
+				q: "Which operation is a typical example of an invalid floating-point operation?",
+				a: [
+					"An operation such as 0.0/0.0",
+					"Adding 2.0 and 3.0",
+					"Comparing two finite values",
+					"Loading a normal finite value",
+				],
+				c: 0,
+			},
+			{
+				q: "Which floating-point exception is associated with dividing a nonzero finite value by zero?",
+				a: [
+					"Numeric underflow only",
+					"Inexact precision only",
+					"Denormalized operand only",
+					"Divide by zero",
+				],
+				c: 3,
+			},
+			{
+				q: "What does floating-point overflow generally mean?",
+				a: [
+					"The CPU has no available general-purpose registers",
+					"The result's magnitude exceeds the range representable in the destination format",
+					"The result is exactly zero",
+					"The value was stored in little-endian order",
+				],
+				c: 1,
+			},
+			{
+				q: "What does floating-point underflow generally indicate?",
+				a: [
+					"The program used too many CPU cores",
+					"The sign bit is 1",
+					"A nonzero result is too small in magnitude for normal representation in the target format",
+					"The result is too large to represent",
+				],
+				c: 2,
+			},
+			{
+				q: "What is an inexact-precision exception/flag used to indicate?",
+				a: [
+					"The instruction pointer is invalid every time",
+					"The CPU is in kernel mode",
+					"The computed result could not be represented exactly and rounding occurred",
+					"A page table has no entries",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the role of a floating-point exception mask?",
+				a: [
+					"It controls whether a particular exception is handled automatically or causes a software handler to be invoked",
+					"It selects the next instruction address",
+					"It determines the CPU's physical address width",
+					"It stores the significand",
+				],
+				c: 0,
+			},
+			{
+				q: "Why does the x87 FPU use a register stack?",
+				a: [
+					"Its floating-point instructions commonly operate on stack positions such as ST(0) and ST(1)",
+					"It is the same thing as the SSD cache",
+					"It replaces all CPU general-purpose registers",
+					"It stores all application files permanently",
+				],
+				c: 0,
+			},
+			{
+				q: "If the FPU TOP field identifies R3 as the top of the stack, which stack name refers to that top value?",
+				a: ["EAX", "RIP", "ST(0)", "ST(3) always"],
+				c: 2,
+			},
+			{
+				q: "How many 80-bit data registers are described for the x87 FPU register stack?",
+				a: ["4", "16", "32", "8"],
+				c: 3,
+			},
+			{
+				q: "Why are floating-point expressions sometimes evaluated in postfix form by the x87 FPU?",
+				a: [
+					"Postfix requires no operands",
+					"The stack-oriented instruction model naturally uses operands followed by operators",
+					"It is required by all programming languages",
+					"It allows only integer arithmetic",
+				],
+				c: 1,
+			},
+			{
+				q: "Which postfix expression corresponds to (5 × 6) + 4?",
+				a: ["5 6 * 4 +", "5 6 4 + *", "5 * 6 + 4", "* 5 6 + 4"],
+				c: 0,
+			},
+			{
+				q: "What does the FPU control register help configure?",
+				a: [
+					"Precision, rounding method, and exception masks",
+					"The computer's screen resolution",
+					"The SSD's filesystem",
+					"The CPU's virtual-to-physical page mappings",
+				],
+				c: 0,
+			},
+			{
+				q: "What kind of information is stored in the FPU status register?",
+				a: [
+					"Stack-top pointer, condition codes, and exception status",
+					"Only the operating system username",
+					"Only the current instruction's source code",
+					"The full contents of main memory",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of the FPU tag register?",
+				a: [
+					"Describe the state or type of each register-stack entry, including whether it is empty",
+					"Translate virtual addresses",
+					"Predict conditional branches",
+					"Store the exponent bias for every value",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is rounding necessary in floating-point arithmetic?",
+				a: [
+					"The exact mathematical result may require more bits than the destination format can store",
+					"All decimal numbers are integers",
+					"Rounding always increases precision without loss",
+					"The CPU cannot perform multiplication",
+				],
+				c: 0,
+			},
+			{
+				q: "Under round-to-nearest, ties-to-even, how is an exact halfway result generally resolved?",
+				a: [
+					"Always round toward positive infinity",
+					"Always round away from zero",
+					"Choose the representable result whose least significant retained digit/bit is even",
+					"Always truncate",
+				],
+				c: 2,
+			},
+			{
+				q: "Why can rounding affect later calculations?",
+				a: [
+					"A rounded intermediate result may differ slightly from the exact value and that difference can propagate",
+					"Rounding changes the CPU instruction set",
+					"Rounded values cannot be loaded from memory",
+					"Rounding always creates an exception that stops the program",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is a sensible strategy when comparing floating-point results from calculations?",
+				a: [
+					"Assume every calculation is exact",
+					"Use an appropriate tolerance when exact equality is not mathematically guaranteed",
+					"Compare only the sign bits",
+					"Convert every value to an address",
+				],
+				c: 1,
+			},
+			{
+				q: "Which is a basic category of floating-point instructions?",
+				a: [
+					"Only file compression",
+					"Only text editing",
+					"Data transfer, arithmetic, comparison, and control operations",
+					"Only memory paging",
+				],
+				c: 2,
+			},
+			{
+				q: "Why are memory-to-memory floating-point operations not generally permitted by the x87 instruction model described in the lecture?",
+				a: [
+					"The FPU cannot access memory at all",
+					"All operands must be in the instruction pointer",
+					"Memory has no numeric values",
+					"At least one operand typically needs to be in an FPU register; values are loaded before operations and stored afterward",
+				],
+				c: 3,
+			},
+			{
+				q: "When an integer value is loaded from memory into the FPU using an appropriate instruction, what typically happens?",
+				a: [
+					"It becomes an instruction opcode",
+					"It is converted into a virtual address",
+					"It is converted to floating-point format for the operation",
+					"It is always rounded to zero",
+				],
+				c: 2,
+			},
+			{
+				q: "Why might software need to preserve FPU state during a task switch?",
+				a: [
+					"The FPU state contains the entire SSD",
+					"The state determines the monitor brightness",
+					"The next task must not inherit the previous task's floating-point register and control state",
+					"The operating system must reset all page tables every time",
+				],
+				c: 2,
+			},
+			{
+				q: "In the x86 register naming scheme, what does AL refer to?",
+				a: [
+					"The low 8 bits of EAX/RAX",
+					"The high 8 bits of EAX",
+					"All 64 bits of RAX",
+					"The instruction pointer",
+				],
+				c: 0,
+			},
+			{
+				q: "Which status flag indicates that an unsigned arithmetic operation produced a carry out of the most significant bit?",
+				a: ["Sign flag", "Carry flag", "Zero flag", "Parity flag"],
+				c: 1,
+			},
+			{
+				q: "How does the overflow flag differ from the carry flag in the lecture's description?",
+				a: [
+					"Overflow tracks signed arithmetic range; carry tracks unsigned arithmetic range",
+					"Overflow tracks cache misses; carry tracks page faults",
+					"They always indicate the same condition",
+					"Carry tracks signed range; overflow tracks unsigned range",
+				],
+				c: 0,
+			},
+			{
+				q: "Which register group is described as providing 128-bit registers for SIMD operations in the processor-architecture presentation?",
+				a: [
+					"Segment registers",
+					"XMM registers",
+					"EFLAGS",
+					"Instruction-pointer registers",
+				],
+				c: 1,
+			},
+			{
+				q: "What does compatibility mode on a 64-bit processor allow, according to the slides?",
+				a: [
+					"Running supported legacy 16-bit and 32-bit applications",
+					"Using only 8-bit addresses",
+					"Disabling virtual memory permanently",
+					"Executing only floating-point instructions",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a key reason to combine P-cores and E-cores in one processor?",
+				a: [
+					"To balance demanding high-performance work with energy-efficient tasks",
+					"To make every core identical in power use",
+					"To replace the need for cache",
+					"To ensure only one program can run at a time",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the retirement stage of a modern CPU pipeline help ensure?",
+				a: [
+					"Completed instructions commit their results in the correct architectural order",
+					"Every branch prediction is correct",
+					"All data is written directly to an SSD",
+					"Source code is converted into assembly",
+				],
+				c: 0,
+			},
+			{
+				q: "If a CPU's L1 cache misses, what is the usual next place checked in the hierarchy shown in the slides?",
+				a: ["L2 cache", "SSD first", "GPU memory only", "The compiler"],
+				c: 0,
+			},
+			{
+				q: "In IEEE single precision, what is the role of the 23-bit fraction field for a normalized number?",
+				a: [
+					"It stores the fractional portion of the significand after the implicit leading 1",
+					"It stores the sign and exponent together",
+					"It stores the exponent bias",
+					"It identifies the CPU core number",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can a finite floating-point format not represent every real number exactly?",
+				a: [
+					"It has a finite number of bits, limiting available significand precision and exponent range",
+					"Real numbers are always integers in binary",
+					"The sign bit prevents fractional values",
+					"The exponent is always zero",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the stored single-precision exponent when the actual exponent is +5?",
+				a: ["122", "127", "132", "254"],
+				c: 2,
+			},
+			{
+				q: "To normalize a nonzero binary number, where is the binary point shifted until the leading significant bit is located?",
+				a: [
+					"Immediately after a single leading 1",
+					"Immediately before the final bit",
+					"After every zero",
+					"It is never moved",
+				],
+				c: 0,
+			},
+			{
+				q: "Why are denormalized (subnormal) values useful?",
+				a: [
+					"They represent very small nonzero magnitudes near zero when normalized representation is not possible",
+					"They represent only positive infinity",
+					"They provide extra CPU registers",
+					"They eliminate all rounding",
+				],
+				c: 0,
+			},
+			{
+				q: "What distinguishes a signaling NaN from a quiet NaN in the slides?",
+				a: [
+					"A signaling NaN can trigger an invalid-operation exception; a quiet NaN can propagate through many operations without one",
+					"A signaling NaN is always zero",
+					"A quiet NaN is the only one that can be stored in memory",
+					"There is no distinction",
+				],
+				c: 0,
+			},
+			{
+				q: "When an FPU exception's mask bit is clear, what action does the slide describe?",
+				a: [
+					"The processor invokes a software exception handler",
+					"The processor always ignores the exception",
+					"The result is automatically converted to an integer",
+					"The CPU disables all registers",
+				],
+				c: 0,
+			},
+			{
+				q: "According to the operand rules in the floating-point slides, which statement is correct for a two-operand floating-point instruction?",
+				a: [
+					"At least one operand must be a floating-point register",
+					"Both operands must be general-purpose CPU registers",
+					"Both operands must be memory locations",
+					"Neither operand can be a register",
+				],
+				c: 0,
+			},
+		],
 	},
 
 	CloudComp: {
