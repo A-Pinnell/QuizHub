@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+		<link rel="icon" type="image/png" href="assets/icon.png" />
+		<title>Binary Quiz II</title>
+		<link
+			rel="stylesheet"
+			href="./css/binary-quiz.css?v=ieee754-short-values-v2" />
+		<link rel="stylesheet" href="./css/preferences.css" />
+		<link rel="stylesheet" href="./css/cover-screen.css" />
+		<link rel="stylesheet" href="./css/quiz-music-picker.css" />
+		<link
+			rel="stylesheet"
+			href="./css/party-notifications.css?v=party-score-fade" />
+		<script src="./js/audio-focus.js" defer></script>
+		<script src="./js/load-preferences.js"></script>
+		<script src="./js/dev-scenes.js" defer></script>
+		<script src="./js/dev.js" defer></script>
+		<script src="./js/party-config.js?v=nethub-d1-v1" defer></script>
+		<script src="./js/party-client.js?v=join-leave-notices" defer></script>
+		<script src="./js/procedural-party.js?v=party-score-fade" defer></script>
+	</head>
+	<body
+		data-party-disabled="true"
+		data-game-type="float"
+		data-setup-music="./music/BinaryQuiz2-Intro.mp3"
+		data-game-music="./music/BinaryQuiz2.mp3">
+		<main id="app">
+			<section id="setupScreen" class="screen">
+				<div class="panel setup-panel">
+					<div class="brand">
+						<div class="brand-mark">02</div>
+						<div>
+							<p class="eyebrow">BINARY TRAINING · PART II</p>
+							<h1>Binary Quiz II</h1>
+						</div>
+					</div>
+
+					<div class="setup-grid">
+						<div class="setting-card">
+							<label>Game Type</label>
+							<div class="choice-grid" id="floatDirectionChoices">
+								<button
+									class="choice selected"
+									data-value="encode"
+									type="button">
+									Binary → 32-bit Float
+								</button>
+								<button class="choice" data-value="decode" type="button">
+									32-bit Float → Binary
+								</button>
+							</div>
+						</div>
+
+						<div class="setting-card">
+							<label>Questions</label>
+							<div class="choice-grid compact" id="questionChoices">
+								<button class="choice selected" data-value="10" type="button">
+									10
+								</button>
+								<button class="choice" data-value="20" type="button">20</button>
+								<button class="choice" data-value="50" type="button">50</button>
+								<button class="choice" data-value="endless" type="button">
+									∞ Endless
+								</button>
+							</div>
+						</div>
+
+						<div class="setting-card">
+							<label>Time Limit Per Question</label>
+							<div class="timer-control">
+								<button
+									class="timer-mode selected"
+									id="noTimerToggle"
+									type="button"
+									aria-pressed="false">
+									No Time Limit
+								</button>
+								<div class="timer-input-wrap">
+									<input
+										id="timerMinutes"
+										type="number"
+										min="1"
+										max="60"
+										step="1"
+										value="30"
+										inputmode="numeric"
+										aria-label="Time limit per question in minutes" />
+									<span>minutes</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="setting-card toggles">
+							<label>Options</label>
+							<button class="toggle active" id="musicToggle" type="button">
+								<span class="toggle-icon">♫</span><span>Music</span
+								><strong>ON</strong>
+							</button>
+							<button class="toggle active" id="soundToggle" type="button">
+								<span class="toggle-icon">🔊</span><span>Sound Effects</span
+								><strong>ON</strong>
+							</button>
+						</div>
+					</div>
+
+					<div class="setup-actions">
+						<button class="secondary-button" id="exitSetup" type="button">
+							Exit to Menu
+						</button>
+						<button class="start-button" id="startButton" type="button">
+							Start Quiz <span>→</span>
+						</button>
+					</div>
+					<p class="hint">
+						Convert between short binary values and IEEE 754 single-precision
+						bit patterns.
+					</p>
+				</div>
+			</section>
+
+			<section id="gameScreen" class="screen hidden">
+				<div class="game-shell">
+					<header class="game-header">
+						<button class="small-button" id="gameMenuButton" type="button">
+							☰ Menu
+						</button>
+						<div class="game-title">BINARY <span>QUIZ II</span></div>
+						<div class="header-stats">
+							<div><small>Score</small><strong id="score">0</strong></div>
+							<div>
+								<small>Question</small
+								><strong id="questionNumber">1 / 10</strong>
+							</div>
+							<div id="timerBox">
+								<small>Time</small><strong id="timer">—</strong>
+							</div>
+						</div>
+					</header>
+
+					<div class="game-content">
+						<div class="problem-panel">
+							<div class="operation-badge" id="operationBadge">CONVERSION</div>
+							<div id="conversionProblem" class="problem"></div>
+							<div
+								id="operationProblem"
+								class="problem operation-problem hidden"></div>
+							<p class="question-hint" id="questionHint">
+								Choose the bits to build your answer.
+							</p>
+							<div id="feedback" class="feedback"></div>
+						</div>
+
+						<aside class="side-panel">
+							<div class="stat-card">
+								<span>Correct</span><strong id="correct">0</strong>
+							</div>
+							<div class="stat-card">
+								<span>Incorrect</span><strong id="incorrect">0</strong>
+							</div>
+							<button class="side-button" id="pauseButton" type="button">
+								Pause
+							</button>
+							<button class="side-button" id="skipButton" type="button">
+								Skip Question
+							</button>
+							<button class="side-button" id="musicButton" type="button">
+								♫ Music: On
+							</button>
+							<button class="side-button" id="soundButton" type="button">
+								🔊 Sound: On
+							</button>
+							<button
+								class="side-button danger hidden"
+								id="nextQuestionButton"
+								type="button">
+								Next Question
+							</button>
+							<button
+								class="side-button danger"
+								id="endGameButton"
+								type="button">
+								End Game
+							</button>
+						</aside>
+					</div>
+				</div>
+
+				<div id="pauseOverlay" class="overlay hidden">
+					<div class="dialog">
+						<p class="eyebrow">QUIZ PAUSED</p>
+						<h2>Take a breather.</h2>
+						<button class="start-button" id="resumeButton" type="button">
+							Resume
+						</button>
+						<button class="secondary-button" id="pauseMenuButton" type="button">
+							Setup Menu
+						</button>
+					</div>
+				</div>
+			</section>
+
+			<section id="resultsScreen" class="screen hidden">
+				<div class="panel results-panel">
+					<p class="eyebrow">QUIZ COMPLETE</p>
+					<h1 id="resultsTitle">Great work!</h1>
+					<div class="big-score">
+						<span id="finalScore">0</span><small>POINTS</small>
+					</div>
+					<div class="results-grid">
+						<div><span>Correct</span><strong id="finalCorrect">0</strong></div>
+						<div>
+							<span>Incorrect</span><strong id="finalIncorrect">0</strong>
+						</div>
+						<div>
+							<span>Accuracy</span><strong id="finalAccuracy">0%</strong>
+						</div>
+					</div>
+					<div class="results-actions">
+						<button
+							class="secondary-button"
+							id="resultsMenuButton"
+							type="button">
+							Setup Menu
+						</button>
+						<button class="start-button" id="againButton" type="button">
+							Play Again <span>↻</span>
+						</button>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<audio
+			id="music"
+			src="./music/BinaryQuiz2-Intro.mp3"
+			preload="auto"></audio>
+		<script src="./js/quiz-music-picker.js" defer></script>
+		<script src="./js/binary-quiz.js?v=ieee754-short-values-v2" defer></script>
+	</body>
+</html>

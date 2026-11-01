@@ -524,6 +524,40 @@ h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: .95; }
   color: var(--ink); outline: none; font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 700; text-align: center; padding: 4px;
 }
 .decimal-answer-input:focus { border-color: #e0a800; }
+.version-link { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.float-source {
+  margin: 4px 0 18px;
+  color: var(--red);
+  font-size: clamp(1.7rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: .04em;
+  overflow-wrap: anywhere;
+}
+.ieee-answer { display: grid; width: min(680px, 100%); gap: 9px; text-align: left; }
+.ieee-field {
+  padding: 9px;
+  border: 2px solid #efcf83;
+  border-radius: 10px;
+  background: rgba(255,255,255,.82);
+}
+.ieee-field-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--red-dark);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.ieee-bits { justify-content: flex-start; flex-wrap: wrap; gap: 3px; }
+.ieee-bits .bit {
+  flex: 0 0 clamp(17px, 2.5vw, 25px);
+  width: clamp(17px, 2.5vw, 25px);
+  height: 34px;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: .95rem;
+}
 
 .place-value-guide {
   width: min(650px, 100%);
@@ -565,6 +599,12 @@ button.bit:not(:disabled):hover { transform: translateY(-2px); }
 @media (max-width: 560px) {
   .bits { gap: 3px; }
   .bit { width: 34px; height: 44px; border-width: 2px; }
+  .ieee-bits .bit {
+    flex-basis: clamp(15px, 4vw, 20px);
+    width: clamp(15px, 4vw, 20px);
+    height: 30px;
+    font-size: .78rem;
+  }
   .operation-row { gap: 5px; }
   .operation-sign { width: 25px; }
 }

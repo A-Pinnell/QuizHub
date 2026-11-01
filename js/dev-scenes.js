@@ -16,6 +16,12 @@
 				external: "binary-quiz.html",
 			},
 			{
+				id: "binary-quiz-2",
+				label: "Binary Practice II",
+				detail: "IEEE 754 single-precision practice",
+				external: "binary-quiz-2.html",
+			},
+			{
 				id: "hexadecimal-quiz",
 				label: "Hexadecimal Practice",
 				detail: "Standalone hexadecimal practice",

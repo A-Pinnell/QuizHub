@@ -3,7 +3,8 @@
 
   const $ = (id) => document.getElementById(id);
   const state = {
-    gameType: "conversion",
+    gameType: document.body.dataset.gameType || "conversion",
+    floatDirection: "encode",
     operation: "+",
     questions: 10,
     timerLimit: 30,
@@ -29,12 +30,28 @@
   };
   let party = null;
   let partyQuestion = null;
+  let floatingPointQuestion = null;
 
   const music = $("music");
   const resolveAssetUrl = (path) => new URL(path, window.location.href).toString();
   const defaultMusicSource = music.src;
-  music.src = window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
-  music.loop = !window.quizHubPreferences.isQuizMusicRotation;
+  const setupMusicSource = document.body.dataset.setupMusic
+    ? resolveAssetUrl(document.body.dataset.setupMusic)
+    : null;
+  const gameMusicSource = document.body.dataset.gameMusic
+    ? resolveAssetUrl(document.body.dataset.gameMusic)
+    : null;
+  const hasDedicatedMusic = Boolean(setupMusicSource && gameMusicSource);
+  let musicMode = "setup";
+  let setupMusicStarted = false;
+  if (hasDedicatedMusic) {
+    music.src = setupMusicSource;
+  } else {
+    music.src = window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
+  }
+  music.loop = hasDedicatedMusic
+    ? true
+    : !window.quizHubPreferences.isQuizMusicRotation;
   const soundFiles = {
     correct: resolveAssetUrl("./sfx/Correct.wav"),
     highlight: resolveAssetUrl("./sfx/highlight.wav"),
@@ -97,14 +114,17 @@
   }
 
   function chooseGroup(containerId, callback) {
-    $(containerId).querySelectorAll(".choice").forEach(button => button.addEventListener("click", () => {
-      $(containerId).querySelectorAll(".choice").forEach(b => b.classList.remove("selected"));
+    const container = $(containerId);
+    if (!container) return;
+    container.querySelectorAll(".choice").forEach(button => button.addEventListener("click", () => {
+      container.querySelectorAll(".choice").forEach(b => b.classList.remove("selected"));
       button.classList.add("selected");
       callback(button.dataset.value);
     }));
   }
 
   chooseGroup("gameTypeChoices", value => { state.gameType = value; updateSetupVisibility(); });
+  chooseGroup("floatDirectionChoices", value => { state.floatDirection = value; });
   chooseGroup("operationChoices", value => state.operation = value);
   chooseGroup("questionChoices", value => state.questions = value === "endless" ? "endless" : Number(value));
 
@@ -174,14 +194,18 @@
     updateTimerSelection();
   });
 
-  [$("guideOff"), $("guideOn")].forEach(button => button.addEventListener("click", () => {
-    [$("guideOff"), $("guideOn")].forEach(b => b.classList.remove("selected"));
-    button.classList.add("selected");
-    state.guide = button.dataset.value === "on";
-  }));
+  const guideOff = $("guideOff");
+  const guideOn = $("guideOn");
+  if (guideOff && guideOn) {
+    [guideOff, guideOn].forEach(button => button.addEventListener("click", () => {
+      [guideOff, guideOn].forEach(b => b.classList.remove("selected"));
+      button.classList.add("selected");
+      state.guide = button.dataset.value === "on";
+    }));
+  }
 
   function updateSetupVisibility() {
-    $("operationSetting").classList.toggle("hidden", state.gameType !== "operation");
+    $("operationSetting")?.classList.toggle("hidden", state.gameType !== "operation");
   }
 
   function setToggle(button, enabled) {
@@ -191,15 +215,33 @@
 
   $("musicToggle").addEventListener("click", () => { state.music = !state.music; setToggle($("musicToggle"), state.music); updateMusic(); });
   $("soundToggle").addEventListener("click", () => { state.sound = !state.sound; setToggle($("soundToggle"), state.sound); if (state.sound) { playSound("popup"); playTone(520, .06, "square"); } });
-  $("decimalToggle").addEventListener("click", () => { state.decimal = !state.decimal; setToggle($("decimalToggle"), state.decimal); document.body.classList.toggle("show-decimals", state.decimal); });
+  $("decimalToggle")?.addEventListener("click", () => { state.decimal = !state.decimal; setToggle($("decimalToggle"), state.decimal); document.body.classList.toggle("show-decimals", state.decimal); });
 
   function updateMusic() {
-    music.loop = !window.quizHubPreferences.isQuizMusicRotation;
+    music.loop = hasDedicatedMusic
+      ? true
+      : !window.quizHubPreferences.isQuizMusicRotation;
     if (!state.music) { music.pause(); return; }
     music.volume = .45;
-    music.play().catch(() => {});
+    const playback = music.play();
+    if (hasDedicatedMusic && musicMode === "setup") {
+      playback.then(() => { setupMusicStarted = true; }).catch(() => {});
+    } else {
+      playback.catch(() => {});
+    }
+  }
+  function setMusicMode(mode) {
+    if (!hasDedicatedMusic) return;
+    musicMode = mode;
+    const source = mode === "game" ? gameMusicSource : setupMusicSource;
+    if (music.src !== source) {
+      music.src = source;
+      music.load();
+    }
+    music.loop = true;
   }
   music.addEventListener("ended", () => {
+    if (hasDedicatedMusic) return;
     if (!window.quizHubPreferences.isQuizMusicRotation || !state.music || state.paused) return;
     music.src = window.quizHubPreferences.getNextQuizMusic(
       music.currentSrc || music.src,
@@ -208,22 +250,24 @@
     music.load();
     updateMusic();
   });
-  window.QuizHubMusicPicker.attach({
-    button: $("quizMusicCycle"),
-    isSoundEnabled: () => state.sound,
-    isMusicEnabled: () => state.music && !state.paused,
-    onSelectionStart: () => music.pause(),
-    onTrackSelected: (shouldPlay, reshuffle) => {
-      music.src = reshuffle
-        ? window.quizHubPreferences.getNextQuizMusic(
-            music.currentSrc || music.src,
-            defaultMusicSource
-          )
-        : window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
-      music.load();
-      if (shouldPlay) updateMusic();
-    }
-  });
+  if (!hasDedicatedMusic) {
+    window.QuizHubMusicPicker.attach({
+      button: $("quizMusicCycle"),
+      isSoundEnabled: () => state.sound,
+      isMusicEnabled: () => state.music && !state.paused,
+      onSelectionStart: () => music.pause(),
+      onTrackSelected: (shouldPlay, reshuffle) => {
+        music.src = reshuffle
+          ? window.quizHubPreferences.getNextQuizMusic(
+              music.currentSrc || music.src,
+              defaultMusicSource
+            )
+          : window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
+        music.load();
+        if (shouldPlay) updateMusic();
+      }
+    });
+  }
 
   function playTone(freq, duration = .08, type = "sine") {
     if (!state.sound) return;
@@ -243,8 +287,17 @@
 
   function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
   function bitsFor(value, width = 8) { return value.toString(2).padStart(width, "0").slice(-width).split(""); }
+  function normalizeBinaryValue(value) {
+    const match = value.trim().replace(/₂$/, "").replace(/\u2212/g, "-")
+      .match(/^([+-]?)([01]*)(?:\.([01]*))?$/);
+    if (!match || (!match[2] && !match[3])) return null;
+    const integer = (match[2] || "0").replace(/^0+(?=\d)/, "");
+    const fraction = (match[3] || "").replace(/0+$/, "");
+    const sign = match[1] === "-" && (integer !== "0" || fraction) ? "-" : "";
+    return `${sign}${integer}${fraction ? `.${fraction}` : ""}`;
+  }
 
-  function bitButtons(bits, editable, className = "answer-bits") {
+  function bitButtons(bits, editable, className = "answer-bits", offset = 0) {
     const wrap = document.createElement("div");
     wrap.className = `bits ${className}`;
     bits.forEach((bit, i) => {
@@ -252,7 +305,7 @@
       b.type = "button";
       b.className = `bit ${bit === "1" ? "on" : ""}`;
       b.textContent = bit;
-      b.dataset.index = String(i);
+      b.dataset.index = String(i + offset);
       b.dataset.editable = editable ? "true" : "false";
       if (editable) {
         b.addEventListener("click", (event) => {
@@ -367,6 +420,105 @@
     state.accepting = true;
   }
 
+  function makeSinglePrecisionProblem() {
+    const exponent = randomInt(-7, 7);
+    const signBit = randomInt(0, 1);
+    const maxSignificantDigits = Math.min(10, 10 + Math.min(exponent, 0));
+    const significantDigits = randomInt(1, maxSignificantDigits);
+    const fraction = randomInt(0, 2 ** (significantDigits - 1) - 1)
+      .toString(2)
+      .padStart(significantDigits - 1, "0")
+      .padEnd(23, "0");
+    const significand = `1${fraction}`;
+    let integerPart;
+    let fractionPart;
+
+    if (exponent >= 0) {
+      integerPart = significand.slice(0, exponent + 1);
+      fractionPart = significand.slice(exponent + 1);
+    } else {
+      integerPart = "0";
+      fractionPart = `${"0".repeat(-exponent - 1)}${significand}`;
+    }
+
+    fractionPart = fractionPart.replace(/0+$/, "") || "0";
+    const biasedExponent = exponent + 127;
+    const exponentBits = biasedExponent.toString(2).padStart(8, "0");
+    floatingPointQuestion = {
+      signBit: String(signBit),
+      exponent,
+      biasedExponent,
+      exponentBits,
+      fraction,
+      binaryValue: normalizeBinaryValue(`${signBit ? "-" : ""}${integerPart}.${fractionPart}`),
+      normalized: `${signBit ? "-" : "+"}1.${fraction.replace(/0+$/, "") || "0"}₂ × 2^${exponent}`
+    };
+    const encodedBits = `${signBit}${exponentBits}${fraction}`;
+    state.answer = state.floatDirection === "encode"
+      ? encodedBits
+      : floatingPointQuestion.binaryValue;
+    state.userBits = state.floatDirection === "encode" ? Array(32).fill("0") : [];
+
+    const host = $("conversionProblem");
+    host.replaceChildren();
+    $("operationBadge").textContent = "IEEE 754 SINGLE PRECISION";
+
+    const title = document.createElement("div");
+    title.className = "conversion-title";
+    title.textContent = state.floatDirection === "encode"
+      ? "Encode this binary value as a 32-bit single-precision float"
+      : "Convert this 32-bit single-precision float to binary";
+
+    const fields = document.createElement("div");
+    fields.className = "ieee-answer";
+    const fieldsToShow = state.floatDirection === "encode"
+      ? [
+          { label: "Sign (1 bit)", bits: state.userBits.slice(0, 1), offset: 0 },
+          { label: "Biased exponent (8 bits)", bits: state.userBits.slice(1, 9), offset: 1 },
+          { label: "Fraction (23 bits)", bits: state.userBits.slice(9), offset: 9 }
+        ]
+      : [
+          { label: "Sign (1 bit)", bits: encodedBits.slice(0, 1) },
+          { label: "Biased exponent (8 bits)", bits: encodedBits.slice(1, 9) },
+          { label: "Fraction (23 bits)", bits: encodedBits.slice(9) }
+        ];
+    fieldsToShow.forEach(({ label, bits, offset }) => {
+      const field = document.createElement("div");
+      field.className = "ieee-field";
+      const fieldLabel = document.createElement("span");
+      fieldLabel.className = "ieee-field-label";
+      fieldLabel.textContent = label;
+      field.append(
+        fieldLabel,
+        bitButtons(Array.isArray(bits) ? bits : bits.split(""), state.floatDirection === "encode", "ieee-bits", offset)
+      );
+      fields.appendChild(field);
+    });
+
+    host.append(title, fields);
+    if (state.floatDirection === "encode") {
+      const source = document.createElement("div");
+      source.className = "float-source";
+      source.textContent = `${signBit ? "-" : "+"}${integerPart}.${fractionPart}₂`;
+      host.insertBefore(source, fields);
+      $("questionHint").textContent = "Click the bits to enter the sign, biased exponent, and fraction.";
+    } else {
+      const answer = document.createElement("input");
+      answer.className = "decimal-answer-input";
+      answer.id = "binaryFloatAnswer";
+      answer.type = "text";
+      answer.autocomplete = "off";
+      answer.spellcheck = false;
+      answer.inputMode = "text";
+      answer.placeholder = "e.g. -0.101";
+      answer.setAttribute("aria-label", "Binary value answer");
+      host.appendChild(answer);
+      $("questionHint").textContent = "Enter the signed binary value; the binary point is optional when the value is an integer.";
+    }
+    addSubmitButton(host);
+    state.accepting = true;
+  }
+
   function addConversionDecimalControls(host) {
     const controls = document.createElement("div");
     controls.className = "decimal-keypad";
@@ -446,6 +598,11 @@
 
     if (state.gameType === "operation") {
       makeOperationProblem();
+      return;
+    }
+
+    if (state.gameType === "float") {
+      makeSinglePrecisionProblem();
       return;
     }
 
@@ -537,7 +694,8 @@
     state.nextPending = false;
     setNextButtonVisible(false);
     show("gameScreen");
-    $("placeValueGuide").classList.toggle("hidden", !state.guide);
+    setMusicMode("game");
+    $("placeValueGuide")?.classList.toggle("hidden", !state.guide);
     updateStats();
     startTimer();
     updateMusic();
@@ -595,7 +753,23 @@
 
     let userAnswer;
 
-    if (state.gameType === "operation") {
+    if (state.gameType === "float") {
+      if (state.floatDirection === "encode") {
+        userAnswer = state.userBits.join("");
+      } else {
+        const answerInput = $("binaryFloatAnswer");
+        const chosen = answerInput?.value || "";
+        if (!chosen.trim()) {
+          showFeedback("Enter a binary answer first.", false);
+          return;
+        }
+        userAnswer = normalizeBinaryValue(chosen);
+        if (userAnswer === null) {
+          showFeedback("Enter a signed binary value using only 0, 1, and an optional binary point.", false);
+          return;
+        }
+      }
+    } else if (state.gameType === "operation") {
       userAnswer = parseInt(state.userBits.join(""), 2);
     } else if (state.gameType === "twos") {
       userAnswer = parseInt(state.userBits.join(""), 2);
@@ -625,13 +799,22 @@
     if (ok) {
       state.correct++;
       state.score += 100;
-      showFeedback("✓ Correct!", true);
+      showFeedback(
+        state.gameType === "float"
+          ? `✓ Correct! ${floatingPointQuestion.normalized}; biased exponent = ${floatingPointQuestion.biasedExponent}.`
+          : "✓ Correct!",
+        true
+      );
       playSound("correct");
       playTone(740, .08);
       setTimeout(() => playTone(980, .1), 65);
     } else {
       state.incorrect++;
-      const expected = state.gameType === "twos"
+      const expected = state.gameType === "float"
+        ? state.floatDirection === "encode"
+          ? `${floatingPointQuestion.signBit} | ${floatingPointQuestion.exponentBits} | ${floatingPointQuestion.fraction} (${floatingPointQuestion.normalized}; biased exponent = ${floatingPointQuestion.biasedExponent})`
+          : `${floatingPointQuestion.binaryValue}₂ (${floatingPointQuestion.normalized})`
+        : state.gameType === "twos"
         ? state.answer.toString(2).padStart(8, "0")
         : state.answer.toString(2).padStart(8, "0") + ` (${state.answer})`;
       showFeedback(`✕ Incorrect — ${expected}.`, false);
@@ -681,6 +864,8 @@
     $("pauseOverlay").classList.add("hidden");
     music.pause();
     music.currentTime = 0;
+    setMusicMode("setup");
+    if (hasDedicatedMusic && state.music) updateMusic();
     show("setupScreen");
   }
 
@@ -712,9 +897,17 @@
 
   setToggle($("musicToggle"), state.music);
   setToggle($("soundToggle"), state.sound);
-  setToggle($("decimalToggle"), state.decimal);
+  if ($("decimalToggle")) setToggle($("decimalToggle"), state.decimal);
   updateTimerSelection();
   updateSetupVisibility();
+  if (hasDedicatedMusic) {
+    updateMusic();
+    document.addEventListener("pointerdown", () => {
+      if (musicMode === "setup" && !setupMusicStarted && music.paused && state.music) {
+        updateMusic();
+      }
+    }, { capture: true });
+  }
 
   function getPartySettings() {
     return {
@@ -862,7 +1055,9 @@
     updateSetupVisibility();
   }
 
-  party = window.QuizHubProceduralParty.attach({
+  party = document.body.dataset.partyDisabled === "true"
+    ? null
+    : window.QuizHubProceduralParty.attach({
     kind: "binary",
     createQuestion: () => {
       setNextButtonVisible(false);
@@ -894,7 +1089,7 @@
     onAnswerLocked: () => showFeedback("Answer locked in. Waiting for everyone else.", true),
     onError: (message) => showFeedback(message, false),
     finishGame: () => finishGame("QUIZ COMPLETE")
-  });
+    });
 
   if (party) {
     $("endGameButton").textContent = "End Party Quiz";

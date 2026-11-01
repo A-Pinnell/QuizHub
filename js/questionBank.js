@@ -5297,6 +5297,791 @@ window.questionBank = {
 				],
 				c: 0,
 			},
+
+			// Slide 2
+			{
+				q: "Which topic describes how a processor's major components work together?",
+				a: [
+					"Network routing",
+					"Instruction encoding",
+					"Disk formatting",
+					"CPU organization",
+				],
+				c: 3,
+			},
+			// Slide 3
+			{
+				q: "Which CPU component directs instruction processing and coordinates other units?",
+				a: [
+					"Clock generator",
+					"Memory module",
+					"Cache controller",
+					"Control unit",
+				],
+				c: 3,
+			},
+			// Slide 4
+			{
+				q: "What does the CPU clock provide to processor operations?",
+				a: [
+					"A timing signal that coordinates activity",
+					"A storage area for completed instructions",
+					"A connection for external display devices",
+					"A translation table for virtual addresses",
+				],
+				c: 0,
+			},
+			// Slide 5
+			{
+				q: "Which component is typically installed in the CPU socket on a motherboard?",
+				a: [
+					"System memory module",
+					"Processor",
+					"Storage drive",
+					"Graphics expansion card",
+				],
+				c: 1,
+			},
+			// Slide 6
+			{
+				q: "What is a key purpose of the shared L3 cache shown in the processor die map?",
+				a: [
+					"To connect external USB devices",
+					"To replace the system's main memory",
+					"To generate display output independently",
+					"To store frequently needed data for processor cores",
+				],
+				c: 3,
+			},
+			// Slide 7
+			{
+				q: "Which sequence correctly describes the typical instruction execution cycle?",
+				a: [
+					"Fetch, decode, fetch operands, execute, store output",
+					"Decode, fetch, execute, store, fetch operands",
+					"Execute, fetch, store output, decode, fetch operands",
+					"Fetch operands, execute, decode, fetch, store output",
+				],
+				c: 0,
+			},
+			// Slide 8
+			{
+				q: "What happens when the CPU does not find requested data in any cache level?",
+				a: [
+					"It restarts the current instruction",
+					"It sends the request directly to the SSD",
+					"It requests the data from main memory",
+					"It clears the processor registers",
+				],
+				c: 2,
+			},
+			// Slide 9
+			{
+				q: "As the memory hierarchy moves from registers toward SSD storage, what generally happens?",
+				a: [
+					"Capacity and access latency remain unchanged",
+					"Capacity decreases while speed increases",
+					"Capacity increases while access becomes slower",
+					"Capacity and speed both increase",
+				],
+				c: 2,
+			},
+			// Slide 10
+			{
+				q: "What is the compiler's role in program execution?",
+				a: [
+					"It converts machine instructions back into source code",
+					"It schedules hardware interrupts during execution",
+					"It translates source code into machine-level instructions",
+					"It stores program variables permanently on disk",
+				],
+				c: 2,
+			},
+			// Slide 11
+			{
+				q: "Which item is part of the basic execution environment listed on the slide?",
+				a: [
+					"Optical storage sectors",
+					"Display refresh buffers",
+					"Wireless network channels",
+					"General-purpose registers",
+				],
+				c: 3,
+			},
+			// Slide 12
+			{
+				q: "Which component in the execution environment stores the address of the next instruction?",
+				a: [
+					"SIMD/vector registers",
+					"Status and control flags",
+					"Instruction pointer (RIP)",
+					"Cache memory",
+				],
+				c: 2,
+			},
+			// Slide 13
+			{
+				q: "What is the main distinction between user mode and kernel mode?",
+				a: [
+					"Both modes allow every program to change memory settings",
+					"Kernel mode is restricted to ordinary applications",
+					"Kernel mode has privileged access to system resources",
+					"User mode has broader hardware access than kernel mode",
+				],
+				c: 2,
+			},
+			// Slide 14
+			{
+				q: "What does the memory-management unit use to translate virtual addresses?",
+				a: [
+					"Instruction queues",
+					"Page tables",
+					"Cache replacement lists",
+					"Status flags",
+				],
+				c: 1,
+			},
+			// Slide 15
+			{
+				q: "What is the primary purpose of general-purpose registers?",
+				a: [
+					"To store complete program installations",
+					"To provide fast storage locations inside the CPU",
+					"To connect the CPU to peripheral devices",
+					"To hold files after the computer is powered off",
+				],
+				c: 1,
+			},
+			// Slide 16
+			{
+				q: "Which register is specifically associated with the address of the next instruction?",
+				a: ["RIP", "RSP", "RAX", "RBP"],
+				c: 0,
+			},
+			// Slide 17
+			{
+				q: "How can a programmer access portions of a 32-bit register such as EAX?",
+				a: [
+					"Only through its upper 16-bit portion",
+					"Through its 8-bit, 16-bit, or 32-bit names",
+					"By converting it into a segment register",
+					"Only as a complete 32-bit value",
+				],
+				c: 1,
+			},
+			// Slide 18
+			{
+				q: "Which statement describes the index and base registers on the slide?",
+				a: [
+					"All are dedicated exclusively to floating-point values",
+					"Some have only a 16-bit name for their lower half",
+					"Each is permanently connected to a separate cache level",
+					"They are used only to store CPU status flags",
+				],
+				c: 1,
+			},
+			// Slide 19
+			{
+				q: "Which general-purpose register is commonly used as a loop counter?",
+				a: ["ESP", "EAX", "ECX", "EBP"],
+				c: 2,
+			},
+			// Slide 20
+			{
+				q: "What does the EFLAGS register contain?",
+				a: [
+					"The floating-point values currently on the stack",
+					"Status and control flags represented by individual bits",
+					"The addresses of all installed memory modules",
+					"The complete contents of the instruction cache",
+				],
+				c: 1,
+			},
+			// Slide 21
+			{
+				q: "Which status flag indicates that an unsigned arithmetic result is out of range?",
+				a: ["Carry flag", "Parity flag", "Sign flag", "Zero flag"],
+				c: 0,
+			},
+			// Slide 22
+			{
+				q: "What is the arrangement of the eight 80-bit floating-point data registers?",
+				a: [
+					"A set of independent memory pages",
+					"A flat group of segment registers",
+					"A circular instruction queue",
+					"A register stack",
+				],
+				c: 3,
+			},
+			// Slide 23
+			{
+				q: "Which register group is shown as part of the modern x86-64 register set?",
+				a: [
+					"General-purpose registers",
+					"Memory page tables",
+					"Control registers",
+					"Floating-point exception masks",
+				],
+				c: 0,
+			},
+			// Slide 23
+			{
+				q: "Which register group is designed for single-instruction, multiple-data operations?",
+				a: [
+					"Control registers",
+					"XMM registers",
+					"Segment registers",
+					"MMX registers",
+				],
+				c: 1,
+			},
+			// Slide 24
+			{
+				q: "What is the main purpose of SIMD/vector units?",
+				a: [
+					"To translate virtual addresses into physical addresses",
+					"To process multiple data elements at the same time",
+					"To execute only one instruction after another",
+					"To manage the operating system's process permissions",
+				],
+				c: 1,
+			},
+			// Slide 25
+			{
+				q: "Which operating mode allows a 64-bit processor to run compatible older applications?",
+				a: [
+					"Compatibility mode",
+					"Kernel mode",
+					"Virtual address mode",
+					"Supervisor-only mode",
+				],
+				c: 0,
+			},
+			// Slide 26
+			{
+				q: "Which name represents the 64-bit version of the EAX register?",
+				a: ["AXR", "RAX", "R8D", "EAXD"],
+				c: 1,
+			},
+			// Slide 27
+			{
+				q: "What does simultaneous multithreading allow a physical CPU core to do?",
+				a: [
+					"Operate as multiple independent physical processors",
+					"Replace its instruction cache with system RAM",
+					"Run only one thread with a higher clock frequency",
+					"Execute instructions from multiple threads at the same time",
+				],
+				c: 3,
+			},
+			// Slide 28
+			{
+				q: "What problem does register renaming help reduce?",
+				a: [
+					"Conflicts between external I/O devices",
+					"False data dependencies between instructions",
+					"Physical memory capacity limitations",
+					"Incorrect cache address translations",
+				],
+				c: 1,
+			},
+			// Slide 29
+			{
+				q: "What is the main idea behind instruction pipelining?",
+				a: [
+					"Instructions are stored permanently in the pipeline",
+					"Every instruction must finish before the next one begins",
+					"Different instruction stages can overlap in execution",
+					"The processor skips decoding when memory is available",
+				],
+				c: 2,
+			},
+			// Slide 30
+			{
+				q: "How does out-of-order execution improve processor throughput?",
+				a: [
+					"It replaces multiple execution units with a single unit",
+					"It forces all instructions to execute in their original order",
+					"It allows ready instructions to proceed while others are waiting",
+					"It delays independent instructions until the pipeline is empty",
+				],
+				c: 2,
+			},
+			// Slide 31
+			{
+				q: "What does a CPU typically do after detecting an incorrect branch prediction?",
+				a: [
+					"Keep executing the predicted path until the program ends",
+					"Disable the instruction decoder for the rest of the process",
+					"Flush incorrect pipeline instructions and resume on the correct path",
+					"Move the incorrect instructions into permanent storage",
+				],
+				c: 2,
+			},
+			// Slide 32
+			{
+				q: "What is a typical role of an E-core in a hybrid processor?",
+				a: [
+					"Managing all external storage and network connections",
+					"Replacing the GPU during graphics-intensive workloads",
+					"Providing the highest single-thread performance for demanding tasks",
+					"Handling energy-efficient background and parallel workloads",
+				],
+				c: 3,
+			},
+			// Slide 33
+			{
+				q: "Which cache level is generally closest to an individual CPU core?",
+				a: ["L3 cache", "L1 cache", "SSD", "DRAM"],
+				c: 1,
+			},
+			// Slide 34
+			{
+				q: "Which processor type is best suited to highly parallel workloads?",
+				a: ["CPU", "SIMD register", "NPU", "GPU"],
+				c: 3,
+			},
+			// Slide 35
+			{
+				q: "What does the interconnect do in the processor die image?",
+				a: [
+					"Provides communication between processor components",
+					"Controls the physical size of external memory modules",
+					"Converts source code into machine instructions",
+					"Stores the operating system's user accounts",
+				],
+				c: 0,
+			},
+			// Slide 36
+			{
+				q: "Which sequence correctly shows the path from a program toward hardware?",
+				a: [
+					"Program, hardware, compiler, operating system, machine instructions, driver",
+					"Program, compiler, machine instructions, operating system, system call/driver, hardware",
+					"Compiler, program, operating system, hardware, machine instructions, driver",
+					"Program, machine instructions, hardware, compiler, driver, operating system",
+				],
+				c: 1,
+			},
+			// Slide 37
+			{
+				q: "Which layer sits directly above microarchitecture in the abstraction sequence?",
+				a: [
+					"Digital logic",
+					"High-level language",
+					"Transistors",
+					"Instruction Set Architecture (ISA)",
+				],
+				c: 3,
+			},
+			// Slide 38
+			{
+				q: "Which combination of techniques contributes to modern CPU performance?",
+				a: [
+					"Virtual storage, display rendering, and network buffering",
+					"Pipelining, branch prediction, and out-of-order execution",
+					"Manual instruction entry, serial processing, and slow memory",
+					"Disk defragmentation, file compression, and screen scaling",
+				],
+				c: 1,
+			},
+
+			// Slide 3
+			{
+				q: "Which topic is included in the floating-point processing overview?",
+				a: [
+					"Disk scheduling",
+					"Network addressing",
+					"File compression",
+					"FPU register stack",
+				],
+				c: 3,
+			},
+			// Slide 4
+			{
+				q: "Which three components make up a floating-point decimal number?",
+				a: [
+					"Sign, significand, and exponent",
+					"Mantissa, cache, and register",
+					"Sign, quotient, and remainder",
+					"Base, address, and instruction",
+				],
+				c: 0,
+			},
+			// Slide 5
+			{
+				q: "Which organization produced the binary floating-point standard discussed in the presentation?",
+				a: ["IEEE", "W3C", "ANSI", "ISO"],
+				c: 0,
+			},
+			// Slide 6
+			{
+				q: "In the single-precision layout, what does the fraction field represent?",
+				a: [
+					"The sign of the represented number",
+					"The memory address of the number",
+					"The exponent bias value",
+					"The fractional part of the significand",
+				],
+				c: 3,
+			},
+			// Slide 7
+			{
+				q: "What does a sign bit of 1 indicate in the format described?",
+				a: [
+					"The significand is zero",
+					"The number is positive",
+					"The number is negative",
+					"The exponent is negative",
+				],
+				c: 2,
+			},
+			// Slide 8
+			{
+				q: "In binary weighted positional notation, what is the value of the fractional bits 1011?",
+				a: [
+					"11/16, or 0.6875",
+					"5/16, or 0.3125",
+					"11/10, or 1.1",
+					"11/8, or 1.375",
+				],
+				c: 0,
+			},
+			// Slide 9
+			{
+				q: "Which part of a single-precision number is stored separately from its sign and exponent?",
+				a: [
+					"The fraction field",
+					"The register stack pointer",
+					"The memory page number",
+					"The instruction opcode",
+				],
+				c: 0,
+			},
+			// Slide 10
+			{
+				q: "Why can a finite floating-point format not represent every real number exactly?",
+				a: [
+					"It has a limited number of significand bits",
+					"It uses a separate register for each real number",
+					"It stores every value using decimal digits",
+					"It cannot represent negative exponents",
+				],
+				c: 0,
+			},
+			// Slide 11
+			{
+				q: "What bias is added to the actual exponent in single-precision representation?",
+				a: ["64", "127", "128", "255"],
+				c: 1,
+			},
+			// Slide 12
+			{
+				q: "What is the defining feature of a normalized binary floating-point number?",
+				a: [
+					"It has a single 1 immediately to the left of the binary point",
+					"It always has an exponent equal to zero",
+					"It stores the entire significand as an integer",
+					"It contains only zeros after the binary point",
+				],
+				c: 0,
+			},
+			// Slide 13
+			{
+				q: "In the IEEE short-real layout, which field comes immediately after the sign bit?",
+				a: ["Register tag", "Exponent", "Fraction", "Opcode"],
+				c: 1,
+			},
+			// Slide 14
+			{
+				q: "For the binary value 1101.101 normalized as 1.101101 × 2³, what is the exponent?",
+				a: ["4", "3", "−3", "2"],
+				c: 1,
+			},
+			// Slide 15
+			{
+				q: "Which of the following is one of the special encodings listed by IEEE?",
+				a: [
+					"Positive and negative infinity",
+					"A processor instruction address",
+					"A cache replacement counter",
+					"A decimal-only character value",
+				],
+				c: 0,
+			},
+			// Slide 16
+			{
+				q: "Why can some nonzero finite values be stored in denormalized form?",
+				a: [
+					"Their fraction contains more than one leading 1",
+					"Their magnitude is too close to zero for the available exponent range",
+					"Their magnitude is too large for the significand field",
+					"Their sign bit cannot be represented in binary",
+				],
+				c: 1,
+			},
+			// Slide 17
+			{
+				q: "What can happen to the significand when an underflowed value is gradually denormalized?",
+				a: [
+					"Its sign bit is always changed",
+					"Some precision can be lost during shifting",
+					"Its exponent becomes larger than the maximum",
+					"Its value is converted into an instruction address",
+				],
+				c: 1,
+			},
+			// Slide 18
+			{
+				q: "What does positive infinity represent in floating-point arithmetic?",
+				a: [
+					"A value greater than every finite number",
+					"A number with the largest possible significand only",
+					"A value exactly equal to zero",
+					"The smallest positive finite value",
+				],
+				c: 0,
+			},
+			// Slide 19
+			{
+				q: "What distinguishes a signaling NaN from a quiet NaN?",
+				a: [
+					"A signaling NaN is automatically converted to zero",
+					"A signaling NaN can only be used in integer arithmetic",
+					"A signaling NaN always represents positive infinity",
+					"A signaling NaN can generate an invalid-operation exception",
+				],
+				c: 3,
+			},
+			// Slide 20
+			{
+				q: "What does NaN indicate in the IEEE 754 format?",
+				a: [
+					"A valid finite number close to zero",
+					"A positive value with the largest exponent",
+					"A number whose sign bit is not available",
+					"An undefined or invalid numerical result",
+				],
+				c: 3,
+			},
+			// Slide 21
+			{
+				q: "What do the x positions in the specific encodings table indicate?",
+				a: [
+					"Those bit positions store the decimal exponent",
+					"Those bit positions may contain either 0 or 1",
+					"Those bit positions must always contain 1",
+					"Those bit positions are excluded from the encoding",
+				],
+				c: 1,
+			},
+			// Slide 22
+			{
+				q: "Why can decimal fractions such as 0.1 require approximation in binary?",
+				a: [
+					"The IEEE format stores fractional values only as integers",
+					"Their denominators must always be powers of ten",
+					"Binary fractions cannot contain digits after the point",
+					"Their binary expansions may not terminate after a finite number of bits",
+				],
+				c: 3,
+			},
+			// Slide 23
+			{
+				q: "In the binary long-division example, what is decimal 0.5 represented as?",
+				a: [
+					"1.0 in binary",
+					"1.1 in binary",
+					"0.10 in decimal",
+					"0.1 in binary",
+				],
+				c: 3,
+			},
+			// Slide 24
+			{
+				q: "What is the first step when converting a single-precision bit pattern to decimal?",
+				a: [
+					"Convert the fraction field into a decimal integer",
+					"Determine the sign from the most significant bit",
+					"Add the exponent bias to the significand",
+					"Shift the binary point according to the fraction length",
+				],
+				c: 1,
+			},
+			// Slide 25
+			{
+				q: "What decimal value is produced by the example bit pattern shown on the slide?",
+				a: ["10.75", "11.25", "10.5", "12.75"],
+				c: 0,
+			},
+			// Slide 26
+			{
+				q: "In the worked example, what is the stored exponent 10000010₂ in decimal?",
+				a: ["132", "128", "130", "127"],
+				c: 2,
+			},
+			// Slide 27
+			{
+				q: "What is the result of subtracting the single-precision bias from 130?",
+				a: ["3", "2", "4", "7"],
+				c: 0,
+			},
+			// Slide 28
+			{
+				q: "What decimal value does the mantissa 1.01011₂ represent?",
+				a: ["1.3125", "1.375", "1.625", "1.34375"],
+				c: 3,
+			},
+			// Slide 29
+			{
+				q: "What does the factor (−1)^S determine in the IEEE floating-point equation?",
+				a: [
+					"The position of the binary point",
+					"The sign of the represented value",
+					"The number of fraction bits",
+					"The exponent bias used by the format",
+				],
+				c: 1,
+			},
+			// Slide 30
+			{
+				q: "Why does normalized single precision not explicitly store the leading 1 of the significand?",
+				a: [
+					"The leading 1 is removed because it has no numerical value",
+					"The leading 1 is included in the exponent field",
+					"The leading 1 is stored in the sign field",
+					"The leading 1 is implicit in normalized form",
+				],
+				c: 3,
+			},
+			// Slide 31
+			{
+				q: "Why did Intel introduce a separate 8087 floating-point coprocessor?",
+				a: [
+					"To replace the instruction decoder in the 8086",
+					"To provide hardware support for network communication",
+					"To provide faster floating-point calculations than software emulation",
+					"To increase the amount of general-purpose RAM",
+				],
+				c: 2,
+			},
+			// Slide 32
+			{
+				q: "What does the TOP field in the FPU status word identify?",
+				a: [
+					"The last memory address accessed by the CPU",
+					"The number of operands in the current instruction",
+					"The current top register in the FPU stack",
+					"The rounding mode used by the compiler",
+				],
+				c: 2,
+			},
+			// Slide 33
+			{
+				q: "How does the FPU register stack differ from general-purpose CPU registers?",
+				a: [
+					"It stores only operating system privilege information",
+					"It provides dedicated registers for floating-point calculations",
+					"It is used exclusively for integer arithmetic",
+					"It replaces the CPU's instruction pointer and stack pointer",
+				],
+				c: 1,
+			},
+			// Slide 34
+			{
+				q: "What is the postfix equivalent of the infix expression (5 × 6) + 4?",
+				a: ["+ 5 6 * 4", "5 6 * 4 +", "5 * 6 + 4", "5 6 4 * +"],
+				c: 1,
+			},
+			// Slide 35
+			{
+				q: "Which FPU special-purpose register controls precision and rounding methods?",
+				a: [
+					"Opcode register",
+					"Last data pointer register",
+					"Control register",
+					"Tag register",
+				],
+				c: 2,
+			},
+			// Slide 36
+			{
+				q: "What is one reason floating-point rounding is necessary?",
+				a: [
+					"The exponent field always stores a decimal value",
+					"The processor cannot perform calculations with binary fractions",
+					"The destination format may not represent the exact calculated result",
+					"The FPU must convert every result into an integer",
+				],
+				c: 2,
+			},
+			// Slide 37
+			{
+				q: "Which rounding method is the default according to the presentation?",
+				a: [
+					"Always round toward positive infinity",
+					"Always round toward zero",
+					"Round to nearest even",
+					"Always round away from zero",
+				],
+				c: 2,
+			},
+			// Slide 39
+			{
+				q: "What happens when a floating-point exception's corresponding mask bit is clear?",
+				a: [
+					"The processor automatically ignores the exception",
+					"The processor converts the result into positive zero",
+					"The processor repeats the instruction without recording a flag",
+					"The processor invokes a software exception handler",
+				],
+				c: 3,
+			},
+			// Slide 40
+			{
+				q: "Which category is included in the floating-point instruction set?",
+				a: [
+					"Disk partition operations",
+					"Transcendental operations",
+					"Network packet operations",
+					"Display mode operations",
+				],
+				c: 1,
+			},
+			// Slide 41
+			{
+				q: "Which restriction applies to two-operand floating-point instructions?",
+				a: [
+					"Both operands must be general-purpose CPU registers",
+					"Neither operand may refer to a register",
+					"At least one operand must be a floating-point register",
+					"Both operands must be immediate constants",
+				],
+				c: 2,
+			},
+			// Slide 42
+			{
+				q: "Which major subject was included in the presentation's summary?",
+				a: [
+					"Motherboard expansion slots",
+					"Operating system file permissions",
+					"Network routing protocols",
+					"Floating-point exceptions",
+				],
+				c: 3,
+			},
+			// Slide 38
+			{
+				q: "Which FPU register stores a pointer to the data operand used by the last instruction?",
+				a: [
+					"Control register",
+					"Tag register",
+					"Opcode register",
+					"Last data (operand) pointer register",
+				],
+				c: 3,
+			},
 		],
 	},
 
