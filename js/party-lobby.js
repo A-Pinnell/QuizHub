@@ -41,6 +41,7 @@
   const quizCatalog={
     CompArch:[
       ["quiz1","First Slides Practice"],
+      ["quiz2","5a & 5b Practice"],
       ["test1","Midterm Practice"],
       ["binary","Binary Quiz"],
       ["hexadecimal","Hexadecimal Quiz"]
@@ -165,8 +166,8 @@
   }
 
   function displayProfile(player){
-    if(!room?.hostDisplay || player.id!==room.hostDisplayPlayerId) return player;
-    return room.players.find((candidate)=>candidate.host)||player;
+    if(!room?.hostDisplay || !player.host) return player;
+    return room.players.find((candidate)=>candidate.id===room.hostDisplayPlayerId)||player;
   }
 
   function updateDevMenuContext(statusMessage){
@@ -408,12 +409,11 @@
     const players=room.players
       .filter((player)=>!room.hostDisplay || !player.host)
       .map((player)=>{
-        const profile=displayProfile(player);
         return {
           id:player.id,
-          name:profile.name,
-          color:profile.color,
-          photo:profile.photo,
+          name:player.name,
+          color:player.color,
+          photo:player.photo,
           score:0
         };
       });

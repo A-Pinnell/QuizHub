@@ -18,10 +18,12 @@ test("mixed source normalization is canonical and rejects empty, duplicate, and 
   assert.deepEqual(
     mixedStudy.normalizeSources([
       { category: "CloudComp", quiz: "quiz2" },
+      { category: "CompArch", quiz: "quiz2" },
       { category: "CompArch", quiz: "quiz1" },
     ]),
     [
       { category: "CompArch", quiz: "quiz1" },
+      { category: "CompArch", quiz: "quiz2" },
       { category: "CloudComp", quiz: "quiz2" },
     ],
   );
@@ -41,15 +43,22 @@ test("mixed source normalization is canonical and rejects empty, duplicate, and 
 
 test("mixed bank combines selected course banks and individual review sets with course prefixes", () => {
   const bank = mixedStudy.buildQuestionBank(questionBank, [
+    { category: "CompArch", quiz: "quiz2" },
     { category: "SocIndi", quiz: "reviewQuiz", section: "CHAPTER 1" },
     { category: "SocIndi", quiz: "reviewQuiz", section: "CHAPTER 2" },
     { category: "CloudComp", quiz: "quiz1" },
   ]);
   assert.ok(bank.length > 2);
-  assert.match(bank[0].q, /^For Cloud Computing,/);
-  assert.equal(bank[0].mixedSource.category, "CloudComp");
+  const cloudQuestion = bank.find(
+    (question) => question.mixedSource.category === "CloudComp",
+  );
+  assert.match(cloudQuestion.q, /^For Cloud Computing,/);
+  assert.equal(cloudQuestion.mixedSource.category, "CloudComp");
   assert.ok(bank.some((question) => question.mixedSource.section === "CHAPTER 1"));
   assert.ok(bank.some((question) => question.mixedSource.section === "CHAPTER 2"));
+  assert.ok(
+    bank.some((question) => question.mixedSource.category === "CompArch" && question.mixedSource.quiz === "quiz2"),
+  );
   assert.ok(
     bank.some((question) => question.q.startsWith("For Tech Soc Indi People Can,")),
   );

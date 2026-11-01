@@ -160,12 +160,9 @@
         return;
       }
       try{
-        sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(room.players.map((player)=>({
-          id:player.id,
-          name:player.id===hostDisplayPlayerId?displayHost.name:player.name,
-          color:player.id===hostDisplayPlayerId?displayHost.color:player.color,
-          photo:player.id===hostDisplayPlayerId?displayHost.photo:player.photo
-        })).filter((player)=>player.id!==displayHost.id)));
+        sessionStorage.setItem("quizHubPartyPlayers",JSON.stringify(room.players
+          .filter((player)=>player.id!==displayHost.id)
+          .map(({id,name,color,photo})=>({id,name,color,photo}))));
       }catch(storageError){
         error.hidden=false;
         error.textContent=`Could not prepare the Host Display players: ${storageError.message}`;
