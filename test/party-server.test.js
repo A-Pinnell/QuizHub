@@ -107,6 +107,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   }
 
   await verifyPartyQuizLaunch("CompArch", "test1");
+  await verifyPartyQuizLaunch("CompArch", "quiz2");
   await verifyPartyQuizLaunch("CloudComp", "test1");
   await verifyPartyQuizLaunch("CompArch", "binary");
   await verifyPartyQuizLaunch("CompArch", "hexadecimal");

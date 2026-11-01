@@ -1084,7 +1084,7 @@ function handleMessage(socket, rawMessage) {
         return sendError(socket, "Select a valid quiz style.");
       }
       const validQuizzes = {
-        CompArch: ["quiz1", "test1", "binary", "hexadecimal"],
+        CompArch: ["quiz1", "quiz2", "test1", "binary", "hexadecimal"],
         CompGFX: ["test1", ...(room.excludedQuizzesEnabled ? ["lautest"] : [])],
         CloudComp: ["quiz1", "quiz2", "test1"],
         SocIndi: ["reviewQuiz", "textbookQuiz"],
