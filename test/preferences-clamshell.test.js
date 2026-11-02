@@ -182,8 +182,11 @@ test("quiz music options expose named, persistent track selections", () => {
 		[
 			"default",
 			"rotation",
+			"quizHubRotation",
+			"netHubRotation",
 			"BonusTrack",
 			"Practice1",
+			"BinaryQuiz2",
 			"Practice2",
 			"CompArch",
 			"CloudComp",
@@ -196,6 +199,10 @@ test("quiz music options expose named, persistent track selections", () => {
 			"SocIndi",
 			"NetHubBonus1",
 			"NetHubBonus2",
+			"NetHubBonus3",
+			"NetHubBonus4",
+			"NetHubBonus5",
+			"NetHubBonus6",
 		],
 	);
 	assert.match(
@@ -205,6 +212,22 @@ test("quiz music options expose named, persistent track selections", () => {
 	assert.match(
 		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus2"),
 		/\/music\/NetHubBonus\/Net2\.mp3$/,
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus3"),
+		/\/music\/NetHubBonus\/Net3\.mp3$/,
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus4"),
+		/\/music\/NetHubBonus\/Net4\.mp3$/,
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus5"),
+		/\/music\/NetHubBonus\/Net5\.mp3$/,
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus6"),
+		/\/music\/NetHubBonus\/Net6\.mp3$/,
 	);
 	const rotationTracks = new Set();
 	for (let index = 0; index < 100; index++) {
@@ -230,7 +253,7 @@ test("quiz music options expose named, persistent track selections", () => {
 	state.preferences.setQuizMusic("rotation");
 	assert.equal(state.values.get("quizHubQuizMusic"), "rotation");
 	assert.equal(state.preferences.isQuizMusicRotation, true);
-	assert.equal(state.preferences.getQuizMusicName(), "Music Rotation");
+	assert.equal(state.preferences.getQuizMusicName(), "Full Music Rotation");
 	let previousRotationTrack =
 		state.preferences.resolveQuizMusic("./music/QuizMusic.wav");
 	for (let index = 0; index < 50; index++) {
@@ -242,11 +265,67 @@ test("quiz music options expose named, persistent track selections", () => {
 		assert.match(nextRotationTrack, /\/music\/(?:[^/]+\/)?[^/]+\.(?:wav|mp3)$/);
 		previousRotationTrack = nextRotationTrack;
 	}
+	const collectRotationTracks = (selection) => {
+		state.preferences.setQuizMusic(selection);
+		const tracks = new Set();
+		for (let index = 0; index < 100; index++) {
+			state.math.random = () => index / 100;
+			const nextTrack = state.preferences.getNextQuizMusic(
+				null,
+				"./music/QuizMusic.wav",
+			);
+			tracks.add(nextTrack);
+		}
+		return tracks;
+	};
+	const quizHubRotationTracks = collectRotationTracks("quizHubRotation");
+	assert.ok(
+		[...quizHubRotationTracks].some((track) =>
+			track.endsWith("/music/BinaryQuiz2.mp3"),
+		),
+	);
+	assert.ok(
+		[...quizHubRotationTracks].every(
+			(track) => !track.includes("/music/NetHubBonus/"),
+		),
+	);
+	const netHubRotationTracks = collectRotationTracks("netHubRotation");
+	assert.deepEqual(
+		[...netHubRotationTracks].sort(),
+		[
+			"https://quizhub.example/music/NetHubBonus/Net1.mp3",
+			"https://quizhub.example/music/NetHubBonus/Net2.mp3",
+			"https://quizhub.example/music/NetHubBonus/Net3.mp3",
+			"https://quizhub.example/music/NetHubBonus/Net4.mp3",
+			"https://quizhub.example/music/NetHubBonus/Net5.mp3",
+			"https://quizhub.example/music/NetHubBonus/Net6.mp3",
+		],
+	);
+	state.preferences.setQuizMusic("rotation");
+	const fullRotationTracks = collectRotationTracks("rotation");
+	assert.ok(
+		[...fullRotationTracks].some((track) =>
+			track.endsWith("/music/BinaryQuiz2.mp3"),
+		),
+	);
+	assert.ok(
+		[...fullRotationTracks].some((track) =>
+			track.includes("/music/NetHubBonus/"),
+		),
+	);
+	state.math.random = Math.random;
 
 	state.preferences.setQuizMusic("Practice1");
 	assert.equal(state.values.get("quizHubQuizMusic"), "Practice1");
 	assert.equal(state.preferences.isQuizMusicRotation, false);
 	assert.equal(state.preferences.getQuizMusicName(), "Binary");
+	state.preferences.setQuizMusic("BinaryQuiz2");
+	assert.equal(state.values.get("quizHubQuizMusic"), "BinaryQuiz2");
+	assert.equal(state.preferences.getQuizMusicName(), "Binary Quiz 2");
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3"),
+		/\/music\/BinaryQuiz2\.mp3$/,
+	);
 	state.preferences.setQuizMusic("BonusTrack");
 	assert.equal(state.values.get("quizHubQuizMusic"), "BonusTrack");
 	assert.equal(state.preferences.getQuizMusicName(), "Bonus Track");

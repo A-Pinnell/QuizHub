@@ -65,7 +65,7 @@
 
 		function selectTrack(value) {
 			const reshuffle =
-				value === "rotation" &&
+				window.quizHubPreferences.isQuizMusicRotationValue(value) &&
 				value === window.quizHubPreferences.quizMusic;
 			if (value === window.quizHubPreferences.quizMusic && !reshuffle) {
 				closeDialog();

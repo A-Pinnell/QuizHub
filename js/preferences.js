@@ -26,6 +26,7 @@
 		run: "./secret/RUN.mp3",
 		BonusTrack: "./music/BonusTrack.wav",
 		Practice1: "./music/BinaryTrack.wav",
+		BinaryQuiz2: "./music/BinaryQuiz2.mp3",
 		Practice2: "./music/HexadecimalTrack.wav",
 		CompArch: "./music/QuizMusic.wav",
 		CloudComp: "./music/CloudCompMusic.wav",
@@ -38,10 +39,21 @@
 		SocIndi: "./music/SocIndiMusic.wav",
 		NetHubBonus1: "./music/NetHubBonus/Net1.mp3",
 		NetHubBonus2: "./music/NetHubBonus/Net2.mp3",
+		NetHubBonus3: "./music/NetHubBonus/Net3.mp3",
+		NetHubBonus4: "./music/NetHubBonus/Net4.mp3",
+		NetHubBonus5: "./music/NetHubBonus/Net5.mp3",
+		NetHubBonus6: "./music/NetHubBonus/Net6.mp3",
 	};
+	const quizMusicRotationModes = [
+		"rotation",
+		"quizHubRotation",
+		"netHubRotation",
+	];
+	const isQuizMusicRotation = (value) =>
+		quizMusicRotationModes.includes(value);
 	const regularQuizMusicOptions = [
 		"default",
-		"rotation",
+		...quizMusicRotationModes,
 		...Object.keys(quizMusicSources).filter(
 			(source) => source !== "run",
 		),
@@ -53,10 +65,13 @@
 	];
 	const quizMusicNames = {
 		default: "Course default",
-		rotation: "Music Rotation",
+		rotation: "Full Music Rotation",
+		quizHubRotation: "QuizHub Music Rotation",
+		netHubRotation: "NetHub Music Rotation",
 		run: "Run",
 		BonusTrack: "Bonus Track",
 		Practice1: "Binary",
+		BinaryQuiz2: "Binary Quiz 2",
 		Practice2: "Hexadecimal",
 		CompArch: "Computer Architecture",
 		CloudComp: "Cloud Computing",
@@ -69,6 +84,10 @@
 		SocIndi: "Society and Individuals",
 		NetHubBonus1: "NetHub Track 1",
 		NetHubBonus2: "NetHub Track 2",
+		NetHubBonus3: "NetHub Track 3",
+		NetHubBonus4: "NetHub Track 4",
+		NetHubBonus5: "NetHub Track 5",
+		NetHubBonus6: "NetHub Track 6",
 	};
 	const secretMode = storage.getItem("quizHubSecretMode") === "true";
 	const savedQuizMusic = storage.getItem("quizHubQuizMusic");
@@ -291,7 +310,7 @@
 		} else if (
 			name === "quizMusic" &&
 			(value === "default" ||
-				value === "rotation" ||
+				isQuizMusicRotation(value) ||
 				(Object.prototype.hasOwnProperty.call(quizMusicSources, value) &&
 					(value !== "run" || preferences.secretMode)))
 		) {
@@ -459,7 +478,7 @@
 			return quizMusicNames[value] || "Course default";
 		},
 		get isQuizMusicRotation() {
-			return preferences.quizMusic === "rotation";
+			return isQuizMusicRotation(preferences.quizMusic);
 		},
 		setTextSize(value) {
 			update("textSize", value);
@@ -481,8 +500,8 @@
 			).toString();
 		},
 		resolveQuizMusic(defaultSource, selection = preferences.quizMusic) {
-			if (selection === "rotation") {
-				return this.getNextQuizMusic(null, defaultSource);
+			if (this.isQuizMusicRotationValue(selection)) {
+				return this.getNextQuizMusic(null, defaultSource, selection);
 			}
 			const selectedSource = quizMusicSources[selection];
 			return new URL(
@@ -490,17 +509,40 @@
 				window.location.href,
 			).toString();
 		},
-		getNextQuizMusic(currentSource, defaultSource) {
+		isQuizMusicRotationValue(value) {
+			return isQuizMusicRotation(value);
+		},
+		getNextQuizMusic(
+			currentSource,
+			defaultSource,
+			selection = preferences.quizMusic,
+		) {
+			const netHubSources = Object.entries(quizMusicSources)
+				.filter(([source]) => source.startsWith("NetHubBonus"))
+				.map(([, source]) => source);
+			const quizHubSources = Object.entries(quizMusicSources)
+				.filter(
+					([source]) =>
+						source !== "run" &&
+						!source.startsWith("NetHubBonus"),
+				)
+				.map(([, source]) => source);
+			const selectedSources =
+				selection === "netHubRotation"
+					? netHubSources
+					: selection === "quizHubRotation"
+						? [...quizHubSources, defaultSource]
+						: [
+								...Object.values(quizMusicSources).filter(
+									(source) => source !== quizMusicSources.run,
+								),
+								defaultSource,
+							];
 			const rotationSources = [
 				...new Set([
-					...Object.values(quizMusicSources)
-						.filter(
-							(source) => source !== quizMusicSources.run,
-						)
-						.map((source) =>
-							new URL(source, window.location.href).toString(),
-						),
-					new URL(defaultSource, window.location.href).toString(),
+					...selectedSources.map((source) =>
+						new URL(source, window.location.href).toString(),
+					),
 				]),
 			];
 			const currentUrl = currentSource

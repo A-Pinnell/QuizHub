@@ -1791,13 +1791,23 @@ function updateQuizMusicTrackName() {
 
 	const courseMusicNames = {
 		default: "Track selected automatically for each course",
+		rotation: "Full Music Rotation",
+		quizHubRotation: "QuizHub Music Rotation",
+		netHubRotation: "NetHub Music Rotation",
 		run: "Closer by Nine Inch Nails [Instrumental]",
 		BonusTrack: "Koneko no Paya Paya (Off Vocal)",
 		CompArch: "What Would Sonic Do? ... from The Murder of Sonic the Hedgehog",
 		Practice1: "Blue Spheres ... from Sonic Mania [QuizHub Mix]",
+		BinaryQuiz2: "Binary Quiz 2",
 		Practice2: "Special Stage ... from Sonic 3D Blast (Genesis) [QuizHub Mix]",
 		CompGFX: "Craterscape ... from Wild 9",
 		SocIndi: "Ace Attorney 6 [QuizHub Mix]",
+		NetHubBonus1: "NetHub Track 1",
+		NetHubBonus2: "NetHub Track 2",
+		NetHubBonus3: "NetHub Track 3",
+		NetHubBonus4: "NetHub Track 4",
+		NetHubBonus5: "NetHub Track 5",
+		NetHubBonus6: "NetHub Track 6",
 		CloudComp: "A Lone Prayer ... from Persona [QuizHub Mix]",
 		DataSci:
 			"Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]",

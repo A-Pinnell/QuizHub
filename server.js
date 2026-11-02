@@ -51,9 +51,10 @@ const netHubMaxRequestBytes = 16 * 1024 * 1024;
 const netHubMaxMusicBytes = 10 * 1024 * 1024;
 const netHubMaxQuestions = 250;
 const netHubMusicTracks = new Set([
-  "default", "BonusTrack", "Practice1", "Practice2", "CompArch", "CloudComp",
+  "default", "BonusTrack", "Practice1", "BinaryQuiz2", "Practice2", "CompArch", "CloudComp",
   "DataSci", "StatisticPractice", "DataSciLautest", "SoftEngi", "CompGFX",
-  "CompGFXLautest", "SocIndi", "NetHubBonus1", "NetHubBonus2"
+  "CompGFXLautest", "SocIndi", "NetHubBonus1", "NetHubBonus2",
+  "NetHubBonus3", "NetHubBonus4", "NetHubBonus5", "NetHubBonus6"
 ]);
 
 function validateNetHubDatabase(database) {

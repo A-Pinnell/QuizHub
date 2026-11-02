@@ -93,7 +93,7 @@ test("NetHub accounts, uploads, ownership, updates, deletes, and persisted quizz
     courseName: "Computer Graphics",
     theme: "blended",
     allowShortAnswer: true,
-    music: { track: "NetHubBonus1" },
+    music: { track: "NetHubBonus5" },
     questions: tempQuestions
   };
   const created = await api("/api/nethub/quizzes", {

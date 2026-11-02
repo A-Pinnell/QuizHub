@@ -147,6 +147,10 @@
 	const netHubMusicTracks = [
 		{ value: "NetHubBonus1", label: "NetHub Track 1" },
 		{ value: "NetHubBonus2", label: "NetHub Track 2" },
+		{ value: "NetHubBonus3", label: "NetHub Track 3" },
+		{ value: "NetHubBonus4", label: "NetHub Track 4" },
+		{ value: "NetHubBonus5", label: "NetHub Track 5" },
+		{ value: "NetHubBonus6", label: "NetHub Track 6" },
 	];
 
 	function populateMusicTracks(selectedTrack = "") {
@@ -158,7 +162,15 @@
 			? netHubMusicTracks
 			: preferences
 					.getQuizMusicOptions()
-					.filter((track) => !["rotation", "run"].includes(track.value));
+					.filter(
+						(track) =>
+							![
+								"rotation",
+								"quizHubRotation",
+								"netHubRotation",
+								"run",
+							].includes(track.value),
+					);
 		tracks.forEach((track) => {
 			const option = document.createElement("option");
 			option.value = track.value;
