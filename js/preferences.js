@@ -43,7 +43,7 @@
 		"default",
 		"rotation",
 		...Object.keys(quizMusicSources).filter(
-			(source) => source !== "run" && !source.startsWith("NetHubBonus"),
+			(source) => source !== "run",
 		),
 	];
 	const secretQuizMusicOptions = [
@@ -495,9 +495,7 @@
 				...new Set([
 					...Object.values(quizMusicSources)
 						.filter(
-							(source) =>
-								source !== quizMusicSources.run &&
-								!source.startsWith("./music/NetHubBonus/"),
+							(source) => source !== quizMusicSources.run,
 						)
 						.map((source) =>
 							new URL(source, window.location.href).toString(),

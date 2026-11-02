@@ -24,6 +24,8 @@ function loadPreferences({
 	const mediaListeners = [];
 	let reloadCount = 0;
 	let requestedMediaQuery = "";
+	const math = Object.create(Math);
+	math.random = Math.random;
 	const media = {
 		matches: disabled,
 		addEventListener(type, listener) {
@@ -78,12 +80,19 @@ function loadPreferences({
 		}
 	}
 
-	vm.runInNewContext(preferencesScript, { window, document, CustomEvent, URL });
+	vm.runInNewContext(preferencesScript, {
+		window,
+		document,
+		CustomEvent,
+		URL,
+		Math: math,
+	});
 
 	return {
 		classes,
 		media,
 		mediaListeners,
+		math,
 		requestedMediaQuery: () => requestedMediaQuery,
 		preferences: window.quizHubPreferences,
 		reloadCount: () => reloadCount,
@@ -185,20 +194,39 @@ test("quiz music options expose named, persistent track selections", () => {
 			"CompGFX",
 			"CompGFXLautest",
 			"SocIndi",
+			"NetHubBonus1",
+			"NetHubBonus2",
 		],
 	);
-		assert.doesNotMatch(
-			state.preferences.getQuizMusicOptions().map((option) => option.value).join(","),
-			/NetHubBonus/,
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus1"),
+		/\/music\/NetHubBonus\/Net1\.mp3$/,
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus2"),
+		/\/music\/NetHubBonus\/Net2\.mp3$/,
+	);
+	const rotationTracks = new Set();
+	for (let index = 0; index < 100; index++) {
+		state.math.random = () => index / 100;
+		rotationTracks.add(
+			state.preferences.getNextQuizMusic(
+				"https://quizhub.example/music/QuizMusic.wav",
+				"./music/QuizMusic.wav",
+			),
 		);
-		assert.match(
+	}
+	state.math.random = Math.random;
+	assert.ok(
+		rotationTracks.has(
 			state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus1"),
-			/\/music\/NetHubBonus\/Net1\.mp3$/,
-		);
-		assert.match(
+		),
+	);
+	assert.ok(
+		rotationTracks.has(
 			state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus2"),
-			/\/music\/NetHubBonus\/Net2\.mp3$/,
-		);
+		),
+	);
 	state.preferences.setQuizMusic("rotation");
 	assert.equal(state.values.get("quizHubQuizMusic"), "rotation");
 	assert.equal(state.preferences.isQuizMusicRotation, true);
@@ -211,7 +239,7 @@ test("quiz music options expose named, persistent track selections", () => {
 			"./music/QuizMusic.wav",
 		);
 		assert.notEqual(nextRotationTrack, previousRotationTrack);
-		assert.match(nextRotationTrack, /\/music\/[^/]+\.(?:wav|mp3)$/);
+		assert.match(nextRotationTrack, /\/music\/(?:[^/]+\/)?[^/]+\.(?:wav|mp3)$/);
 		previousRotationTrack = nextRotationTrack;
 	}
 
