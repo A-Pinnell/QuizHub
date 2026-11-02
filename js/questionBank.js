@@ -4490,7 +4490,7 @@ window.questionBank = {
 					"Cache access allows the processor to bypass address translation",
 					"Cache access prevents the processor from requesting data from DRAM",
 				],
-				c: 1,
+				c: 0,
 			},
 			{
 				q: "What is the main purpose of general-purpose registers?",
@@ -4550,7 +4550,7 @@ window.questionBank = {
 					"Give each process a protected virtual address space mapped to physical memory",
 					"Give each process a dedicated section of physical RAM that cannot be shared",
 				],
-				c: 1,
+				c: 2,
 			},
 			{
 				q: "What does a page table record?",
@@ -4590,7 +4590,7 @@ window.questionBank = {
 					"The processor limits addresses because page tables store decimal values",
 					"The full theoretical address space is enormous, and fewer implemented bits are sufficient",
 				],
-				c: 2,
+				c: 3,
 			},
 			{
 				q: "What is an interrupt typically used to signal?",
@@ -4790,7 +4790,7 @@ window.questionBank = {
 					"The sign of the value through scaling by a power of two",
 					"The number of bits allocated to the significand and sign",
 				],
-				c: 3,
+				c: 1,
 			},
 			{
 				q: "In IEEE 754 single precision, how many bits are in the representation?",
@@ -4805,7 +4805,7 @@ window.questionBank = {
 					"2 sign bits, 8 exponent bits, and 22 fraction bits",
 					"1 sign bit, 10 exponent bits, and 21 fraction bits",
 				],
-				c: 1,
+				c: 0,
 			},
 			{
 				q: "For a normalized single-precision number, what is the exponent bias?",
@@ -4930,7 +4930,7 @@ window.questionBank = {
 					"A special value used to represent invalid virtual memory addresses",
 					"A temporary value used to represent an empty floating-point register",
 				],
-				c: 1,
+				c: 0,
 			},
 			{
 				q: "What does NaN stand for?",
@@ -5213,7 +5213,7 @@ window.questionBank = {
 				c: 0,
 			},
 			{
-				q: "If a CPU's L1 cache misses, what is the usual next place checked in the hierarchy shown in the slides?",
+				q: "If a CPU's L1 cache misses, what is the usual next place checked in the hierarchy?",
 				a: [
 					"L2 cache",
 					"Main memory (DRAM)",
@@ -5268,7 +5268,7 @@ window.questionBank = {
 				c: 0,
 			},
 			{
-				q: "What distinguishes a signaling NaN from a quiet NaN in the slides?",
+				q: "What distinguishes a signaling NaN from a quiet NaN?",
 				a: [
 					"A signaling NaN can trigger an invalid-operation exception; a quiet NaN can propagate without one",
 					"A signaling NaN represents infinity; a quiet NaN represents an ordinary finite value",
@@ -5278,7 +5278,7 @@ window.questionBank = {
 				c: 0,
 			},
 			{
-				q: "When an FPU exception's mask bit is clear, what action does the slide describe?",
+				q: "When an FPU exception's mask bit is clear, what action should the processor take?",
 				a: [
 					"The processor invokes a software exception handler",
 					"The processor ignores the exception and continues without reporting it",
@@ -5288,7 +5288,7 @@ window.questionBank = {
 				c: 0,
 			},
 			{
-				q: "According to the operand rules in the floating-point slides, which statement is correct for a two-operand floating-point instruction?",
+				q: "According to the operand rule with floating-points, which statement is correct for a two-operand floating-point instruction?",
 				a: [
 					"At least one operand must be a floating-point register",
 					"Both operands must be general-purpose CPU registers",
@@ -5399,7 +5399,7 @@ window.questionBank = {
 			},
 			// Slide 11
 			{
-				q: "Which item is part of the basic execution environment listed on the slide?",
+				q: "Which item is part of the basic execution environment?",
 				a: [
 					"Optical storage sectors",
 					"Display refresh buffers",
@@ -5471,7 +5471,7 @@ window.questionBank = {
 			},
 			// Slide 18
 			{
-				q: "Which statement describes the index and base registers on the slide?",
+				q: "Which statement describes index and base registers?",
 				a: [
 					"All are dedicated exclusively to floating-point values",
 					"Some have only a 16-bit name for their lower half",
@@ -5908,12 +5908,6 @@ window.questionBank = {
 					"Shift the binary point according to the fraction length",
 				],
 				c: 1,
-			},
-			// Slide 25
-			{
-				q: "What decimal value is produced by the example bit pattern shown on the slide?",
-				a: ["10.75", "11.25", "10.5", "12.75"],
-				c: 0,
 			},
 			// Slide 26
 			{
@@ -8590,7 +8584,7 @@ window.questionBank = {
 				c: 0,
 			},
 			{
-				q: "Which cloud computing milestone occurred in 2006 according to the slideshow?",
+				q: "Which cloud computing milestone occurred in 2006?",
 				a: [
 					"Docker and Kubernetes transformed application deployment",
 					"AWS launched EC2 and S3, marking commercial cloud adoption",
@@ -8610,7 +8604,7 @@ window.questionBank = {
 				c: 2,
 			},
 			{
-				q: "True or False: The slideshow describes serverless computing, edge computing, AI-driven cloud services, and multi-cloud architectures as major trends of the 2020s.",
+				q: "True or False: Serverless computing, edge computing, AI-driven cloud services, and multi-cloud architectures are described as major trends of the 2020s.",
 				a: ["True", "False", "BLANK", "BLANK"],
 				c: 0,
 			},
@@ -9257,7 +9251,7 @@ window.questionBank = {
 				c: 0,
 			},
 			{
-				q: "True or False: The slideshow recommends encrypting data both in transit and at rest by default.",
+				q: "True or False: Its recommended to encrypt data both in transit and at rest by default.",
 				a: ["True", "False", "BLANK", "BLANK"],
 				c: 0,
 			},
