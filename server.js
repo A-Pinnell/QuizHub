@@ -54,7 +54,8 @@ const netHubMusicTracks = new Set([
   "default", "BonusTrack", "Practice1", "BinaryQuiz2", "Practice2", "CompArch", "CloudComp",
   "DataSci", "StatisticPractice", "DataSciLautest", "SoftEngi", "CompGFX",
   "CompGFXLautest", "SocIndi", "NetHubBonus1", "NetHubBonus2",
-  "NetHubBonus3", "NetHubBonus4", "NetHubBonus5", "NetHubBonus6"
+  "NetHubBonus3", "NetHubBonus4", "NetHubBonus5", "NetHubBonus6",
+  "NetHubBonus7", "NetHubBonus8", "NetHubBonus9"
 ]);
 
 function validateNetHubDatabase(database) {

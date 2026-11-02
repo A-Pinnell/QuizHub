@@ -47,6 +47,32 @@
 	max-height: min(56vh, 440px);
 	overflow-y: auto;
 }
+.quiz-music-picker-categories {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 6px;
+	margin-bottom: 12px;
+}
+.quiz-music-picker-category {
+	min-height: 38px;
+	padding: 7px 5px;
+	border: 1px solid rgba(255, 255, 255, 0.13);
+	border-radius: 9px;
+	background: rgba(255, 255, 255, 0.055);
+	color: #bbc2d2;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 700;
+	cursor: pointer;
+}
+.quiz-music-picker-category[aria-selected="true"],
+.quiz-music-picker-category:hover,
+.quiz-music-picker-category:focus-visible {
+	border-color: #9d8cff;
+	background: rgba(157, 140, 255, 0.14);
+	color: #f6f7fb;
+	outline: none;
+}
 .quiz-music-picker-option {
 	display: flex;
 	align-items: center;

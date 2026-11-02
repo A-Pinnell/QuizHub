@@ -160,7 +160,7 @@ const requestedMusicCategory = canonicalCategory(
 	new URLSearchParams(location.search).get("category"),
 );
 const quizMusicFile = forceStaticQuestionOrder
-	? resolveAssetUrl("./music/Challenge_Intro.mp3")
+	? resolveAssetUrl("./music/Challenge.mp3")
 	: isStatisticsPracticeQuiz
 		? resolveAssetUrl("./music/Trial_Setup.mp3")
 		: requestedMusicCategory === "DataSci"
@@ -199,6 +199,27 @@ const quizMusic = isDataSciLautest
 	: netHubQuizMusic?.upload && !netHubQuizMusic.upload.data
 		? new Audio()
 		: new Audio(resolveQuizMusicSource());
+let quizMusicIntroMainSource = null;
+let quizMusicIntroPlaysRemaining = 0;
+let quizMusicIntroLastTime = 0;
+const initialQuizMusicSelection =
+	typeof netHubQuizMusic?.track === "string"
+		? netHubQuizMusic.track
+		: window.quizHubPreferences.quizMusic;
+if (!netHubQuizMusic?.upload) {
+	const introSource =
+		window.quizHubPreferences.resolveQuizMusicIntro(
+			initialQuizMusicSelection,
+		);
+	if (introSource) {
+		quizMusicIntroMainSource = resolveQuizMusicSource();
+		quizMusicIntroPlaysRemaining =
+			window.quizHubPreferences.getQuizMusicIntroPlayCount(
+				initialQuizMusicSelection,
+			);
+		quizMusic.src = introSource;
+	}
+}
 const isPreloadedQuiz = window.self !== window.top;
 let quizMusicPending = false;
 let netHubMusicLoadStarted = false;
@@ -210,7 +231,9 @@ let lautestLoopSource = null;
 let lautestLoopSourceUrl = "";
 let lautestLoopGeneration = 0;
 quizMusic.loop =
-	Boolean(netHubQuizMusic) || !window.quizHubPreferences.isQuizMusicRotation;
+	!quizMusicIntroMainSource &&
+		(Boolean(netHubQuizMusic) ||
+			!window.quizHubPreferences.isQuizMusicRotation);
 quizMusic.volume =
 	0.45 * (netHubQuizMusic?.upload ? 10 ** (-12 / 20) : 1);
 function updateMusicToggle() {
@@ -233,15 +256,23 @@ window.QuizHubMusicPicker.attach({
 			quizMusicPending = false;
 		}
 	},
-	onTrackSelected(shouldPlay, reshuffle) {
+	onTrackSelected(shouldPlay, reshuffle, selection) {
 		if (isDataSciLautest && !dataSciLautestMusicStarted) return;
-		quizMusic.src =
+		const mainSource =
 			reshuffle && window.quizHubPreferences.isQuizMusicRotation
 				? window.quizHubPreferences.getNextQuizMusic(
 						quizMusic.currentSrc || quizMusic.src,
 						quizMusicDefaultSource,
 					)
 				: resolveQuizMusicSource();
+		quizMusicIntroMainSource = reshuffle
+			? null
+			: window.quizHubPreferences.resolveQuizMusicIntro(selection);
+		quizMusicIntroPlaysRemaining = reshuffle
+			? 0
+			: window.quizHubPreferences.getQuizMusicIntroPlayCount(selection);
+		quizMusic.src = quizMusicIntroMainSource || mainSource;
+		quizMusicIntroLastTime = 0;
 		quizMusic.load();
 		if (shouldPlay) startQuizMusic();
 	},
@@ -283,10 +314,14 @@ function startQuizMusic() {
 		return;
 	}
 	quizMusic.loop =
-		Boolean(netHubQuizMusic) || !window.quizHubPreferences.isQuizMusicRotation;
+		quizMusicIntroMainSource && quizMusicIntroPlaysRemaining > 1
+			? true
+			: Boolean(netHubQuizMusic) ||
+				!window.quizHubPreferences.isQuizMusicRotation;
 	if (
 		forceStaticQuestionOrder &&
-		!window.quizHubPreferences.isQuizMusicRotation
+		!window.quizHubPreferences.isQuizMusicRotation &&
+		!quizMusicIntroMainSource
 	) {
 		startLautestLoopingMusic();
 		return;
@@ -300,7 +335,37 @@ function startQuizMusic() {
 			quizMusicPending = true;
 		});
 }
+quizMusic.addEventListener("timeupdate", () => {
+	if (!quizMusicIntroMainSource || !quizMusic.loop) {
+		quizMusicIntroLastTime = quizMusic.currentTime;
+		return;
+	}
+	const currentTime = quizMusic.currentTime;
+	if (currentTime < quizMusicIntroLastTime - 0.25) {
+		quizMusicIntroPlaysRemaining--;
+		quizMusic.loop = quizMusicIntroPlaysRemaining > 1;
+	}
+	quizMusicIntroLastTime = currentTime;
+});
 quizMusic.addEventListener("ended", () => {
+	if (quizMusicIntroMainSource) {
+		if (quizMusicIntroPlaysRemaining > 1) {
+			quizMusicIntroPlaysRemaining--;
+			quizMusic.currentTime = 0;
+			startQuizMusic();
+			return;
+		}
+		quizMusic.src = quizMusicIntroMainSource;
+		quizMusicIntroMainSource = null;
+		quizMusicIntroPlaysRemaining = 0;
+		quizMusicIntroLastTime = 0;
+		quizMusic.loop =
+			Boolean(netHubQuizMusic) ||
+			!window.quizHubPreferences.isQuizMusicRotation;
+		quizMusic.load();
+		startQuizMusic();
+		return;
+	}
 	if (netHubQuizMusic || !window.quizHubPreferences.isQuizMusicRotation) return;
 	quizMusic.src = window.quizHubPreferences.getNextQuizMusic(
 		quizMusic.currentSrc || quizMusic.src,
@@ -398,9 +463,15 @@ function startLautestQuizMusic() {
 	lautestQuizMusicStarted = true;
 	stopLautestLoopingMusic();
 	quizMusicDefaultSource = resolveAssetUrl("./music/Challenge.mp3");
-	quizMusic.src = window.quizHubPreferences.resolveQuizMusic(
+	const mainSource = window.quizHubPreferences.resolveQuizMusic(
 		quizMusicDefaultSource,
 	);
+	quizMusicIntroMainSource =
+		window.quizHubPreferences.resolveQuizMusicIntro();
+	quizMusicIntroPlaysRemaining =
+		window.quizHubPreferences.getQuizMusicIntroPlayCount();
+	quizMusic.src = quizMusicIntroMainSource || mainSource;
+	quizMusicIntroLastTime = 0;
 	quizMusic.load();
 	quizMusicPending = true;
 	startQuizMusic();

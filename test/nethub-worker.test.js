@@ -44,6 +44,18 @@ test("D1 NetHub Worker validates account names and quiz payloads", async () => {
     ...quiz,
     music: { track: "NetHubBonus6" },
   }).music.track, "NetHubBonus6");
+  assert.equal(cleanQuiz({
+    ...quiz,
+    music: { track: "NetHubBonus7" },
+  }).music.track, "NetHubBonus7");
+  assert.equal(cleanQuiz({
+    ...quiz,
+    music: { track: "NetHubBonus8" },
+  }).music.track, "NetHubBonus8");
+  assert.equal(cleanQuiz({
+    ...quiz,
+    music: { track: "NetHubBonus9" },
+  }).music.track, "NetHubBonus9");
   assert.throws(() => cleanQuiz({ ...quiz, theme: "unknown" }), /valid quiz theme/);
   assert.throws(
     () => cleanQuiz({

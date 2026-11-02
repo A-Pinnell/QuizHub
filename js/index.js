@@ -1808,6 +1808,9 @@ function updateQuizMusicTrackName() {
 		NetHubBonus4: "NetHub Track 4",
 		NetHubBonus5: "NetHub Track 5",
 		NetHubBonus6: "NetHub Track 6",
+		NetHubBonus7: "NetHub Track 7",
+		NetHubBonus8: "NetHub Track 8",
+		NetHubBonus9: "NetHub Track 9",
 		CloudComp: "A Lone Prayer ... from Persona [QuizHub Mix]",
 		DataSci:
 			"Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]",

@@ -43,6 +43,14 @@
 		NetHubBonus4: "./music/NetHubBonus/Net4.mp3",
 		NetHubBonus5: "./music/NetHubBonus/Net5.mp3",
 		NetHubBonus6: "./music/NetHubBonus/Net6.mp3",
+		NetHubBonus7: "./music/NetHubBonus/Net7.mp3",
+		NetHubBonus8: "./music/NetHubBonus/Net8.mp3",
+		NetHubBonus9: "./music/NetHubBonus/Net9.mp3",
+	};
+	const netHubTrack9Alternate = "./music/NetHubBonus/Net9_ALT.mp3";
+	const netHubTrack9PlayCounts = new Map();
+	const quizMusicIntroSources = {
+		BinaryQuiz2: "./music/BinaryQuiz2-Intro.mp3",
 	};
 	const quizMusicRotationModes = [
 		"rotation",
@@ -88,6 +96,9 @@
 		NetHubBonus4: "NetHub Track 4",
 		NetHubBonus5: "NetHub Track 5",
 		NetHubBonus6: "NetHub Track 6",
+		NetHubBonus7: "NetHub Track 7",
+		NetHubBonus8: "NetHub Track 8",
+		NetHubBonus9: "NetHub Track 9",
 	};
 	const secretMode = storage.getItem("quizHubSecretMode") === "true";
 	const savedQuizMusic = storage.getItem("quizHubQuizMusic");
@@ -472,6 +483,11 @@
 			return options.map((value) => ({
 				value,
 				label: quizMusicNames[value] || "Course default",
+				category: isQuizMusicRotation(value)
+					? "Rotation"
+					: value.startsWith("NetHubBonus")
+						? "NetHub OST"
+						: "QuizHub OST",
 			}));
 		},
 		getQuizMusicName(value = preferences.quizMusic) {
@@ -508,6 +524,16 @@
 				selectedSource || defaultSource,
 				window.location.href,
 			).toString();
+		},
+		resolveQuizMusicIntro(selection = preferences.quizMusic) {
+			const introSource = quizMusicIntroSources[selection];
+			return introSource
+				? new URL(introSource, window.location.href).toString()
+				: null;
+		},
+		getQuizMusicIntroPlayCount(selection = preferences.quizMusic) {
+			if (!quizMusicIntroSources[selection]) return 0;
+			return selection === "CompGFXLautest" ? 2 : 1;
 		},
 		isQuizMusicRotationValue(value) {
 			return isQuizMusicRotation(value);
@@ -548,10 +574,37 @@
 			const currentUrl = currentSource
 				? new URL(currentSource, window.location.href).toString()
 				: "";
+			const netHubTrack9Url = new URL(
+				quizMusicSources.NetHubBonus9,
+				window.location.href,
+			).toString();
+			const netHubTrack9AlternateUrl = new URL(
+				netHubTrack9Alternate,
+				window.location.href,
+			).toString();
 			const nextSources = rotationSources.filter(
-				(source) => source !== currentUrl,
+				(source) =>
+					source !== currentUrl &&
+					!(
+						(source === netHubTrack9Url ||
+							source === netHubTrack9AlternateUrl) &&
+						(currentUrl === netHubTrack9Url ||
+							currentUrl === netHubTrack9AlternateUrl)
+					),
 			);
-			return nextSources[Math.floor(Math.random() * nextSources.length)];
+			const nextSource =
+				nextSources[Math.floor(Math.random() * nextSources.length)];
+			if (
+				nextSource === netHubTrack9Url &&
+				(selection === "rotation" || selection === "netHubRotation")
+			) {
+				const track9PlayCount = netHubTrack9PlayCounts.get(selection) || 0;
+				netHubTrack9PlayCounts.set(selection, track9PlayCount + 1);
+				return track9PlayCount === 1
+					? netHubTrack9AlternateUrl
+					: netHubTrack9Url;
+			}
+			return nextSource;
 		},
 		setSoundMuted(value) {
 			update("soundMuted", value);

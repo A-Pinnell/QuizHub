@@ -10,6 +10,7 @@ const musicTracks = new Set([
   "DataSci", "StatisticPractice", "DataSciLautest", "SoftEngi", "CompGFX",
   "CompGFXLautest", "SocIndi", "NetHubBonus1", "NetHubBonus2",
   "NetHubBonus3", "NetHubBonus4", "NetHubBonus5", "NetHubBonus6",
+  "NetHubBonus7", "NetHubBonus8", "NetHubBonus9",
 ]);
 const textEncoder = new TextEncoder();
 

@@ -49,9 +49,18 @@
   } else {
     music.src = window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
   }
+  let introMusicMainSource = null;
+  if (!hasDedicatedMusic) {
+    const introSource = window.quizHubPreferences.resolveQuizMusicIntro();
+    if (introSource) {
+      introMusicMainSource = music.src;
+      music.src = introSource;
+    }
+  }
   music.loop = hasDedicatedMusic
     ? true
-    : !window.quizHubPreferences.isQuizMusicRotation;
+    : !introMusicMainSource &&
+      !window.quizHubPreferences.isQuizMusicRotation;
   const soundFiles = {
     correct: resolveAssetUrl("./sfx/Correct.wav"),
     highlight: resolveAssetUrl("./sfx/highlight.wav"),
@@ -220,7 +229,8 @@
   function updateMusic() {
     music.loop = hasDedicatedMusic
       ? true
-      : !window.quizHubPreferences.isQuizMusicRotation;
+      : !introMusicMainSource &&
+        !window.quizHubPreferences.isQuizMusicRotation;
     if (!state.music) { music.pause(); return; }
     music.volume = .45;
     const playback = music.play();
@@ -242,6 +252,13 @@
   }
   music.addEventListener("ended", () => {
     if (hasDedicatedMusic) return;
+    if (introMusicMainSource) {
+      music.src = introMusicMainSource;
+      introMusicMainSource = null;
+      music.load();
+      updateMusic();
+      return;
+    }
     if (!window.quizHubPreferences.isQuizMusicRotation || !state.music || state.paused) return;
     music.src = window.quizHubPreferences.getNextQuizMusic(
       music.currentSrc || music.src,
@@ -256,13 +273,20 @@
       isSoundEnabled: () => state.sound,
       isMusicEnabled: () => state.music && !state.paused,
       onSelectionStart: () => music.pause(),
-      onTrackSelected: (shouldPlay, reshuffle) => {
-        music.src = reshuffle
+      onTrackSelected: (shouldPlay, reshuffle, selection) => {
+        const mainSource = reshuffle
           ? window.quizHubPreferences.getNextQuizMusic(
               music.currentSrc || music.src,
               defaultMusicSource
             )
-          : window.quizHubPreferences.resolveQuizMusic(defaultMusicSource);
+          : window.quizHubPreferences.resolveQuizMusic(
+              defaultMusicSource,
+              selection,
+            );
+        introMusicMainSource = reshuffle
+          ? null
+          : window.quizHubPreferences.resolveQuizMusicIntro(selection);
+        music.src = introMusicMainSource || mainSource;
         music.load();
         if (shouldPlay) updateMusic();
       }
