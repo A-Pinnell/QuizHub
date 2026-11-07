@@ -53,6 +53,7 @@
     let currentQuestionNumber = -1;
     let localQuestionNumber = -1;
     let players = [];
+    const playerLeaveTimers = new Map();
     const savedPlayers = (() => {
       try {
         return JSON.parse(sessionStorage.getItem("quizHubPartyPlayers") || "[]");
@@ -87,6 +88,13 @@
 
     function syncPlayers(nextPlayers) {
       const activePlayerIds = new Set(nextPlayers.map((player) => player.id));
+      activePlayerIds.forEach((activePlayerId) => {
+        const leaveTimer = playerLeaveTimers.get(activePlayerId);
+        if (leaveTimer) {
+          window.clearTimeout(leaveTimer);
+          playerLeaveTimers.delete(activePlayerId);
+        }
+      });
       const leavingPlayers = players.filter(
         (player) => player.leaving && !activePlayerIds.has(player.id)
       );
@@ -195,11 +203,17 @@
           item.classList.add("party-player-leaving");
         }
       });
-      window.setTimeout(() => {
+      const previousTimer = playerLeaveTimers.get(player.id);
+      if (previousTimer) window.clearTimeout(previousTimer);
+      playerLeaveTimers.set(player.id, window.setTimeout(() => {
+        playerLeaveTimers.delete(player.id);
+        if (!players.some(
+          (candidate) => candidate.id === player.id && candidate.leaving
+        )) return;
         players = players.filter((candidate) => candidate.id !== player.id);
         if (room) room.players = players;
         renderRoster(room?.activity || []);
-      }, 700);
+      }, 700));
     });
     client.on("quiz-start", (message) => {
       room = { ...room, stage: "quiz", quizConfig: message.config, players: message.players };

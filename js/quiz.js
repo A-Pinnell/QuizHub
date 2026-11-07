@@ -225,6 +225,9 @@ let quizMusicPending = false;
 let netHubMusicLoadStarted = false;
 let lautestQuizMusicStarted = false;
 let dataSciLautestMusicStarted = false;
+let hostDisplayMusicChangeGeneration = 0;
+let hostDisplayMusicConfirmSound = null;
+let hostDisplayMusicLocalSelection = null;
 let lautestLoopContext = null;
 const lautestLoopBuffers = new Map();
 let lautestLoopSource = null;
@@ -245,6 +248,37 @@ function updateMusicToggle() {
 	);
 	musicToggle.setAttribute("aria-pressed", String(musicMuted));
 }
+function applyQuizMusicSelection(
+	shouldPlay,
+	reshuffle,
+	selection,
+	useAlternateTrack9 = false,
+) {
+	if (isDataSciLautest && !dataSciLautestMusicStarted) return;
+	const mainSource =
+		reshuffle && window.quizHubPreferences.isQuizMusicRotation
+			? window.quizHubPreferences.getNextQuizMusic(
+					quizMusic.currentSrc || quizMusic.src,
+					quizMusicDefaultSource,
+				)
+			: netHubQuizMusic?.track
+				? resolveQuizMusicSource()
+				: window.quizHubPreferences.resolveQuizMusic(
+						quizMusicDefaultSource,
+						selection,
+						useAlternateTrack9,
+					);
+	quizMusicIntroMainSource = reshuffle
+		? null
+		: window.quizHubPreferences.resolveQuizMusicIntro(selection);
+	quizMusicIntroPlaysRemaining = reshuffle
+		? 0
+		: window.quizHubPreferences.getQuizMusicIntroPlayCount(selection);
+	quizMusic.src = quizMusicIntroMainSource || mainSource;
+	quizMusicIntroLastTime = 0;
+	quizMusic.load();
+	if (shouldPlay) startQuizMusic();
+}
 window.QuizHubMusicPicker.attach({
 	button: document.getElementById("quizMusicCycle"),
 	isSoundEnabled: () => !soundsMuted,
@@ -256,29 +290,79 @@ window.QuizHubMusicPicker.attach({
 			quizMusicPending = false;
 		}
 	},
-	onTrackSelected(shouldPlay, reshuffle, selection) {
-		if (isDataSciLautest && !dataSciLautestMusicStarted) return;
-		const mainSource =
-			reshuffle && window.quizHubPreferences.isQuizMusicRotation
-				? window.quizHubPreferences.getNextQuizMusic(
-						quizMusic.currentSrc || quizMusic.src,
-						quizMusicDefaultSource,
-					)
-				: resolveQuizMusicSource();
-		quizMusicIntroMainSource = reshuffle
-			? null
-			: window.quizHubPreferences.resolveQuizMusicIntro(selection);
-		quizMusicIntroPlaysRemaining = reshuffle
-			? 0
-			: window.quizHubPreferences.getQuizMusicIntroPlayCount(selection);
-		quizMusic.src = quizMusicIntroMainSource || mainSource;
-		quizMusicIntroLastTime = 0;
-		quizMusic.load();
-		if (shouldPlay) startQuizMusic();
+	onTrackSelected(shouldPlay, reshuffle, selection, useAlternateTrack9) {
+		if (
+			networkPartyActive &&
+			hostDisplayEnabled &&
+			(partyHost || hostDisplayAnswerer) &&
+			partyConnection
+		) {
+			const localSelection = {
+				selection,
+				reshuffle,
+				useAlternateTrack9,
+			};
+			if (partyHostDisplay) hostDisplayMusicLocalSelection = localSelection;
+			partyConnection
+				.send({
+					type: "host-display-music",
+					code: partyRoomCode,
+					selection,
+					reshuffle,
+					useAlternateTrack9,
+				})
+				.catch((error) => {
+					if (partyHostDisplay) hostDisplayMusicLocalSelection = null;
+					setupError.textContent = `Could not change the Host Display music: ${error.message}`;
+				});
+			return;
+		}
+		applyQuizMusicSelection(
+			shouldPlay,
+			reshuffle,
+			selection,
+			useAlternateTrack9,
+		);
 	},
 });
 if (netHubQuizMusic) {
 	document.getElementById("quizMusicCycle").hidden = true;
+}
+function applyHostDisplayMusicChange(message, playConfirmation) {
+	const generation = ++hostDisplayMusicChangeGeneration;
+	if (hostDisplayMusicConfirmSound) {
+		hostDisplayMusicConfirmSound.pause();
+		hostDisplayMusicConfirmSound = null;
+	}
+	if (forceStaticQuestionOrder) stopLautestLoopingMusic();
+	else {
+		quizMusic.pause();
+		quizMusicPending = false;
+	}
+	const applySelection = () => {
+		if (generation !== hostDisplayMusicChangeGeneration) return;
+		hostDisplayMusicConfirmSound = null;
+		applyQuizMusicSelection(
+			!musicMuted,
+			message.reshuffle,
+			message.selection,
+			message.useAlternateTrack9,
+		);
+	};
+	if (!playConfirmation || soundsMuted) {
+		applySelection();
+		return;
+	}
+	const confirmSound = new Audio(resolveAssetUrl("./sfx/Confirm.wav"));
+	hostDisplayMusicConfirmSound = confirmSound;
+	confirmSound.preload = "auto";
+	confirmSound.volume = 0.55;
+	confirmSound.addEventListener("ended", applySelection, { once: true });
+	confirmSound.addEventListener("error", applySelection, { once: true });
+	confirmSound.play().catch((error) => {
+		console.warn("Could not play the Host Display music confirmation sound:", error);
+		applySelection();
+	});
 }
 function startQuizMusic() {
 	if (isPreloadedQuiz || musicMuted || !hostDisplayMusicAllowed) return;
@@ -575,6 +659,10 @@ function syncHostDisplayControls(room) {
 		hostDisplayEnabled && !partyHost,
 	);
 	document.body.classList.toggle("host-display-player", hostDisplayAnswerer);
+	const quizMusicButton = document.getElementById("quizMusicCycle");
+	quizMusicButton.hidden = networkPartyActive && hostDisplayEnabled
+		? !partyHost && !hostDisplayAnswerer
+		: Boolean(netHubQuizMusic);
 	if (networkPartyActive && !partyHost) {
 		skipButton.hidden = !hostDisplayAnswerer;
 		nextButton.hidden = !hostDisplayAnswerer;
@@ -756,6 +844,19 @@ const partyPlayerLeaveTimers = new Map();
 let partyConfigError = "";
 let partyHideLockedAnswers = false;
 let partyShowPlayerScores = true;
+let partyCompetitionMode = false;
+let competitionDecisionLocked = false;
+let competitionDecisionPending = false;
+let competitionPowerupPending = false;
+let competitionPointsToastTimer = null;
+let competitionRemovedAnswers = [];
+let competitionAnsweredPlayerIds = new Set();
+let competitionRevealedPlayers = false;
+let competitionRoomSnapshot = null;
+let networkAnswerPending = false;
+let playerFrozenUntil = 0;
+let playerFreezeTimeout = null;
+let playerFreezeCountdownInterval = null;
 if (partyModeRequested) {
 	try {
 		const savedPartyPlayers = JSON.parse(
@@ -863,6 +964,61 @@ root.style.setProperty("--quiz-danger-color", theme.danger);
 
 const courseCode = document.getElementById("courseCode");
 const answersEl = document.getElementById("answers");
+const competitionFreezeOverlay = document.createElement("div");
+competitionFreezeOverlay.className = "competition-freeze-overlay";
+competitionFreezeOverlay.setAttribute("role", "alert");
+competitionFreezeOverlay.hidden = true;
+const competitionFreezeMessage = document.createElement("div");
+competitionFreezeMessage.className = "competition-freeze-message";
+const competitionFreezeTitle = document.createElement("strong");
+competitionFreezeTitle.textContent = "FROZEN";
+const competitionFreezeCountdown = document.createElement("span");
+competitionFreezeCountdown.className = "competition-freeze-countdown";
+competitionFreezeCountdown.setAttribute("aria-live", "off");
+const competitionFreezeCaption = document.createElement("span");
+competitionFreezeCaption.className = "competition-freeze-caption";
+competitionFreezeCaption.textContent = "SECONDS REMAINING";
+competitionFreezeMessage.append(
+	competitionFreezeTitle,
+	competitionFreezeCountdown,
+	competitionFreezeCaption,
+);
+competitionFreezeOverlay.appendChild(competitionFreezeMessage);
+document.body.appendChild(competitionFreezeOverlay);
+const competitionControls = document.getElementById("competitionControls");
+const competitionCharge = document.getElementById("competitionCharge");
+const competitionChargeText = document.getElementById("competitionChargeText");
+const competitionPowerupsButton = document.getElementById("competitionPowerupsButton");
+const competitionPowerupsDialog = document.getElementById("competitionPowerupsDialog");
+const competitionPowerupsBalance = document.getElementById("competitionPowerupsBalance");
+const competitionActivePowerups = document.getElementById("competitionActivePowerups");
+const competitionPointsToast = document.getElementById("competitionPointsToast");
+const competitionPowerupCatalog = document.getElementById("competitionPowerupCatalog");
+const competitionWager = document.getElementById("competitionWager");
+const competitionAllIn = document.getElementById("competitionAllIn");
+const competitionStatus = document.getElementById("competitionStatus");
+const competitionTargetDialog = document.getElementById("competitionTargetDialog");
+const competitionTargetChoices = document.getElementById("competitionTargetChoices");
+const competitionTargetTitle = document.getElementById("competitionTargetTitle");
+const competitionPowerupConfirm = document.getElementById("competitionPowerupConfirm");
+const competitionAnnouncement = document.createElement("div");
+competitionAnnouncement.className = "competition-announcement";
+competitionAnnouncement.setAttribute("role", "status");
+competitionAnnouncement.setAttribute("aria-live", "polite");
+competitionAnnouncement.hidden = true;
+document.body.appendChild(competitionAnnouncement);
+let competitionAnnouncementTimeout = null;
+function showCompetitionAnnouncement(text) {
+	competitionAnnouncement.textContent = text;
+	competitionAnnouncement.hidden = false;
+	if (competitionAnnouncementTimeout !== null) {
+		clearTimeout(competitionAnnouncementTimeout);
+	}
+	competitionAnnouncementTimeout = setTimeout(() => {
+		competitionAnnouncement.hidden = true;
+		competitionAnnouncementTimeout = null;
+	}, 5000);
+}
 const statisticsSetBuilder = document.getElementById("statisticsSetBuilder");
 const statisticsSetInputs = [
 	...statisticsSetBuilder.querySelectorAll("[data-statistics-value]"),
@@ -1857,12 +2013,15 @@ function resetPartyComboStreaks() {
 	longestCombo = 0;
 }
 
-function updatePartyComboStreaks(correctPlayerIds) {
+function updatePartyComboStreaks(correctPlayerIds, streakKeeperPlayerIds = []) {
 	const correctPlayers = new Set(correctPlayerIds);
+	const streakKeepers = new Set(streakKeeperPlayerIds);
 	let anyStreakIncreased = false;
 	partyPlayers.forEach((player) => {
 		const previousStreak = partyComboStreaks.get(player.id) || 0;
-		const streak = correctPlayers.has(player.id) ? previousStreak + 1 : 0;
+		const streak = correctPlayers.has(player.id)
+			? previousStreak + 1
+			: streakKeepers.has(player.id) ? previousStreak : 0;
 		partyComboStreaks.set(player.id, streak);
 		partyLongestComboStreaks.set(
 			player.id,
@@ -2022,7 +2181,7 @@ function updatePartyAnswerMarker(button) {
 		button.appendChild(markers);
 	}
 	markers.replaceChildren();
-	if (partyHideLockedAnswers && !answered) {
+	if (partyHideLockedAnswers && !competitionRevealedPlayers && !answered) {
 		markers.hidden = true;
 		return;
 	}
@@ -2082,12 +2241,22 @@ function buildNetworkAnswerOrder(question, questionNumberIndex, questionIndex) {
 
 function updateNetworkPlayers(players) {
 	if (!Array.isArray(players)) return;
-	const activePlayerIds = new Set(players.map((player) => player.id));
+	const visiblePlayers = hostDisplayEnabled
+		? players.filter((player) => !player.host)
+		: players;
+	const activePlayerIds = new Set(visiblePlayers.map((player) => player.id));
+	activePlayerIds.forEach((playerId) => {
+		const leaveTimer = partyPlayerLeaveTimers.get(playerId);
+		if (leaveTimer) {
+			clearTimeout(leaveTimer);
+			partyPlayerLeaveTimers.delete(playerId);
+		}
+	});
 	const leavingPlayers = partyPlayers.filter(
 		(player) => player.leaving && !activePlayerIds.has(player.id),
 	);
 	partyPlayers = [
-		...players.map((updated) => {
+		...visiblePlayers.map((updated) => {
 			const existing = partyPlayers.find(
 				(candidate) => candidate.id === updated.id,
 			);
@@ -2111,6 +2280,7 @@ function updateNetworkPlayers(players) {
 		...leavingPlayers,
 	];
 	updatePartyScoreDisplay();
+	renderCompetitionControls();
 }
 
 function markNetworkPlayerLeaving(departingPlayer) {
@@ -2127,6 +2297,9 @@ function markNetworkPlayerLeaving(departingPlayer) {
 		player.id,
 		setTimeout(() => {
 			partyPlayerLeaveTimers.delete(player.id);
+			if (!partyPlayers.some(
+				(candidate) => candidate.id === player.id && candidate.leaving,
+			)) return;
 			partyPlayers = partyPlayers.filter(
 				(candidate) => candidate.id !== player.id,
 			);
@@ -2135,6 +2308,303 @@ function markNetworkPlayerLeaving(departingPlayer) {
 		}, 700),
 	);
 }
+
+function renderCompetitionControls() {
+	if (!competitionControls) return;
+	const answerCount = answersEl.querySelectorAll(".answer").length;
+	const visible = networkPartyActive && partyCompetitionMode &&
+		!partyHostDisplay && quizStarted && !answersEl.hidden &&
+		answerCount >= 2;
+	competitionControls.hidden = !visible;
+	if (!visible) return;
+	const ownPlayer = partyPlayers.find((player) => player.id === partyPlayerId);
+	const charge = Math.max(0, Number(ownPlayer?.competitionCharge) || 0);
+	competitionCharge.value = Math.min(15, charge);
+	competitionChargeText.textContent = `${charge} charge`;
+	competitionPowerupsBalance.textContent = `${charge} charge available`;
+
+	const targets = partyPlayers.filter((player) =>
+		player.id !== partyPlayerId && !player.host && !player.fakePlayer &&
+		player.connected !== false,
+	);
+	const drainTargets = targets.filter((player) =>
+		(Number(player.competitionCharge) || 0) > 0,
+	);
+	const thiefTargets = targets.filter((player) =>
+		(Number(player.score) || 0) > 0,
+	);
+	const scrambleActive =
+		(competitionRoomSnapshot?.scrambledPlayers?.length || 0) > 0 ||
+		(competitionRoomSnapshot?.question?.scrambledPlayerIds?.length || 0) > 0;
+	const isFrozen = playerFrozenUntil > Date.now();
+	const canUsePowerup = !answered && !isFrozen && !competitionPowerupPending;
+	competitionPowerupCatalog.querySelectorAll("[data-use-powerup]").forEach((button) => {
+		const powerup = button.dataset.usePowerup;
+		const unavailable = !canUsePowerup ||
+			(powerup === "freeze" && (charge < 5 || targets.length === 0)) ||
+			(powerup === "split" &&
+				(charge < 10 || competitionRemovedAnswers.length > 0 || answerCount !== 4)) ||
+			(powerup === "shield" && (charge < 5 || ownPlayer?.competitionShield === true)) ||
+			(powerup === "scramble" && (charge < 15 || scrambleActive)) ||
+			(powerup === "ghost" && (charge < 5 ||
+				targets.length === 0)) ||
+			(powerup === "streak-bonus" &&
+				(charge < 10 || ownPlayer?.competitionStreakBonus === true)) ||
+			(powerup === "streak-keeper" &&
+				(charge < 20 || ownPlayer?.competitionStreakKeeper === true)) ||
+			(powerup === "charge-drain" && (charge < 15 || drainTargets.length === 0)) ||
+			(powerup === "thief" && (charge < 25 || thiefTargets.length === 0)) ||
+			(powerup === "top-thief" &&
+				(charge < 30 || competitionRoomSnapshot?.topThiefPlayerId)) ||
+			(powerup === "reveal-players" &&
+				(charge < 10 || competitionRevealedPlayers || !partyHideLockedAnswers));
+		button.disabled = unavailable;
+	});
+	competitionPowerupCatalog
+		.querySelector('[data-powerup-card="reveal-players"]')
+		.hidden = !partyHideLockedAnswers;
+	renderCompetitionActivePowerups();
+	competitionWager.hidden = competitionDecisionLocked || quizEnded;
+	competitionAllIn.disabled = competitionDecisionPending || competitionDecisionLocked;
+	if (competitionDecisionLocked) {
+		competitionStatus.textContent = "All In locked.";
+	}
+}
+
+function renderCompetitionActivePowerups() {
+	if (!competitionActivePowerups) return;
+	const active = [];
+	for (const player of partyPlayers) {
+		if (player.competitionShield) active.push(`Shield: ${player.name}`);
+		if (player.competitionStreakBonus) active.push(`Streak Bonus: ${player.name}`);
+		if (player.competitionStreakKeeper) active.push(`Streak Keeper: ${player.name}`);
+	}
+	const topThiefPlayer = partyPlayers.find(
+		(player) => player.id === competitionRoomSnapshot?.topThiefPlayerId,
+	);
+	if (topThiefPlayer) active.push(`Top Thief: ${topThiefPlayer.name}`);
+	for (const scramble of competitionRoomSnapshot?.scrambledPlayers || []) {
+		const player = partyPlayers.find((candidate) => candidate.id === scramble.playerId);
+		const remaining = scramble.remaining;
+		active.push(
+			`Scramble: ${player?.name || "A player"} (${remaining} question${remaining === 1 ? "" : "s"} remaining)`,
+		);
+	}
+	for (const freeze of competitionRoomSnapshot?.frozenPlayers || []) {
+		const player = partyPlayers.find((candidate) => candidate.id === freeze.playerId);
+		active.push(
+			freeze.pending
+				? `Freeze: ${player?.name || "A player"} on the next question`
+				: `Freeze: ${player?.name || "A player"} for ${Math.max(1, Math.ceil((freeze.expiresAt - Date.now()) / 1000))}s`,
+		);
+	}
+	competitionActivePowerups.textContent = active.length
+		? `In effect: ${active.join("; ")}`
+		: "No powerups currently in effect.";
+}
+
+function showCompetitionPointsToast(points) {
+	if (!partyCompetitionMode || !Number.isFinite(points)) return;
+	competitionPointsToast.textContent = points > 0
+		? `+${points} point${points === 1 ? "" : "s"}`
+		: points < 0
+			? `${points} point${Math.abs(points) === 1 ? "" : "s"}`
+			: "0 points";
+	competitionPointsToast.classList.toggle("positive", points > 0);
+	competitionPointsToast.classList.toggle("negative", points < 0);
+	competitionPointsToast.classList.toggle("zero", points === 0);
+	competitionPointsToast.hidden = false;
+	competitionPointsToast.classList.remove("visible");
+	void competitionPointsToast.offsetWidth;
+	competitionPointsToast.classList.add("visible");
+	if (competitionPointsToastTimer !== null) {
+		clearTimeout(competitionPointsToastTimer);
+	}
+	competitionPointsToastTimer = window.setTimeout(() => {
+		competitionPointsToast.classList.remove("visible");
+		competitionPointsToastTimer = window.setTimeout(() => {
+			competitionPointsToast.hidden = true;
+			competitionPointsToastTimer = null;
+		}, 350);
+	}, 2600);
+}
+
+function applySplitAnswers(removedAnswers) {
+	if (!Array.isArray(removedAnswers)) return;
+	competitionRemovedAnswers = removedAnswers.filter(Number.isInteger);
+	const removed = new Set(competitionRemovedAnswers);
+	answersEl.querySelectorAll(".answer").forEach((button) => {
+		button.hidden = removed.has(Number(button.dataset.originalIndex));
+	});
+	renderCompetitionControls();
+}
+
+function applyRevealedAnswers(players) {
+	if (!Array.isArray(players)) return;
+	competitionRevealedPlayers = true;
+	for (const player of players) {
+		if (!player || typeof player.id !== "string" ||
+			!Number.isInteger(player.answerIndex)) continue;
+		const existingChoice = partyChoices.find(
+			(choice) => choice.playerId === player.id,
+		);
+		if (existingChoice) existingChoice.selectedIndex = player.answerIndex;
+		else partyChoices.push({
+			playerId: player.id,
+			selectedIndex: player.answerIndex,
+		});
+	}
+	answersEl.querySelectorAll(".answer").forEach(updatePartyAnswerMarker);
+	competitionStatus.textContent =
+		"Player answers are temporarily visible to everyone this question.";
+	renderCompetitionControls();
+}
+
+function setPlayerFrozen(expiresAt) {
+	if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) return;
+	if (playerFreezeTimeout !== null) clearTimeout(playerFreezeTimeout);
+	if (playerFreezeCountdownInterval !== null) {
+		clearInterval(playerFreezeCountdownInterval);
+	}
+	playerFrozenUntil = expiresAt;
+	competitionFreezeOverlay.hidden = false;
+	const updateCountdown = () => {
+		competitionFreezeCountdown.textContent = String(
+			Math.max(0, Math.ceil((playerFrozenUntil - Date.now()) / 1000)),
+		);
+	};
+	updateCountdown();
+	playerFreezeCountdownInterval = setInterval(updateCountdown, 250);
+	stopQuestionTimer();
+	if (!answered) {
+		answersEl.querySelectorAll(".answer").forEach((button) => {
+			button.disabled = true;
+		});
+	}
+	renderCompetitionControls();
+	playerFreezeTimeout = setTimeout(() => {
+		playerFrozenUntil = 0;
+		playerFreezeTimeout = null;
+		if (playerFreezeCountdownInterval !== null) {
+			clearInterval(playerFreezeCountdownInterval);
+			playerFreezeCountdownInterval = null;
+		}
+		competitionFreezeOverlay.hidden = true;
+		if (!answered) {
+			answersEl.querySelectorAll(".answer").forEach((button) => {
+				button.disabled = false;
+			});
+			startQuestionTimer();
+		}
+		renderCompetitionControls();
+	}, Math.max(0, expiresAt - Date.now()));
+}
+
+function clearPlayerFreeze() {
+	if (playerFreezeTimeout !== null) clearTimeout(playerFreezeTimeout);
+	if (playerFreezeCountdownInterval !== null) {
+		clearInterval(playerFreezeCountdownInterval);
+		playerFreezeCountdownInterval = null;
+	}
+	playerFreezeTimeout = null;
+	playerFrozenUntil = 0;
+	competitionFreezeOverlay.hidden = true;
+	if (!answered) {
+		answersEl.querySelectorAll(".answer").forEach((button) => {
+			button.disabled = false;
+		});
+		startQuestionTimer();
+	}
+	renderCompetitionControls();
+}
+
+async function submitCompetitionWager() {
+	if (!networkPartyActive || competitionDecisionLocked || competitionDecisionPending)
+		return;
+	competitionDecisionPending = true;
+	renderCompetitionControls();
+	try {
+		await partyConnection.send({
+			type: "all-in-decision",
+			code: partyRoomCode,
+			questionNumber: questionNumber - 1,
+			allIn: true,
+		});
+	} catch (error) {
+		competitionDecisionPending = false;
+		competitionStatus.textContent = `Could not lock your wager: ${error.message}`;
+		renderCompetitionControls();
+	}
+}
+
+async function useCompetitionPowerup(powerup, targetPlayerId = null) {
+	if (!networkPartyActive || competitionPowerupPending) return;
+	competitionPowerupPending = true;
+	renderCompetitionControls();
+	try {
+		await partyConnection.send({
+			type: "competition-powerup",
+			code: partyRoomCode,
+			powerup,
+			...(powerup === "freeze" ? { targetPlayerIds: targetPlayerId } : {}),
+			...(["ghost", "charge-drain", "thief"].includes(powerup)
+				? { targetPlayerId }
+				: {}),
+		});
+	} catch (error) {
+		competitionPowerupPending = false;
+		competitionStatus.textContent = `Could not use that powerup: ${error.message}`;
+		renderCompetitionControls();
+	}
+}
+
+function openCompetitionTargetPicker(powerup) {
+	const catalogButton = competitionPowerupCatalog.querySelector(
+		`[data-use-powerup="${powerup}"]`,
+	);
+	if (catalogButton.disabled || competitionTargetDialog.open) return;
+	const targets = partyPlayers.filter((player) =>
+		player.id !== partyPlayerId && !player.host && !player.fakePlayer &&
+		player.connected !== false &&
+		(powerup !== "charge-drain" ||
+			(Number(player.competitionCharge) || 0) > 0) &&
+		(powerup !== "thief" || (Number(player.score) || 0) > 0),
+	);
+	competitionTargetDialog.dataset.powerup = powerup;
+	competitionTargetTitle.textContent = powerup === "freeze"
+		? "Choose players to freeze"
+		: powerup === "ghost"
+			? "Choose a player to inspect"
+			: powerup === "thief"
+				? "Choose a player to steal points from"
+			: "Choose a player to drain";
+	competitionPowerupConfirm.textContent = powerup === "freeze"
+		? "FREEZE SELECTED"
+		: powerup === "ghost" ? "USE GHOST"
+			: powerup === "thief" ? "STEAL POINTS" : "DRAIN CHARGE";
+	competitionTargetChoices.replaceChildren(
+		...targets.map((player) => {
+			const label = document.createElement("label");
+			const input = document.createElement("input");
+			input.type = powerup === "freeze" ? "checkbox" : "radio";
+			input.name = "competitionTarget";
+			input.value = player.id;
+			input.dataset.powerupTarget = "";
+			const targetDescription = powerup === "charge-drain"
+				? ` · ${player.competitionCharge || 0} charge`
+				: powerup === "thief" ? ` · ${player.score || 0} points` : "";
+			label.append(input, document.createTextNode(`${player.name}${targetDescription}`));
+			return label;
+		}),
+	);
+	if (targets.length) competitionTargetDialog.showModal();
+}
+
+function openCompetitionPowerups() {
+	renderCompetitionControls();
+	if (!competitionPowerupsDialog.open) competitionPowerupsDialog.showModal();
+}
+
 function startNetworkQuiz(config, roomSnapshot = null) {
 	if (
 		!config ||
@@ -2163,6 +2633,13 @@ function startNetworkQuiz(config, roomSnapshot = null) {
 		: null;
 	partyShowPlayerScores = config.partyOptions?.showPlayerScores !== false;
 	partyHideLockedAnswers = config.partyOptions?.showLockedAnswers === false;
+	partyCompetitionMode = config.partyOptions?.competitionMode === true;
+	competitionDecisionLocked = roomSnapshot?.allInLocked?.includes(partyPlayerId) === true;
+	competitionDecisionPending = false;
+	competitionPowerupPending = false;
+	competitionRemovedAnswers = [];
+	competitionRevealedPlayers = false;
+	networkAnswerPending = false;
 	updatePartyScoreDisplay();
 	if (Array.isArray(config.reviewSections) && socIndiReviewSections) {
 		selectedReviewSections = config.reviewSections.filter((section) =>
@@ -2197,6 +2674,21 @@ function startNetworkQuiz(config, roomSnapshot = null) {
 	if (roomSnapshot?.question) {
 		const question = roomSnapshot.question;
 		displayNetworkQuestion(question);
+		if (roomSnapshot.revealPlayersActive) {
+			applyRevealedAnswers(roomSnapshot.revealedAnsweredPlayers);
+		}
+		competitionAnsweredPlayerIds = new Set(roomSnapshot.answersLocked || []);
+		competitionDecisionLocked =
+			roomSnapshot.allInLocked?.includes(partyPlayerId) === true;
+		if (Array.isArray(roomSnapshot.frozenPlayers)) {
+			const freeze = roomSnapshot.frozenPlayers.find(
+				(entry) => entry.playerId === partyPlayerId && !entry.pending,
+			);
+			if (freeze) setPlayerFrozen(freeze.expiresAt);
+		}
+		if (Array.isArray(roomSnapshot.splitAnswers) && roomSnapshot.splitAnswers.length) {
+			applySplitAnswers(roomSnapshot.splitAnswers);
+		}
 		if (roomSnapshot.reveal) revealNetworkQuestion(roomSnapshot.reveal);
 		else if (
 			!partyHostDisplay &&
@@ -2215,9 +2707,21 @@ function startNetworkQuiz(config, roomSnapshot = null) {
 	} else if (partyHost) loadQuestion();
 	else {
 	}
+	renderCompetitionControls();
 }
 
 function displayNetworkQuestion(message) {
+	if (Array.isArray(message.scrambledPlayers)) {
+		competitionRoomSnapshot = {
+			...(competitionRoomSnapshot || {}),
+			scrambledPlayers: message.scrambledPlayers,
+			question: {
+				...(competitionRoomSnapshot?.question || {}),
+				scrambledPlayerIds: message.scrambledPlayerIds || [],
+			},
+		};
+		renderCompetitionActivePowerups();
+	}
 	if (
 		message.questionNumber < 0 ||
 		message.questionNumber >= questionSequence.length ||
@@ -2234,6 +2738,19 @@ function displayNetworkQuestion(message) {
 		questionNumber === message.questionNumber + 1
 	)
 		return;
+	const isNewQuestion =
+		currentQuestionIndex !== message.questionIndex ||
+		questionNumber !== message.questionNumber + 1;
+	if (isNewQuestion) {
+		competitionDecisionLocked = false;
+		competitionDecisionPending = false;
+		competitionPowerupPending = false;
+		competitionRemovedAnswers = [];
+		competitionAnsweredPlayerIds = new Set();
+		competitionRevealedPlayers = false;
+		networkAnswerPending = false;
+		competitionStatus.textContent = "";
+	}
 	sequencePosition = message.questionNumber;
 	currentQuestionIndex = message.questionIndex;
 	partyChoices = [];
@@ -2259,7 +2776,11 @@ function displayNetworkQuestion(message) {
 		return;
 	}
 	questionNumber = sequencePosition + 1;
-	renderQuestion(message.answerOrder);
+	const answerOrder = message.answerOrder.slice();
+	const scrambledPlayerIds = Array.isArray(message.scrambledPlayerIds)
+		? message.scrambledPlayerIds
+		: [];
+	renderQuestion(answerOrder, scrambledPlayerIds.includes(partyPlayerId));
 	if (partyHostDisplay) {
 		answered = false;
 		answersEl.querySelectorAll(".answer").forEach((button) => {
@@ -2299,10 +2820,12 @@ function lockNetworkAnswerUi(selectedIndex) {
 	nextButton.disabled = true;
 	feedback.textContent = "Answer locked in. Waiting for the other players…";
 	feedback.className = "motivation visible";
+	renderCompetitionControls();
 }
 
 function submitNetworkAnswer(selectedIndex) {
-	if (!quizStarted || quizEnded || answered) return;
+	if (!quizStarted || quizEnded || answered || playerFrozenUntil > Date.now()) return;
+	networkAnswerPending = true;
 	lockNetworkAnswerUi(selectedIndex);
 	partyConnection
 		.send({
@@ -2312,6 +2835,12 @@ function submitNetworkAnswer(selectedIndex) {
 			answerIndex: selectedIndex,
 		})
 		.catch((error) => {
+			networkAnswerPending = false;
+			answered = false;
+			answersEl.querySelectorAll(".answer").forEach((button) => {
+				button.disabled = button.hidden || playerFrozenUntil > Date.now();
+			});
+			renderCompetitionControls();
 			setupError.textContent = `Could not submit answer: ${error.message}`;
 		});
 }
@@ -2372,6 +2901,18 @@ function revealNetworkQuestion(message) {
 		if (!player) return;
 		if (Number.isFinite(Number(entry.score)))
 			player.score = Number(entry.score);
+		if (Number.isFinite(Number(entry.competitionCharge))) {
+			player.competitionCharge = Number(entry.competitionCharge);
+		}
+		if (typeof entry.competitionStreakBonus === "boolean") {
+			player.competitionStreakBonus = entry.competitionStreakBonus;
+		}
+		if (typeof entry.competitionStreakKeeper === "boolean") {
+			player.competitionStreakKeeper = entry.competitionStreakKeeper;
+		}
+		if (Number.isFinite(Number(entry.competitionPowerupsUsed))) {
+			player.competitionPowerupsUsed = Number(entry.competitionPowerupsUsed);
+		}
 		if (Number.isFinite(Number(entry.overallScore))) {
 			player.overallScore = Number(entry.overallScore);
 		}
@@ -2403,6 +2944,9 @@ function revealNetworkQuestion(message) {
 	updatePartyComboStreaks(
 		message.answers
 			.filter((entry) => entry.correct)
+			.map((entry) => entry.playerId),
+		message.answers
+			.filter((entry) => entry.streakKept === true)
 			.map((entry) => entry.playerId),
 	);
 	history.push({
@@ -2437,14 +2981,22 @@ function revealNetworkQuestion(message) {
 	score = partyShowPlayerScores
 		? partyPlayers.reduce((total, player) => total + player.score, 0)
 		: partyPlayers.find((player) => player.id === partyPlayerId)?.score || 0;
+	updatePartyScoreDisplay();
 	const ownPoints = ownAnswer?.pointsEarned || 0;
+	if (ownAnswer && ownAnswer.selectedIndex !== null) {
+		showCompetitionPointsToast(ownPoints);
+	}
 	const pointsMessage =
 		ownPoints > 0
 			? ` You earned ${ownPoints} point${ownPoints === 1 ? "" : "s"}.`
-			: "";
+			: ownPoints < 0
+				? ` You lost ${Math.abs(ownPoints)} points.`
+				: "";
 	const answeringPlayerCount = message.answers.length;
 	feedback.textContent = `${correctCount} of ${answeringPlayerCount} players answered correctly. Correct answer: ${formatPowerText(correctAnswer)}.${pointsMessage}`;
 	feedback.className = `motivation visible ${ownAnswer?.correct ? "right" : "wrong"}`;
+	competitionDecisionLocked = true;
+	renderCompetitionControls();
 	nextButton.disabled = !canControlPartyQuiz;
 	skipButton.disabled = true;
 
@@ -3897,7 +4449,7 @@ comboPopup.addEventListener("animationend", (event) => {
 	}
 });
 
-function renderQuestion(forcedAnswerOrder = null) {
+function renderQuestion(forcedAnswerOrder = null, scrambleAnswerPositions = false) {
 	if (!current) return;
 	currentQuestionPresentation = getQuestionPresentation();
 	const useShortAnswer = currentQuestionPresentation === "short-answer";
@@ -4045,6 +4597,20 @@ function renderQuestion(forcedAnswerOrder = null) {
 		button.addEventListener("click", () => chooseAnswer(originalIndex));
 		answersEl.appendChild(button);
 	});
+	if (scrambleAnswerPositions) {
+		const answerButtons = [...answersEl.children];
+		const shuffledButtons = shuffle(answerButtons);
+		if (
+			answerButtons.length > 1 &&
+			shuffledButtons.every((button, index) => button === answerButtons[index])
+		) {
+			[shuffledButtons[0], shuffledButtons[1]] = [
+				shuffledButtons[1],
+				shuffledButtons[0],
+			];
+		}
+		shuffledButtons.forEach((button) => answersEl.appendChild(button));
+	}
 
 	const firstAnswer = answersEl.querySelector(".answer");
 	if (useOpenGLBuilder) {
@@ -4071,6 +4637,7 @@ function renderQuestion(forcedAnswerOrder = null) {
 	updateMeta();
 	updateStatisticsPracticeProgress();
 	animateStatisticsPracticeQuestionIn();
+	renderCompetitionControls();
 }
 
 function updateStatisticsPracticeProgress() {
@@ -4269,6 +4836,7 @@ function finishQuiz(reason = "complete") {
 		perQuestionTimeMinutes,
 		isRetake: miniQuizMode,
 		partyMode: partyModeActive,
+		...(partyModeActive ? { competitionMode: partyCompetitionMode } : {}),
 		...(partyModeActive
 			? {
 					partyPlayers: partyPlayers.map((player) => ({
@@ -4622,6 +5190,10 @@ function handleNetworkGameOver(message) {
 				if (Number.isFinite(Number(updated.overallScore))) {
 					player.overallScore = Number(updated.overallScore);
 				}
+				if (Number.isFinite(Number(updated.competitionPowerupsUsed))) {
+					player.competitionPowerupsUsed =
+						Number(updated.competitionPowerupsUsed);
+				}
 			});
 		}
 		quizEnded = true;
@@ -4642,6 +5214,7 @@ function handleNetworkGameOver(message) {
 			perQuestionTimeMinutes,
 			isRetake: false,
 			partyMode: true,
+			competitionMode: partyCompetitionMode,
 			onlineParty: true,
 			partyRoomCode,
 			partyHost,
@@ -4942,16 +5515,25 @@ exitSetupButton.addEventListener("click", exitSetup);
 if (networkPartyActive) {
 	partyConnection.on("joined", (message) => {
 		syncHostDisplayControls(message.room);
+		competitionRoomSnapshot = message.room;
 		updateNetworkPlayers(message.room.players);
 		updatePartySettingsSummary(message.room.quizConfig);
 		partyHideLockedAnswers =
 			message.room.partyOptions?.showLockedAnswers === false;
+		if (!message.room.partyOptions?.showLockedAnswers &&
+			message.room.question && !message.room.question.procedural) {
+			message.room.answersLocked = message.playerAnswered
+				? [message.playerId]
+				: [];
+		}
 		if (message.room.stage === "quiz" && message.room.quizConfig) {
 			startNetworkQuiz(message.room.quizConfig, message.room);
+			applySplitAnswers(message.splitAnswers);
 		} else if (partyHost) publishPartySettings();
 	});
 	partyConnection.on("quiz-start", (message) => {
 		updateNetworkPlayers(message.players);
+		competitionRoomSnapshot = null;
 		startNetworkQuiz(message.config);
 	});
 	partyConnection.on("question", displayNetworkQuestion);
@@ -4964,6 +5546,9 @@ if (networkPartyActive) {
 		}
 	});
 	partyConnection.on("answer-locked", (message) => {
+		if (typeof message.playerId === "string") {
+			competitionAnsweredPlayerIds.add(message.playerId);
+		}
 		if (Number.isInteger(message.answerIndex)) {
 			const choice = partyChoices.find(
 				(entry) => entry.playerId === message.playerId,
@@ -4980,6 +5565,138 @@ if (networkPartyActive) {
 			if (selectedButton) updatePartyAnswerMarker(selectedButton);
 		}
 	});
+	partyConnection.on("reveal-players-activated", (message) => {
+		competitionPowerupPending = false;
+		applyRevealedAnswers(message.answeredPlayers);
+	});
+	partyConnection.on("answer-confirmed", () => {
+		networkAnswerPending = false;
+	});
+	partyConnection.on("all-in-locked", (message) => {
+		if (message.playerId === partyPlayerId) {
+			competitionDecisionLocked = true;
+			competitionDecisionPending = false;
+			competitionStatus.textContent = message.allIn
+				? "All-in locked. Waiting for the other players…"
+				: "Normal wager locked. Waiting for the other players…";
+			renderCompetitionControls();
+		}
+		if (partyHostDisplay && message.allIn === true) {
+			const player = partyPlayers.find(
+				(member) => member.id === message.playerId,
+			);
+			showCompetitionAnnouncement(
+				`${message.playerName || player?.name || "A player"} went ALL IN!`,
+			);
+		}
+	});
+	partyConnection.on("powerup-applied", (message) => {
+		competitionPowerupPending = false;
+		if (message.powerup === "split") {
+			applySplitAnswers(message.removedAnswers);
+			competitionStatus.textContent = "Split removed two incorrect answers.";
+		} else if (message.powerup === "freeze") {
+			competitionStatus.textContent = message.targets.map((targetResult) => {
+				const target = partyPlayers.find(
+					(player) => player.id === targetResult.playerId,
+				);
+				const name = target?.name || "the player";
+				if (targetResult.reflected) {
+					return `Your Freeze was reflected back onto you by ${name}’s Shield.`;
+				}
+				if (targetResult.blocked) return `Shield blocked Freeze on ${name}.`;
+				return targetResult.pending
+					? `Freeze queued for ${name}’s next question.`
+					: `Freeze used on ${name} for 15 seconds.`;
+			}).join(" ");
+		} else if (message.powerup === "shield") {
+			competitionStatus.textContent = "Shield is active; it will block one Freeze.";
+		} else if (message.powerup === "scramble") {
+			competitionStatus.textContent =
+				"Scramble will affect other players for the next three questions.";
+		} else if (message.powerup === "ghost") {
+			const target = partyPlayers.find(
+				(player) => player.id === message.targetPlayerId,
+			);
+			competitionStatus.textContent = message.pending
+				? `Ghost is watching ${target?.name || "that player"}; their choice will appear when they answer.`
+				: Number.isInteger(message.answerIndex)
+					? `${target?.name || "That player"} chose: ${String(current.a[message.answerIndex])}`
+					: `${target?.name || "That player"} skipped this question.`;
+		} else if (message.powerup === "streak-bonus") {
+			competitionStatus.textContent =
+				"Streak Bonus is active: your next correct answer earns 2 extra points.";
+		} else if (message.powerup === "streak-keeper") {
+			competitionStatus.textContent =
+				"Streak Keeper is active: your combo is protected from one wrong answer.";
+		} else if (message.powerup === "top-thief") {
+			competitionStatus.textContent =
+				"Top Thief is active: your point award will swap with the first answerer.";
+		} else if (message.powerup === "charge-drain") {
+			const target = partyPlayers.find(
+				(player) => player.id === message.targetPlayerId,
+			);
+			competitionStatus.textContent =
+				`Drained ${message.amount} charge from ${target?.name || "your opponent"}.`;
+		} else if (message.powerup === "thief") {
+			const target = partyPlayers.find(
+				(player) => player.id === message.targetPlayerId,
+			);
+			competitionStatus.textContent =
+				`Stole ${message.amount} points from ${target?.name || "your opponent"}.`;
+		}
+		renderCompetitionControls();
+	});
+	partyConnection.on("thief-stolen", (message) => {
+		const thiefName = typeof message.playerName === "string"
+			? message.playerName
+			: "Another player";
+		showCompetitionAnnouncement(`${thiefName} stole ${message.amount} points from you.`);
+	});
+	partyConnection.on("ghost-answer-revealed", (message) => {
+		const target = partyPlayers.find(
+			(player) => player.id === message.targetPlayerId,
+		);
+		competitionStatus.textContent = Number.isInteger(message.answerIndex)
+			? `${target?.name || "That player"} chose: ${String(current.a[message.answerIndex])}`
+			: `${target?.name || "That player"} skipped this question.`;
+		renderCompetitionControls();
+	});
+	partyConnection.on("powerup-used", (message) => {
+		if (!partyHostDisplay) return;
+		const powerupNames = {
+			freeze: "Freeze",
+			split: "Split",
+			shield: "Shield",
+			scramble: "Scramble",
+			ghost: "Ghost",
+			"streak-bonus": "Streak Bonus",
+			"streak-keeper": "Streak Keeper",
+			"charge-drain": "Charge Drain",
+			thief: "Thief",
+			"top-thief": "Top Thief",
+			"reveal-players": "Reveal Players",
+		};
+		const targets = message.targets?.map((target) =>
+			target.reflectedTo
+				? `${target.name}’s Shield reflected Freeze onto ${target.reflectedTo.name}`
+				: target.blocked ? `${target.name} (Shield blocked it)` : target.name,
+		) || [];
+		const announcement =
+			`${message.player.name} used ${powerupNames[message.powerup] || "a powerup"}` +
+			(targets.length ? ` on ${targets.join(", ")}` : "") +
+			(message.powerup === "thief" ? `, stealing ${message.amount} points` : "") +
+			(Number.isInteger(message.questions) && message.questions > 1
+				? ` for the next ${message.questions} questions`
+				: "");
+		showCompetitionAnnouncement(announcement);
+	});
+	partyConnection.on("player-frozen", (message) => {
+		if (message.playerId === partyPlayerId) setPlayerFrozen(message.expiresAt);
+	});
+	partyConnection.on("player-unfrozen", (message) => {
+		if (message.playerId === partyPlayerId) clearPlayerFreeze();
+	});
 	partyConnection.on("reveal", revealNetworkQuestion);
 	partyConnection.on("next-question", () => {
 		if (partyHost) {
@@ -4994,14 +5711,70 @@ if (networkPartyActive) {
 	partyConnection.on("game-over", handleNetworkGameOver);
 	partyConnection.on("left", () => location.replace("index.html"));
 	partyConnection.on("room-state", (message) => {
+		competitionRoomSnapshot = message.room;
 		syncHostDisplayControls(message.room);
 		updateNetworkPlayers(message.room.players);
+		renderCompetitionControls();
 		updatePartySettingsSummary(message.room.quizConfig);
+		const freeze = message.room.frozenPlayers?.find(
+			(entry) => entry.playerId === partyPlayerId && !entry.pending,
+		);
+		if (freeze && freeze.expiresAt > playerFrozenUntil) {
+			setPlayerFrozen(freeze.expiresAt);
+		}
+	});
+	partyConnection.on("host-display-music", (message) => {
+		if (!partyHostDisplay && !hostDisplayAnswerer) return;
+		const isAvailableSelection = window.quizHubPreferences
+			.getQuizMusicOptions()
+			.some((track) => track.value === message.selection);
+		if (
+			!isAvailableSelection ||
+			typeof message.reshuffle !== "boolean" ||
+			typeof message.useAlternateTrack9 !== "boolean"
+		) {
+			console.error("Received an invalid Host Display music selection.");
+			return;
+		}
+		window.quizHubPreferences.setQuizMusic(message.selection);
+		const musicButton = document.getElementById("quizMusicCycle");
+		const musicName = window.quizHubPreferences.getQuizMusicName();
+		musicButton.setAttribute(
+			"aria-label",
+			`Choose quiz song (currently ${musicName})`,
+		);
+		musicButton.title = `Choose quiz song (currently ${musicName})`;
+		if (hostDisplayAnswerer) return;
+		const isLocalSelection = hostDisplayMusicLocalSelection &&
+			hostDisplayMusicLocalSelection.selection === message.selection &&
+			hostDisplayMusicLocalSelection.reshuffle === message.reshuffle &&
+			hostDisplayMusicLocalSelection.useAlternateTrack9 ===
+				message.useAlternateTrack9;
+		hostDisplayMusicLocalSelection = null;
+		applyHostDisplayMusicChange(message, !isLocalSelection);
 	});
 	partyConnection.on("player-left", (message) => {
 		markNetworkPlayerLeaving(message.player);
 	});
 	partyConnection.on("error", (message) => {
+		competitionDecisionPending = false;
+		competitionPowerupPending = false;
+		if (networkAnswerPending) {
+			networkAnswerPending = false;
+			answered = false;
+			answersEl.querySelectorAll(".answer").forEach((button) => {
+				button.disabled = button.hidden || playerFrozenUntil > Date.now();
+			});
+			skipButton.disabled = !hostDisplayAnswerer;
+			feedback.textContent = message.message;
+			feedback.className = "motivation visible wrong";
+			if (playerFrozenUntil <= Date.now()) startQuestionTimer();
+			renderCompetitionControls();
+		}
+		if (partyCompetitionMode) {
+			competitionStatus.textContent = message.message;
+			renderCompetitionControls();
+		}
 		if (skipQuestionPending) {
 			skipQuestionPending = false;
 			answered = false;
@@ -5018,6 +5791,45 @@ if (networkPartyActive) {
 			partyStartPending = false;
 			beginButton.disabled = false;
 		}
+	});
+	competitionAllIn.addEventListener("click", submitCompetitionWager);
+	competitionPowerupsButton.addEventListener("click", openCompetitionPowerups);
+	competitionPowerupCatalog.addEventListener("click", (event) => {
+		const button = event.target.closest("[data-use-powerup]");
+		if (!button || button.disabled) return;
+		const powerup = button.dataset.usePowerup;
+		if (["freeze", "ghost", "charge-drain", "thief"].includes(powerup)) {
+			competitionPowerupsDialog.close();
+			openCompetitionTargetPicker(powerup);
+			return;
+		}
+		competitionPowerupsDialog.close();
+		useCompetitionPowerup(powerup);
+	});
+	competitionPowerupConfirm.addEventListener("click", () => {
+		const selectedTargets = [
+			...competitionTargetChoices.querySelectorAll("[data-powerup-target]:checked"),
+		].map((input) => input.value);
+		const powerup = competitionTargetDialog.dataset.powerup;
+		if (!selectedTargets.length) {
+			competitionStatus.textContent = "Choose at least one player.";
+			return;
+		}
+		if (powerup === "freeze") {
+			const charge = Number(
+				partyPlayers.find((player) => player.id === partyPlayerId)?.competitionCharge,
+			) || 0;
+			if (selectedTargets.length * 5 > charge) {
+				competitionStatus.textContent =
+					`Freeze costs 5 charge per player; you can select at most ${Math.floor(charge / 5)}.`;
+				return;
+			}
+		}
+		competitionTargetDialog.close();
+		useCompetitionPowerup(
+			powerup,
+			powerup === "freeze" ? selectedTargets : selectedTargets[0],
+		);
 	});
 	partyConnection.on("close", () => {
 		if (!quizEnded) {
@@ -5173,9 +5985,13 @@ window.addEventListener("quizhub:dev-menu-context-request", (event) => {
 	event.detail.perfectScore = cheatAlwaysPerfectScore;
 	event.detail.disableComboLoss = cheatComboLossDisabled;
 	event.detail.rotation = cheatRotationEnabled;
+	event.detail.competitionChargeAvailable =
+		networkPartyActive && partyCompetitionMode && quizStarted && !quizEnded;
+	event.detail.competitionChargeCanSet =
+		event.detail.competitionChargeAvailable && partyHost;
 });
 window.addEventListener("quizhub:dev-menu-action", (event) => {
-	const { action, name, value } = event.detail;
+	const { action, name, value, playerId, charge, allPlayers } = event.detail;
 	if (action === "quiz-jump") {
 		if (quizStarted && !quizEnded && (!networkPartyActive || partyHost))
 			showQuestionJumpDialog();
@@ -5189,6 +6005,28 @@ window.addEventListener("quizhub:dev-menu-action", (event) => {
 		!quizEnded
 	) {
 		window.location.reload();
+		return;
+	}
+	if (action === "set-competition-charge") {
+		if (!networkPartyActive || !partyHost || !partyCompetitionMode || !quizStarted || quizEnded) {
+			competitionStatus.textContent =
+				"Only the host can set charge during a Competition Mode quiz.";
+			return;
+		}
+		partyConnection
+			.send({
+				type: "dev-set-competition-charge",
+				code: partyRoomCode,
+				allPlayers: allPlayers === true,
+				charge,
+			})
+			.then(() => {
+				competitionStatus.textContent = "Competition charge updated for all players.";
+			})
+			.catch((error) => {
+				competitionStatus.textContent =
+					`Could not set competition charge: ${error.message}`;
+			});
 		return;
 	}
 	if (

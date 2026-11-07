@@ -114,6 +114,18 @@
 					</section>
 
 					<section class="dev-page-controls" data-dev-page="quiz" hidden>
+						<section class="dev-menu-competition-charge" id="devCompetitionChargeSection" hidden>
+							<label class="dev-menu-row" for="devCompetitionCharge">
+								<div>
+									<strong>All players’ competition charge</strong>
+									<small>Set every player’s powerup bar to 0–100 charges</small>
+								</div>
+								<input id="devCompetitionCharge" type="number" min="0" max="100" step="1" value="0" inputmode="numeric" />
+							</label>
+							<div class="dev-menu-actions">
+								<button class="dev-menu-action" id="devSetCompetitionCharge" type="button">Set charge</button>
+							</div>
+						</section>
 						<div class="dev-menu-actions">
 							<button class="dev-menu-action" id="devQuizJump" type="button">
 								Jump to a question

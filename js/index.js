@@ -1794,6 +1794,7 @@ function updateQuizMusicTrackName() {
 		rotation: "Full Music Rotation",
 		quizHubRotation: "QuizHub Music Rotation",
 		netHubRotation: "NetHub Music Rotation",
+		NetHubMenu: "NetHub Menu",
 		run: "Closer by Nine Inch Nails [Instrumental]",
 		BonusTrack: "Koneko no Paya Paya (Off Vocal)",
 		CompArch: "What Would Sonic Do? ... from The Murder of Sonic the Hedgehog",
@@ -1811,6 +1812,7 @@ function updateQuizMusicTrackName() {
 		NetHubBonus7: "NetHub Track 7",
 		NetHubBonus8: "NetHub Track 8",
 		NetHubBonus9: "NetHub Track 9",
+		NetHubBonus10: "NetHub Track 10",
 		CloudComp: "A Lone Prayer ... from Persona [QuizHub Mix]",
 		DataSci:
 			"Jellyfish Fields ... from Spongebob Squarepants - Supersponge [QuizHub Mix]",
@@ -2033,6 +2035,11 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 3.1.5
+- Added Operating System Support Review quiz for this wednesday
+- Party Mode Tweaks
+- Competition Mode has been added to Party Mode, when using Host Display. Powerups to help and harm your friends, and point system to encourge fast and dangerous guessing. (Note: This mode is still in beta, and may have bugs)
+
 Version 3.1.4
 - More questions have been added to the 5a and 5b practice quiz
 - Binary Quiz II has been added, for practicing IEEE 754 single-precision bit patterns.

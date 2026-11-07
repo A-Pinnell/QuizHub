@@ -92,6 +92,11 @@ body {
 .quiz-music-cycle {
 	left: 114px;
 }
+body.host-display-player #quizMusicCycle {
+	top: 14px !important;
+	right: auto !important;
+	left: 114px !important;
+}
 .music-toggle:hover {
 	background: #fff;
 	transform: scale(1.06);
@@ -393,6 +398,301 @@ body.compgfx-mode .question-image-view {
 }
 .answers[hidden] {
 	display: none !important;
+}
+.answer[hidden] {
+	display: none !important;
+}
+.competition-announcement {
+	position: fixed;
+	top: max(12px, env(safe-area-inset-top));
+	left: 50%;
+	z-index: 10001;
+	width: min(760px, calc(100vw - 24px));
+	padding: 14px 20px;
+	transform: translateX(-50%);
+	border: 1px solid rgba(255, 255, 255, 0.42);
+	border-radius: 12px;
+	background: rgba(15, 29, 61, 0.96);
+	box-shadow: 0 10px 35px rgba(0, 0, 0, 0.38);
+	color: #fff;
+	font-size: clamp(15px, 2vw, 22px);
+	font-weight: 900;
+	text-align: center;
+}
+.competition-announcement[hidden] {
+	display: none !important;
+}
+.competition-controls {
+	position: relative;
+	z-index: 3;
+	display: grid;
+	gap: 8px;
+	margin: 0 0 10px;
+	padding: 10px 12px;
+	border: 1px solid rgba(255, 255, 255, 0.24);
+	border-radius: 12px;
+	background: rgba(8, 18, 38, 0.72);
+	color: #fff;
+	font-size: clamp(12px, 1.2vw, 16px);
+}
+.competition-controls[hidden],
+.competition-wager[hidden] {
+	display: none !important;
+}
+.competition-charge {
+	display: grid;
+	grid-template-columns: auto minmax(50px, 1fr) auto;
+	align-items: center;
+	gap: 10px;
+	font-weight: 800;
+}
+.competition-charge progress {
+	width: 100%;
+	height: 12px;
+	accent-color: #8ce7ad;
+}
+.competition-wager {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+.competition-controls button {
+	min-height: 36px;
+	padding: 6px 10px;
+	border: 1px solid rgba(255, 255, 255, 0.34);
+	border-radius: 8px;
+	font: inherit;
+	font-weight: 800;
+}
+.competition-controls button {
+	background: #243f66;
+	color: #fff;
+	cursor: pointer;
+}
+.competition-controls button:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+.competition-controls .competition-powerups-open {
+	justify-self: start;
+	padding: 8px 20px;
+	background: linear-gradient(135deg, #176b48, #104832);
+}
+.competition-powerups-dialog,
+.competition-freeze-dialog {
+	width: min(620px, calc(100vw - 32px));
+	max-height: min(84vh, 760px);
+	padding: 22px;
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	border-radius: 18px;
+	background: #151d38;
+	color: #fff;
+	box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+}
+.competition-powerups-dialog::backdrop,
+.competition-freeze-dialog::backdrop {
+	background: rgba(5, 8, 20, 0.76);
+}
+.competition-powerups-dialog form,
+.competition-freeze-dialog form {
+	display: grid;
+	gap: 12px;
+}
+.competition-powerups-dialog h2,
+.competition-freeze-dialog h2 {
+	margin: 0;
+	font-size: clamp(20px, 5vw, 28px);
+}
+.competition-powerups-balance {
+	margin: 0;
+	color: #bdf6cb;
+	font-weight: 800;
+}
+.competition-active-powerups {
+	margin: 0;
+	padding: 9px 11px;
+	border: 1px solid rgba(126, 238, 158, 0.32);
+	border-radius: 9px;
+	background: rgba(67, 166, 94, 0.12);
+	color: #c9f8d4;
+	font-size: 13px;
+	line-height: 1.4;
+}
+.competition-powerup-catalog {
+	display: grid;
+	gap: 9px;
+	max-height: 62vh;
+	overflow-y: auto;
+	padding: 2px;
+}
+.competition-powerup-card {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	align-items: center;
+	gap: 12px;
+	padding: 12px;
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.055);
+}
+.competition-powerup-card[hidden] {
+	display: none !important;
+}
+.competition-powerup-card h3 {
+	margin: 0 0 3px;
+	font-size: 16px;
+}
+.competition-powerup-card p {
+	margin: 0;
+	color: rgba(255, 255, 255, 0.76);
+	font-size: 13px;
+	line-height: 1.35;
+}
+.competition-powerup-price {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	white-space: nowrap;
+	font-weight: 900;
+}
+.competition-charge-orb {
+	width: 15px;
+	height: 15px;
+	flex: 0 0 15px;
+	border: 1px solid rgba(217, 255, 225, 0.88);
+	border-radius: 50%;
+	background: radial-gradient(circle at 32% 28%, #d7ffe0 0 8%, #69ed8c 34%, #159c55 76%);
+	box-shadow: 0 0 10px rgba(65, 244, 117, 0.72);
+	animation: competitionChargePulse 1.35s ease-in-out infinite;
+}
+@keyframes competitionChargePulse {
+	50% {
+		transform: scale(1.2);
+		box-shadow: 0 0 17px rgba(65, 244, 117, 0.96);
+	}
+}
+.competition-powerup-card button,
+.competition-powerups-close,
+.competition-freeze-dialog button {
+	min-height: 40px;
+	padding: 7px 12px;
+	border: 1px solid rgba(255, 255, 255, 0.28);
+	border-radius: 9px;
+	background: #243f66;
+	color: #fff;
+	font: inherit;
+	font-weight: 800;
+	cursor: pointer;
+}
+.competition-powerup-card button:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+.competition-powerups-close {
+	justify-self: end;
+}
+#competitionAllIn {
+	background: #d04457;
+}
+.competition-wager {
+	font-weight: 800;
+}
+.competition-status {
+	min-height: 1em;
+	margin: 0;
+	color: #ffda77;
+	font-weight: 700;
+}
+.competition-freeze-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 10000;
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+	background:
+		radial-gradient(ellipse at 18% 20%, rgba(255, 255, 255, 0.4), transparent 34%),
+		radial-gradient(ellipse at 82% 76%, rgba(89, 234, 255, 0.32), transparent 42%),
+		repeating-linear-gradient(128deg, transparent 0 22px, rgba(226, 255, 255, 0.08) 23px 25px),
+		rgba(94, 226, 244, 0.58);
+	backdrop-filter: blur(7px) saturate(0.72);
+	color: #e7fdff;
+	text-align: center;
+	text-shadow: 0 2px 20px rgba(0, 94, 125, 0.62);
+	animation: competitionIceShimmer 3.5s ease-in-out infinite alternate;
+}
+.competition-freeze-message {
+	display: grid;
+	justify-items: center;
+	gap: 6px;
+	padding: 26px 36px;
+	border: 1px solid rgba(236, 255, 255, 0.58);
+	border-radius: 22px;
+	background: rgba(157, 241, 250, 0.2);
+	box-shadow:
+		inset 0 0 35px rgba(255, 255, 255, 0.22),
+		0 0 45px rgba(38, 193, 224, 0.28);
+}
+.competition-freeze-message strong {
+	font-size: clamp(32px, 8vw, 76px);
+	font-weight: 1000;
+	letter-spacing: 0.12em;
+}
+.competition-freeze-countdown {
+	font-size: clamp(56px, 15vw, 132px);
+	font-variant-numeric: tabular-nums;
+	font-weight: 1000;
+	line-height: 0.95;
+}
+.competition-freeze-caption {
+	font-size: clamp(11px, 2vw, 16px);
+	font-weight: 900;
+	letter-spacing: 0.2em;
+}
+@keyframes competitionIceShimmer {
+	from {
+		filter: brightness(0.94);
+	}
+	to {
+		filter: brightness(1.08);
+	}
+}
+.competition-freeze-overlay[hidden] {
+	display: none !important;
+}
+.competition-freeze-targets {
+	display: grid;
+	gap: 8px;
+	max-height: 52vh;
+	overflow-y: auto;
+}
+.competition-freeze-targets label {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	border: 1px solid rgba(255, 255, 255, 0.24);
+	border-radius: 9px;
+	background: rgba(255, 255, 255, 0.06);
+	font-weight: 700;
+	cursor: pointer;
+}
+.competition-freeze-targets input {
+	width: 18px;
+	height: 18px;
+	accent-color: #8ce7ad;
+}
+.competition-freeze-dialog .competition-freeze-cancel {
+	background: transparent;
+}
+@media (max-width: 560px) {
+	.competition-powerup-card {
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+	.competition-powerup-card > button {
+		grid-column: 1 / -1;
+	}
 }
 .short-answer-builder {
 	display: flex;
@@ -1079,6 +1379,9 @@ body.compgfx-mode .table-answer-submit {
 		box-shadow 0.18s ease,
 		transform 0.18s ease;
 }
+.answer[hidden] {
+	display: none !important;
+}
 .answer:has(.party-answer-voters:not([hidden])) {
 	padding-right: min(48%, 220px);
 }
@@ -1098,9 +1401,6 @@ body.compgfx-mode .table-answer-submit {
 	overflow: auto;
 }
 .party-answer-voters[hidden] {
-	display: none;
-}
-body.host-display-answerer .quiz-music-cycle {
 	display: none;
 }
 .party-answer-voter {
@@ -1919,7 +2219,7 @@ body.host-display-active .controls {
 body.host-display-active .controls #quit {
 	display: none;
 }
-body.host-display-answerer .music-toggle {
+body.host-display-answerer #musicToggle {
 	display: none !important;
 }
 body.host-display-active .controls {
@@ -11268,4 +11568,64 @@ body.statistics-practice-mode .statistics-practice-session-meta {
 	transform: translateX(calc(-1 * clamp(18px, 4vw, 58px))) rotate(-7deg)
 		scale(1.2);
 	transform-origin: right center;
+}
+
+body.host-display-player #quizMusicCycle {
+	position: fixed !important;
+	top: 14px !important;
+	right: auto !important;
+	bottom: auto !important;
+	left: 114px !important;
+	z-index: 10001 !important;
+	display: grid !important;
+	visibility: visible !important;
+	opacity: 1 !important;
+	pointer-events: auto !important;
+}
+
+.competition-points-toast {
+	position: fixed;
+	top: 66px;
+	left: 14px;
+	z-index: 10010;
+	min-width: 150px;
+	padding: 12px 18px;
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	border-radius: 12px;
+	background: rgba(15, 20, 39, 0.96);
+	color: #fff;
+	font-size: 1.15rem;
+	font-weight: 900;
+	text-align: center;
+	box-shadow: 0 8px 26px rgba(0, 0, 0, 0.4);
+	opacity: 0;
+	transform: translateX(calc(-100% - 24px));
+	transition:
+		opacity 300ms ease,
+		transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	pointer-events: none;
+}
+.competition-points-toast[hidden] {
+	display: none;
+}
+.competition-points-toast.visible {
+	opacity: 1;
+	transform: translateX(0);
+}
+.competition-points-toast.positive {
+	border-color: rgba(119, 239, 157, 0.65);
+	color: #a4ffc0;
+}
+.competition-points-toast.negative {
+	border-color: rgba(255, 104, 115, 0.7);
+	color: #ff9aa1;
+}
+.competition-points-toast.zero {
+	border-color: rgba(255, 255, 255, 0.3);
+	color: #e2e7f2;
+}
+@media (prefers-reduced-motion: reduce) {
+	.competition-points-toast {
+		transition: none;
+	}
 }

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="icon" type="image/png" href="assets/icon.png">
 <title>QuizHub Party Lobby</title>
-<link rel="stylesheet" href="css/party-lobby.css?v=party-profile-edit-v1">
+<link rel="stylesheet" href="css/party-lobby.css?v=competition-mode-smooth-theme-v1">
 <link rel="stylesheet" href="css/party-notifications.css?v=party-score-fade">
 <link rel="stylesheet" href="css/preferences.css">
 <link rel="stylesheet" href="css/cover-screen.css">
@@ -16,7 +16,7 @@
 <script src="js/mixed-study.js" defer></script>
 <script src="js/party-config.js?v=nethub-d1-v1" defer></script>
 <script src="js/party-client.js?v=join-leave-notices" defer></script>
-<script src="js/party-lobby.js?v=host-display-profile-v1" defer></script>
+<script src="js/party-lobby.js?v=competition-mode-theme-v1" defer></script>
 </head>
 <body>
 <audio id="partyLobbyMusic" src="music/Party.mp3" loop preload="auto"></audio>
@@ -50,6 +50,13 @@
       <label class="party-option">
         <input type="checkbox" id="partyHostDisplay">
         <span>Host Display: show questions and answers on the host screen</span>
+      </label>
+      <label class="party-option" id="partyCompetitionModeOption" hidden>
+        <input type="checkbox" id="partyCompetitionMode">
+        <span>
+          Competition Mode (Experimental)
+          <small id="partyCompetitionModeHint">All-in wagers and charge-based powerups for standard A–D quizzes.</small>
+        </span>
       </label>
       <div class="party-host-display-option" id="partyHostDisplayOption" hidden>
         <label for="partyHostDisplayPlayer">Account the host will answer as</label>

@@ -6077,6 +6077,1558 @@ window.questionBank = {
 				c: 3,
 			},
 		],
+		quiz3: [
+			// Slide 1
+			{
+				q: "What is the main subject introduced by this slideshow?",
+				a: [
+					"Processor arithmetic within digital logic design",
+					"Network routing within distributed system design",
+					"Operating system support within computer architecture",
+					"Database indexing within information system design",
+				],
+				c: 2,
+			},
+			// Slide 2
+			{
+				q: "Which set of topics best matches the learning objectives for this lecture?",
+				a: [
+					"OS services, process scheduling, memory management, and modern system support",
+					"Network protocols, packet routing, file compression, and database transactions",
+					"Display rendering, graphics pipelines, storage formats, and application development",
+					"CPU instruction design, arithmetic units, cache design, and compiler construction",
+				],
+				c: 0,
+			},
+			// Slide 3
+			{
+				q: "Which two broad objectives describe the functions of an operating system?",
+				a: [
+					"Portability for users and flexibility in designing computer resources",
+					"Compatibility for programs and capacity in storing computer resources",
+					"Availability for devices and complexity in managing computer resources",
+					"Convenience for users and efficiency in using computer resources",
+				],
+				c: 3,
+			},
+			// Slide 4
+			{
+				q: "In the layered view of a computer system, which layer sits directly above the computer hardware?",
+				a: [
+					"The utilities layer, which provides services above application programs",
+					"The operating system, which provides services above the hardware",
+					"The application layer, which provides services above the utilities",
+					"The end-user layer, which provides services above the operating system",
+				],
+				c: 1,
+			},
+			// Slide 5
+			{
+				q: "Which activity is listed as an operating-system service?",
+				a: [
+					"Compiling user programs and selecting the algorithms they implement",
+					"Providing controlled access to files and managing program execution",
+					"Creating hardware circuits and defining processor instruction formats",
+					"Designing application interfaces and determining source-code syntax",
+				],
+				c: 1,
+			},
+			// Slide 6
+			{
+				q: "How do applications request operating-system services while maintaining protected execution?",
+				a: [
+					"They make memory calls, while processor modes expose privileged operations",
+					"They make hardware calls, while application modes restrict ordinary operations",
+					"They make device calls, while user modes authorize every kernel operation",
+					"They make system calls, while processor modes restrict privileged operations",
+				],
+				c: 3,
+			},
+			// Slide 7
+			{
+				q: "How does the operating system act as a resource manager?",
+				a: [
+					"It coordinates memory, I/O devices, files, and processor time among programs",
+					"It assigns memory, I/O devices, files, and processor time permanently to programs",
+					"It stores programs, I/O devices, files, and processor instructions outside main memory",
+					"It replaces memory, I/O devices, files, and processor hardware with software services",
+				],
+				c: 0,
+			},
+			// Slide 8
+			{
+				q: "Which group contains operating-system types identified in the lecture?",
+				a: [
+					"Distributed, batch, multi-user, and multiprocessing systems",
+					"Interactive, real-time, single-program, and distributed systems",
+					"Interactive, batch, single-program, and multiprogramming systems",
+					"Interactive, sequential, single-user, and multiprocessing systems",
+				],
+				c: 2,
+			},
+			// Slide 9
+			{
+				q: "What were two major problems with early computer systems that had no operating system?",
+				a: [
+					"Scheduling user access and spending substantial time protecting each process",
+					"Scheduling memory space and spending substantial time transferring each file",
+					"Scheduling I/O devices and spending substantial time compiling each instruction",
+					"Scheduling processor time and spending substantial time setting up each job",
+				],
+				c: 3,
+			},
+			// Slide 10
+			{
+				q: "What role did the resident monitor perform in a simple batch system?",
+				a: [
+					"It controlled the memory layout and compiled the next job while the current one ran",
+					"It controlled the job sequence and loaded the next job when the current one finished",
+					"It controlled user input and stored the next job after the current one was printed",
+					"It controlled processor design and linked the next job before the current one started",
+				],
+				c: 1,
+			},
+			// Slide 11
+			{
+				q: "Why were privileged instructions and interrupts desirable hardware features for a resident monitor?",
+				a: [
+					"Privileged instructions protected user data, while interrupts allowed jobs to bypass the monitor",
+					"Privileged instructions scheduled I/O requests, while interrupts permanently transferred control to a job",
+					"Privileged instructions restricted sensitive operations, while interrupts helped the monitor regain control",
+					"Privileged instructions accelerated ordinary programs, while interrupts prevented the monitor from regaining control",
+				],
+				c: 2,
+			},
+			// Slide 12
+			{
+				q: "Why can a single-program system leave the processor idle for much of its time?",
+				a: [
+					"The processor waits while the only running program's slow I/O operation completes",
+					"The processor waits while the only running program's arithmetic operation completes",
+					"The processor waits while the only running program's memory allocation completes",
+					"The processor waits while the only running program's instruction decoding completes",
+				],
+				c: 0,
+			},
+			// Slide 13
+			{
+				q: "What is the main benefit of having two programs resident in a multiprogramming system?",
+				a: [
+					"When one program waits for I/O, the processor can increase the other's memory allocation",
+					"When one program waits for I/O, the processor can execute the other program",
+					"When one program waits for I/O, the processor can finish the other's pending device transfer",
+					"When one program waits for I/O, the processor can combine both programs into one job",
+				],
+				c: 1,
+			},
+			// Slide 14
+			{
+				q: "What central operating-system idea is illustrated by multiprogramming with three programs?",
+				a: [
+					"Batching requires the system to complete several programs before switching jobs",
+					"Partitioning allows the system to combine several programs into one memory region",
+					"Multiprocessing requires the system to execute each program on a separate processor",
+					"Multitasking allows the system to make progress on several programs",
+				],
+				c: 3,
+			},
+			// Slide 15
+			{
+				q: "What does the utilization comparison between uniprogramming and multiprogramming illustrate?",
+				a: [
+					"Uniprogramming can keep resources busier by preventing jobs from requesting I/O",
+					"Multiprogramming can keep resources busier by making every I/O transfer finish sooner",
+					"Multiprogramming can keep resources busier by running another job during I/O waits",
+					"Uniprogramming can keep resources busier by assigning each job a larger memory region",
+				],
+				c: 2,
+			},
+			// Slide 16
+			{
+				q: "What makes a time-sharing system interactive for multiple users?",
+				a: [
+					"The OS interleaves users' programs in short processor time slices or quanta",
+					"The OS executes users' programs in long processor intervals without interleaving",
+					"The OS assigns each user a dedicated processor for the duration of a session",
+					"The OS completes each user's entire program before accepting another request",
+				],
+				c: 0,
+			},
+			// Slide 17
+			{
+				q: "Why is scheduling described as key to multiprogramming?",
+				a: [
+					"It determines which instructions enter the program and which compiler executes them",
+					"It determines which users enter the system and which application owns each device",
+					"It determines which files enter memory and which I/O device stores each process",
+					"It determines which jobs enter the system and which ready process uses the CPU",
+				],
+				c: 3,
+			},
+			// Slide 18
+			{
+				q: "What is the responsibility of the long-term scheduler?",
+				a: [
+					"Selecting completed programs for removal and controlling the amount of processor context saved",
+					"Selecting ready processes for execution and controlling the duration of each time slice",
+					"Selecting submitted programs for processing and controlling the degree of multiprogramming",
+					"Selecting blocked processes for swapping and controlling the order of device requests",
+				],
+				c: 2,
+			},
+			// Slide 19
+			{
+				q: "What is the medium-term scheduler primarily associated with?",
+				a: [
+					"The dispatching function and decisions about assigning processes to CPU time slots",
+					"The swapping function and decisions about bringing processes back into memory",
+					"The admission function and decisions about accepting new jobs into the system",
+					"The accounting function and decisions about recording processor time for each process",
+				],
+				c: 1,
+			},
+			// Slide 20
+			{
+				q: "How does the short-term scheduler differ from the long-term scheduler?",
+				a: [
+					"It runs frequently and chooses the next ready process to use the processor",
+					"It runs periodically and chooses the next blocked process to leave main memory",
+					"It runs continuously and chooses the next I/O device to serve a request",
+					"It runs infrequently and chooses the next submitted job to enter the system",
+				],
+				c: 0,
+			},
+			// Slide 21
+			{
+				q: "A process is ready to execute but is waiting for access to the processor. Which state is it in?",
+				a: [
+					"New, because it has been admitted but has not yet been initialized by the OS",
+					"Running, because it can execute and is currently assigned the processor",
+					"Ready, because it can execute but has not been assigned the processor",
+					"Waiting, because it cannot execute until a requested resource becomes available",
+				],
+				c: 2,
+			},
+			// Slide 22
+			{
+				q: "Which information is stored in a process control block (PCB)?",
+				a: [
+					"Process source code, compiler output, application settings, and user documentation",
+					"Process screen layout, file contents, network messages, and device specifications",
+					"Process algorithms, database records, executable libraries, and hardware diagrams",
+					"Process state, program counter, context data, memory pointers, and I/O status",
+				],
+				c: 3,
+			},
+			// Slide 23
+			{
+				q: "During a context switch from process A to process B, what does the processor do?",
+				a: [
+					"Saves B's context and program counter, then restores A's saved context to resume it",
+					"Saves A's context and program counter, then restores B's saved context to resume it",
+					"Moves A's memory pages to disk, then assigns B a new process identifier and priority",
+					"Copies A's instructions and program data, then recompiles B before beginning it",
+				],
+				c: 1,
+			},
+			// Slide 24
+			{
+				q: "What is the purpose of the short-term queue in a multiprogramming operating system?",
+				a: [
+					"It holds ready processes that are candidates for the processor",
+					"It holds completed processes that are candidates for removal from the system",
+					"It holds submitted jobs that are candidates for admission into memory",
+					"It holds blocked processes that are candidates for a particular I/O device",
+				],
+				c: 0,
+			},
+			// Slide 25
+			{
+				q: "After a process request becomes a process and enters the ready state, what happens next?",
+				a: [
+					"It joins the long-term queue, where the scheduler selects a job to be admitted",
+					"It joins an I/O queue, where a device controller selects a request to complete",
+					"It joins the intermediate queue, where the scheduler selects a process to terminate",
+					"It joins the short-term queue, where the scheduler selects a process to run",
+				],
+				c: 3,
+			},
+			// Slide 26
+			{
+				q: "What is an operating system responsible for on a multicore processor?",
+				a: [
+					"Combining runnable threads into one core and eliminating contention for shared resources",
+					"Scheduling runnable threads across cores and managing synchronization and shared-resource contention",
+					"Duplicating the operating system on every core and separating all shared-resource access",
+					"Assigning one permanent process to each core and preventing synchronization between threads",
+				],
+				c: 1,
+			},
+			// Slide 27
+			{
+				q: "How does memory allocation differ between the uniprogram and multiprogram arrangements shown?",
+				a: [
+					"Uniprogramming divides memory between the OS and one program; multiprogramming shares the user area among processes",
+					"Uniprogramming shares memory among processes; multiprogramming divides memory between the OS and one program",
+					"Uniprogramming divides memory among several programs; multiprogramming reserves the entire user area for the OS",
+					"Uniprogramming reserves memory for I/O devices; multiprogramming divides the OS area among device controllers",
+				],
+				c: 0,
+			},
+			// Slide 28
+			{
+				q: "Why is swapping introduced as a solution in a multiprogramming system?",
+				a: [
+					"It can replace a ready process in memory with a blocked process when CPU use is limited by instruction decoding",
+					"It can replace a completed process in memory with an I/O request when CPU use is limited by memory capacity",
+					"It can replace a blocked process in memory with a ready process when CPU use is limited by I/O waits",
+					"It can replace an executing process in memory with a larger program when CPU use is limited by scheduling overhead",
+				],
+				c: 2,
+			},
+			// Slide 29
+			{
+				q: "When all processes in main memory are blocked, how can swapping help the system continue?",
+				a: [
+					"Swap out an executing process and bring in another process that is also blocked",
+					"Swap out a blocked process and bring in a ready or newly admitted process",
+					"Swap out the operating system and bring in a user program from the I/O queue",
+					"Swap out a ready process and bring in a blocked or completed process",
+				],
+				c: 1,
+			},
+			// Slide 30
+			{
+				q: "In fixed-sized partitioning, how is a process assigned to a memory partition?",
+				a: [
+					"It is placed in a partition whose size exactly matches the process whenever possible",
+					"It is placed in the largest available partition that can hold the process",
+					"It is placed in the first available partition regardless of the process size",
+					"It is placed in the smallest available partition that can hold the process",
+				],
+				c: 3,
+			},
+			// Slide 31
+			{
+				q: "What is the main difference illustrated between equal-sized and unequal-sized fixed partitions?",
+				a: [
+					"The partitions may all have the same capacity or may be defined with different capacities",
+					"The partitions may all contain the same process or may be assigned different process priorities",
+					"The partitions may all be contiguous or may be distributed across separate physical memories",
+					"The partitions may all be temporary or may be converted into variable-sized pages during execution",
+				],
+				c: 0,
+			},
+			// Slide 32
+			{
+				q: "What problem can occur when variable-sized partitions allocate exactly the memory a process requires?",
+				a: [
+					"Fixed-size pages can remain unused inside every process as memory is compacted",
+					"Contiguous frames can become unavailable before any process has been allocated",
+					"Small unusable gaps can remain between allocated regions as processes are swapped",
+					"Large duplicate regions can remain inside allocated processes as instructions are relocated",
+				],
+				c: 2,
+			},
+			// Slide 33
+			{
+				q: "What is fragmentation in the context of variable-sized memory partitioning?",
+				a: [
+					"The accumulation of blocked processes that may be too large to fit into the ready queue",
+					"The accumulation of adjacent allocated spaces that may be too large to address directly",
+					"The accumulation of duplicated page tables that may be too large to keep in main memory",
+					"The accumulation of separated free spaces that may be too small to use effectively",
+				],
+				c: 3,
+			},
+			// Slide 34
+			{
+				q: "What does compaction do to the free spaces created by dynamic partitioning?",
+				a: [
+					"Moves free regions so allocated space is divided into several smaller blocks",
+					"Moves allocated regions so scattered free space is combined into one larger block",
+					"Moves page-table entries so virtual addresses are combined into one larger address",
+					"Moves blocked processes so waiting time is divided into several shorter intervals",
+				],
+				c: 1,
+			},
+			// Slide 35
+			{
+				q: "Why is address relocation necessary when a process may load into different memory locations?",
+				a: [
+					"Logical addresses must be adjusted to identify the process's actual physical locations",
+					"Instruction addresses must be adjusted to identify the process's original file locations",
+					"Memory pointers must be adjusted to identify the process's assigned I/O locations",
+					"Physical addresses must be adjusted to identify the process's original logical locations",
+				],
+				c: 0,
+			},
+			// Slide 36
+			{
+				q: "Which statement correctly distinguishes a logical address from a physical address?",
+				a: [
+					"The operating system generates a physical address, and the program translates it into a virtual address",
+					"The MMU generates a logical address, and the CPU translates it into an actual RAM address",
+					"The CPU generates a logical address, and the MMU translates it into an actual RAM address",
+					"The memory hardware generates a logical address, and the OS translates it into a program address",
+				],
+				c: 2,
+			},
+			// Slide 37
+			{
+				q: "How does paging divide memory and a process?",
+				a: [
+					"Physical memory is divided into pages and processes are divided into equal-sized frames",
+					"Physical memory is divided into frames and processes are divided into equal-sized pages",
+					"Physical memory is divided into segments and processes are divided into variable-sized partitions",
+					"Physical memory is divided into partitions and processes are divided into variable-sized segments",
+				],
+				c: 1,
+			},
+			// Slide 38
+			{
+				q: "In the free-frame allocation diagram, what does the operating system use to track where a process's pages are placed?",
+				a: [
+					"A segment list that maps each program section to an allocated logical address range",
+					"A swap queue that maps each blocked process to an allocated disk transfer",
+					"A process queue that maps each process state to an allocated processor time slot",
+					"A page table that maps each process page to an allocated physical frame",
+				],
+				c: 3,
+			},
+			// Slide 39
+			{
+				q: "When translating a paged logical address, how does the processor use the page table?",
+				a: [
+					"It maps the page number to a frame number while preserving the offset",
+					"It maps the page number to a segment number while replacing the frame number",
+					"It maps the frame number to a page number while replacing the offset",
+					"It maps the offset to a page number while preserving the frame number",
+				],
+				c: 0,
+			},
+			// Slide 40
+			{
+				q: "What happens when a process references a page that is not currently in main memory?",
+				a: [
+					"A TLB hit occurs, and the processor must copy the required page into cache",
+					"A context switch occurs, and the scheduler must move the required page into a register",
+					"A page fault occurs, and the OS must bring the required page into memory",
+					"A segmentation fault occurs, and the OS must permanently remove the required page",
+				],
+				c: 2,
+			},
+			// Slide 41
+			{
+				q: "What characterizes thrashing in a virtual-memory system?",
+				a: [
+					"The processor spends most of its time executing instructions instead of transferring pages",
+					"The processor spends most of its time allocating frames instead of handling I/O requests",
+					"The processor spends most of its time translating addresses instead of scheduling processes",
+					"The processor spends most of its time swapping pages instead of executing instructions",
+				],
+				c: 3,
+			},
+			// Slide 42
+			{
+				q: "Why can virtual memory allow a process larger than available physical memory to run?",
+				a: [
+					"The process is divided into segments that are all loaded before execution begins",
+					"Only the pages currently required need to be resident in main memory",
+					"All pages required by the process are permanently stored in main memory",
+					"Every process page is compressed until the complete process fits in a frame",
+				],
+				c: 1,
+			},
+			// Slide 43
+			{
+				q: "What problem does the Translation Lookaside Buffer (TLB) help reduce?",
+				a: [
+					"The extra processor cycle needed to fetch an instruction from the program counter",
+					"The extra disk access needed to fetch a process from the long-term scheduling queue",
+					"The extra memory access needed to fetch a page-table entry for address translation",
+					"The extra cache lookup needed to fetch a device status entry for an I/O request",
+				],
+				c: 2,
+			},
+			// Slide 44
+			{
+				q: "What happens when the TLB contains the page-table entry for a requested virtual page?",
+				a: [
+					"The processor can obtain the frame number from the TLB and form the physical address",
+					"The processor must obtain the offset from the cache and form a new page-table entry",
+					"The processor can obtain the process state from the PCB and form the physical address",
+					"The processor must obtain the page number from disk and form a new logical address",
+				],
+				c: 0,
+			},
+			// Slide 45
+			{
+				q: "After a physical address has been generated through the TLB or page table, what happens next?",
+				a: [
+					"The segment table is checked for the block; if it misses, the data is retrieved from the PCB",
+					"The page table is checked for the block; if it misses, the data is retrieved from the TLB",
+					"The process queue is checked for the block; if it misses, the data is retrieved from disk",
+					"The cache is checked for the block; if it misses, the data is retrieved from main memory",
+				],
+				c: 3,
+			},
+			// Slide 46
+			{
+				q: "How does segmentation differ from paging in terms of programmer visibility?",
+				a: [
+					"Paging is visible to the programmer, while segmentation is usually not",
+					"Segmentation is visible to the programmer, while paging is usually not",
+					"Both segmentation and paging are always visible to the programmer",
+					"Neither segmentation nor paging is ever visible to the programmer",
+				],
+				c: 1,
+			},
+			// Slide 47
+			{
+				q: "Which is an advantage of segmentation identified in the lecture?",
+				a: [
+					"It supports processor scheduling and swapping, and can simplify handling context switches",
+					"It supports address caching and demand paging, and can simplify handling I/O queues",
+					"It supports sharing and protection, and can simplify handling growing data structures",
+					"It supports fixed-size allocation and compaction, and can simplify handling page faults",
+				],
+				c: 2,
+			},
+			// Slide 48
+			{
+				q: "What distinction between virtual machines and containers is introduced in this slide?",
+				a: [
+					"A hypervisor lets multiple virtual machines share hardware, while containers share the host OS kernel",
+					"A hypervisor lets multiple host kernels share containers, while virtual machines share one process table",
+					"A hypervisor lets multiple containers share hardware, while virtual machines share the host OS kernel",
+					"A hypervisor lets multiple virtual machines share one application, while containers share separate hardware",
+				],
+				c: 0,
+			},
+			// Slide 49
+			{
+				q: "Which statement best summarizes how paging and virtual memory work together?",
+				a: [
+					"Page tables map physical frames to virtual pages, while the TLB caches recent process states",
+					"Page tables map virtual pages to physical frames, while the TLB caches recent translations",
+					"Page tables map logical segments to disk blocks, while the TLB caches recent I/O requests",
+					"Page tables map process states to memory partitions, while the TLB caches recent file locations",
+				],
+				c: 1,
+			},
+			// Slide 50
+			{
+				q: "Which book is acknowledged as a source for figures, tables, and other information in the slideshow?",
+				a: [
+					"Operating System Concepts: Principles and Practice, by Abraham Silberschatz",
+					"Structured Computer Organization: Systems and Design, by Andrew S. Tanenbaum",
+					"Computer Architecture: A Quantitative Approach, by John L. Hennessy",
+					"Computer Organization and Architecture: Designing for Performance, by William Stallings",
+				],
+				c: 3,
+			},
+			{
+				q: "Which operating-system objective is most directly concerned with making a computer easier for people to use?",
+				a: [
+					"Convenience, by providing services that simplify interaction with the computer",
+					"Efficiency, by maximizing the amount of processor time used by applications",
+					"Protection, by limiting access to hardware resources and system functions",
+					"Accounting, by recording the amount of time consumed by each program",
+				],
+				c: 0,
+			},
+			{
+				q: "Which operating-system objective focuses on making better use of available computer resources?",
+				a: [
+					"Efficiency, by coordinating how resources are allocated and used",
+					"Convenience, by simplifying how users request application services",
+					"Compatibility, by preserving the format of existing program files",
+					"Interactivity, by allowing users to submit commands while programs run",
+				],
+				c: 0,
+			},
+			{
+				q: "Which component contains the most frequently used operating-system functions?",
+				a: [
+					"The kernel, which is a portion of the operating system kept in main memory",
+					"The compiler, which is a portion of the application system kept in main memory",
+					"The dispatcher, which is a portion of the user program kept in secondary storage",
+					"The monitor, which is a portion of the device system kept in processor registers",
+				],
+				c: 0,
+			},
+			{
+				q: "According to the resource-manager view, what normally occupies the remainder of main memory after the resident OS portion?",
+				a: [
+					"User programs and their associated data",
+					"Only device drivers and their associated interrupts",
+					"Only page tables and their associated address translations",
+					"Only completed jobs and their associated accounting records",
+				],
+				c: 0,
+			},
+			{
+				q: "Which statement best describes the operating system's relationship with memory-management hardware?",
+				a: [
+					"The OS and processor memory-management hardware jointly control main-memory allocation",
+					"The OS and storage controller jointly control the allocation of processor registers",
+					"The application and compiler jointly control the allocation of physical I/O devices",
+					"The monitor and user program jointly control the allocation of instruction formats",
+				],
+				c: 0,
+			},
+			{
+				q: "Why must an operating system coordinate access to I/O devices?",
+				a: [
+					"It determines when a program may use a device and coordinates access to that shared resource",
+					"It determines how a program compiles device instructions and stores them in the page table",
+					"It determines which program owns a device permanently and prevents all other requests",
+					"It determines how a device converts logical addresses into the program's source code",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the operating system control when several programs need processor time?",
+				a: [
+					"How much processor time is devoted to each program and when each program executes",
+					"How many instructions are written in each program and which compiler translates them",
+					"How much disk space is devoted to each program and where each source file is stored",
+					"How many registers are included in each program and which arithmetic operations it performs",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the defining feature of a batch operating system in the historical model?",
+				a: [
+					"Jobs are collected into groups and processed in sequence with limited direct interaction",
+					"Users continuously interact with each job while the processor executes every instruction",
+					"Each job receives a dedicated processor and executes independently of other jobs",
+					"Programs are divided into pages and loaded only when a user requests a memory location",
+				],
+				c: 0,
+			},
+			{
+				q: "In the early systems described in the lecture, how was processor time commonly scheduled?",
+				a: [
+					"Users reserved blocks of processor time, often using a sign-up sheet",
+					"The operating system assigned short time quanta using a resident monitor",
+					"The processor selected users according to the size of their compiled programs",
+					"A page-replacement algorithm assigned processor time according to memory demand",
+				],
+				c: 0,
+			},
+			{
+				q: "Why could an error during early program setup cause substantial wasted time?",
+				a: [
+					"The user often had to return to the beginning of the multi-step setup sequence",
+					"The processor automatically restarted every other job in the installation",
+					"The compiler permanently removed the source program after producing object code",
+					"The operating system moved every other user's program into a separate processor",
+				],
+				c: 0,
+			},
+			{
+				q: "What was the purpose of grouping submitted jobs into batches?",
+				a: [
+					"To let an operator organize jobs so a monitor could process them one after another",
+					"To let each user execute a separate job simultaneously on a dedicated processor",
+					"To let the compiler combine source programs into one executable instruction",
+					"To let the memory manager combine all user data into a single physical partition",
+				],
+				c: 0,
+			},
+			{
+				q: "In a simple batch system, what normally happens when a job finishes?",
+				a: [
+					"Control returns to the resident monitor, which reads the next job",
+					"Control returns to the user program, which reads the next process state",
+					"Control transfers to the compiler, which reloads the same job from source",
+					"Control transfers to the I/O queue, which converts the job into a page frame",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of memory protection in a resident-monitor system?",
+				a: [
+					"To prevent a user job from overwriting the memory occupied by the monitor",
+					"To prevent the monitor from accessing the memory occupied by a user job",
+					"To prevent the processor from translating a logical address into a physical address",
+					"To prevent an I/O device from transferring data into an allocated page frame",
+				],
+				c: 0,
+			},
+			{
+				q: "How does a timer help protect a resident-monitor system?",
+				a: [
+					"It prevents a job from monopolizing the system by allowing control to return to the monitor",
+					"It prevents the monitor from interrupting a job by extending its processor allocation",
+					"It prevents I/O devices from completing transfers before a job has finished executing",
+					"It prevents memory partitions from changing size while a job is being loaded",
+				],
+				c: 0,
+			},
+			{
+				q: "Which operation is an example of an instruction that may need privileged execution?",
+				a: [
+					"An I/O operation that directly controls access to a hardware device",
+					"An arithmetic operation that adds two values stored in general-purpose registers",
+					"A comparison operation that checks whether two application values are equal",
+					"A branch operation that selects the next instruction within a user program",
+				],
+				c: 0,
+			},
+			{
+				q: "What role do interrupts play in transferring control between a running job and the operating system?",
+				a: [
+					"They allow the OS to regain control when an event requires its attention",
+					"They allow a user job to permanently disable the operating system monitor",
+					"They allow a program to bypass the processor's execution-mode restrictions",
+					"They allow a memory partition to change size without notifying the processor",
+				],
+				c: 0,
+			},
+			{
+				q: "What inefficiency is caused when a single-program system waits for a slow I/O operation?",
+				a: [
+					"The processor may remain idle even though other work could potentially be performed",
+					"The I/O device must remain idle even though the processor is executing another program",
+					"The operating system must duplicate the waiting program in every memory partition",
+					"The processor must increase its clock rate until the I/O operation has completed",
+				],
+				c: 0,
+			},
+			{
+				q: "What condition makes it possible for multiprogramming to overlap CPU work with I/O activity?",
+				a: [
+					"More than one user program is resident so another can run while one is waiting",
+					"Every user program is assigned a separate physical processor and I/O controller",
+					"Every I/O operation is converted into a processor instruction that executes immediately",
+					"All user programs are combined into one job that does not issue I/O requests",
+				],
+				c: 0,
+			},
+			{
+				q: "In the two-program multiprogramming example, what can happen when program A requests I/O?",
+				a: [
+					"The processor can switch to program B if B is ready to execute",
+					"The processor must remain with program A until its I/O transfer completes",
+					"The processor must terminate program A and restart program B from its first instruction",
+					"The processor can switch to program B only after its memory has been compacted",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the relationship between multiprogramming and multitasking in the lecture?",
+				a: [
+					"Multiprogramming provides the basis for multitasking by allowing several programs to make progress",
+					"Multitasking replaces multiprogramming by requiring only one program to reside in memory",
+					"Multiprogramming prevents multitasking by requiring every process to run to completion",
+					"Multitasking replaces scheduling by assigning a fixed processor to each user program",
+				],
+				c: 0,
+			},
+			{
+				q: "What does processor utilization describe?",
+				a: [
+					"The proportion of time the processor is busy performing useful execution",
+					"The proportion of memory occupied by the operating system and its page tables",
+					"The proportion of I/O requests that are completed without entering a device queue",
+					"The proportion of processes that are admitted by the long-term scheduler",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can multiprogramming improve processor utilization without making an individual I/O device faster?",
+				a: [
+					"The CPU can execute another ready process while the first process waits for I/O",
+					"The CPU can increase the transfer rate of the I/O device while the first process waits",
+					"The CPU can remove the I/O instruction from the first process while another process waits",
+					"The CPU can convert the first process's I/O request into a memory-management operation",
+				],
+				c: 0,
+			},
+			{
+				q: "In time sharing, what does a processor quantum represent?",
+				a: [
+					"A short interval during which a process or user's program receives processor time",
+					"A fixed amount of memory reserved for a process while it waits for an I/O device",
+					"A fixed number of pages transferred between secondary storage and main memory",
+					"A short interval during which the operating system disables all user interaction",
+				],
+				c: 0,
+			},
+			{
+				q: "If n users actively share a time-sharing system, what average effective share does each user see in the simplified model?",
+				a: [
+					"Approximately one nth of the effective computer speed, excluding OS overhead",
+					"Approximately n times the effective computer speed, excluding OS overhead",
+					"Approximately one half of the effective computer speed, regardless of user count",
+					"Approximately the full effective computer speed, provided each user has a terminal",
+				],
+				c: 0,
+			},
+			{
+				q: "Which scheduler controls the degree of multiprogramming?",
+				a: [
+					"The long-term scheduler, by deciding which submitted jobs are admitted",
+					"The medium-term scheduler, by deciding which instruction is executed next",
+					"The short-term scheduler, by deciding which submitted jobs enter the system",
+					"The I/O scheduler, by deciding which user program is compiled first",
+				],
+				c: 0,
+			},
+			{
+				q: "Which scheduler makes the most frequent decision about which process receives the CPU next?",
+				a: [
+					"The short-term scheduler, which selects from the ready processes",
+					"The long-term scheduler, which selects from the submitted job requests",
+					"The medium-term scheduler, which selects from the swapped-out processes",
+					"The device scheduler, which selects from the completed process records",
+				],
+				c: 0,
+			},
+			{
+				q: "Which scheduler is most closely associated with deciding whether a new job should be admitted?",
+				a: [
+					"The long-term scheduler, which controls entry into the set of active processes",
+					"The medium-term scheduler, which controls the order of CPU instruction execution",
+					"The short-term scheduler, which controls the set of jobs waiting on disk",
+					"The device scheduler, which controls the set of users requesting system access",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the medium-term scheduler help control through swapping?",
+				a: [
+					"The number of processes kept active in main memory",
+					"The number of instructions stored in each process control block",
+					"The number of I/O devices connected to each processor core",
+					"The number of user accounts permitted to submit batch jobs",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is the short-term scheduler also associated with the dispatcher?",
+				a: [
+					"It selects the ready process that will actually use the processor next",
+					"It selects the submitted job that will actually enter the system next",
+					"It selects the blocked process that will actually be swapped to disk next",
+					"It selects the I/O device that will actually be installed in the system next",
+				],
+				c: 0,
+			},
+			{
+				q: "A newly admitted process is being initialized before it can execute. Which state best describes it in the five-state model?",
+				a: [
+					"New, because it has been admitted but is not yet ready to run",
+					"Ready, because it is waiting for a processor after initialization",
+					"Running, because the processor is currently executing its instructions",
+					"Waiting, because it is suspended while an I/O request is completed",
+				],
+				c: 0,
+			},
+			{
+				q: "A process has been selected by the scheduler and its instructions are currently executing. Which state is it in?",
+				a: [
+					"Running, because it currently has the processor",
+					"Ready, because it is waiting for the processor",
+					"Waiting, because it is waiting for a system resource",
+					"Halted, because its execution has terminated",
+				],
+				c: 0,
+			},
+			{
+				q: "A process cannot continue until a requested I/O operation completes. Which state describes it?",
+				a: [
+					"Waiting, because it is suspended pending a resource or event",
+					"Ready, because it is eligible to execute immediately on the processor",
+					"New, because it has not yet been admitted into the system",
+					"Halted, because it has completed execution and will be destroyed",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the halted state indicate in the five-state process model?",
+				a: [
+					"The process has terminated and the operating system will destroy it",
+					"The process has been admitted and the operating system will initialize it",
+					"The process is waiting for the processor and the scheduler will dispatch it",
+					"The process is waiting for I/O and the device controller will resume it",
+				],
+				c: 0,
+			},
+			{
+				q: "Which PCB field identifies the next instruction a process should execute when it resumes?",
+				a: [
+					"The program counter, which records the address of the next instruction",
+					"The process identifier, which records the unique identity of the process",
+					"The priority field, which records the process's relative scheduling level",
+					"The I/O status field, which records outstanding device requests",
+				],
+				c: 0,
+			},
+			{
+				q: "Which PCB information helps the OS identify where a process is located in memory?",
+				a: [
+					"Memory pointers, which record the process's starting and ending locations",
+					"Accounting information, which records the process's processor and clock time",
+					"Context data, which records the process's current register contents",
+					"I/O status information, which records the process's outstanding device requests",
+				],
+				c: 0,
+			},
+			{
+				q: "Why are context data saved when a process leaves the running state?",
+				a: [
+					"They allow the processor to restore the process's execution context when it resumes",
+					"They allow the operating system to reconstruct the process's source code when it resumes",
+					"They allow the memory manager to duplicate the process's allocated physical frames",
+					"They allow the device controller to repeat every I/O operation when it resumes",
+				],
+				c: 0,
+			},
+			{
+				q: "Which PCB field can include the files and I/O devices assigned to a process?",
+				a: [
+					"I/O status information, which records outstanding requests and assigned resources",
+					"Accounting information, which records time limits and processor usage",
+					"Priority information, which records the relative importance of the process",
+					"Program-counter information, which records the next instruction address",
+				],
+				c: 0,
+			},
+			{
+				q: "Which PCB information could record processor time used and account numbers?",
+				a: [
+					"Accounting information, which tracks resource usage and related limits",
+					"Context data, which tracks the values held in processor registers",
+					"Memory pointers, which track the process's allocated address range",
+					"I/O status information, which tracks the devices assigned to the process",
+				],
+				c: 0,
+			},
+			{
+				q: "Why does the OS save a process's context before choosing another process?",
+				a: [
+					"So the original process can continue from its saved execution point later",
+					"So the original process can be permanently converted into a new process",
+					"So the original process can be recompiled with a different instruction set",
+					"So the original process can be moved directly into the halted state",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of a long-term queue?",
+				a: [
+					"It contains process requests or jobs waiting to be admitted for processing",
+					"It contains ready processes waiting to receive the next processor time slice",
+					"It contains processes waiting for a particular I/O device to become available",
+					"It contains terminated processes waiting for their PCB data to be restored",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of an I/O queue associated with a particular device?",
+				a: [
+					"It holds processes waiting to use that device",
+					"It holds processes waiting to be admitted by the long-term scheduler",
+					"It holds processes waiting to receive the next processor time quantum",
+					"It holds processes waiting to have their virtual addresses translated",
+				],
+				c: 0,
+			},
+			{
+				q: "How does round-robin scheduling generally select processes from the ready queue?",
+				a: [
+					"It gives each process a turn with a limited amount of processor time",
+					"It gives each process a permanent processor assignment based on its memory size",
+					"It gives each process a turn only after every I/O device has completed its queue",
+					"It gives each process a processor allocation based on the number of files it owns",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one reason an OS may use priority levels in addition to a round-robin approach?",
+				a: [
+					"To influence which ready process is selected based on its relative priority",
+					"To influence which physical memory frame is selected based on its page offset",
+					"To influence which I/O device is installed based on its transfer speed",
+					"To influence which logical address is generated based on its process identifier",
+				],
+				c: 0,
+			},
+			{
+				q: "While the operating system is executing its own instructions, what can it decide?",
+				a: [
+					"Which process in the short-term queue should execute next",
+					"Which source-code statement should be added to every user program",
+					"Which physical processor should be permanently removed from the system",
+					"Which file format should be used by every application installed on the computer",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a key OS responsibility when several runnable threads are available on multiple CPU cores?",
+				a: [
+					"Scheduling threads across cores while coordinating access to shared resources",
+					"Assigning every thread to all cores while preventing parallel execution",
+					"Combining all threads into one process while eliminating synchronization",
+					"Giving every core a separate copy of main memory while disabling shared access",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can parallel execution on multicore systems create shared-resource contention?",
+				a: [
+					"Multiple cores or threads may compete to use the same shared resource",
+					"Multiple cores must execute the same instruction at exactly the same time",
+					"Multiple processes must use identical logical addresses for every memory reference",
+					"Multiple threads must share one program counter while running independently",
+				],
+				c: 0,
+			},
+			{
+				q: "In a uniprogram memory layout, how is memory described in the lecture?",
+				a: [
+					"One part is reserved for the operating system and another for the current program",
+					"One part is reserved for each I/O device and another for the process control block",
+					"One part is reserved for the page table and another for the processor cache",
+					"One part is reserved for each user account and another for the long-term queue",
+				],
+				c: 0,
+			},
+			{
+				q: "What changes in the user portion of memory when moving from uniprogramming to multiprogramming?",
+				a: [
+					"The user portion is subdivided and shared among active processes",
+					"The user portion is removed and replaced entirely by the operating system",
+					"The user portion is reserved for one process while all others remain on the CPU",
+					"The user portion is converted into a single fixed partition for I/O operations",
+				],
+				c: 0,
+			},
+			{
+				q: "Why might simply increasing main memory be an unattractive solution to CPU idle time?",
+				a: [
+					"Additional memory is expensive and may encourage programs to become larger",
+					"Additional memory prevents the operating system from using a resident monitor",
+					"Additional memory makes all I/O devices transfer data at the processor's clock rate",
+					"Additional memory removes the need for a short-term scheduler and process queues",
+				],
+				c: 0,
+			},
+			{
+				q: "Where are processes in the long-term queue stored in the swapping model described?",
+				a: [
+					"On disk, until space becomes available for them to be brought into main memory",
+					"In processor registers, until a time quantum becomes available for them to execute",
+					"In the TLB, until a page-table entry becomes available for them to be translated",
+					"In the I/O controller, until a device interrupt becomes available for them to complete",
+				],
+				c: 0,
+			},
+			{
+				q: "What normally happens to a process when it completes while resident in main memory?",
+				a: [
+					"It is moved out of main memory as part of its removal from the active system",
+					"It is moved into the ready queue so it can execute its final instruction again",
+					"It is moved into the TLB so its physical address can be reused by another process",
+					"It is moved into the long-term queue so it can be admitted as a new process",
+				],
+				c: 0,
+			},
+			{
+				q: "In the swapping example, why might a blocked process be moved to an intermediate queue?",
+				a: [
+					"To free main-memory space for a process that is ready to execute",
+					"To reserve processor time for a process that has already terminated",
+					"To preserve a cache line for a process that has no outstanding memory references",
+					"To increase the number of I/O devices assigned to a process that is already running",
+				],
+				c: 0,
+			},
+			{
+				q: "What does partitioning mean in memory management?",
+				a: [
+					"Dividing memory into sections that can be allocated to the OS and processes",
+					"Dividing processor time into sections that can be allocated to I/O devices",
+					"Dividing program instructions into sections that can be allocated to process queues",
+					"Dividing virtual addresses into sections that can be allocated to user accounts",
+				],
+				c: 0,
+			},
+			{
+				q: "In fixed partitioning, must every partition have the same size?",
+				a: [
+					"No; fixed partitions can have different sizes even though their sizes do not change dynamically",
+					"Yes; fixed partitions must have identical sizes to allow processes to be relocated",
+					"No; fixed partitions change size whenever a process enters or leaves main memory",
+					"Yes; fixed partitions must have identical sizes to allow the TLB to cache translations",
+				],
+				c: 0,
+			},
+			{
+				q: "A process requires 3 MB and is placed in a 4 MB fixed partition. What is the immediate consequence?",
+				a: [
+					"One megabyte of the partition is unused by that process",
+					"One megabyte of the process must be moved into the page table",
+					"One megabyte of physical memory is added to the process automatically",
+					"One megabyte of the partition becomes available to a second process simultaneously",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can fixed-sized partitions waste memory even when the selected partition is large enough?",
+				a: [
+					"The unused portion of an allocated partition may not be available to another process",
+					"The unused portion of an allocated partition is automatically converted into a page frame",
+					"The unused portion of an allocated partition is always moved to the processor cache",
+					"The unused portion of an allocated partition is added to the process's logical address range",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main allocation idea behind variable-sized partitions?",
+				a: [
+					"Allocate a region that matches the memory requirement of the process",
+					"Allocate a region that matches the maximum size of every possible process",
+					"Allocate a region that matches the number of instructions in the process",
+					"Allocate a region that matches the number of I/O devices assigned to the process",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can variable-sized partitioning create a small free space at the end of memory?",
+				a: [
+					"The remaining memory may be smaller than the amount needed by a new process",
+					"The remaining memory may be larger than the amount needed by every new process",
+					"The remaining memory is reserved automatically for the process's program counter",
+					"The remaining memory is converted automatically into a fixed-size page table",
+				],
+				c: 0,
+			},
+			{
+				q: "What can happen when a process swapped out of a variable-sized region is replaced by a smaller process?",
+				a: [
+					"An additional free space can be left where the larger process previously occupied memory",
+					"The smaller process must expand to occupy the full size of the previous process",
+					"The operating system must combine the smaller process with the next process in memory",
+					"The page table must convert the previous process's free region into a logical address",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one way to reduce fragmentation when two free spaces are adjacent?",
+				a: [
+					"Join the adjacent free spaces into one larger free region",
+					"Split the adjacent free spaces into smaller fixed-sized partitions",
+					"Move the adjacent free spaces into separate process control blocks",
+					"Convert the adjacent free spaces into separate I/O device queues",
+				],
+				c: 0,
+			},
+			{
+				q: "How does compaction differ from simply joining adjacent free spaces?",
+				a: [
+					"Compaction moves allocated regions so that separated free areas can be consolidated",
+					"Compaction changes process priorities so that separated ready queues can be consolidated",
+					"Compaction changes page sizes so that separated logical addresses can be consolidated",
+					"Compaction moves device requests so that separated I/O queues can be consolidated",
+				],
+				c: 0,
+			},
+			{
+				q: "Why does a process need relocation support?",
+				a: [
+					"It may be loaded at a different physical starting address on different executions",
+					"It may be assigned a different source-code language on different executions",
+					"It may be assigned a different processor instruction format on different executions",
+					"It may be assigned a different number of logical variables on different executions",
+				],
+				c: 0,
+			},
+			{
+				q: "In simple relocation, what value is added to a logical address to form a physical address?",
+				a: [
+					"The process's current base address",
+					"The process's current page offset",
+					"The process's current priority value",
+					"The process's current time quantum",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a logical address represent in the relocation model?",
+				a: [
+					"A location relative to the beginning of the process",
+					"A location relative to the beginning of physical RAM",
+					"A location relative to the beginning of the operating-system kernel",
+					"A location relative to the beginning of the I/O device's storage",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a physical address identify?",
+				a: [
+					"The actual location in main memory where data is stored",
+					"The relative location of data within a program's logical address space",
+					"The location of a process in the long-term scheduler's job queue",
+					"The location of a page-table entry inside the process control block",
+				],
+				c: 0,
+			},
+			{
+				q: "Which hardware component translates logical addresses into physical addresses in the lecture's description?",
+				a: [
+					"The Memory Management Unit, or MMU",
+					"The Translation Lookaside Buffer, or TLB, acting as the complete memory manager",
+					"The Central Processing Unit's program counter, acting as the address translator",
+					"The I/O controller, acting as the process relocation manager",
+				],
+				c: 0,
+			},
+			{
+				q: "What are the two parts of a logical address in the paging model described?",
+				a: [
+					"A page number and a relative address or offset within that page",
+					"A frame number and a relative address or offset within that frame",
+					"A segment number and a process identifier within that segment",
+					"A process identifier and a priority value within that process",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the relationship between a page and a page frame?",
+				a: [
+					"A process is divided into pages, while physical memory is divided into frames",
+					"A process is divided into frames, while physical memory is divided into pages",
+					"A process is divided into segments, while physical memory is divided into partitions",
+					"A process is divided into partitions, while physical memory is divided into segments",
+				],
+				c: 0,
+			},
+			{
+				q: "Why does paging allow a process to use non-contiguous physical memory?",
+				a: [
+					"Its pages can be placed in separate available frames and tracked by a page table",
+					"Its pages must be placed together in one continuous frame and tracked by a process queue",
+					"Its pages are stored only in disk blocks and tracked by the long-term scheduler",
+					"Its pages are converted into segments that must occupy one continuous physical region",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the operating system maintain to track available page frames?",
+				a: [
+					"A list of free frames that can be allocated to processes",
+					"A list of free processes that can be allocated to page tables",
+					"A list of free time quanta that can be allocated to memory partitions",
+					"A list of free device queues that can be allocated to process identifiers",
+				],
+				c: 0,
+			},
+			{
+				q: "If a process has several pages, must those pages occupy consecutive physical frames?",
+				a: [
+					"No; paging allows the pages to occupy non-contiguous frames",
+					"Yes; paging requires every page to occupy the next consecutive frame",
+					"No; paging stores every other page in the TLB and the remaining pages in RAM",
+					"Yes; paging requires all pages to be placed in one fixed-sized partition",
+				],
+				c: 0,
+			},
+			{
+				q: "What does a page table contain for a process?",
+				a: [
+					"Mappings that identify the physical frame location for each virtual page",
+					"Mappings that identify the processor time slot for each process state",
+					"Mappings that identify the I/O device location for each outstanding request",
+					"Mappings that identify the source-code location for each compiled instruction",
+				],
+				c: 0,
+			},
+			{
+				q: "When translating a paged address, what happens to the offset within the page?",
+				a: [
+					"It is preserved while the page number is translated into a frame number",
+					"It is replaced by the frame number while the page number is preserved",
+					"It is added to the process identifier while the page number is discarded",
+					"It is converted into a segment number while the frame number is discarded",
+				],
+				c: 0,
+			},
+			{
+				q: "Which part of a paged logical address is used to look up the corresponding physical frame?",
+				a: [
+					"The page number, which indexes the process's page table",
+					"The offset, which indexes the process's scheduling priority",
+					"The process identifier, which indexes the processor's instruction cache",
+					"The segment limit, which indexes the process's I/O status information",
+				],
+				c: 0,
+			},
+			{
+				q: "What does demand paging mean?",
+				a: [
+					"Pages are brought into main memory when they are required rather than all being loaded in advance",
+					"Pages are brought into main memory when a process is admitted rather than when they are referenced",
+					"Pages are brought into the TLB when a process terminates rather than when it executes",
+					"Pages are brought into physical memory only after every page of the process has been requested",
+				],
+				c: 0,
+			},
+			{
+				q: "What must the operating system do after a page fault if the required page is not resident?",
+				a: [
+					"Arrange for the required page to be brought into main memory",
+					"Arrange for the required page to be removed from the process permanently",
+					"Arrange for the process to be moved into the halted state immediately",
+					"Arrange for the logical address to be replaced with a new process identifier",
+				],
+				c: 0,
+			},
+			{
+				q: "Why might handling a page fault require the OS to remove another page from memory?",
+				a: [
+					"There may not be a free frame available for the required page",
+					"There may not be a free process identifier available for the required page",
+					"There may not be a free processor core available for the required page",
+					"There may not be a free I/O queue available for the required page",
+				],
+				c: 0,
+			},
+			{
+				q: "What factor does the lecture identify as relevant when selecting a page to replace?",
+				a: [
+					"Recent history of page use",
+					"The process's original source-code length",
+					"The process's position in the long-term queue",
+					"The number of I/O devices assigned to the process",
+				],
+				c: 0,
+			},
+			{
+				q: "What can happen if the OS repeatedly removes a page just before the process needs it?",
+				a: [
+					"The same page may need to be fetched again almost immediately, increasing paging activity",
+					"The same page may be permanently removed from the page table, reducing paging activity",
+					"The same page may be copied into every process, eliminating future page faults",
+					"The same page may be moved into the processor register file, eliminating memory references",
+				],
+				c: 0,
+			},
+			{
+				q: "Which change is listed as a possible way to reduce thrashing?",
+				a: [
+					"Reduce the number of processes running so memory pressure is lower",
+					"Increase the number of processes running so more pages can be requested concurrently",
+					"Increase the number of page faults allowed so the processor can avoid context switches",
+					"Reduce the number of page frames available so the OS can compact memory more often",
+				],
+				c: 0,
+			},
+			{
+				q: "Why can adding more memory help reduce thrashing?",
+				a: [
+					"More frames can keep a larger useful set of pages resident",
+					"More frames force the OS to replace pages more frequently",
+					"More frames eliminate the need for page tables and address translation",
+					"More frames cause every process to execute all of its instructions in parallel",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the central idea behind virtual memory's ability to support large processes?",
+				a: [
+					"A process can execute with only the currently needed pages resident in main memory",
+					"A process can execute only after every page has been copied into main memory",
+					"A process can execute by storing all instructions permanently in processor cache",
+					"A process can execute by converting every virtual page into a separate processor core",
+				],
+				c: 0,
+			},
+			{
+				q: "In the lecture's terminology, why is main memory called real memory?",
+				a: [
+					"A process's instructions must be in main memory when they are being executed",
+					"A process's instructions are permanently stored in main memory after they are compiled",
+					"A process's instructions are translated into real addresses before they are stored on disk",
+					"A process's instructions are shared by all users through the operating-system kernel",
+				],
+				c: 0,
+			},
+			{
+				q: "What does virtual memory provide from the programmer's or user's perspective?",
+				a: [
+					"The perception of a larger memory space than the available physical main memory",
+					"The perception of a faster processor than the installed processor can provide",
+					"The perception of a larger page frame than the physical memory hardware supports",
+					"The perception of a separate I/O device for every process in the system",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main performance reason for using a TLB?",
+				a: [
+					"It caches recently used page-table entries to speed up address translation",
+					"It caches recently used process-control blocks to speed up context switching",
+					"It caches recently used I/O requests to speed up device scheduling",
+					"It caches recently used disk files to speed up long-term job admission",
+				],
+				c: 0,
+			},
+			{
+				q: "Without a TLB, why can a virtual-memory reference require two physical memory accesses?",
+				a: [
+					"One access retrieves the page-table entry and another retrieves the requested data",
+					"One access retrieves the process control block and another retrieves the program counter",
+					"One access retrieves the I/O status and another retrieves the device queue entry",
+					"One access retrieves the segment descriptor and another retrieves the process priority",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a TLB hit?",
+				a: [
+					"The requested page-table translation is found in the TLB",
+					"The requested data block is found in the main-memory cache",
+					"The requested process is found in the short-term scheduling queue",
+					"The requested page is found in the secondary-storage swap area",
+				],
+				c: 0,
+			},
+			{
+				q: "What is required when the TLB does not contain the requested translation?",
+				a: [
+					"The system accesses the page table to obtain the frame information",
+					"The system accesses the process queue to obtain the process priority",
+					"The system accesses the I/O queue to obtain the device transfer status",
+					"The system accesses the instruction cache to obtain the process identifier",
+				],
+				c: 0,
+			},
+			{
+				q: "In the TLB and cache sequence, what is combined with the frame number to form the physical address?",
+				a: [
+					"The original page offset",
+					"The original process identifier",
+					"The original segment limit",
+					"The original scheduling priority",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the role of the main-memory cache after address translation?",
+				a: [
+					"It checks whether the block containing the requested word is already cached",
+					"It checks whether the page-table entry containing the requested frame is already swapped out",
+					"It checks whether the process containing the requested word is already in the ready queue",
+					"It checks whether the I/O device containing the requested block is already assigned to the process",
+				],
+				c: 0,
+			},
+			{
+				q: "If the main-memory cache does not contain the requested block, where is the requested word retrieved from in the described sequence?",
+				a: [
+					"Main memory",
+					"The long-term scheduling queue",
+					"The process control block",
+					"The translation lookaside buffer",
+				],
+				c: 0,
+			},
+			{
+				q: "In the slide's address terminology, what does the offset identify?",
+				a: [
+					"A position within a page or within a cache block, depending on the translation stage",
+					"A process's position within the long-term queue or within the ready queue",
+					"A device's position within the I/O system or within the interrupt table",
+					"A program's position within the compiler output or within the source file",
+				],
+				c: 0,
+			},
+			{
+				q: "How does segmentation organize a program's memory?",
+				a: [
+					"Into logical segments, often separating program and data areas",
+					"Into equal-sized frames, each identified by a physical page number",
+					"Into fixed-sized partitions, each assigned by the short-term scheduler",
+					"Into processor quanta, each assigned to a separate program section",
+				],
+				c: 0,
+			},
+			{
+				q: "Which statement about programmer visibility is associated with segmentation?",
+				a: [
+					"Segments are visible to the programmer as logical program divisions",
+					"Segments are hidden from the programmer in the same way paging usually is",
+					"Segments are visible only to the processor cache and not to the operating system",
+					"Segments are visible only when a process is moved into the halted state",
+				],
+				c: 0,
+			},
+			{
+				q: "Why might a program use separate code and data segments?",
+				a: [
+					"Program instructions and data can be organized into distinct logical regions",
+					"Program instructions and data must be stored in distinct processor cores",
+					"Program instructions and data must be translated using separate TLB devices",
+					"Program instructions and data must be scheduled by separate long-term queues",
+				],
+				c: 0,
+			},
+			{
+				q: "How can segmentation simplify the handling of growing data structures?",
+				a: [
+					"A data segment can be managed as a distinct logical region as its size changes",
+					"A data segment can be converted into a processor time quantum as its size changes",
+					"A data segment can be copied into every process control block as its size changes",
+					"A data segment can be fixed permanently to one physical frame as its size changes",
+				],
+				c: 0,
+			},
+			{
+				q: "What benefit can segmentation provide when a program is altered and recompiled?",
+				a: [
+					"Segments may be altered and recompiled independently without relinking and reloading the entire program",
+					"Segments may be altered and recompiled only after every process has been swapped out of memory",
+					"Segments may be altered and recompiled independently by changing the processor's physical address",
+					"Segments may be altered and recompiled only after every page has been copied into the TLB",
+				],
+				c: 0,
+			},
+			{
+				q: "Why does segmentation lend itself to sharing among processes?",
+				a: [
+					"A logical segment can be arranged so that it is shared by more than one process",
+					"A logical segment can be converted into a separate processor that is shared by more than one process",
+					"A logical segment can be duplicated into every I/O queue that is shared by more than one process",
+					"A logical segment can be assigned a common process identifier that is shared by more than one process",
+				],
+				c: 0,
+			},
+			{
+				q: "What protection-related advantage is associated with segmentation?",
+				a: [
+					"Distinct segments can support different access protections for different program regions",
+					"Distinct segments can prevent the processor from generating logical addresses for program regions",
+					"Distinct segments can ensure every process has identical access to all memory regions",
+					"Distinct segments can eliminate the need for the operating system to manage process states",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the lecture say some systems combine with segmentation?",
+				a: [
+					"Paging, using both logical segments and page-based memory management",
+					"Swapping, using both process queues and processor time quanta",
+					"Batching, using both resident monitors and fixed processor assignments",
+					"Compaction, using both I/O queues and process-control information",
+				],
+				c: 0,
+			},
+		],
 	},
 
 	CloudComp: {

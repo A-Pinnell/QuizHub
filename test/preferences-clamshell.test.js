@@ -197,6 +197,7 @@ test("quiz music options expose named, persistent track selections", () => {
 			"CompGFX",
 			"CompGFXLautest",
 			"SocIndi",
+			"NetHubMenu",
 			"NetHubBonus1",
 			"NetHubBonus2",
 			"NetHubBonus3",
@@ -206,6 +207,7 @@ test("quiz music options expose named, persistent track selections", () => {
 			"NetHubBonus7",
 			"NetHubBonus8",
 			"NetHubBonus9",
+			"NetHubBonus10",
 		],
 	);
 	assert.match(
@@ -226,8 +228,24 @@ test("quiz music options expose named, persistent track selections", () => {
 		"NetHub OST",
 	);
 	assert.equal(
+		musicOptions.find((option) => option.value === "NetHubMenu").label,
+		"NetHub Menu",
+	);
+	assert.equal(
+		musicOptions.find((option) => option.value === "NetHubMenu").category,
+		"NetHub OST",
+	);
+	assert.equal(
+		musicOptions.find((option) => option.value === "NetHubBonus10").label,
+		"NetHub Track 10",
+	);
+	assert.equal(
 		musicOptions.find((option) => option.value === "rotation").category,
 		"Rotation",
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubMenu"),
+		/\/music\/NetHub\.mp3$/,
 	);
 	assert.match(
 		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus2"),
@@ -260,6 +278,18 @@ test("quiz music options expose named, persistent track selections", () => {
 	assert.match(
 		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus9"),
 		/\/music\/NetHubBonus\/Net9\.mp3$/,
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus10"),
+		/\/music\/NetHubBonus\/Net10\.mp3$/,
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus9", true),
+		/\/music\/NetHubBonus\/Net9_ALT\.mp3$/,
+	);
+	assert.match(
+		state.preferences.resolveQuizMusic("fallback.mp3", "NetHubBonus8", true),
+		/\/music\/NetHubBonus\/Net8\.mp3$/,
 	);
 	const rotationTracks = new Set();
 	for (let index = 0; index < 100; index++) {
@@ -318,14 +348,18 @@ test("quiz music options expose named, persistent track selections", () => {
 	);
 	assert.ok(
 		[...quizHubRotationTracks].every(
-			(track) => !track.includes("/music/NetHubBonus/"),
+			(track) =>
+				!track.includes("/music/NetHubBonus/") &&
+				!track.endsWith("/music/NetHub.mp3"),
 		),
 	);
 	const netHubRotationTracks = collectRotationTracks("netHubRotation");
 	assert.deepEqual(
 		[...netHubRotationTracks].sort(),
 		[
+			"https://quizhub.example/music/NetHub.mp3",
 			"https://quizhub.example/music/NetHubBonus/Net1.mp3",
+			"https://quizhub.example/music/NetHubBonus/Net10.mp3",
 			"https://quizhub.example/music/NetHubBonus/Net2.mp3",
 			"https://quizhub.example/music/NetHubBonus/Net3.mp3",
 			"https://quizhub.example/music/NetHubBonus/Net4.mp3",
@@ -353,7 +387,8 @@ test("quiz music options expose named, persistent track selections", () => {
 
 	const verifyTrack9Alternate = (rotation) => {
 		const rotationState = loadPreferences();
-		rotationState.math.random = () => 0.999;
+		rotationState.math.random = () =>
+			rotation === "netHubRotation" ? 0.85 : 0.92;
 		const firstTrack9 = rotationState.preferences.getNextQuizMusic(
 			null,
 			"./music/QuizMusic.wav",

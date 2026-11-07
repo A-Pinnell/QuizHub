@@ -28,3 +28,12 @@ html.secret-mode .party-results{background:linear-gradient(rgba(0,0,0,.5),rgba(0
 .party-results-error{color:#ffb3ad}
 .party-results-status{min-height:1.2em;color:#d4d8e7}
 @media(max-width:520px){body{padding:12px}.party-results{max-height:calc(100dvh - 24px);padding:22px 16px}.party-podium{grid-template-columns:1fr}.party-standing,.party-standing[data-place]{min-height:unset}.party-results-tabs button{flex:1;padding:9px 10px}.party-results-actions{display:grid}.party-results-actions button,.party-results-actions a{width:100%}}
+body[data-competition-mode="true"]{background:radial-gradient(ellipse at 50% 0,#8a3945,#401b2a 55%,#130f19)}
+body[data-competition-mode="true"] .party-results{border-color:rgba(255,104,115,.45);background:rgba(35,14,24,.95);box-shadow:0 28px 90px rgba(0,0,0,.62),0 0 38px rgba(156,37,57,.16)}
+body[data-competition-mode="true"] .party-results-kicker{color:#ff7b83}
+body[data-competition-mode="true"] .party-results-tabs button[aria-pressed="true"]{border-color:#ff7781;background:#a93543;color:#fff}
+body[data-competition-mode="true"] .party-results-actions button,
+body[data-competition-mode="true"] .party-results-actions a{border-color:rgba(255,151,155,.5);background:#a93543;color:#fff}
+body[data-competition-mode="true"] .party-results-actions button:hover,
+body[data-competition-mode="true"] .party-results-actions a:hover{background:#c94b57}
+body[data-competition-mode="true"] .party-place{color:#ff9aa1}

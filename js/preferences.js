@@ -37,6 +37,7 @@
 		CompGFX: "./music/CompGFXMusic.wav",
 		CompGFXLautest: "./music/Challenge.mp3",
 		SocIndi: "./music/SocIndiMusic.wav",
+		NetHubMenu: "./music/NetHub.mp3",
 		NetHubBonus1: "./music/NetHubBonus/Net1.mp3",
 		NetHubBonus2: "./music/NetHubBonus/Net2.mp3",
 		NetHubBonus3: "./music/NetHubBonus/Net3.mp3",
@@ -46,6 +47,7 @@
 		NetHubBonus7: "./music/NetHubBonus/Net7.mp3",
 		NetHubBonus8: "./music/NetHubBonus/Net8.mp3",
 		NetHubBonus9: "./music/NetHubBonus/Net9.mp3",
+		NetHubBonus10: "./music/NetHubBonus/Net10.mp3",
 	};
 	const netHubTrack9Alternate = "./music/NetHubBonus/Net9_ALT.mp3";
 	const netHubTrack9PlayCounts = new Map();
@@ -76,6 +78,7 @@
 		rotation: "Full Music Rotation",
 		quizHubRotation: "QuizHub Music Rotation",
 		netHubRotation: "NetHub Music Rotation",
+		NetHubMenu: "NetHub Menu",
 		run: "Run",
 		BonusTrack: "Bonus Track",
 		Practice1: "Binary",
@@ -99,6 +102,7 @@
 		NetHubBonus7: "NetHub Track 7",
 		NetHubBonus8: "NetHub Track 8",
 		NetHubBonus9: "NetHub Track 9",
+		NetHubBonus10: "NetHub Track 10",
 	};
 	const secretMode = storage.getItem("quizHubSecretMode") === "true";
 	const savedQuizMusic = storage.getItem("quizHubQuizMusic");
@@ -485,7 +489,7 @@
 				label: quizMusicNames[value] || "Course default",
 				category: isQuizMusicRotation(value)
 					? "Rotation"
-					: value.startsWith("NetHubBonus")
+					: value.startsWith("NetHub")
 						? "NetHub OST"
 						: "QuizHub OST",
 			}));
@@ -515,11 +519,18 @@
 				window.location.href,
 			).toString();
 		},
-		resolveQuizMusic(defaultSource, selection = preferences.quizMusic) {
+		resolveQuizMusic(
+			defaultSource,
+			selection = preferences.quizMusic,
+			useAlternateTrack9 = false,
+		) {
 			if (this.isQuizMusicRotationValue(selection)) {
 				return this.getNextQuizMusic(null, defaultSource, selection);
 			}
-			const selectedSource = quizMusicSources[selection];
+			const selectedSource =
+				selection === "NetHubBonus9" && useAlternateTrack9
+					? netHubTrack9Alternate
+					: quizMusicSources[selection];
 			return new URL(
 				selectedSource || defaultSource,
 				window.location.href,
@@ -544,13 +555,13 @@
 			selection = preferences.quizMusic,
 		) {
 			const netHubSources = Object.entries(quizMusicSources)
-				.filter(([source]) => source.startsWith("NetHubBonus"))
+				.filter(([source]) => source.startsWith("NetHub"))
 				.map(([, source]) => source);
 			const quizHubSources = Object.entries(quizMusicSources)
 				.filter(
 					([source]) =>
 						source !== "run" &&
-						!source.startsWith("NetHubBonus"),
+						!source.startsWith("NetHub"),
 				)
 				.map(([, source]) => source);
 			const selectedSources =

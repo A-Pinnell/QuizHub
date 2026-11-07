@@ -22,6 +22,13 @@
 	const quizSetup = document.getElementById("devQuizSetup");
 	const quizModifiers = document.getElementById("devQuizModifiers");
 	const modifierInputs = [...quizModifiers.querySelectorAll("input")];
+	const competitionChargeSection = document.getElementById(
+		"devCompetitionChargeSection",
+	);
+	const competitionCharge = document.getElementById("devCompetitionCharge");
+	const setCompetitionCharge = document.getElementById(
+		"devSetCompetitionCharge",
+	);
 	const menuStatus = document.getElementById("devMenuStatus");
 	const closeButton = document.getElementById("devMenuClose");
 	let page = "other";
@@ -98,6 +105,12 @@
 				context.disableComboLoss;
 		if ("rotation" in context)
 			document.getElementById("devRotation").checked = context.rotation;
+		if ("competitionChargeAvailable" in context)
+			competitionChargeSection.hidden = !context.competitionChargeAvailable;
+		if ("competitionChargeCanSet" in context) {
+			competitionCharge.disabled = !context.competitionChargeCanSet;
+			setCompetitionCharge.disabled = !context.competitionChargeCanSet;
+		}
 		if ("fakePlayerSummary" in context)
 			fakePlayerLimit.textContent = context.fakePlayerSummary;
 		if ("fakePlayerLimit" in context)
@@ -201,6 +214,22 @@
 	excludedQuizzes.addEventListener("change", () =>
 		sendAction("excluded-quizzes", { value: excludedQuizzes.checked }),
 	);
+	setCompetitionCharge.addEventListener("click", () => {
+		const charge = Number(competitionCharge.value);
+		if (
+			!Number.isInteger(charge) ||
+			charge < 0 ||
+			charge > 100
+		) {
+			menuStatus.textContent =
+				"Choose a whole-number charge between 0 and 100.";
+			return;
+		}
+		sendAction("set-competition-charge", {
+			allPlayers: true,
+			charge,
+		});
+	});
 	closeButton.addEventListener("click", () => sendAction("close"));
 	document.addEventListener("keydown", (event) => {
 		if (event.key === "Escape") {

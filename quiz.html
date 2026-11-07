@@ -52,7 +52,7 @@
 				document.documentElement.classList.add("native-app");
 			}
 		</script>
-		<link rel="stylesheet" href="css/quiz.css?v=party-score-fade" />
+		<link rel="stylesheet" href="css/quiz.css?v=competition-points-toast-v2" />
 		<link rel="stylesheet" href="css/preferences.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
 		<link rel="stylesheet" href="css/quiz-music-picker.css" />
@@ -76,7 +76,7 @@
 		<script
 			type="module"
 			src="./js/semantic-short-answer-runtime.js?v=semantic-local-7"></script>
-		<script src="./js/quiz-bootstrap.js?v=party-nethub-quizzes" defer></script>
+		<script src="./js/quiz-bootstrap.js?v=competition-points-toast-v1" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
 	<body>
@@ -140,14 +140,6 @@
 						aria-label="Mute sounds"
 						aria-pressed="false">
 						🔊
-					</button>
-					<button
-						class="music-toggle quiz-music-cycle"
-						id="quizMusicCycle"
-						type="button"
-						aria-label="Change quiz song"
-						title="Change quiz song">
-						💿
 					</button>
 				</div>
 				<div class="gfx-toolbar" aria-hidden="true">
@@ -230,6 +222,14 @@
 					</div>
 				</div>
 			</section>
+			<button
+				class="music-toggle quiz-music-cycle"
+				id="quizMusicCycle"
+				type="button"
+				aria-label="Change quiz song"
+				title="Change quiz song">
+				💿
+			</button>
 			<div class="quiz-hud">
 				<div class="party-turn" id="partyTurn" hidden></div>
 				<div
@@ -785,6 +785,96 @@
 								Check answer
 							</button>
 						</section>
+						<section
+							class="competition-controls"
+							id="competitionControls"
+							aria-label="Competition Mode"
+							hidden>
+							<div class="competition-charge">
+								<label for="competitionCharge">Correct-answer charge</label>
+								<progress id="competitionCharge" max="15" value="0"></progress>
+								<span id="competitionChargeText">0 / 15</span>
+							</div>
+							<button type="button" id="competitionPowerupsButton" class="competition-powerups-open">POWERUPS</button>
+							<div class="competition-wager" id="competitionWager">
+								<span>Optional: double points if correct; lose 3 if wrong (6 if you answered first).</span>
+								<button type="button" id="competitionAllIn">GO ALL IN</button>
+							</div>
+							<p class="competition-status" id="competitionStatus" role="status" aria-live="polite"></p>
+						</section>
+						<dialog class="competition-powerups-dialog" id="competitionPowerupsDialog" aria-labelledby="competitionPowerupsTitle">
+							<form method="dialog">
+								<h2 id="competitionPowerupsTitle">Competition Powerups</h2>
+								<p class="competition-powerups-balance" id="competitionPowerupsBalance"></p>
+								<p class="competition-active-powerups" id="competitionActivePowerups" role="status" aria-live="polite"></p>
+								<div class="competition-powerup-catalog" id="competitionPowerupCatalog">
+									<article class="competition-powerup-card" data-powerup-card="freeze">
+										<div><h3>Freeze</h3><p>Freeze one or more opponents for 15 seconds. Costs 5 charge per target.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>5 / player</span>
+										<button type="button" data-use-powerup="freeze">Choose players</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="split">
+										<div><h3>Split</h3><p>Remove two incorrect answers from your choices this question.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>10</span>
+										<button type="button" data-use-powerup="split">Use</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="shield">
+										<div><h3>Shield</h3><p>Block the next Freeze used against you.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>5</span>
+										<button type="button" data-use-powerup="shield">Use</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="scramble">
+										<div><h3>Scramble</h3><p>Randomly rearrange answer buttons on every player's screen for three questions.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>15</span>
+										<button type="button" data-use-powerup="scramble">Use</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="ghost">
+										<div><h3>Ghost</h3><p>See one opponent's locked answer for this question.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>5</span>
+										<button type="button" data-use-powerup="ghost">Choose player</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="streak-bonus">
+										<div><h3>Streak Bonus</h3><p>Your next correct answer earns 2 extra points.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>10</span>
+										<button type="button" data-use-powerup="streak-bonus">Use</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="streak-keeper">
+										<div><h3>Streak Keeper</h3><p>Keep your combo if you get one answer wrong.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>20</span>
+										<button type="button" data-use-powerup="streak-keeper">Use</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="charge-drain">
+										<div><h3>Charge Drain</h3><p>Steal up to 5 charge from an opponent.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>15</span>
+										<button type="button" data-use-powerup="charge-drain">Choose player</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="thief">
+										<div><h3>Thief</h3><p>Steal up to 10 points from an opponent.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>25</span>
+										<button type="button" data-use-powerup="thief">Choose player</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="top-thief">
+										<div><h3>Top Thief</h3><p>Swap your point award with the first player to answer this question.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>30</span>
+										<button type="button" data-use-powerup="top-thief">Use</button>
+									</article>
+									<article class="competition-powerup-card" data-powerup-card="reveal-players" hidden>
+										<div><h3>Reveal Players</h3><p>See who has answered this question while answer visibility is off.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>10</span>
+										<button type="button" data-use-powerup="reveal-players">Use</button>
+									</article>
+								</div>
+								<button class="competition-powerups-close" type="submit" value="close">CLOSE</button>
+							</form>
+						</dialog>
+						<dialog class="competition-freeze-dialog" id="competitionTargetDialog" aria-labelledby="competitionTargetTitle">
+							<form method="dialog">
+								<h2 id="competitionTargetTitle"></h2>
+								<div class="competition-freeze-targets" id="competitionTargetChoices"></div>
+								<button type="button" id="competitionPowerupConfirm">USE POWERUP</button>
+								<button class="competition-freeze-cancel" type="submit" value="cancel">CANCEL</button>
+							</form>
+						</dialog>
 						<section class="answers" id="answers">
 							<button class="answer"></button>
 							<button class="answer"></button>
@@ -849,6 +939,14 @@
 				</section>
 			</main>
 		</div>
+
+		<div
+			class="competition-points-toast"
+			id="competitionPointsToast"
+			role="status"
+			aria-live="polite"
+			aria-atomic="true"
+			hidden></div>
 
 		<dialog
 			class="party-player-left-dialog"

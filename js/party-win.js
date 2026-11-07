@@ -13,6 +13,7 @@
 
   const podium=document.getElementById("partyPodium");
   const title=document.getElementById("partyResultsTitle");
+  const modeLabel=document.getElementById("partyResultsMode");
   const summary=document.getElementById("partyResultsSummary");
   const error=document.getElementById("partyResultsError");
   const status=document.getElementById("partyResultsStatus");
@@ -39,6 +40,9 @@
     chooseQuizButton.hidden=true;
     return;
   }
+  const competitionMode=results.competitionMode===true;
+  document.body.dataset.competitionMode=String(competitionMode);
+  modeLabel.textContent=competitionMode?"COMPETITION MODE":"PARTY MODE";
   const partyActionPlayerId=typeof results.partyActionPlayerId==="string" &&
     results.partyActionPlayerId
     ? results.partyActionPlayerId
@@ -52,7 +56,9 @@
       photo:typeof player.photo==="string" && player.photo.startsWith("data:image/")?player.photo:"",
       score:Number.isFinite(Number(player.score))?Math.max(0,Number(player.score)):0,
       overallScore:Number.isFinite(Number(player.overallScore))?Math.max(0,Number(player.overallScore)):0,
-      longestCombo:Number.isFinite(Number(player.longestCombo))?Math.max(0,Number(player.longestCombo)):0
+      longestCombo:Number.isFinite(Number(player.longestCombo))?Math.max(0,Number(player.longestCombo)):0,
+      competitionPowerupsUsed:Number.isFinite(Number(player.competitionPowerupsUsed))
+        ?Math.max(0,Number(player.competitionPowerupsUsed)):0
     }));
   const standings=window.QuizHubPartyQuestion.getPlayerStandings(players);
   const winners=standings.filter((player)=>player.score===standings[0].score);
@@ -123,8 +129,11 @@
       const comboLabel=document.createElement("div");
       comboLabel.className="party-player-combo";
       comboLabel.textContent=`Best combo: ${player.longestCombo}`;
+      const powerupsLabel=document.createElement("div");
+      powerupsLabel.className="party-player-combo";
+      powerupsLabel.textContent=`Powerups used: ${player.competitionPowerupsUsed}`;
       card.append(placeLabel,avatar,name,points);
-      if(!overall) card.appendChild(comboLabel);
+      if(!overall) card.append(comboLabel,powerupsLabel);
       podium.appendChild(card);
     });
   }
@@ -206,14 +215,20 @@
     const client=new window.QuizHubPartyClient();
     partyClient=client;
     let room=null;
-    function syncControls(){
+    function syncControls(message){
       const current=room?.players.find((player)=>player.id===partyActionPlayerId);
-      const canHost=Boolean(current?.host);
-      playAgainButton.disabled=!canHost;
-      chooseQuizButton.disabled=!canHost;
-      status.textContent=canHost
+      const canHost=Boolean(current?.host && room?.stage==="results");
+      const everyoneConnected=Boolean(room?.players.length>=2 &&
+        room.players.every((player)=>player.ready &&
+          (player.fakePlayer || player.connected)));
+      const canAct=canHost && everyoneConnected;
+      playAgainButton.disabled=!canAct;
+      chooseQuizButton.disabled=!canAct;
+      status.textContent=message || (canAct
         ?"Replay this quiz or choose another one for the same party."
-        :"Only the host can start another party quiz.";
+        :!canHost
+        ?"Only the host can start another party quiz."
+        :"Waiting for all players to reconnect before continuing.");
     }
     client.on("joined",(message)=>{
       room=message.room;
@@ -240,8 +255,7 @@
       syncControls();
     });
     client.on("error",(message)=>{
-      status.textContent=message.message;
-      syncControls();
+      syncControls(message.message);
     });
     client.on("left",()=>{window.location.href="index.html?fromWin=1";});
     client.send({

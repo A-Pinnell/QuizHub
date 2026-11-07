@@ -33,6 +33,9 @@
   const showScoresInput=document.getElementById("partyShowScores");
   const showLockedAnswersInput=document.getElementById("partyShowLockedAnswers");
   const earlyBonusInput=document.getElementById("partyEarlyBonus");
+  const competitionModeInput=document.getElementById("partyCompetitionMode");
+  const competitionModeOption=document.getElementById("partyCompetitionModeOption");
+  const competitionModeHint=document.getElementById("partyCompetitionModeHint");
   const optionsHint=document.getElementById("partyOptionsHint");
   const hostDisplayInput=document.getElementById("partyHostDisplay");
   const hostDisplayOption=document.getElementById("partyHostDisplayOption");
@@ -42,6 +45,7 @@
     CompArch:[
       ["quiz1","First Slides Practice"],
       ["quiz2","5a & 5b Practice"],
+      ["quiz3","Operating System Support Review"],
       ["test1","Midterm Practice"],
       ["binary","Binary Quiz"],
       ["hexadecimal","Hexadecimal Quiz"]
@@ -72,6 +76,22 @@
         console.error("Could not play party lobby music:",playError);
       }
     });
+  };
+  let competitionLobbyMusicActive=null;
+  const syncCompetitionModeTheme=()=>{
+    const active=room?.partyOptions?.competitionMode===true;
+    document.body.classList.toggle("competition-mode",active);
+    if(competitionLobbyMusicActive===active) return;
+    competitionLobbyMusicActive=active;
+    const musicSource=new URL(
+      active?"music/Trial_Setup.mp3":"music/Party.mp3",
+      location.href
+    ).href;
+    if(lobbyMusic.src!==musicSource){
+      lobbyMusic.src=musicSource;
+      lobbyMusic.load();
+    }
+    startLobbyMusic();
   };
   startLobbyMusic();
   ["pointerdown","keydown","touchstart"].forEach((eventName)=>{
@@ -390,15 +410,23 @@
   function renderPartyOptions(){
     if(!room) return;
     const options=room.partyOptions||{
-      showPlayerScores:true,showLockedAnswers:false,earlyPointBonus:true
+      showPlayerScores:true,showLockedAnswers:false,earlyPointBonus:true,competitionMode:false
     };
+    const compatible=quizModeSelect.value==="mixed" ||
+      !(categorySelect.value==="CompArch"&&["binary","hexadecimal"].includes(quizSelect.value));
     showScoresInput.checked=options.showPlayerScores;
     showLockedAnswersInput.checked=options.showLockedAnswers===true;
     earlyBonusInput.checked=options.earlyPointBonus;
+    competitionModeInput.checked=options.competitionMode===true&&compatible;
+    competitionModeOption.hidden=!room.hostDisplay;
     const canEdit=isHost && room.stage==="lobby";
     showScoresInput.disabled=!canEdit;
     showLockedAnswersInput.disabled=!canEdit;
     earlyBonusInput.disabled=!canEdit;
+    competitionModeInput.disabled=!canEdit||!room.hostDisplay||!compatible;
+    competitionModeHint.textContent=compatible
+      ?"All-in wagers and charge-based powerups for standard A–D quizzes."
+      :"Unavailable for procedural Binary and Hexadecimal quizzes.";
     optionsHint.textContent=canEdit
       ?"The host controls these settings for everyone."
       :"Only the host can change these settings.";
@@ -498,6 +526,7 @@
   }
   function updateLaunchAvailability(allReady=null,selectedDisplayPlayer=null){
     if(!room) return;
+    renderPartyOptions();
     const validQuiz=quizModeSelect.value==="mixed" ||
       (categorySelect.value==="NetHub"
         ? /^[0-9a-f-]{36}$/i.test(quizSelect.value)
@@ -589,16 +618,19 @@
     optionsButton.setAttribute("aria-expanded","false");
     optionsButton.focus();
   });
-  [showScoresInput,showLockedAnswersInput,earlyBonusInput].forEach((input)=>input.addEventListener("change",async()=>{
+  [showScoresInput,showLockedAnswersInput,earlyBonusInput,competitionModeInput].forEach((input)=>input.addEventListener("change",async()=>{
     if(!room || !isHost || room.stage!=="lobby") return;
     try{
+      const compatible=quizModeSelect.value==="mixed" ||
+        !(categorySelect.value==="CompArch"&&["binary","hexadecimal"].includes(quizSelect.value));
       await client.send({
         type:"party-options",
         code,
         options:{
           showPlayerScores:showScoresInput.checked,
           showLockedAnswers:showLockedAnswersInput.checked,
-          earlyPointBonus:earlyBonusInput.checked
+          earlyPointBonus:earlyBonusInput.checked,
+          competitionMode:room.hostDisplay&&compatible&&competitionModeInput.checked
         }
       });
     }catch(sendError){
@@ -618,6 +650,7 @@
   client.on("joined",(message)=>{
     playerId=message.playerId;
     room=message.room;
+    syncCompetitionModeTheme();
     renderPlayers();
     if(room.stage==="setup" || room.stage==="quiz"){
       enterQuiz(room.category,room.quiz,room.mixedSources,room.quizTheme,room.netHubQuizId);
@@ -625,6 +658,7 @@
   });
   client.on("room-state",(message)=>{
     room=message.room;
+    syncCompetitionModeTheme();
     renderPlayers();
   });
   client.on("player-left",(message)=>{

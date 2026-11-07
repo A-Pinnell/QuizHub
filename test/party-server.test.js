@@ -108,6 +108,7 @@ test("hosted room auto-readies players, shares locked answers and handles depart
 
   await verifyPartyQuizLaunch("CompArch", "test1");
   await verifyPartyQuizLaunch("CompArch", "quiz2");
+  await verifyPartyQuizLaunch("CompArch", "quiz3");
   await verifyPartyQuizLaunch("CloudComp", "test1");
   await verifyPartyQuizLaunch("CompArch", "binary");
   await verifyPartyQuizLaunch("CompArch", "hexadecimal");
@@ -136,7 +137,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.deepEqual(hosted.room.partyOptions, {
     showPlayerScores: true,
     showLockedAnswers: false,
-    earlyPointBonus: true
+    earlyPointBonus: true,
+    competitionMode: false
   });
 
   const invalidHost = await connect();
@@ -275,7 +277,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.deepEqual(hostPartyOptionsMessage.room.partyOptions, {
     showPlayerScores: false,
     showLockedAnswers: true,
-    earlyPointBonus: true
+    earlyPointBonus: true,
+    competitionMode: false
   });
   assert.deepEqual(guestPartyOptionsMessage.room.partyOptions, hostPartyOptionsMessage.room.partyOptions);
 
@@ -396,7 +399,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   assert.deepEqual(hostStartMessage.config.partyOptions, {
     showPlayerScores: false,
     showLockedAnswers: true,
-    earlyPointBonus: true
+    earlyPointBonus: true,
+    competitionMode: false
   });
   assert.deepEqual(guestStartMessage.config.partyOptions, hostStartMessage.config.partyOptions);
 
@@ -720,6 +724,50 @@ test("hosted room auto-readies players, shares locked answers and handles depart
     config: { questionSequence: [0, 1] }
   });
   await displayStartedPromise;
+  const unselectedMusicChange = waitForMessage(displayOther, "error");
+  send(displayOther, {
+    type: "host-display-music",
+    code: displayHosted.room.code,
+    selection: "NetHubBonus9",
+    reshuffle: false,
+    useAlternateTrack9: false
+  });
+  assert.match((await unselectedMusicChange).message, /Host Display account or selected Host Display player/i);
+  const displayMusicChange = waitForMessage(displayHost, "host-display-music");
+  const playerMusicChange = waitForMessage(displayGuest, "host-display-music");
+  send(displayGuest, {
+    type: "host-display-music",
+    code: displayHosted.room.code,
+    selection: "NetHubBonus10",
+    reshuffle: false,
+    useAlternateTrack9: false
+  });
+  const playerSelectedTrack = {
+    type: "host-display-music",
+    selection: "NetHubBonus10",
+    reshuffle: false,
+    useAlternateTrack9: false
+  };
+  assert.deepEqual(await displayMusicChange, playerSelectedTrack);
+  assert.deepEqual(await playerMusicChange, playerSelectedTrack);
+
+  const hostMusicChange = waitForMessage(displayHost, "host-display-music");
+  const playerReceivesHostMusicChange = waitForMessage(displayGuest, "host-display-music");
+  send(displayHost, {
+    type: "host-display-music",
+    code: displayHosted.room.code,
+    selection: "NetHubBonus9",
+    reshuffle: false,
+    useAlternateTrack9: true
+  });
+  const hostSelectedTrack = {
+    type: "host-display-music",
+    selection: "NetHubBonus9",
+    reshuffle: false,
+    useAlternateTrack9: true
+  };
+  assert.deepEqual(await hostMusicChange, hostSelectedTrack);
+  assert.deepEqual(await playerReceivesHostMusicChange, hostSelectedTrack);
   const displayQuestionPromise = waitForMessage(displayGuest, "question");
   const displayOtherQuestionPromise = waitForMessage(displayOther, "question");
   send(displayHost, {
@@ -1240,7 +1288,7 @@ test("procedural party quizzes track activity and reveal submitted answers", asy
     const hostedPromise = waitForMessage(host, "hosted");
     send(host, {
       type: "host",
-      capacity: 3,
+      capacity: 4,
       player: { name: `${quiz} Host`, color: "#ff0000" }
     });
     const hosted = await hostedPromise;
@@ -1581,4 +1629,996 @@ test("players can join an active procedural quiz and receive join and leave even
   assert.equal(restoredPlayer.overallScore, 3);
   assert.notEqual(restoredPlayer.id, lateJoin.playerId);
   assert.ok((await hostAfterRejoin).room.players.some((player) => player.id === restoredPlayer.id));
+});
+
+test("Competition Mode rank scoring scales to two players and Top Thief swaps awards", async (t) => {
+  const port = 20080 + Math.floor(Math.random() * 1000);
+  const server = spawn(process.execPath, ["server.js"], {
+    cwd: process.cwd(),
+    env: { ...process.env, PORT: String(port) },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  let serverOutput = "";
+  server.stdout.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  server.stderr.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  const sockets = [];
+  t.after(() => {
+    sockets.forEach((socket) => socket.close());
+    server.kill();
+  });
+
+  let ready = false;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    if (server.exitCode !== null) throw new Error(`Party server exited: ${serverOutput}`);
+    try {
+      if ((await fetch(`http://localhost:${port}/`)).ok) {
+        ready = true;
+        break;
+      }
+    } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  assert.equal(ready, true, `Party server did not start: ${serverOutput}`);
+
+  async function connect() {
+    const socket = new WebSocket(`ws://localhost:${port}/party`);
+    sockets.push(socket);
+    await once(socket, "open");
+    return socket;
+  }
+  async function join(socket, code, name) {
+    const joined = waitForMessage(socket, "joined");
+    send(socket, { type: "join", code, player: { name, color: "#4688e8" } });
+    return joined;
+  }
+
+  const host = await connect();
+  const hostedPromise = waitForMessage(host, "hosted");
+  send(host, {
+    type: "host",
+    capacity: 3,
+    player: { name: "Scoring Host", color: "#ff0000" }
+  });
+  const hosted = await hostedPromise;
+  const firstPlayer = await connect();
+  const firstJoin = await join(firstPlayer, hosted.room.code, "First Player");
+  const lastPlayer = await connect();
+  const lastJoin = await join(lastPlayer, hosted.room.code, "Last Player");
+
+  const displayEnabled = waitForMessage(host, "room-state", (message) =>
+    message.room.hostDisplayPlayerId === firstJoin.playerId
+  );
+  send(host, {
+    type: "host-display-options",
+    code: hosted.room.code,
+    enabled: true,
+    playerId: firstJoin.playerId
+  });
+  await displayEnabled;
+  const competitionEnabled = waitForMessage(host, "room-state", (message) =>
+    message.room.partyOptions.competitionMode
+  );
+  send(host, {
+    type: "party-options",
+    code: hosted.room.code,
+    options: {
+      showPlayerScores: true,
+      showLockedAnswers: false,
+      earlyPointBonus: true,
+      competitionMode: true
+    }
+  });
+  await competitionEnabled;
+
+  const launches = [host, firstPlayer, lastPlayer].map((socket) =>
+    waitForMessage(socket, "launch")
+  );
+  send(host, {
+    type: "launch",
+    code: hosted.room.code,
+    category: "CompArch",
+    quiz: "quiz1"
+  });
+  await Promise.all(launches);
+  const starts = [host, firstPlayer, lastPlayer].map((socket) =>
+    waitForMessage(socket, "quiz-start")
+  );
+  send(host, {
+    type: "quiz-start",
+    code: hosted.room.code,
+    config: {
+      questionSequence: Array.from({ length: 22 }, (_, index) => index),
+      orderMode: "static",
+      timeLimitMinutes: null,
+      perQuestionTimeMinutes: null,
+      reviewSections: []
+    }
+  });
+  await Promise.all(starts);
+
+  async function openQuestion(questionNumber) {
+    const questions = [host, firstPlayer, lastPlayer].map((socket) =>
+      waitForMessage(socket, "question", (message) =>
+        message.questionNumber === questionNumber
+      )
+    );
+    send(firstPlayer, {
+      type: "question",
+      code: hosted.room.code,
+      questionNumber,
+      questionIndex: questionNumber,
+      answerOrder: [0, 1, 2, 3],
+      correctIndex: 2
+    });
+    await Promise.all(questions);
+  }
+  async function answer(socket, questionNumber) {
+    const confirmed = waitForMessage(socket, "answer-confirmed");
+    send(socket, {
+      type: "answer",
+      code: hosted.room.code,
+      questionNumber,
+      answerIndex: 2
+    });
+    await confirmed;
+  }
+
+  await openQuestion(0);
+  const firstRevealPromise = waitForMessage(host, "reveal");
+  await answer(firstPlayer, 0);
+  await answer(lastPlayer, 0);
+  const firstReveal = await firstRevealPromise;
+  assert.equal(
+    firstReveal.answers.find((entry) => entry.playerId === firstJoin.playerId).pointsEarned,
+    6
+  );
+  assert.equal(
+    firstReveal.answers.find((entry) => entry.playerId === lastJoin.playerId).pointsEarned,
+    1
+  );
+
+  const nextQuestion = [host, firstPlayer, lastPlayer].map((socket) =>
+    waitForMessage(socket, "next-question")
+  );
+  send(firstPlayer, { type: "next-question", code: hosted.room.code });
+  await Promise.all(nextQuestion);
+  await openQuestion(1);
+
+  const chargesReady = waitForMessage(host, "room-state", (message) =>
+    message.room.players
+      .filter((member) => !member.host)
+      .every((member) => member.competitionCharge === 30)
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    allPlayers: true,
+    charge: 30
+  });
+  await chargesReady;
+  const topThiefApplied = waitForMessage(lastPlayer, "powerup-applied", (message) =>
+    message.powerup === "top-thief"
+  );
+  const topThiefActive = waitForMessage(host, "room-state", (message) =>
+    message.room.topThiefPlayerId === lastJoin.playerId
+  );
+  send(lastPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "top-thief"
+  });
+  await Promise.all([topThiefApplied, topThiefActive]);
+  const duplicateTopThief = waitForMessage(firstPlayer, "error");
+  send(firstPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "top-thief"
+  });
+  assert.match((await duplicateTopThief).message, /already active this question/i);
+
+  const topThiefRevealPromise = waitForMessage(host, "reveal");
+  await answer(firstPlayer, 1);
+  await answer(lastPlayer, 1);
+  const topThiefReveal = await topThiefRevealPromise;
+  assert.equal(
+    topThiefReveal.answers.find((entry) => entry.playerId === firstJoin.playerId).pointsEarned,
+    1
+  );
+  assert.equal(
+    topThiefReveal.answers.find((entry) => entry.playerId === lastJoin.playerId).pointsEarned,
+    6
+  );
+});
+
+test("Competition Mode locks wagers, scores all-in, and validates Split and Freeze", async (t) => {
+  const port = 19080 + Math.floor(Math.random() * 1000);
+  const server = spawn(process.execPath, ["server.js"], {
+    cwd: process.cwd(),
+    env: { ...process.env, PORT: String(port) },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  let serverOutput = "";
+  server.stdout.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  server.stderr.on("data", (chunk) => { serverOutput += chunk.toString(); });
+  const sockets = [];
+  t.after(() => {
+    sockets.forEach((socket) => socket.close());
+    server.kill();
+  });
+
+  let ready = false;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    if (server.exitCode !== null) throw new Error(`Party server exited: ${serverOutput}`);
+    try {
+      const response = await fetch(`http://localhost:${port}/`);
+      if (response.ok) {
+        ready = true;
+        break;
+      }
+    } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  assert.equal(ready, true, `Party server did not start: ${serverOutput}`);
+
+  async function connect() {
+    const socket = new WebSocket(`ws://localhost:${port}/party`);
+    sockets.push(socket);
+    await once(socket, "open");
+    return socket;
+  }
+  async function join(socket, code, name) {
+    const joined = waitForMessage(socket, "joined");
+    send(socket, { type: "join", code, player: { name, color: "#4688e8" } });
+    return joined;
+  }
+
+  const host = await connect();
+  const hostedPromise = waitForMessage(host, "hosted");
+  send(host, {
+    type: "host",
+    capacity: 4,
+    player: { name: "Competition Host", color: "#ff0000" }
+  });
+  const hosted = await hostedPromise;
+  const displayPlayer = await connect();
+  const displayJoin = await join(displayPlayer, hosted.room.code, "Display Player");
+  const otherPlayer = await connect();
+  const otherJoin = await join(otherPlayer, hosted.room.code, "Other Player");
+  let thirdPlayer = await connect();
+  const thirdJoin = await join(thirdPlayer, hosted.room.code, "Third Player");
+
+  const missingDisplayError = waitForMessage(host, "error");
+  send(host, {
+    type: "party-options",
+    code: hosted.room.code,
+    options: {
+      showPlayerScores: true,
+      showLockedAnswers: false,
+      earlyPointBonus: true,
+      competitionMode: true
+    }
+  });
+  assert.match((await missingDisplayError).message, /requires Host Display/);
+
+  const displayEnabled = waitForMessage(host, "room-state", (message) =>
+    message.room.hostDisplay && message.room.hostDisplayPlayerId === displayJoin.playerId
+  );
+  send(host, {
+    type: "host-display-options",
+    code: hosted.room.code,
+    enabled: true,
+    playerId: displayJoin.playerId
+  });
+  await displayEnabled;
+  const competitionEnabled = waitForMessage(host, "room-state", (message) =>
+    message.room.partyOptions.competitionMode === true
+  );
+  send(host, {
+    type: "party-options",
+    code: hosted.room.code,
+    options: {
+      showPlayerScores: true,
+      showLockedAnswers: false,
+      earlyPointBonus: true,
+      competitionMode: true
+    }
+  });
+  await competitionEnabled;
+
+  const launches = [host, displayPlayer, otherPlayer, thirdPlayer].map((socket) =>
+    waitForMessage(socket, "launch")
+  );
+  send(host, {
+    type: "launch",
+    code: hosted.room.code,
+    category: "CompArch",
+    quiz: "quiz1"
+  });
+  await Promise.all(launches);
+  const starts = [host, displayPlayer, otherPlayer, thirdPlayer].map((socket) =>
+    waitForMessage(socket, "quiz-start")
+  );
+  send(host, {
+    type: "quiz-start",
+    code: hosted.room.code,
+    config: {
+      questionSequence: Array.from({ length: 22 }, (_, index) => index),
+      orderMode: "static",
+      timeLimitMinutes: null,
+      perQuestionTimeMinutes: null,
+      reviewSections: []
+    }
+  });
+  const startMessages = await Promise.all(starts);
+  assert.equal(startMessages[1].config.partyOptions.competitionMode, true);
+
+  const chargeSet = waitForMessage(host, "room-state", (message) =>
+    message.room.players.filter((player) => !player.host)
+      .every((player) => player.competitionCharge === 10)
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    allPlayers: true,
+    charge: 10
+  });
+  await chargeSet;
+  const chargeReset = waitForMessage(host, "room-state", (message) =>
+    message.room.players.filter((player) => !player.host)
+      .every((player) => player.competitionCharge === 0)
+  );
+  const guestChargeDenied = waitForMessage(otherPlayer, "error");
+  send(otherPlayer, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: otherJoin.playerId,
+    charge: 10
+  });
+  assert.match((await guestChargeDenied).message, /only the host/i);
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    allPlayers: true,
+    charge: 0
+  });
+  await chargeReset;
+
+  async function openQuestion(questionNumber) {
+    const messages = [host, displayPlayer, otherPlayer, thirdPlayer].map((socket) =>
+      waitForMessage(socket, "question", (message) => message.questionNumber === questionNumber)
+    );
+    send(displayPlayer, {
+      type: "question",
+      code: hosted.room.code,
+      questionNumber,
+      questionIndex: questionNumber,
+      answerOrder: [0, 1, 2, 3],
+      correctIndex: 2
+    });
+    return Promise.all(messages);
+  }
+  async function answer(socket, playerId, questionNumber, answerIndex) {
+    const locked = waitForMessage(socket, "answer-confirmed");
+    send(socket, {
+      type: "answer",
+      code: hosted.room.code,
+      questionNumber,
+      answerIndex
+    });
+    return locked.catch((error) => {
+      throw new Error(
+        `No answer lock for player ${playerId} on question ${questionNumber}: ${error.message}`
+      );
+    });
+  }
+  async function wager(socket, playerId, questionNumber) {
+    const locked = waitForMessage(host, "all-in-locked", (message) =>
+      message.playerId === playerId
+    );
+    send(socket, {
+      type: "all-in-decision",
+      code: hosted.room.code,
+      questionNumber,
+      allIn: true
+    });
+    const result = await locked;
+    const expectedName = playerId === displayJoin.playerId
+      ? "Display Player"
+      : playerId === otherJoin.playerId ? "Other Player" : "Third Player";
+    assert.equal(result.playerName, expectedName);
+    return result;
+  }
+  async function nextQuestion(questionNumber) {
+    const messages = [host, displayPlayer, otherPlayer, thirdPlayer].map((socket) =>
+      waitForMessage(socket, "next-question")
+    );
+    send(displayPlayer, { type: "next-question", code: hosted.room.code });
+    await Promise.all(messages);
+    return openQuestion(questionNumber);
+  }
+  async function answerCorrectAndPass(questionNumber) {
+    const revealPromise = waitForMessage(host, "reveal");
+    await answer(displayPlayer, displayJoin.playerId, questionNumber, 2);
+    await answer(otherPlayer, otherJoin.playerId, questionNumber, 2);
+    await answer(thirdPlayer, thirdJoin.playerId, questionNumber, 2);
+    return revealPromise;
+  }
+
+  await openQuestion(0);
+  await wager(displayPlayer, displayJoin.playerId, 0);
+  await wager(otherPlayer, otherJoin.playerId, 0);
+  await wager(thirdPlayer, thirdJoin.playerId, 0);
+  await answer(displayPlayer, displayJoin.playerId, 0, 0);
+  const firstRevealPromise = waitForMessage(host, "reveal");
+  await answer(otherPlayer, otherJoin.playerId, 0, 2);
+  await answer(thirdPlayer, thirdJoin.playerId, 0, 2);
+  const firstReveal = await firstRevealPromise;
+  assert.equal(
+    firstReveal.answers.find((entry) => entry.playerId === displayJoin.playerId).pointsEarned,
+    -6
+  );
+  const firstCorrect = firstReveal.answers.find((entry) => entry.playerId === otherJoin.playerId);
+  assert.equal(firstCorrect.pointsEarned, 12);
+  assert.equal(firstCorrect.competitionCharge, 1);
+  assert.equal(
+    firstReveal.answers.find((entry) => entry.playerId === thirdJoin.playerId).pointsEarned,
+    2
+  );
+
+  for (let questionNumber = 1; questionNumber <= 9; questionNumber++) {
+    await nextQuestion(questionNumber);
+    const reveal = await answerCorrectAndPass(questionNumber);
+    if (questionNumber === 1) {
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === displayJoin.playerId).pointsEarned,
+        9
+      );
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === otherJoin.playerId).pointsEarned,
+        6
+      );
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === thirdJoin.playerId).pointsEarned,
+        1
+      );
+    }
+  }
+  await nextQuestion(10);
+  const splitApplied = waitForMessage(otherPlayer, "powerup-applied");
+  const chargeAfterSplit = waitForMessage(otherPlayer, "room-state", (message) =>
+    message.room.players.find((player) => player.id === otherJoin.playerId)?.competitionCharge === 0
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "split"
+  });
+  const split = await splitApplied;
+  await chargeAfterSplit;
+  assert.equal(split.powerup, "split");
+  assert.equal(split.removedAnswers.length, 2);
+  assert.equal(split.removedAnswers.includes(2), false);
+  const removedAnswerError = waitForMessage(otherPlayer, "error");
+  send(otherPlayer, {
+    type: "answer",
+    code: hosted.room.code,
+    questionNumber: 10,
+    answerIndex: split.removedAnswers[0]
+  });
+  assert.match((await removedAnswerError).message, /removed by Split/);
+  const splitRevealPromise = waitForMessage(host, "reveal");
+  await answer(displayPlayer, displayJoin.playerId, 10, 2);
+  await answer(otherPlayer, otherJoin.playerId, 10, 2);
+  await answer(thirdPlayer, thirdJoin.playerId, 10, 2);
+  const splitReveal = await splitRevealPromise;
+  assert.equal(
+    splitReveal.answers.find((entry) => entry.playerId === otherJoin.playerId).competitionCharge,
+    1
+  );
+
+  for (let questionNumber = 11; questionNumber <= 14; questionNumber++) {
+    await nextQuestion(questionNumber);
+    await answerCorrectAndPass(questionNumber);
+  }
+
+  const chargeForPowerups = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((player) => player.id === otherJoin.playerId)?.competitionCharge === 50 &&
+    message.room.players.find((player) => player.id === thirdJoin.playerId)?.competitionCharge === 5
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: otherJoin.playerId,
+    charge: 50
+  });
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: thirdJoin.playerId,
+    charge: 5
+  });
+  await chargeForPowerups.catch((error) => {
+    throw new Error(`Setting powerup test charges failed: ${error.message}`);
+  });
+
+  await nextQuestion(15);
+  const streakApplied = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "streak-bonus"
+  );
+  const streakAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "streak-bonus"
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "streak-bonus"
+  });
+  await streakApplied;
+  assert.equal((await streakAnnouncement).player.name, "Other Player");
+
+  const reflectedShieldApplied = waitForMessage(thirdPlayer, "powerup-applied", (message) =>
+    message.powerup === "shield"
+  );
+  const shieldAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "shield"
+  );
+  send(thirdPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "shield"
+  });
+  await reflectedShieldApplied;
+  assert.equal((await shieldAnnouncement).player.name, "Third Player");
+
+  const ghostResult = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "ghost"
+  );
+  const ghostAnswer = waitForMessage(otherPlayer, "ghost-answer-revealed");
+  const ghostAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "ghost"
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "ghost",
+    targetPlayerId: displayJoin.playerId
+  });
+  const ghost = await ghostResult;
+  assert.equal(ghost.targetPlayerId, displayJoin.playerId);
+  assert.equal(ghost.pending, true);
+  assert.equal(Object.hasOwn(await ghostAnnouncement, "answerIndex"), false);
+  await answer(displayPlayer, displayJoin.playerId, 15, 1);
+  const revealedGhostAnswer = await ghostAnswer;
+  assert.equal(revealedGhostAnswer.targetPlayerId, displayJoin.playerId);
+  assert.equal(revealedGhostAnswer.answerIndex, 1);
+
+  const scrambledAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "scramble"
+  );
+  const scrambledCharge = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((player) => player.id === otherJoin.playerId)?.competitionCharge === 20
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "scramble"
+  });
+  const scrambleNotice = await scrambledAnnouncement;
+  assert.equal(scrambleNotice.questions, 3);
+  await scrambledCharge;
+  const activeScrambleError = waitForMessage(otherPlayer, "error", (message) =>
+    message.message === "Scramble is already in effect."
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "scramble"
+  });
+  await activeScrambleError;
+
+  const multiFreezeApplied = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "freeze"
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "freeze",
+    targetPlayerIds: [displayJoin.playerId]
+  });
+  const multiFreeze = await multiFreezeApplied;
+  assert.deepEqual(
+    multiFreeze.targets.map(({ playerId, blocked, reflected }) => ({
+      playerId,
+      blocked,
+      ...(reflected ? { reflected } : {})
+    })),
+    [{ playerId: displayJoin.playerId, blocked: false }]
+  );
+  const powerupReveal = waitForMessage(host, "reveal");
+  await answer(otherPlayer, otherJoin.playerId, 15, 2);
+  await answer(thirdPlayer, thirdJoin.playerId, 15, 2);
+  const revealWithStreak = await powerupReveal;
+  assert.equal(
+    revealWithStreak.answers.find((entry) => entry.playerId === otherJoin.playerId).pointsEarned,
+    8
+  );
+
+  const frozenPromise = waitForMessage(displayPlayer, "player-frozen");
+  const delayedFreezeAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "freeze" &&
+    message.targets.some((target) => target.id === displayJoin.playerId)
+  );
+  const question16Messages = await nextQuestion(16);
+  const frozen = await frozenPromise;
+  const delayedFreeze = await delayedFreezeAnnouncement;
+  assert.equal(frozen.playerId, displayJoin.playerId);
+  assert.equal(delayedFreeze.targets[0].id, displayJoin.playerId);
+  assert.ok(question16Messages.every((message) =>
+    message.scrambledPlayerIds.includes(displayJoin.playerId) &&
+    message.scrambledPlayerIds.includes(thirdJoin.playerId) &&
+    !message.scrambledPlayerIds.includes(otherJoin.playerId)
+  ));
+  const frozenAnswerError = waitForMessage(displayPlayer, "error");
+  send(displayPlayer, {
+    type: "answer",
+    code: hosted.room.code,
+    questionNumber: 16,
+    answerIndex: 2
+  });
+  assert.match((await frozenAnswerError).message, /screen is frozen/);
+  const timedOutReveal = waitForMessage(host, "reveal");
+  send(host, { type: "question-timeout", code: hosted.room.code });
+  const timedOut = await timedOutReveal;
+  assert.equal(
+    timedOut.answers.find((entry) => entry.playerId === displayJoin.playerId).pointsEarned,
+    0
+  );
+  for (const questionNumber of [17, 18]) {
+    const questionMessages = await nextQuestion(questionNumber);
+    assert.ok(questionMessages.every((message) =>
+      message.scrambledPlayerIds.includes(displayJoin.playerId) &&
+      message.scrambledPlayerIds.includes(thirdJoin.playerId) &&
+      !message.scrambledPlayerIds.includes(otherJoin.playerId)
+    ));
+    assert.ok(questionMessages.every((message) =>
+      JSON.stringify(message.scrambledPlayerIds) ===
+        JSON.stringify(questionMessages[0].scrambledPlayerIds)
+    ));
+    await answer(otherPlayer, otherJoin.playerId, questionNumber, 2);
+    await answer(thirdPlayer, thirdJoin.playerId, questionNumber, 2);
+    const timeout = waitForMessage(host, "reveal");
+    send(host, { type: "question-timeout", code: hosted.room.code });
+    await timeout;
+  }
+  const question19 = await nextQuestion(19);
+  assert.ok(question19.every((message) =>
+    !message.scrambledPlayerIds.includes(otherJoin.playerId) &&
+    !message.scrambledPlayerIds.includes(displayJoin.playerId) &&
+    !message.scrambledPlayerIds.includes(thirdJoin.playerId)
+  ));
+  const currentCharges = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((player) => player.id === otherJoin.playerId)?.competitionCharge === 40 &&
+    message.room.players.find((player) => player.id === thirdJoin.playerId)?.competitionCharge === 8
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: otherJoin.playerId,
+    charge: 40
+  });
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: thirdJoin.playerId,
+    charge: 8
+  });
+  await currentCharges;
+
+  const privateAnswerLock = waitForMessage(host, "answer-locked");
+  await answer(thirdPlayer, thirdJoin.playerId, 19, 2);
+  const hiddenLock = await privateAnswerLock;
+  assert.equal(Object.hasOwn(hiddenLock, "playerId"), false);
+  const revealEvents = [host, displayPlayer, otherPlayer, thirdPlayer].map((socket) =>
+    waitForMessage(socket, "reveal-players-activated")
+  );
+  const revealCharge = waitForMessage(otherPlayer, "room-state", (message) =>
+    message.room.players.find((player) => player.id === otherJoin.playerId)?.competitionCharge === 30
+  );
+  const revealAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "reveal-players"
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "reveal-players"
+  });
+  const revealed = await Promise.all(revealEvents);
+  for (const event of revealed) {
+    assert.deepEqual(event.answeredPlayers, [{
+      id: thirdJoin.playerId,
+      name: "Third Player",
+      answerIndex: 2
+    }]);
+  }
+  await revealCharge;
+  assert.equal(Object.hasOwn(await revealAnnouncement, "answeredPlayers"), false);
+
+  const reconnectedThirdPlayer = await connect();
+  const revealedSnapshotPromise = waitForMessage(reconnectedThirdPlayer, "joined");
+  send(reconnectedThirdPlayer, {
+    type: "join",
+    code: hosted.room.code,
+    playerId: thirdJoin.playerId
+  });
+  const revealedSnapshot = await revealedSnapshotPromise;
+  assert.equal(revealedSnapshot.room.revealPlayersActive, true);
+  assert.deepEqual(revealedSnapshot.room.revealedAnsweredPlayers, [{
+    id: thirdJoin.playerId,
+    name: "Third Player",
+    answerIndex: 2
+  }]);
+  thirdPlayer = reconnectedThirdPlayer;
+
+  const drainResult = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "charge-drain"
+  );
+  const drainedRoomState = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((player) => player.id === thirdJoin.playerId)?.competitionCharge === 3
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "charge-drain",
+    targetPlayerId: thirdJoin.playerId
+  });
+  const drained = await drainResult;
+  assert.equal(drained.amount, 5);
+  const drainedState = await drainedRoomState.catch((error) => {
+    throw new Error(`Drain room-state update missing: ${error.message}`);
+  });
+  assert.equal(
+    drainedState.room.players.find((player) => player.id === otherJoin.playerId).competitionCharge,
+    20
+  );
+  assert.equal(
+    drainedState.room.players.find((player) => player.id === thirdJoin.playerId).competitionCharge,
+    3
+  );
+
+  const thiefTarget = drainedState.room.players.find((member) =>
+    member.id !== otherJoin.playerId && !member.host && member.score > 0
+  );
+  assert.ok(thiefTarget, "Thief requires an opponent with points to steal.");
+  const otherScoreBeforeThief = drainedState.room.players.find(
+    (member) => member.id === otherJoin.playerId
+  );
+  const thiefChargeUpdate = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((member) => member.id === otherJoin.playerId)
+      ?.competitionCharge === 25
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: otherJoin.playerId,
+    charge: 25
+  });
+  await thiefChargeUpdate;
+  const thiefResultPromise = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "thief"
+  );
+  const thiefTargetSocket = thiefTarget.id === thirdJoin.playerId
+    ? thirdPlayer
+    : displayPlayer;
+  const thiefTargetNotice = waitForMessage(thiefTargetSocket, "thief-stolen");
+  const thiefAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "thief"
+  );
+  const thiefRoomState = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((member) => member.id === otherJoin.playerId)
+      ?.competitionCharge === 0
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "thief",
+    targetPlayerId: thiefTarget.id
+  });
+  const thiefResult = await thiefResultPromise;
+  const stolenNotice = await thiefTargetNotice;
+  const thiefPopup = await thiefAnnouncement;
+  const afterThief = await thiefRoomState;
+  assert.equal(thiefResult.targetPlayerId, thiefTarget.id);
+  assert.equal(thiefResult.amount, Math.min(10, thiefTarget.score));
+  assert.equal(stolenNotice.playerId, otherJoin.playerId);
+  assert.equal(stolenNotice.amount, thiefResult.amount);
+  assert.equal(thiefPopup.amount, thiefResult.amount);
+  const thiefScoreAfter = afterThief.room.players.find(
+    (member) => member.id === otherJoin.playerId
+  );
+  const targetScoreAfter = afterThief.room.players.find(
+    (member) => member.id === thiefTarget.id
+  );
+  assert.equal(thiefScoreAfter.score, otherScoreBeforeThief.score + thiefResult.amount);
+  assert.equal(targetScoreAfter.score, thiefTarget.score - thiefResult.amount);
+  assert.equal(thiefScoreAfter.overallScore, otherScoreBeforeThief.overallScore + thiefResult.amount);
+  assert.equal(targetScoreAfter.overallScore, thiefTarget.overallScore - thiefResult.amount);
+
+  const keeperChargeUpdate = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((member) => member.id === otherJoin.playerId)
+      ?.competitionCharge === 20
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: otherJoin.playerId,
+    charge: 20
+  });
+  await keeperChargeUpdate;
+  const keeperApplied = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "streak-keeper"
+  );
+  const keeperAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "streak-keeper"
+  );
+  const keeperCharge = waitForMessage(otherPlayer, "room-state", (message) =>
+    message.room.players.find((player) => player.id === otherJoin.playerId)?.competitionCharge === 0
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "streak-keeper"
+  });
+  await keeperApplied;
+  assert.equal((await keeperAnnouncement).player.name, "Other Player");
+  await keeperCharge;
+
+  const otherAnswerLocks = [host, displayPlayer, otherPlayer, thirdPlayer].map((socket) =>
+    waitForMessage(socket, "answer-locked")
+  );
+  await answer(otherPlayer, otherJoin.playerId, 19, 1);
+  const futureOtherLocks = await Promise.all(otherAnswerLocks.map((promise, index) =>
+    promise.catch((error) => {
+      throw new Error(`Future Other Player lock missing for socket ${index}: ${error.message}`);
+    })
+  ));
+  for (const lock of futureOtherLocks) {
+    assert.equal(lock.playerId, otherJoin.playerId);
+    assert.equal(lock.answerIndex, 1);
+  }
+  const revealAfterTimeout = waitForMessage(host, "reveal");
+  send(host, { type: "question-timeout", code: hosted.room.code });
+  const keeperReveal = await revealAfterTimeout;
+  const keeperResult = keeperReveal.answers.find((entry) =>
+    entry.playerId === otherJoin.playerId
+  );
+  assert.equal(keeperResult.streakKept, true);
+  assert.equal(keeperResult.competitionStreakKeeper, false);
+  assert.equal(keeperResult.competitionPowerupsUsed, 9);
+  await nextQuestion(20);
+  const chargesForReflectedFreeze = waitForMessage(host, "room-state", (message) =>
+    message.room.players.filter((player) => !player.host)
+      .every((player) => player.competitionCharge === 25)
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    allPlayers: true,
+    charge: 25
+  });
+  await chargesForReflectedFreeze;
+  const reflectedFreezeApplied = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "freeze"
+  );
+  const reflectedFrozen = waitForMessage(otherPlayer, "player-frozen");
+  const reflectedAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "freeze" &&
+    message.targets.some((target) => target.reflectedTo?.id === otherJoin.playerId)
+  );
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "freeze",
+    targetPlayerIds: [thirdJoin.playerId]
+  });
+  const reflectedResult = await reflectedFreezeApplied;
+  assert.equal(reflectedResult.targets[0].reflected, true);
+  assert.equal((await reflectedFrozen).playerId, otherJoin.playerId);
+  assert.deepEqual((await reflectedAnnouncement).targets, [{
+    id: thirdJoin.playerId,
+    name: "Third Player",
+    blocked: true,
+    reflectedTo: { id: otherJoin.playerId, name: "Other Player" }
+  }]);
+  const hiddenNextQuestionLock = waitForMessage(host, "answer-locked");
+  await answer(thirdPlayer, thirdJoin.playerId, 20, 2);
+  const hiddenNextQuestion = await hiddenNextQuestionLock;
+  assert.equal(Object.hasOwn(hiddenNextQuestion, "playerId"), false);
+  assert.equal(Object.hasOwn(hiddenNextQuestion, "answerIndex"), false);
+  const hiddenSnapshotSocket = await connect();
+  const hiddenSnapshotPromise = waitForMessage(hiddenSnapshotSocket, "joined");
+  send(hiddenSnapshotSocket, {
+    type: "join",
+    code: hosted.room.code,
+    playerId: thirdJoin.playerId
+  });
+  const hiddenSnapshot = await hiddenSnapshotPromise;
+  assert.equal(hiddenSnapshot.room.revealPlayersActive, false);
+  assert.deepEqual(hiddenSnapshot.room.revealedAnsweredPlayers, []);
+  thirdPlayer = hiddenSnapshotSocket;
+  const finishedGame = waitForMessage(host, "game-over");
+  send(host, { type: "end-game", code: hosted.room.code, reason: "ended" });
+  const finalResults = await finishedGame;
+  assert.equal(
+    finalResults.players.find((player) => player.id === otherJoin.playerId)
+      .competitionPowerupsUsed,
+    10
+  );
+
+  const incompatibleHost = await connect();
+  const incompatibleHosted = waitForMessage(incompatibleHost, "hosted");
+  send(incompatibleHost, {
+    type: "host",
+    capacity: 3,
+    player: { name: "Procedural Host", color: "#ff0000" }
+  });
+  const proceduralRoom = await incompatibleHosted;
+  const proceduralDisplay = await connect();
+  const proceduralDisplayJoin = await join(proceduralDisplay, proceduralRoom.room.code, "Procedural Display");
+  const proceduralOther = await connect();
+  await join(proceduralOther, proceduralRoom.room.code, "Procedural Other");
+  const displayOptionUpdate = waitForMessage(incompatibleHost, "room-state", (message) =>
+    message.room.hostDisplayPlayerId === proceduralDisplayJoin.playerId
+  );
+  send(incompatibleHost, {
+    type: "host-display-options",
+    code: proceduralRoom.room.code,
+    enabled: true,
+    playerId: proceduralDisplayJoin.playerId
+  });
+  await displayOptionUpdate;
+  const modeUpdate = waitForMessage(incompatibleHost, "room-state", (message) =>
+    message.room.partyOptions.competitionMode
+  );
+  send(incompatibleHost, {
+    type: "party-options",
+    code: proceduralRoom.room.code,
+    options: {
+      showPlayerScores: true,
+      showLockedAnswers: false,
+      earlyPointBonus: true,
+      competitionMode: true
+    }
+  });
+  await modeUpdate;
+  const proceduralLaunches = [incompatibleHost, proceduralDisplay, proceduralOther].map((socket) =>
+    waitForMessage(socket, "launch")
+  );
+  send(incompatibleHost, {
+    type: "launch",
+    code: proceduralRoom.room.code,
+    category: "CompArch",
+    quiz: "binary"
+  });
+  await Promise.all(proceduralLaunches);
+  const proceduralStarts = [incompatibleHost, proceduralDisplay, proceduralOther].map((socket) =>
+    waitForMessage(socket, "quiz-start")
+  );
+  send(incompatibleHost, {
+    type: "quiz-start",
+    code: proceduralRoom.room.code,
+    config: {
+      questionSequence: [0],
+      proceduralType: "binary",
+      proceduralSettings: {
+        gameType: "conversion",
+        operation: "+",
+        questions: 1,
+        timerLimit: 0,
+        guide: false,
+        decimal: false
+      }
+    }
+  });
+  const proceduralStartMessages = await Promise.all(proceduralStarts);
+  assert.equal(proceduralStartMessages[0].config.partyOptions.competitionMode, false);
 });

@@ -154,6 +154,7 @@
 		{ value: "NetHubBonus7", label: "NetHub Track 7" },
 		{ value: "NetHubBonus8", label: "NetHub Track 8" },
 		{ value: "NetHubBonus9", label: "NetHub Track 9" },
+		{ value: "NetHubBonus10", label: "NetHub Track 10" },
 	];
 
 	function populateMusicTracks(selectedTrack = "") {

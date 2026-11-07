@@ -55,7 +55,7 @@ const netHubMusicTracks = new Set([
   "DataSci", "StatisticPractice", "DataSciLautest", "SoftEngi", "CompGFX",
   "CompGFXLautest", "SocIndi", "NetHubBonus1", "NetHubBonus2",
   "NetHubBonus3", "NetHubBonus4", "NetHubBonus5", "NetHubBonus6",
-  "NetHubBonus7", "NetHubBonus8", "NetHubBonus9"
+  "NetHubBonus7", "NetHubBonus8", "NetHubBonus9", "NetHubBonus10"
 ]);
 
 function validateNetHubDatabase(database) {
@@ -590,6 +590,9 @@ function publicRoom(room) {
       questionNumber: room.question.questionNumber,
       questionIndex: room.question.questionIndex,
       answerOrder: room.question.answerOrder,
+      ...(room.question.scrambledPlayerIds
+        ? { scrambledPlayerIds: room.question.scrambledPlayerIds }
+        : {}),
       ...(room.question.procedural ? {
         procedural: true,
         prompt: room.question.prompt,
@@ -599,11 +602,32 @@ function publicRoom(room) {
         ...(room.question.displayBits ? { displayBits: room.question.displayBits } : {})
       } : {})
     },
-    answersLocked: room.answersLocked,
+    answersLocked: room.question?.procedural || room.partyOptions?.showLockedAnswers ||
+      room.revealPlayersUsed || room.reveal ? room.answersLocked : [],
+    revealPlayersActive: room.revealPlayersUsed === true,
+    topThiefPlayerId: room.topThiefPlayerId || null,
+    revealedAnsweredPlayers: room.revealPlayersUsed
+      ? getAnsweredPlayers(room)
+      : [],
+    allInLocked: [...(room.allInDecisions || new Map()).keys()],
+    frozenPlayers: [...(room.frozenPlayers || new Map()).entries()].map(
+      ([playerId, freeze]) => ({
+        playerId,
+        expiresAt: freeze.expiresAt,
+        pending: freeze.pending
+      })
+    ),
+    scrambledPlayers: getActiveScrambles(room),
     activity: [...(room.activity || new Map()).entries()].map(([playerId, status]) => ({ playerId, status })),
     reveal: room.reveal,
-    players: [...room.players.values()].map(({ id, name, color, photo, ready, host, score, overallScore, fakePlayer, socket }) => ({
-      id, name, color, photo, ready, host, score, overallScore, fakePlayer: fakePlayer === true,
+    players: [...room.players.values()].map(({ id, name, color, photo, ready, host, score, overallScore, competitionCharge, competitionShield, competitionStreakBonus, competitionStreakKeeper, competitionPowerupsUsed, fakePlayer, socket }) => ({
+      id, name, color, photo, ready, host, score, overallScore,
+      competitionCharge: competitionCharge || 0,
+      competitionShield: competitionShield === true,
+      competitionStreakBonus: competitionStreakBonus === true,
+      competitionStreakKeeper: competitionStreakKeeper === true,
+      competitionPowerupsUsed: competitionPowerupsUsed || 0,
+      fakePlayer: fakePlayer === true,
       connected: socket?.readyState === WebSocket.OPEN
     }))
   };
@@ -670,14 +694,26 @@ function rememberPlayerScore(room, player) {
   if (player.fakePlayer) return;
   room.playerHistory.set(normalizePlayerName(player.name), {
     score: player.score,
-    overallScore: player.overallScore
+    overallScore: player.overallScore,
+    competitionCharge: player.competitionCharge || 0,
+    competitionPowerupsUsed: player.competitionPowerupsUsed || 0
   });
 }
 
 function resetRoomQuizScores(room) {
-  room.playerHistory.forEach((scores) => { scores.score = 0; });
+  room.topThiefPlayerId = null;
+  room.playerHistory.forEach((scores) => {
+    scores.score = 0;
+    scores.competitionCharge = 0;
+    scores.competitionPowerupsUsed = 0;
+  });
   room.players.forEach((player) => {
     player.score = 0;
+    player.competitionCharge = 0;
+    player.competitionShield = false;
+    player.competitionStreakBonus = false;
+    player.competitionStreakKeeper = false;
+    player.competitionPowerupsUsed = 0;
     rememberPlayerScore(room, player);
   });
 }
@@ -690,8 +726,173 @@ function sendError(socket, message) {
   send(socket, { type: "error", message });
 }
 
+function competitionPlayers(room) {
+  return [...room.players.values()].filter(
+    (member) => !(room.hostDisplay && member.host)
+  );
+}
+
+function getCompetitionRankPoints(room) {
+  const contestants = competitionPlayers(room).filter((member) => !member.fakePlayer);
+  const contestantIds = new Set(contestants.map((member) => member.id));
+  const answerOrder = [...room.answers.keys()].filter((playerId) =>
+    contestantIds.has(playerId)
+  );
+  const rankPoints = new Map();
+  let pointsForNextAnswer = contestants.length * 3;
+  answerOrder.forEach((playerId, rank) => {
+    rankPoints.set(playerId, rank === answerOrder.length - 1 ? 1 : pointsForNextAnswer);
+    pointsForNextAnswer -= 3;
+  });
+  const firstAnswererId = answerOrder[0];
+  if (
+    room.topThiefPlayerId &&
+    firstAnswererId &&
+    rankPoints.has(room.topThiefPlayerId) &&
+    rankPoints.has(firstAnswererId)
+  ) {
+    const thiefPoints = rankPoints.get(room.topThiefPlayerId);
+    rankPoints.set(room.topThiefPlayerId, rankPoints.get(firstAnswererId));
+    rankPoints.set(firstAnswererId, thiefPoints);
+  }
+  return rankPoints;
+}
+
+function isCompetitionMode(room) {
+  return room.partyOptions?.competitionMode === true;
+}
+
+function canRevealRoomAnswers(room) {
+  return Boolean(
+    room.question && !room.reveal && room.answers.size === room.players.size
+  );
+}
+
+function revealIfReady(room) {
+  if (canRevealRoomAnswers(room)) revealRoomAnswers(room);
+}
+
+function defaultUnchosenWagers(room) {
+  if (!isCompetitionMode(room)) return;
+  for (const member of competitionPlayers(room)) {
+    if (room.answers.has(member.id) && !room.allInDecisions.has(member.id)) {
+      room.allInDecisions.set(member.id, false);
+    }
+  }
+}
+
+function clearPlayerFreeze(room, playerId, notify = false) {
+  const freeze = room.frozenPlayers.get(playerId);
+  if (!freeze) return;
+  if (freeze.timer) clearTimeout(freeze.timer);
+  room.frozenPlayers.delete(playerId);
+  if (notify) {
+    const member = room.players.get(playerId);
+    if (member?.socket?.readyState === WebSocket.OPEN) {
+      send(member.socket, { type: "player-unfrozen", playerId });
+    }
+  }
+}
+
+function startPlayerFreeze(room, playerId) {
+  const member = room.players.get(playerId);
+  if (!member) return;
+  const freeze = {
+    expiresAt: Date.now() + 15_000,
+    pending: false,
+    timer: null
+  };
+  freeze.timer = setTimeout(() => {
+    clearPlayerFreeze(room, playerId, true);
+  }, 15_000);
+  freeze.timer.unref();
+  room.frozenPlayers.set(playerId, freeze);
+  if (member.socket?.readyState === WebSocket.OPEN) {
+    send(member.socket, { type: "player-frozen", playerId, expiresAt: freeze.expiresAt });
+  }
+}
+
+function activatePendingFreezes(room) {
+  for (const [playerId, freeze] of [...room.frozenPlayers]) {
+    if (!freeze.pending) continue;
+    const source = freeze.source;
+    clearPlayerFreeze(room, playerId);
+    startPlayerFreeze(room, playerId);
+    const target = room.players.get(playerId);
+    if (source && target) announcePowerup(room, source, "freeze", [target]);
+  }
+}
+
+function announcePowerup(room, player, powerup, targetPlayers = [], blockedPlayerIds = [], details = {}) {
+  const { reflectedPlayer, ...eventDetails } = details;
+  broadcast(room, {
+    type: "powerup-used",
+    player: { id: player.id, name: player.name },
+    powerup,
+    targets: targetPlayers.map((target) => ({
+      id: target.id,
+      name: target.name,
+      blocked: blockedPlayerIds.includes(target.id),
+      ...(reflectedPlayer && blockedPlayerIds.includes(target.id)
+        ? { reflectedTo: reflectedPlayer }
+        : {})
+    })),
+    ...eventDetails
+  });
+}
+
+function getScrambledPlayerIds(room) {
+  return [...room.scrambleRemaining.entries()]
+    .filter(([, remaining]) => remaining > 0)
+    .map(([playerId]) => playerId);
+}
+
+function getActiveScrambles(room) {
+  return [...room.scrambleRemaining.entries()]
+    .filter(([, remaining]) => remaining > 0)
+    .map(([playerId, remaining]) => ({ playerId, remaining }));
+}
+
+function decrementScrambleTurns(room, playerIds) {
+  for (const playerId of playerIds) {
+    const remaining = room.scrambleRemaining.get(playerId) || 0;
+    if (remaining <= 1) room.scrambleRemaining.delete(playerId);
+    else room.scrambleRemaining.set(playerId, remaining - 1);
+  }
+}
+
+function getAnsweredPlayers(room) {
+  return [...room.answers.entries()]
+    .filter(([, answer]) => Number.isInteger(answer))
+    .map(([playerId, answerIndex]) => ({
+      player: room.players.get(playerId),
+      answerIndex
+    }))
+    .filter(({ player }) => player && !player.host && !player.fakePlayer)
+    .map(({ player, answerIndex }) => ({
+      id: player.id,
+      name: player.name,
+      answerIndex
+    }));
+}
+
+function getCompetitionPoints(room, member, correct, regularPoints, rankPoints) {
+  if (!isCompetitionMode(room)) return regularPoints;
+  if (correct) {
+    member.competitionCharge = (member.competitionCharge || 0) + 1;
+    const points = (rankPoints ?? regularPoints) *
+      (room.allInDecisions.get(member.id) ? 2 : 1);
+    const streakBonus = member.competitionStreakBonus ? 2 : 0;
+    member.competitionStreakBonus = false;
+    return points + streakBonus;
+  }
+  if (!room.allInDecisions.get(member.id)) return 0;
+  return room.firstAnsweredPlayerId === member.id ? -6 : -3;
+}
+
 function revealRoomAnswers(room) {
-  if (!room.question || room.reveal || room.answers.size !== room.players.size) return;
+  if (!canRevealRoomAnswers(room)) return;
+  const competitionRankPoints = getCompetitionRankPoints(room);
   if (room.question.procedural) {
     const normalizeAnswer = (answer) => {
       if (typeof answer !== "string") return "";
@@ -709,20 +910,37 @@ function revealRoomAnswers(room) {
       const selected = room.answers.get(member.id);
       const answer = typeof selected === "string" ? selected : "";
       const correct = answer !== "" && normalizeAnswer(answer) === correctAnswer;
-      const pointsEarned = correct
+      const regularPoints = correct
         ? room.partyOptions.earlyPointBonus && member.id === firstCorrectPlayerId ? 3 : 1
         : 0;
+      const pointsEarned = getCompetitionPoints(
+        room,
+        member,
+        correct,
+        regularPoints,
+        competitionRankPoints.get(member.id)
+      );
+      const streakKept = !correct && selected !== null && selected !== "" &&
+        member.competitionStreakKeeper === true;
+      if (streakKept) member.competitionStreakKeeper = false;
       member.score += pointsEarned;
       member.overallScore += pointsEarned;
+      rememberPlayerScore(room, member);
       return {
         playerId: member.id,
         answer,
         correct,
         pointsEarned,
         score: member.score,
-        overallScore: member.overallScore
+        overallScore: member.overallScore,
+        competitionCharge: member.competitionCharge || 0,
+        competitionStreakBonus: member.competitionStreakBonus === true,
+        competitionStreakKeeper: member.competitionStreakKeeper === true,
+        competitionPowerupsUsed: member.competitionPowerupsUsed || 0,
+        streakKept
       };
     });
+    room.topThiefPlayerId = null;
     room.reveal = { correctAnswer: room.question.correctAnswer, answers: answerDetails };
     broadcast(room, { type: "reveal", ...room.reveal });
     return;
@@ -732,20 +950,37 @@ function revealRoomAnswers(room) {
   const answerDetails = [...room.players.values()].map((member) => {
     const selected = room.answers.get(member.id);
     const correct = selected === correctIndex;
-    const pointsEarned = correct
+    const regularPoints = correct
       ? room.partyOptions.earlyPointBonus && member.id === firstCorrectPlayerId ? 3 : 1
       : 0;
+    const pointsEarned = getCompetitionPoints(
+      room,
+      member,
+      correct,
+      regularPoints,
+      competitionRankPoints.get(member.id)
+    );
+    const streakKept = !correct && selected !== null &&
+      member.competitionStreakKeeper === true;
+    if (streakKept) member.competitionStreakKeeper = false;
     member.score += pointsEarned;
     member.overallScore += pointsEarned;
+    rememberPlayerScore(room, member);
     return {
       playerId: member.id,
       selectedIndex: selected,
       correct,
       pointsEarned,
       score: member.score,
-      overallScore: member.overallScore
+      overallScore: member.overallScore,
+      competitionCharge: member.competitionCharge || 0,
+      competitionStreakBonus: member.competitionStreakBonus === true,
+      competitionStreakKeeper: member.competitionStreakKeeper === true,
+      competitionPowerupsUsed: member.competitionPowerupsUsed || 0,
+      streakKept
     };
   });
+  room.topThiefPlayerId = null;
   room.reveal = { correctIndex, answers: answerDetails };
   broadcast(room, { type: "reveal", ...room.reveal });
 }
@@ -757,12 +992,23 @@ function removePlayer(room, player) {
   rememberPlayerScore(room, player);
   room.players.delete(player.id);
   room.answers?.delete(player.id);
+  room.ghostRequests?.delete(player.id);
+  room.ghostRequests?.forEach((requesters, targetId) => {
+    requesters.delete(player.id);
+    if (requesters.size === 0) room.ghostRequests.delete(targetId);
+  });
+  room.allInDecisions?.delete(player.id);
   room.activity?.delete(player.id);
+  clearPlayerFreeze(room, player.id);
+  room.splitAnswers?.delete(player.id);
+  room.scrambleRemaining?.delete(player.id);
   if (player.host) {
     for (const [playerId, member] of room.players) {
       if (!member.fakePlayer) continue;
       room.players.delete(playerId);
       room.answers?.delete(playerId);
+      room.allInDecisions?.delete(playerId);
+      room.splitAnswers?.delete(playerId);
     }
   }
   room.answersLocked = room.answersLocked.filter((playerId) => room.players.has(playerId));
@@ -787,7 +1033,7 @@ function removePlayer(room, player) {
   }
   if (room.hostDisplayPlayerId === player.id) room.hostDisplayPlayerId = null;
   broadcastRoom(room);
-  if (room.question && !room.reveal) revealRoomAnswers(room);
+  if (room.question && !room.reveal) revealIfReady(room);
 }
 
 function handleMessage(socket, rawMessage) {
@@ -826,6 +1072,11 @@ function handleMessage(socket, rawMessage) {
         handoff: true,
         score: 0,
         overallScore: 0,
+        competitionCharge: 0,
+        competitionShield: false,
+        competitionStreakBonus: false,
+        competitionStreakKeeper: false,
+        competitionPowerupsUsed: 0,
         socket,
         expireTimer: null
       };
@@ -834,10 +1085,17 @@ function handleMessage(socket, rawMessage) {
         code, capacity, stage: "lobby", players: new Map([[player.id, player]]),
         playerHistory: new Map(),
         excludedQuizzesEnabled: false,
-        question: null, answersLocked: [], activity: new Map(), reveal: null, quizConfig: null, mixedSources: null,
+        question: null, answers: new Map(), answersLocked: [], activity: new Map(), reveal: null, quizConfig: null, mixedSources: null,
         hostDisplay: false, hostDisplayPlayerId: null, quizTheme: null,
         netHubQuizId: null,
-        partyOptions: { showPlayerScores: true, showLockedAnswers: false, earlyPointBonus: true }
+        partyOptions: { showPlayerScores: true, showLockedAnswers: false, earlyPointBonus: true, competitionMode: false },
+        allInDecisions: new Map(),
+        splitAnswers: new Map(),
+        topThiefPlayerId: null,
+        ghostRequests: new Map(),
+        frozenPlayers: new Map(),
+        scrambleRemaining: new Map(),
+        revealPlayersUsed: false
       };
       rememberPlayerScore(room, player);
       room.expiration = setTimeout(() => {
@@ -892,7 +1150,13 @@ function handleMessage(socket, rawMessage) {
       reconnectingPlayer.socket = socket;
       socket.roomCode = code;
       socket.playerId = reconnectingPlayer.id;
-      send(socket, { type: "joined", playerId: reconnectingPlayer.id, room: publicRoom(room) });
+      send(socket, {
+        type: "joined",
+        playerId: reconnectingPlayer.id,
+        room: publicRoom(room),
+        playerAnswered: room.answers.has(reconnectingPlayer.id),
+        splitAnswers: room.splitAnswers?.get(reconnectingPlayer.id) || []
+      });
       broadcastRoom(room);
       return;
     }
@@ -919,7 +1183,13 @@ function handleMessage(socket, rawMessage) {
       disconnectedPlayer.photo = profile.photo;
       socket.roomCode = code;
       socket.playerId = disconnectedPlayer.id;
-      send(socket, { type: "joined", playerId: disconnectedPlayer.id, room: publicRoom(room) });
+      send(socket, {
+        type: "joined",
+        playerId: disconnectedPlayer.id,
+        room: publicRoom(room),
+        playerAnswered: room.answers.has(disconnectedPlayer.id),
+        splitAnswers: room.splitAnswers?.get(disconnectedPlayer.id) || []
+      });
       broadcastRoom(room);
       return;
     }
@@ -946,6 +1216,11 @@ function handleMessage(socket, rawMessage) {
       handoff: true,
       score: restoredScore?.score || 0,
       overallScore: restoredScore?.overallScore || 0,
+      competitionCharge: restoredScore?.competitionCharge || 0,
+      competitionShield: false,
+      competitionStreakBonus: false,
+      competitionStreakKeeper: false,
+      competitionPowerupsUsed: restoredScore?.competitionPowerupsUsed || 0,
       socket,
       expireTimer: null
     };
@@ -957,7 +1232,13 @@ function handleMessage(socket, rawMessage) {
     }
     socket.roomCode = code;
     socket.playerId = player.id;
-    send(socket, { type: "joined", playerId: player.id, room: publicRoom(room) });
+    send(socket, {
+      type: "joined",
+      playerId: player.id,
+      room: publicRoom(room),
+      playerAnswered: false,
+      splitAnswers: room.splitAnswers?.get(player.id) || []
+    });
     broadcastExcept(room, {
       type: "player-joined",
       player: { id: player.id, name: player.name }
@@ -977,6 +1258,38 @@ function handleMessage(socket, rawMessage) {
   }
 
   switch (message.type) {
+    case "host-display-music": {
+      const selectedDisplayPlayer = room.hostDisplay
+        ? findPlayer(room, room.hostDisplayPlayerId)
+        : null;
+      const displayHost = [...room.players.values()].find((member) => member.host);
+      if (!room.hostDisplay || room.stage !== "quiz" ||
+          (player.id !== room.hostDisplayPlayerId && !player.host)) {
+        return sendError(socket, "Only the Host Display account or selected Host Display player can change the quiz music.");
+      }
+      if (typeof message.selection !== "string" ||
+          message.selection.length < 1 ||
+          message.selection.length > 120 ||
+          typeof message.reshuffle !== "boolean" ||
+          typeof message.useAlternateTrack9 !== "boolean") {
+        return sendError(socket, "Choose a valid Host Display music selection.");
+      }
+      const recipient = player.host ? selectedDisplayPlayer : displayHost;
+      if (!recipient?.socket || recipient.socket.readyState !== WebSocket.OPEN) {
+        return sendError(socket, player.host
+          ? "The selected Host Display player is not connected."
+          : "The Host Display screen is not connected.");
+      }
+      const musicChange = {
+        type: "host-display-music",
+        selection: message.selection,
+        reshuffle: message.reshuffle,
+        useAlternateTrack9: message.useAlternateTrack9
+      };
+      send(recipient.socket, musicChange);
+      send(player.socket, musicChange);
+      break;
+    }
     case "update-profile": {
       if (room.stage !== "lobby") {
         return sendError(socket, "Player profiles can only be changed in the lobby.");
@@ -1063,6 +1376,31 @@ function handleMessage(socket, rawMessage) {
       broadcastRoom(room);
       break;
     }
+    case "dev-set-competition-charge": {
+      if (!player.host || room.stage !== "quiz" || !isCompetitionMode(room)) {
+        return sendError(socket, "Only the host can set Competition Mode charge during a quiz.");
+      }
+      const charge = message.charge;
+      if (!Number.isInteger(charge) || charge < 0 || charge > 100) {
+        return sendError(socket, "Choose a whole-number charge between 0 and 100.");
+      }
+      if (message.allPlayers === true) {
+        room.players.forEach((member) => {
+          if (member.host) return;
+          member.competitionCharge = charge;
+          rememberPlayerScore(room, member);
+        });
+      } else {
+        const target = findPlayer(room, message.playerId);
+        if (!target || target.host) {
+          return sendError(socket, "Choose a player or set charge for all players.");
+        }
+        target.competitionCharge = charge;
+        rememberPlayerScore(room, target);
+      }
+      broadcastRoom(room);
+      break;
+    }
     case "launch": {
       if (!player.host) return sendError(socket, "Only the host can choose the quiz.");
       if (!allReady(room)) return sendError(socket, "Wait until every player is ready.");
@@ -1085,8 +1423,12 @@ function handleMessage(socket, rawMessage) {
       if (message.quizTheme !== undefined && !quizThemes.has(message.quizTheme)) {
         return sendError(socket, "Select a valid quiz style.");
       }
+      if (isCompetitionMode(room) &&
+          category === "CompArch" && ["binary", "hexadecimal"].includes(quiz)) {
+        room.partyOptions.competitionMode = false;
+      }
       const validQuizzes = {
-        CompArch: ["quiz1", "quiz2", "test1", "binary", "hexadecimal"],
+        CompArch: ["quiz1", "quiz2", "quiz3", "test1", "binary", "hexadecimal"],
         CompGFX: ["test1", ...(room.excludedQuizzesEnabled ? ["lautest"] : [])],
         CloudComp: ["quiz1", "quiz2", "test1"],
         SocIndi: ["reviewQuiz", "textbookQuiz"],
@@ -1108,6 +1450,10 @@ function handleMessage(socket, rawMessage) {
         }
       } else if (category !== "NetHub" && !validQuizzes[category]?.includes(quiz)) {
         return sendError(socket, "Select a valid course and quiz.");
+      }
+      if (isCompetitionMode(room) &&
+          category === "CompArch" && ["binary", "hexadecimal"].includes(quiz)) {
+        room.partyOptions.competitionMode = false;
       }
       room.stage = "setup";
       room.category = category;
@@ -1134,13 +1480,18 @@ function handleMessage(socket, rawMessage) {
       const options = message.options;
       if (!options || typeof options.showPlayerScores !== "boolean" ||
           typeof options.showLockedAnswers !== "boolean" ||
-          typeof options.earlyPointBonus !== "boolean") {
+          typeof options.earlyPointBonus !== "boolean" ||
+          (options.competitionMode !== undefined && typeof options.competitionMode !== "boolean")) {
         return sendError(socket, "Invalid party options.");
+      }
+      if (options.competitionMode === true && !room.hostDisplay) {
+        return sendError(socket, "Competition Mode requires Host Display.");
       }
       room.partyOptions = {
         showPlayerScores: options.showPlayerScores,
         showLockedAnswers: options.showLockedAnswers,
-        earlyPointBonus: options.earlyPointBonus
+        earlyPointBonus: options.earlyPointBonus,
+        competitionMode: options.competitionMode === true
       };
       broadcastRoom(room);
       break;
@@ -1161,6 +1512,7 @@ function handleMessage(socket, rawMessage) {
       }
       room.hostDisplay = message.enabled;
       room.hostDisplayPlayerId = message.enabled ? selectedPlayer?.id || null : null;
+      if (!room.hostDisplay) room.partyOptions.competitionMode = false;
       broadcastRoom(room);
       break;
     }
@@ -1179,6 +1531,13 @@ function handleMessage(socket, rawMessage) {
       room.question = null;
       room.answers = new Map();
       room.answersLocked = [];
+      room.allInDecisions = new Map();
+      room.splitAnswers = new Map();
+      room.topThiefPlayerId = null;
+      room.frozenPlayers.forEach((freeze, playerId) => clearPlayerFreeze(room, playerId));
+      room.scrambleRemaining.clear();
+      room.revealPlayersUsed = false;
+      room.players.forEach((member) => { member.competitionShield = false; });
       room.reveal = null;
       room.firstCorrectPlayerId = null;
       room.players.forEach((member) => {
@@ -1214,6 +1573,10 @@ function handleMessage(socket, rawMessage) {
       room.question = null;
       room.answers = new Map();
       room.answersLocked = [];
+      room.allInDecisions = new Map();
+      room.splitAnswers = new Map();
+      room.topThiefPlayerId = null;
+      room.frozenPlayers.forEach((freeze, playerId) => clearPlayerFreeze(room, playerId));
       room.reveal = null;
       room.firstCorrectPlayerId = null;
       room.players.forEach((member) => {
@@ -1263,6 +1626,9 @@ function handleMessage(socket, rawMessage) {
       }
       const proceduralType = room.category === "CompArch" && room.quiz === "binary" ? "binary"
         : room.category === "CompArch" && room.quiz === "hexadecimal" ? "hexadecimal" : null;
+      if (isCompetitionMode(room) && proceduralType) {
+        return sendError(socket, "Competition Mode is only available for standard multiple-choice quizzes.");
+      }
       if ((proceduralType && (config.proceduralType !== proceduralType ||
           !config.proceduralSettings || typeof config.proceduralSettings !== "object" ||
           Array.isArray(config.proceduralSettings))) ||
@@ -1292,7 +1658,16 @@ function handleMessage(socket, rawMessage) {
       room.quizConfig = { ...config, partyOptions: room.partyOptions };
       room.stage = "quiz";
       room.questionNumber = -1;
-      room.players.forEach((member) => { member.score = 0; });
+      room.players.forEach((member) => {
+        member.score = 0;
+        member.competitionCharge = 0;
+        member.competitionShield = false;
+        member.competitionStreakBonus = false;
+        member.competitionStreakKeeper = false;
+        member.competitionPowerupsUsed = 0;
+        rememberPlayerScore(room, member);
+      });
+      room.scrambleRemaining.clear();
       broadcast(room, {
         type: "quiz-start",
         config: room.quizConfig,
@@ -1315,8 +1690,13 @@ function handleMessage(socket, rawMessage) {
       room.answers = new Map();
       room.answersLocked = [];
       room.activity = new Map();
+      room.ghostRequests.clear();
       room.firstCorrectPlayerId = null;
+      room.firstAnsweredPlayerId = null;
       room.reveal = null;
+      room.allInDecisions = new Map();
+      room.splitAnswers = new Map();
+      room.topThiefPlayerId = null;
       broadcast(room, { type: "dev-jump-question", questionNumber });
       break;
     }
@@ -1340,6 +1720,7 @@ function handleMessage(socket, rawMessage) {
           return sendError(socket, "Invalid procedural quiz question.");
         }
         room.questionNumber = questionNumber;
+        room.revealPlayersUsed = false;
         room.question = {
           procedural: true,
           questionNumber,
@@ -1351,14 +1732,19 @@ function handleMessage(socket, rawMessage) {
           ...(displayBits ? { displayBits } : {})
         };
         room.answers = new Map();
+        room.allInDecisions = new Map();
+        room.splitAnswers = new Map();
+        room.topThiefPlayerId = null;
+        room.ghostRequests.clear();
         room.answersLocked = [];
         room.activity = new Map();
         room.players.forEach((member) => {
           room.activity.set(member.id, room.hostDisplay && member.host ? "answered" : "thinking");
         });
-        if (room.hostDisplay) {
-          room.answers.set(player.id, null);
-          room.answersLocked.push(player.id);
+        const hostDisplayHost = [...room.players.values()].find((member) => member.host);
+        if (room.hostDisplay && hostDisplayHost) {
+          room.answers.set(hostDisplayHost.id, null);
+          room.answersLocked.push(hostDisplayHost.id);
         }
         const fakePlayers = [...room.players.values()].filter((member) => member.fakePlayer);
         fakePlayers.forEach((fakePlayer) => {
@@ -1367,6 +1753,8 @@ function handleMessage(socket, rawMessage) {
           room.activity.set(fakePlayer.id, "answered");
         });
         room.firstCorrectPlayerId = null;
+        room.firstAnsweredPlayerId = null;
+        room.topThiefPlayerId = null;
         room.reveal = null;
         broadcast(room, {
           type: "question",
@@ -1379,7 +1767,7 @@ function handleMessage(socket, rawMessage) {
           ...(room.question.displayBits ? { displayBits: room.question.displayBits } : {})
         });
         if (room.answers.size === room.players.size) {
-          revealRoomAnswers(room);
+          revealIfReady(room);
         }
         break;
       }
@@ -1393,19 +1781,35 @@ function handleMessage(socket, rawMessage) {
         return sendError(socket, "Invalid quiz question.");
       }
       room.questionNumber = questionNumber;
+      room.revealPlayersUsed = false;
       const correctIndex = message.correctIndex;
       if (!Number.isInteger(correctIndex) || !answerOrder.includes(correctIndex)) {
         return sendError(socket, "Invalid correct-answer reference.");
       }
-      room.question = { questionNumber, questionIndex, answerOrder, correctIndex };
+      const scrambledPlayerIds = getScrambledPlayerIds(room);
+      room.question = {
+        questionNumber,
+        questionIndex,
+        answerOrder,
+        correctIndex,
+        scrambledPlayerIds
+      };
+      decrementScrambleTurns(room, scrambledPlayerIds);
       room.answersLocked = [];
       room.activity = new Map();
       room.answers = new Map();
-      if (room.hostDisplay) {
-        room.answers.set(player.id, null);
-        room.answersLocked.push(player.id);
+      room.allInDecisions = new Map();
+      room.splitAnswers = new Map();
+      room.topThiefPlayerId = null;
+      room.ghostRequests.clear();
+      const hostDisplayHost = [...room.players.values()].find((member) => member.host);
+      if (room.hostDisplay && hostDisplayHost) {
+        room.answers.set(hostDisplayHost.id, null);
+        room.answersLocked.push(hostDisplayHost.id);
       }
       room.firstCorrectPlayerId = null;
+      room.firstAnsweredPlayerId = null;
+      room.topThiefPlayerId = null;
       room.reveal = null;
       const fakePlayers = [...room.players.values()].filter((member) => member.fakePlayer);
       for (const fakePlayer of fakePlayers) {
@@ -1417,21 +1821,28 @@ function handleMessage(socket, rawMessage) {
           : wrongAnswers[randomInt(wrongAnswers.length)];
         room.answers.set(fakePlayer.id, answerIndex);
         room.answersLocked.push(fakePlayer.id);
+        room.allInDecisions.set(fakePlayer.id, false);
       }
       broadcast(room, {
         type: "question",
         questionNumber: room.question.questionNumber,
         questionIndex: room.question.questionIndex,
-        answerOrder: room.question.answerOrder
+        answerOrder: room.question.answerOrder,
+        scrambledPlayerIds,
+        scrambledPlayers: scrambledPlayerIds.map((playerId) => ({
+          playerId,
+          remaining: Math.max(1, room.scrambleRemaining.get(playerId) || 0)
+        }))
       });
+      activatePendingFreezes(room);
       if (room.answers.size === room.players.size) {
-        revealRoomAnswers(room);
+        revealIfReady(room);
       } else if (fakePlayers.length > 0) {
         const startingLockedCount = room.answers.size - fakePlayers.length;
         fakePlayers.forEach((fakePlayer, index) => {
           broadcast(room, {
             type: "answer-locked",
-            playerId: fakePlayer.id,
+            ...(room.partyOptions.showLockedAnswers ? { playerId: fakePlayer.id } : {}),
             lockedCount: startingLockedCount + index + 1,
             ...(room.partyOptions.showLockedAnswers
               ? { answerIndex: room.answers.get(fakePlayer.id) }
@@ -1448,6 +1859,11 @@ function handleMessage(socket, rawMessage) {
       }
       if (message.questionNumber !== room.questionNumber) return sendError(socket, "That question is no longer open.");
       if (room.answers.has(player.id)) return sendError(socket, "Your answer is already locked in.");
+      const freeze = room.frozenPlayers.get(player.id);
+      if (freeze && !freeze.pending && freeze.expiresAt > Date.now()) {
+        return sendError(socket, "Your screen is frozen. Wait for the freeze to end before answering.");
+      }
+      if (freeze && freeze.expiresAt <= Date.now()) clearPlayerFreeze(room, player.id, true);
       if (room.question.procedural) {
         if (typeof message.answer !== "string" || message.answer.length > 24) {
           return sendError(socket, "Enter a valid answer.");
@@ -1475,8 +1891,10 @@ function handleMessage(socket, rawMessage) {
             playerId: player.id,
             lockedCount: room.answers.size
           });
+          send(player.socket, { type: "answer-confirmed" });
           return;
         }
+        send(player.socket, { type: "answer-confirmed" });
         revealRoomAnswers(room);
         break;
       }
@@ -1484,21 +1902,350 @@ function handleMessage(socket, rawMessage) {
           (!Number.isInteger(message.answerIndex) || !room.question.answerOrder.includes(message.answerIndex))) {
         return sendError(socket, "Choose one of the available answers.");
       }
+      if (room.splitAnswers.get(player.id)?.includes(message.answerIndex)) {
+        return sendError(socket, "That answer was removed by Split. Choose one of the remaining answers.");
+      }
       room.answers.set(player.id, message.answerIndex);
+      const ghostRequesters = room.ghostRequests.get(player.id);
+      if (ghostRequesters) {
+        for (const requesterId of ghostRequesters) {
+          const requester = room.players.get(requesterId);
+          if (requester?.socket?.readyState === WebSocket.OPEN) {
+            send(requester.socket, {
+              type: "ghost-answer-revealed",
+              targetPlayerId: player.id,
+              answerIndex: message.answerIndex
+            });
+          }
+        }
+        room.ghostRequests.delete(player.id);
+      }
+      if (room.firstAnsweredPlayerId === null) room.firstAnsweredPlayerId = player.id;
       if (message.answerIndex === room.question.correctIndex && room.firstCorrectPlayerId === null) {
         room.firstCorrectPlayerId = player.id;
       }
       room.answersLocked = [...room.answers.keys()];
-      if (room.answers.size < room.players.size) {
-        broadcast(room, {
-          type: "answer-locked",
-          playerId: player.id,
-          lockedCount: room.answers.size,
-          ...(room.partyOptions.showLockedAnswers ? { answerIndex: message.answerIndex } : {})
-        });
-        return;
+      broadcast(room, {
+        type: "answer-locked",
+        ...(room.partyOptions.showLockedAnswers || room.revealPlayersUsed
+          ? { playerId: player.id }
+          : {}),
+        lockedCount: room.answers.size,
+        ...(room.partyOptions.showLockedAnswers || room.revealPlayersUsed
+          ? { answerIndex: message.answerIndex }
+          : {})
+      });
+      send(player.socket, { type: "answer-confirmed" });
+      revealIfReady(room);
+      break;
+    }
+    case "all-in-decision": {
+      if (!isCompetitionMode(room) || room.stage !== "quiz" || !room.question ||
+          room.reveal || room.answers.size === room.players.size ||
+          room.question.procedural || message.allIn !== true ||
+          message.questionNumber !== room.questionNumber) {
+        return sendError(socket, "All In is only available before the question is revealed.");
       }
-      revealRoomAnswers(room);
+      if (room.hostDisplay && player.host) {
+        return sendError(socket, "The Host Display cannot choose a wager.");
+      }
+      if (room.allInDecisions.has(player.id)) {
+        return sendError(socket, "Your All In wager is already locked.");
+      }
+      room.allInDecisions.set(player.id, true);
+      broadcast(room, {
+        type: "all-in-locked",
+        playerId: player.id,
+        playerName: player.name,
+        allIn: true,
+        lockedCount: room.allInDecisions.size
+      });
+      break;
+    }
+    case "competition-powerup": {
+      if (!isCompetitionMode(room) || room.stage !== "quiz" || !room.question ||
+          room.question.procedural || typeof message.powerup !== "string") {
+        return sendError(socket, "Competition Mode powerups are not available.");
+      }
+      if (room.hostDisplay && player.host) {
+        return sendError(socket, "The Host Display cannot use powerups.");
+      }
+      if (room.answers.has(player.id) || room.allInDecisions.has(player.id)) {
+        return sendError(socket, "Powerups must be used before you lock your answer.");
+      }
+      const costs = {
+        freeze: 5,
+        split: 10,
+        shield: 5,
+        scramble: 15,
+        ghost: 5,
+        "streak-bonus": 10,
+        "streak-keeper": 20,
+        "charge-drain": 15,
+        thief: 25,
+        "top-thief": 30,
+        "reveal-players": 10
+      };
+      const powerupCost = Object.hasOwn(costs, message.powerup)
+        ? costs[message.powerup]
+        : 0;
+      if (!powerupCost) return sendError(socket, "Choose a valid powerup.");
+      if (message.powerup === "split") {
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        const wrongAnswers = room.question.answerOrder.filter(
+          (answerIndex) => answerIndex !== room.question.correctIndex
+        );
+        if (wrongAnswers.length < 2 || room.splitAnswers.has(player.id)) {
+          return sendError(socket, "Split is not available for this question.");
+        }
+        const removedAnswers = [];
+        while (removedAnswers.length < 2) {
+          const index = randomInt(wrongAnswers.length);
+          const [removed] = wrongAnswers.splice(index, 1);
+          removedAnswers.push(removed);
+        }
+        room.splitAnswers.set(player.id, removedAnswers);
+        player.competitionCharge -= powerupCost;
+        send(player.socket, { type: "powerup-applied", powerup: "split", removedAnswers });
+        announcePowerup(room, player, "split");
+      } else if (message.powerup === "shield") {
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        if (player.competitionShield) {
+          return sendError(socket, "Your Shield is already active.");
+        }
+        player.competitionShield = true;
+        player.competitionCharge -= powerupCost;
+        send(player.socket, { type: "powerup-applied", powerup: "shield" });
+        announcePowerup(room, player, "shield");
+      } else if (message.powerup === "scramble") {
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        if (room.scrambleRemaining.size > 0 ||
+            room.question.scrambledPlayerIds?.length > 0) {
+          return sendError(socket, "Scramble is already in effect.");
+        }
+        room.players.forEach((member) => {
+          if (member.id !== player.id) room.scrambleRemaining.set(member.id, 3);
+        });
+        player.competitionCharge -= powerupCost;
+        send(player.socket, { type: "powerup-applied", powerup: "scramble", questions: 3 });
+        announcePowerup(room, player, "scramble", [], [], { questions: 3 });
+      } else if (message.powerup === "ghost") {
+        const target = findPlayer(room, message.targetPlayerId);
+        if (!target || target.id === player.id || target.host || target.fakePlayer ||
+            target.socket?.readyState !== WebSocket.OPEN) {
+          return sendError(socket, "Choose another connected player to inspect.");
+        }
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        player.competitionCharge -= powerupCost;
+        if (room.answers.has(target.id)) {
+          send(player.socket, {
+            type: "powerup-applied",
+            powerup: "ghost",
+            targetPlayerId: target.id,
+            answerIndex: room.answers.get(target.id)
+          });
+        } else {
+          let ghostRequesters = room.ghostRequests.get(target.id);
+          if (!ghostRequesters) {
+            ghostRequesters = new Set();
+            room.ghostRequests.set(target.id, ghostRequesters);
+          }
+          ghostRequesters.add(player.id);
+          send(player.socket, {
+            type: "powerup-applied",
+            powerup: "ghost",
+            targetPlayerId: target.id,
+            pending: true
+          });
+        }
+        announcePowerup(room, player, "ghost", [target]);
+      } else if (message.powerup === "streak-bonus") {
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        if (player.competitionStreakBonus) {
+          return sendError(socket, "Your Streak Bonus is already active.");
+        }
+        player.competitionStreakBonus = true;
+        player.competitionCharge -= powerupCost;
+        send(player.socket, { type: "powerup-applied", powerup: "streak-bonus" });
+        announcePowerup(room, player, "streak-bonus");
+      } else if (message.powerup === "streak-keeper") {
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        if (player.competitionStreakKeeper) {
+          return sendError(socket, "Your Streak Keeper is already active.");
+        }
+        player.competitionStreakKeeper = true;
+        player.competitionCharge -= powerupCost;
+        send(player.socket, { type: "powerup-applied", powerup: "streak-keeper" });
+        announcePowerup(room, player, "streak-keeper");
+      } else if (message.powerup === "top-thief") {
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        if (room.topThiefPlayerId) {
+          return sendError(socket, "Top Thief is already active this question.");
+        }
+        room.topThiefPlayerId = player.id;
+        player.competitionCharge -= powerupCost;
+        send(player.socket, { type: "powerup-applied", powerup: "top-thief" });
+        announcePowerup(room, player, "top-thief");
+      } else if (message.powerup === "thief") {
+        const target = findPlayer(room, message.targetPlayerId);
+        if (!target || target.id === player.id || target.host || target.fakePlayer ||
+            target.socket?.readyState !== WebSocket.OPEN) {
+          return sendError(socket, "Choose another connected player to steal points from.");
+        }
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        const stolen = Math.min(10, Math.max(0, target.score || 0));
+        if (stolen === 0) {
+          return sendError(socket, "That player has no points to steal.");
+        }
+        target.score -= stolen;
+        target.overallScore -= stolen;
+        player.score += stolen;
+        player.overallScore += stolen;
+        player.competitionCharge -= powerupCost;
+        rememberPlayerScore(room, target);
+        rememberPlayerScore(room, player);
+        send(player.socket, {
+          type: "powerup-applied",
+          powerup: "thief",
+          targetPlayerId: target.id,
+          amount: stolen
+        });
+        send(target.socket, {
+          type: "thief-stolen",
+          playerId: player.id,
+          playerName: player.name,
+          amount: stolen
+        });
+        announcePowerup(room, player, "thief", [target], [], { amount: stolen });
+      } else if (message.powerup === "charge-drain") {
+        const target = findPlayer(room, message.targetPlayerId);
+        if (!target || target.id === player.id || target.host || target.fakePlayer ||
+            target.socket?.readyState !== WebSocket.OPEN) {
+          return sendError(socket, "Choose another connected player to drain.");
+        }
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        const drained = Math.min(5, target.competitionCharge || 0);
+        if (drained === 0) {
+          return sendError(socket, "That player has no charge to drain.");
+        }
+        target.competitionCharge -= drained;
+        player.competitionCharge -= powerupCost;
+        player.competitionCharge += drained;
+        rememberPlayerScore(room, target);
+        send(player.socket, {
+          type: "powerup-applied",
+          powerup: "charge-drain",
+          targetPlayerId: target.id,
+          amount: drained
+        });
+        announcePowerup(room, player, "charge-drain", [target]);
+      } else if (message.powerup === "reveal-players") {
+        if (room.partyOptions.showLockedAnswers) {
+          return sendError(socket, "Reveal Players is only available while player answers are hidden.");
+        }
+        if ((player.competitionCharge || 0) < powerupCost) {
+          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
+        }
+        if (room.revealPlayersUsed) {
+          return sendError(socket, "Reveal Players is already active this question.");
+        }
+        player.competitionCharge -= powerupCost;
+        room.revealPlayersUsed = true;
+        broadcast(room, {
+          type: "reveal-players-activated",
+          answeredPlayers: getAnsweredPlayers(room)
+        });
+        announcePowerup(room, player, "reveal-players");
+      } else {
+        const targetPlayerIds = message.targetPlayerIds;
+        if (!Array.isArray(targetPlayerIds) || targetPlayerIds.length < 1 ||
+            targetPlayerIds.length > room.players.size - 1 ||
+            !targetPlayerIds.every((targetId) => typeof targetId === "string") ||
+            new Set(targetPlayerIds).size !== targetPlayerIds.length) {
+          return sendError(socket, "Choose one or more different players to freeze.");
+        }
+        const targets = targetPlayerIds.map((targetId) => findPlayer(room, targetId));
+        if (targets.some((target) => !target || target.id === player.id || target.host ||
+            target.fakePlayer || target.socket?.readyState !== WebSocket.OPEN)) {
+          return sendError(socket, "Choose only other connected players to freeze.");
+        }
+        const freezeCost = powerupCost * targets.length;
+        if ((player.competitionCharge || 0) < freezeCost) {
+          return sendError(socket, `You need ${freezeCost} correct-answer charges to freeze ${targets.length} player${targets.length === 1 ? "" : "s"}.`);
+        }
+        if (targets.some((target) => room.frozenPlayers.has(target.id))) {
+          return sendError(socket, "A selected player is already frozen or queued to be frozen.");
+        }
+        const blockedPlayerIds = [];
+        const freezeResults = [];
+        const immediatelyAnnouncedTargets = [];
+        let freezeReflected = false;
+        for (const target of targets) {
+          if (target.competitionShield) {
+            target.competitionShield = false;
+            blockedPlayerIds.push(target.id);
+            immediatelyAnnouncedTargets.push(target);
+            if (!freezeReflected) {
+              startPlayerFreeze(room, player.id);
+              freezeReflected = true;
+            }
+            freezeResults.push({
+              playerId: target.id,
+              blocked: true,
+              reflected: true,
+              pending: false
+            });
+            continue;
+          }
+          const pending = room.answers.has(target.id);
+          if (pending) {
+            room.frozenPlayers.set(target.id, {
+              expiresAt: 0,
+              pending: true,
+              timer: null,
+              source: { id: player.id, name: player.name }
+            });
+          } else {
+            startPlayerFreeze(room, target.id);
+            immediatelyAnnouncedTargets.push(target);
+          }
+          freezeResults.push({ playerId: target.id, blocked: false, pending });
+        }
+        player.competitionCharge -= freezeCost;
+        send(player.socket, {
+          type: "powerup-applied",
+          powerup: "freeze",
+          targets: freezeResults
+        });
+        if (immediatelyAnnouncedTargets.length > 0) {
+          announcePowerup(room, player, "freeze", immediatelyAnnouncedTargets, blockedPlayerIds, {
+            ...(freezeReflected
+              ? { reflectedPlayer: { id: player.id, name: player.name } }
+              : {})
+          });
+        }
+      }
+      player.competitionPowerupsUsed = (player.competitionPowerupsUsed || 0) + 1;
+      rememberPlayerScore(room, player);
+      broadcastRoom(room);
       break;
     }
     case "player-progress": {
@@ -1525,6 +2272,7 @@ function handleMessage(socket, rawMessage) {
         if (!room.answers.has(member.id)) room.answers.set(member.id, null);
       });
       room.answersLocked = [...room.answers.keys()];
+      defaultUnchosenWagers(room);
       revealRoomAnswers(room);
       break;
     }
@@ -1536,6 +2284,7 @@ function handleMessage(socket, rawMessage) {
         if (!room.answers.has(member.id)) room.answers.set(member.id, null);
       });
       room.answersLocked = [...room.answers.keys()];
+      defaultUnchosenWagers(room);
       revealRoomAnswers(room);
       break;
     }

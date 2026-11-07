@@ -54,6 +54,17 @@
 		discLoadSound.volume = 0.55;
 		let selectionId = 0;
 		let activeCategory = "QuizHub OST";
+		let alternateTrack9Held = false;
+
+		document.addEventListener("keydown", (event) => {
+			if (event.key.toLowerCase() === "a") alternateTrack9Held = true;
+		});
+		document.addEventListener("keyup", (event) => {
+			if (event.key.toLowerCase() === "a") alternateTrack9Held = false;
+		});
+		window.addEventListener("blur", () => {
+			alternateTrack9Held = false;
+		});
 
 		function renderOptions() {
 			const selected = window.quizHubPreferences.quizMusic;
@@ -82,7 +93,9 @@
 						"aria-pressed",
 						String(track.value === selected),
 					);
-					trackButton.addEventListener("click", () => selectTrack(track.value));
+					trackButton.addEventListener("click", () =>
+						selectTrack(track.value, alternateTrack9Held),
+					);
 					options.append(trackButton);
 			});
 		}
@@ -92,11 +105,17 @@
 			renderOptions();
 		}
 
-		function selectTrack(value) {
+		function selectTrack(value, useAlternateTrack9 = false) {
+			const alternateTrack9 =
+				value === "NetHubBonus9" && useAlternateTrack9;
 			const reshuffle =
 				window.quizHubPreferences.isQuizMusicRotationValue(value) &&
 				value === window.quizHubPreferences.quizMusic;
-			if (value === window.quizHubPreferences.quizMusic && !reshuffle) {
+			if (
+				value === window.quizHubPreferences.quizMusic &&
+				!reshuffle &&
+				!alternateTrack9
+			) {
 				closeDialog();
 				return;
 			}
@@ -111,13 +130,23 @@
 			const currentSelection = ++selectionId;
 			onSelectionStart();
 
+			discLoadSound.src = new URL(
+				alternateTrack9 ? "./secret/Loading.mp3" : "./sfx/Confirm.wav",
+				window.location.href,
+			).toString();
+			discLoadSound.load();
 			const startSelectedTrack = () => {
 				discLoadSound.removeEventListener("ended", startSelectedTrack);
 				discLoadSound.removeEventListener("error", startSelectedTrack);
 				if (currentSelection !== selectionId) return;
 				discLoadSound.pause();
 				discLoadSound.currentTime = 0;
-				onTrackSelected(isMusicEnabled(), reshuffle, value);
+				onTrackSelected(
+					isMusicEnabled(),
+					reshuffle,
+					value,
+					alternateTrack9,
+				);
 				closeDialog();
 			};
 			if (!isSoundEnabled()) {

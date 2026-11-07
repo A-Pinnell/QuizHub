@@ -249,7 +249,7 @@
     isSoundEnabled: () => state.sound,
     isMusicEnabled: () => state.music && !state.paused,
     onSelectionStart: () => music.pause(),
-    onTrackSelected: (shouldPlay, reshuffle, selection) => {
+    onTrackSelected: (shouldPlay, reshuffle, selection, useAlternateTrack9) => {
       const mainSource = reshuffle
         ? window.quizHubPreferences.getNextQuizMusic(
             music.currentSrc || music.src,
@@ -258,6 +258,7 @@
         : window.quizHubPreferences.resolveQuizMusic(
             defaultMusicSource,
             selection,
+            useAlternateTrack9,
           );
       introMusicMainSource = reshuffle
         ? null

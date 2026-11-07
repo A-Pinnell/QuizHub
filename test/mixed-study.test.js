@@ -43,6 +43,7 @@ test("mixed source normalization is canonical and rejects empty, duplicate, and 
 
 test("mixed bank combines selected course banks and individual review sets with course prefixes", () => {
   const bank = mixedStudy.buildQuestionBank(questionBank, [
+    { category: "CompArch", quiz: "quiz3" },
     { category: "CompArch", quiz: "quiz2" },
     { category: "SocIndi", quiz: "reviewQuiz", section: "CHAPTER 1" },
     { category: "SocIndi", quiz: "reviewQuiz", section: "CHAPTER 2" },
@@ -58,6 +59,9 @@ test("mixed bank combines selected course banks and individual review sets with 
   assert.ok(bank.some((question) => question.mixedSource.section === "CHAPTER 2"));
   assert.ok(
     bank.some((question) => question.mixedSource.category === "CompArch" && question.mixedSource.quiz === "quiz2"),
+  );
+  assert.ok(
+    bank.some((question) => question.mixedSource.category === "CompArch" && question.mixedSource.quiz === "quiz3"),
   );
   assert.ok(
     bank.some((question) => question.q.startsWith("For Tech Soc Indi People Can,")),

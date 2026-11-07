@@ -28,6 +28,11 @@
 				external: "hexadecimal-quiz.html",
 			},
 			{ id: "quiz2", label: "5a & 5b Practice", detail: "for Nov 2" },
+			{
+				id: "quiz3",
+				label: "Operating System Support Review",
+				detail: "for Nov 11",
+			},
 		],
 		CloudComp: [
 			{ id: "quiz1", label: "First Slides Practice", detail: "for Sept 24" },

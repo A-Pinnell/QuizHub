@@ -16,6 +16,7 @@
 	const sources = [
 		["CompArch", "quiz1", null, "First Slides Practice"],
 		["CompArch", "quiz2", null, "5a & 5b Practice"],
+		["CompArch", "quiz3", null, "Operating System Support Review"],
 		["CompArch", "test1", null, "Midterm Practice", true],
 		["CloudComp", "quiz1", null, "First Slides Practice"],
 		["CloudComp", "quiz2", null, "Week 4 Slides Practice"],
