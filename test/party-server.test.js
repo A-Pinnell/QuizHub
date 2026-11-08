@@ -2123,7 +2123,7 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
 
   const chargeForPowerups = waitForMessage(host, "room-state", (message) =>
     message.room.players.find((player) => player.id === otherJoin.playerId)?.competitionCharge === 50 &&
-    message.room.players.find((player) => player.id === thirdJoin.playerId)?.competitionCharge === 5
+    message.room.players.find((player) => player.id === thirdJoin.playerId)?.competitionCharge === 0
   );
   send(host, {
     type: "dev-set-competition-charge",
@@ -2135,7 +2135,7 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
     type: "dev-set-competition-charge",
     code: hosted.room.code,
     playerId: thirdJoin.playerId,
-    charge: 5
+    charge: 0
   });
   await chargeForPowerups.catch((error) => {
     throw new Error(`Setting powerup test charges failed: ${error.message}`);
@@ -2159,6 +2159,10 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   const reflectedShieldApplied = waitForMessage(thirdPlayer, "powerup-applied", (message) =>
     message.powerup === "shield"
   );
+  const reflectedShieldDebt = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((player) => player.id === thirdJoin.playerId)
+      ?.competitionCharge === -5
+  );
   const shieldAnnouncement = waitForMessage(host, "powerup-used", (message) =>
     message.powerup === "shield"
   );
@@ -2169,6 +2173,7 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   });
   await reflectedShieldApplied;
   assert.equal((await shieldAnnouncement).player.name, "Third Player");
+  await reflectedShieldDebt;
 
   const ghostResult = waitForMessage(otherPlayer, "powerup-applied", (message) =>
     message.powerup === "ghost"

@@ -2043,6 +2043,7 @@ Version 3.1.5
 Version 3.1.4
 - More questions have been added to the 5a and 5b practice quiz
 - Binary Quiz II has been added, for practicing IEEE 754 single-precision bit patterns.
+
 Version 3.1.3
 - NetHub has switched from Supabase to Cloudflare D1
 - A new quiz for Computer Architecture has been added, for practicing 5a and 5b slides

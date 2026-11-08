@@ -1991,9 +1991,6 @@ function handleMessage(socket, rawMessage) {
         : 0;
       if (!powerupCost) return sendError(socket, "Choose a valid powerup.");
       if (message.powerup === "split") {
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
-        }
         const wrongAnswers = room.question.answerOrder.filter(
           (answerIndex) => answerIndex !== room.question.correctIndex
         );
@@ -2011,9 +2008,6 @@ function handleMessage(socket, rawMessage) {
         send(player.socket, { type: "powerup-applied", powerup: "split", removedAnswers });
         announcePowerup(room, player, "split");
       } else if (message.powerup === "shield") {
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
-        }
         if (player.competitionShield) {
           return sendError(socket, "Your Shield is already active.");
         }
@@ -2022,9 +2016,6 @@ function handleMessage(socket, rawMessage) {
         send(player.socket, { type: "powerup-applied", powerup: "shield" });
         announcePowerup(room, player, "shield");
       } else if (message.powerup === "scramble") {
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
-        }
         if (room.scrambleRemaining.size > 0 ||
             room.question.scrambledPlayerIds?.length > 0) {
           return sendError(socket, "Scramble is already in effect.");
@@ -2040,9 +2031,6 @@ function handleMessage(socket, rawMessage) {
         if (!target || target.id === player.id || target.host || target.fakePlayer ||
             target.socket?.readyState !== WebSocket.OPEN) {
           return sendError(socket, "Choose another connected player to inspect.");
-        }
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
         }
         player.competitionCharge -= powerupCost;
         if (room.answers.has(target.id)) {
@@ -2068,9 +2056,6 @@ function handleMessage(socket, rawMessage) {
         }
         announcePowerup(room, player, "ghost", [target]);
       } else if (message.powerup === "streak-bonus") {
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
-        }
         if (player.competitionStreakBonus) {
           return sendError(socket, "Your Streak Bonus is already active.");
         }
@@ -2079,9 +2064,6 @@ function handleMessage(socket, rawMessage) {
         send(player.socket, { type: "powerup-applied", powerup: "streak-bonus" });
         announcePowerup(room, player, "streak-bonus");
       } else if (message.powerup === "streak-keeper") {
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
-        }
         if (player.competitionStreakKeeper) {
           return sendError(socket, "Your Streak Keeper is already active.");
         }
@@ -2090,9 +2072,6 @@ function handleMessage(socket, rawMessage) {
         send(player.socket, { type: "powerup-applied", powerup: "streak-keeper" });
         announcePowerup(room, player, "streak-keeper");
       } else if (message.powerup === "top-thief") {
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
-        }
         if (room.topThiefPlayerId) {
           return sendError(socket, "Top Thief is already active this question.");
         }
@@ -2105,9 +2084,6 @@ function handleMessage(socket, rawMessage) {
         if (!target || target.id === player.id || target.host || target.fakePlayer ||
             target.socket?.readyState !== WebSocket.OPEN) {
           return sendError(socket, "Choose another connected player to steal points from.");
-        }
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
         }
         const stolen = Math.min(10, Math.max(0, target.score || 0));
         if (stolen === 0) {
@@ -2139,9 +2115,6 @@ function handleMessage(socket, rawMessage) {
             target.socket?.readyState !== WebSocket.OPEN) {
           return sendError(socket, "Choose another connected player to drain.");
         }
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
-        }
         const drained = Math.min(5, target.competitionCharge || 0);
         if (drained === 0) {
           return sendError(socket, "That player has no charge to drain.");
@@ -2160,9 +2133,6 @@ function handleMessage(socket, rawMessage) {
       } else if (message.powerup === "reveal-players") {
         if (room.partyOptions.showLockedAnswers) {
           return sendError(socket, "Reveal Players is only available while player answers are hidden.");
-        }
-        if ((player.competitionCharge || 0) < powerupCost) {
-          return sendError(socket, `You need ${powerupCost} correct-answer charges to use this powerup.`);
         }
         if (room.revealPlayersUsed) {
           return sendError(socket, "Reveal Players is already active this question.");
@@ -2188,9 +2158,6 @@ function handleMessage(socket, rawMessage) {
           return sendError(socket, "Choose only other connected players to freeze.");
         }
         const freezeCost = powerupCost * targets.length;
-        if ((player.competitionCharge || 0) < freezeCost) {
-          return sendError(socket, `You need ${freezeCost} correct-answer charges to freeze ${targets.length} player${targets.length === 1 ? "" : "s"}.`);
-        }
         if (targets.some((target) => room.frozenPlayers.has(target.id))) {
           return sendError(socket, "A selected player is already frozen or queued to be frozen.");
         }

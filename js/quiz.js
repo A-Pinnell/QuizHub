@@ -2318,10 +2318,13 @@ function renderCompetitionControls() {
 	competitionControls.hidden = !visible;
 	if (!visible) return;
 	const ownPlayer = partyPlayers.find((player) => player.id === partyPlayerId);
-	const charge = Math.max(0, Number(ownPlayer?.competitionCharge) || 0);
-	competitionCharge.value = Math.min(15, charge);
+	const playerCharge = Number(ownPlayer?.competitionCharge);
+	const charge = Number.isFinite(playerCharge) ? playerCharge : 0;
+	competitionCharge.value = Math.max(0, Math.min(15, charge));
 	competitionChargeText.textContent = `${charge} charge`;
-	competitionPowerupsBalance.textContent = `${charge} charge available`;
+	competitionPowerupsBalance.textContent =
+		`${charge} charge${Math.abs(charge) === 1 ? "" : "s"} ` +
+		(charge < 0 ? "in debt" : "available");
 
 	const targets = partyPlayers.filter((player) =>
 		player.id !== partyPlayerId && !player.host && !player.fakePlayer &&
@@ -2341,23 +2344,22 @@ function renderCompetitionControls() {
 	competitionPowerupCatalog.querySelectorAll("[data-use-powerup]").forEach((button) => {
 		const powerup = button.dataset.usePowerup;
 		const unavailable = !canUsePowerup ||
-			(powerup === "freeze" && (charge < 5 || targets.length === 0)) ||
+			(powerup === "freeze" && targets.length === 0) ||
 			(powerup === "split" &&
-				(charge < 10 || competitionRemovedAnswers.length > 0 || answerCount !== 4)) ||
-			(powerup === "shield" && (charge < 5 || ownPlayer?.competitionShield === true)) ||
-			(powerup === "scramble" && (charge < 15 || scrambleActive)) ||
-			(powerup === "ghost" && (charge < 5 ||
-				targets.length === 0)) ||
+				(competitionRemovedAnswers.length > 0 || answerCount !== 4)) ||
+			(powerup === "shield" && ownPlayer?.competitionShield === true) ||
+			(powerup === "scramble" && scrambleActive) ||
+			(powerup === "ghost" && targets.length === 0) ||
 			(powerup === "streak-bonus" &&
-				(charge < 10 || ownPlayer?.competitionStreakBonus === true)) ||
+				ownPlayer?.competitionStreakBonus === true) ||
 			(powerup === "streak-keeper" &&
-				(charge < 20 || ownPlayer?.competitionStreakKeeper === true)) ||
-			(powerup === "charge-drain" && (charge < 15 || drainTargets.length === 0)) ||
-			(powerup === "thief" && (charge < 25 || thiefTargets.length === 0)) ||
+				ownPlayer?.competitionStreakKeeper === true) ||
+			(powerup === "charge-drain" && drainTargets.length === 0) ||
+			(powerup === "thief" && thiefTargets.length === 0) ||
 			(powerup === "top-thief" &&
-				(charge < 30 || competitionRoomSnapshot?.topThiefPlayerId)) ||
+				competitionRoomSnapshot?.topThiefPlayerId) ||
 			(powerup === "reveal-players" &&
-				(charge < 10 || competitionRevealedPlayers || !partyHideLockedAnswers));
+				(competitionRevealedPlayers || !partyHideLockedAnswers));
 		button.disabled = unavailable;
 	});
 	competitionPowerupCatalog
