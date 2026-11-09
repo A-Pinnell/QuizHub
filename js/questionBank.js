@@ -24887,6 +24887,1508 @@ window.questionBank = {
 				c: 0,
 			},
 		],
+		quiz2: [
+			{
+				q: "What does the term code smell describe?",
+				a: [
+					"A surface indication that usually points to a deeper problem in the system",
+					"A testing technique used to prove that every method is correct",
+					"A visible software error that always prevents the program from running",
+					"A performance measurement that identifies slow hardware components",
+				],
+				c: 0,
+			},
+			{
+				q: "Which areas are examined when identifying and addressing code smells?",
+				a: [
+					"Code smells, test smells, and smell detection tools",
+					"Clean code rules, naming conventions, and exception handling",
+					"Refactoring, UML diagrams, and software architecture patterns",
+					"Unit testing, integration testing, and deployment automation",
+				],
+				c: 0,
+			},
+			{
+				q: "According to Martin Fowler, what is a code smell?",
+				a: [
+					"A coding convention that must be followed by every programming language",
+					"A performance issue that can only be detected while the program executes",
+					"A confirmed defect that causes the system to return an incorrect result",
+					"A surface indication that usually corresponds to a deeper problem in the system",
+				],
+				c: 3,
+			},
+			{
+				q: "How does a code smell differ from a software bug?",
+				a: [
+					"It does not necessarily stop the code from working, but it can degrade quality and maintainability",
+					"It is an error in test data that disappears when the application is restarted",
+					"It always prevents the application from compiling, but does not affect maintainability",
+					"It changes the program's external behaviour, but improves the internal design",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is technical debt compared with regular debt?",
+				a: [
+					"A developer can avoid maintenance costs by postponing all testing activities",
+					"A small amount of borrowed money becomes a software license after several years",
+					"A program's execution time decreases as more code is added over time",
+					"A small cost of addressing poor code now can become a much larger cost later",
+				],
+				c: 3,
+			},
+			{
+				q: "Which practices help prevent code smells from accumulating?",
+				a: [
+					"Use as few classes as possible, skip reviews, and postpone all maintenance",
+					"Preserve architecture, follow standards, update documentation, and test exhaustively",
+					"Prioritize speed, avoid documentation, minimize testing, and remove architecture rules",
+					"Add features quickly, duplicate existing code, and reduce resource usage",
+				],
+				c: 1,
+			},
+			{
+				q: "Why should developers discuss and recognize code smells during maintenance?",
+				a: [
+					"Developers should recognize recurring warning signs in the code they maintain",
+					"Code smells are only relevant when a project uses object-oriented programming",
+					"Teams should replace every existing class whenever a new feature is requested",
+					"Developers should avoid discussing code quality until a software failure occurs",
+				],
+				c: 0,
+			},
+			{
+				q: "Which description correctly matches the five code-smell categories?",
+				a: [
+					"Bloaters, inheritance errors, resource optimists, lazy tests, and message chains",
+					"Large classes, conditional statements, test failures, duplicated tests, and exceptions",
+					"Bloaters, object-orientation abusers, change preventers, dispensables, and couplers",
+					"Change preventers, design patterns, testing tools, documentation issues, and bugs",
+				],
+				c: 2,
+			},
+			{
+				q: "What makes a method an example of the Long Method smell?",
+				a: [
+					"It accepts too many objects and has become difficult to instantiate or test",
+					"It returns too many values and has become difficult to compile or execute",
+					"It calls too many external services and has become difficult to deploy",
+					"It contains too many lines and has become difficult to understand or maintain",
+				],
+				c: 3,
+			},
+			{
+				q: "What characterizes a God Class or Large Class?",
+				a: [
+					"A class has too many constructors but contains only a few fields",
+					"A class contains too many fields, methods, or lines of code",
+					"A class contains several short methods that each have one responsibility",
+					"A class inherits too many interfaces but contains no implementation methods",
+				],
+				c: 1,
+			},
+			{
+				q: "According to the lecture, when is a Long Parameter List smell present?",
+				a: [
+					"A class contains three or more public methods",
+					"A method contains more than five local variables",
+					"A method returns three or more values",
+					"A method contains three or more parameters",
+				],
+				c: 3,
+			},
+			{
+				q: "What is Primitive Obsession?",
+				a: [
+					"Replacing every class field with a separate inheritance relationship",
+					"Excessive use of primitive types instead of objects for tasks such as currency or ranges",
+					"Using primitive types only when a method has more than three parameters",
+					"Excessive use of objects instead of primitive types for simple calculations",
+				],
+				c: 1,
+			},
+			{
+				q: "What are Data Clumps?",
+				a: [
+					"Multiple classes inherit the same methods from a shared superclass",
+					"A single object stores primitive values that are never accessed together",
+					"The same set of variables appears together in different parts of the code",
+					"Several methods in one class contain different sets of unrelated variables",
+				],
+				c: 2,
+			},
+			{
+				q: "Which five categories are used in Martin Fowler's classification?",
+				a: [
+					"Conditional complexity, inheritance, divergent change, comments, and coupling",
+					"Bloaters, object-orientation abusers, change preventers, dispensables, and couplers",
+					"Bloaters, data classes, test smells, object relations, and code detectors",
+					"Long methods, large classes, duplicate code, dead code, and lazy classes",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the recommended treatment for complex switch-case statements?",
+				a: [
+					"Use an object-oriented solution such as polymorphism",
+					"Move every case into a separate file and retain the central switch statement",
+					"Convert each case into a primitive field and store it in the calling class",
+					"Replace the switch with a longer sequence of nested conditional expressions",
+				],
+				c: 0,
+			},
+			{
+				q: "What does replacing a conditional with polymorphism aim to achieve?",
+				a: [
+					"Move behaviour into appropriate object types instead of relying on complex conditionals",
+					"Replace object types with numeric flags evaluated by a single method",
+					"Combine unrelated object behaviours into one shared conditional method",
+					"Move every conditional expression into the user interface layer",
+				],
+				c: 0,
+			},
+			{
+				q: "What is Refused Bequest or Inheritance?",
+				a: [
+					"A superclass uses only a few of the methods declared by its subclasses",
+					"A subclass overrides every inherited method with an identical implementation",
+					"A subclass uses only a few of the methods inherited from its superclass",
+					"Two unrelated classes inherit methods from different parent classes",
+				],
+				c: 2,
+			},
+			{
+				q: "What describes Alternative Classes with Different Interfaces?",
+				a: [
+					"Two classes perform different tasks while sharing the same method signatures",
+					"Two methods perform the same task and are declared inside one class",
+					"Two classes perform the same tasks but use different class or method names",
+					"Two subclasses inherit the same interface but implement unrelated behaviours",
+				],
+				c: 2,
+			},
+			{
+				q: "Which statement about code smells is accurate?",
+				a: [
+					"Primitive obsession is caused by excessive use of inheritance",
+					"Switch statements can sometimes be replaced with polymorphism",
+					"A maximum of four parameters is recommended for every method",
+					"The term code smell was coined by Martin Fowler in the 1990s",
+				],
+				c: 1,
+			},
+			{
+				q: "Which category contains smells where a change in one place triggers many other changes?",
+				a: ["Bloaters", "Change Preventers", "Dispensables", "Couplers"],
+				c: 1,
+			},
+			{
+				q: "What is Divergent Change?",
+				a: [
+					"A method accesses another object's data more often than its own data",
+					"A simple change to a class triggers many unrelated method changes within that class",
+					"A simple change to one class triggers changes across many different classes",
+					"A class delegates one operation to another class without adding behaviour",
+				],
+				c: 1,
+			},
+			{
+				q: "What does the Divergent Change example illustrate?",
+				a: [
+					"Unrelated responsibilities grouped in one class can make a single change affect several methods",
+					"A subclass can inherit unnecessary methods from a class with unrelated responsibilities",
+					"A method can depend on a chain of objects to retrieve a value",
+					"A single responsibility split across many classes can make one change affect each class",
+				],
+				c: 0,
+			},
+			{
+				q: "What is Shotgun Surgery?",
+				a: [
+					"A simple change in one class triggers many unrelated method changes in that same class",
+					"A class contains too many fields and methods to maintain efficiently",
+					"A simple change in one class triggers changes to multiple classes",
+					"A method delegates its entire task to another class without adding behaviour",
+				],
+				c: 2,
+			},
+			{
+				q: "Which five categories are used in Martin Fowler's code-smell grouping?",
+				a: [
+					"Large classes, long methods, primitive types, data clumps, and dead code",
+					"Inheritance, aggregation, composition, association, and generalization",
+					"Bloaters, object-orientation abusers, change preventers, dispensables, and couplers",
+					"Bloaters, test smells, resource optimism, message chains, and lazy classes",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the Comments code smell described in the lecture?",
+				a: [
+					"A method is filled with explanatory comments because its code is not intuitive enough",
+					"A method contains no comments even though its implementation is already self-explanatory",
+					"A project uses comments to record the external resources required by its tests",
+					"A class contains comments that document every public field and getter method",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main idea behind self-documenting code?",
+				a: [
+					"Use abbreviations in method names so the source code takes up less space",
+					"Use clear names and structure so the code explains its intent without excessive comments",
+					"Move all implementation details into external documentation files",
+					"Add a detailed comment above every statement so the implementation is fully repeated",
+				],
+				c: 1,
+			},
+			{
+				q: "How should duplicated code generally be addressed?",
+				a: [
+					"Move all copies into one large method with a conditional for each original location",
+					"Replace each duplicated block with a new subclass containing the same code",
+					"Keep each copy separate and add comments explaining why it is repeated",
+					"Remove duplication by extracting a method or class that can be reused",
+				],
+				c: 3,
+			},
+			{
+				q: "What is a Lazy Class?",
+				a: [
+					"A class that takes a long time to execute because it contains many methods",
+					"A class that contains many fields but delegates all behaviour to its subclasses",
+					"A class that delays creating objects until every inherited method has been called",
+					"A class that does not do much and may no longer justify the cost of maintaining it",
+				],
+				c: 3,
+			},
+			{
+				q: "What characterizes a Data Class?",
+				a: [
+					"It contains public fields and getter/setter methods but little or no behaviour",
+					"It contains many private methods and performs most of the system's business logic",
+					"It stores repeated groups of variables that appear in unrelated methods",
+					"It contains only static methods and cannot be instantiated by client code",
+				],
+				c: 0,
+			},
+			{
+				q: "What is Dead Code?",
+				a: [
+					"A method that is called frequently but returns an unchanged value",
+					"A class that contains public fields and no behaviour of its own",
+					"A variable, parameter, method, or class that is no longer used",
+					"A variable that is initialized only after an external resource is loaded",
+				],
+				c: 2,
+			},
+			{
+				q: "Which five categories are listed in Martin Fowler's code-smell classification?",
+				a: [
+					"Object-orientation abusers, test smells, assertion roulette, and resource optimism",
+					"Bloaters, object-orientation abusers, change preventers, dispensables, and couplers",
+					"Change preventers, code detectors, design patterns, and test fixtures",
+					"Bloaters, data clumps, dead code, lazy classes, and message chains",
+				],
+				c: 1,
+			},
+			{
+				q: "What is Feature Envy?",
+				a: [
+					"A method accesses another object's data more often than it accesses its own data",
+					"A method delegates a task to another class without using any of its data",
+					"A method contains many parameters that represent the same primitive value",
+					"A class accesses its own fields more often than it accesses another object's fields",
+				],
+				c: 0,
+			},
+			{
+				q: "What is Inappropriate Intimacy?",
+				a: [
+					"One class uses the internal fields or methods of another class",
+					"One class exposes only public methods and hides its internal implementation",
+					"A class contains several unrelated methods that should be moved elsewhere",
+					"Two classes perform similar tasks but use different method names",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a Message Chain?",
+				a: [
+					"A method that accesses another object's fields without calling its methods",
+					"A series of method calls in which each object depends on another object",
+					"A class that delegates one operation to a server through a single method",
+					"A sequence of unrelated messages sent by different actors to one object",
+				],
+				c: 1,
+			},
+			{
+				q: "What characterizes the Middle-man smell?",
+				a: [
+					"A class uses another class's internal fields to complete its own behaviour",
+					"A method accesses another object's data more often than its own data",
+					"A class performs only one task by delegating to another class",
+					"A class performs several unrelated tasks and owns too many methods",
+				],
+				c: 2,
+			},
+			{
+				q: "Which five categories are repeated in the lecture's summary?",
+				a: [
+					"Bloaters, object-orientation abusers, change preventers, dispensables, and couplers",
+					"Change preventers, long methods, comments, duplicate code, and dead code",
+					"Object-orientation abusers, inheritance, association, aggregation, and composition",
+					"Bloaters, lazy classes, test smells, message chains, and feature envy",
+				],
+				c: 0,
+			},
+			{
+				q: "Which smell occurs when one class accesses another class's internal fields or methods?",
+				a: [
+					"Feature Envy",
+					"Divergent Change",
+					"Inappropriate Intimacy",
+					"Refused Bequest",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the main focus of Test Smells?",
+				a: [
+					"Code-quality problems that occur in software testing code",
+					"Runtime errors that occur only in production application code",
+					"Performance problems caused by external software dependencies",
+					"Design problems that occur only in object-oriented class hierarchies",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a Mystery Guest test smell?",
+				a: [
+					"A test checks multiple methods of a class in one test method",
+					"A test uses external resources, such as a file containing test data, and is not independent",
+					"A test assumes an external resource exists and is already in the required state",
+					"A test contains several assertions without explaining their purpose",
+				],
+				c: 1,
+			},
+			{
+				q: "What distinguishes an Eager Test from a Lazy Test?",
+				a: [
+					"An Eager Test repeats one assertion, while a Lazy Test checks multiple unrelated classes",
+					"An Eager Test checks multiple methods, while a Lazy Test has several tests checking the same method with the same fixture",
+					"An Eager Test assumes resources exist, while a Lazy Test uses external test data",
+					"An Eager Test checks another class, while a Lazy Test adds methods only for tests",
+				],
+				c: 1,
+			},
+			{
+				q: "What is Assertion Roulette?",
+				a: [
+					"A test method contains multiple assertions without explanations",
+					"A test class checks a different production class than its own counterpart",
+					"A test method depends on external files that are not initialized in setup",
+					"Several test methods check the same method using an identical fixture",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the For Testers Only smell?",
+				a: [
+					"Test code contains methods that exist only for production execution",
+					"Production code contains methods that exist only for testing purposes",
+					"A test method assumes that external resources have already been created",
+					"A production method checks several classes using the same fixture",
+				],
+				c: 1,
+			},
+			{
+				q: "Which statement best explains why developers should address code-quality problems deliberately?",
+				a: [
+					"Testing tools can automatically refactor every class without developer review",
+					"Code quality requires deliberate attention rather than simply allowing code to accumulate",
+					"Code comments are the only reliable way to preserve software design",
+					"Every code smell is a runtime bug that must be fixed before release",
+				],
+				c: 1,
+			},
+			{
+				q: "Which tool is listed as a popular code-smell detection tool?",
+				a: ["JUnit", "SonarQube", "JUnit Runner", "Maven"],
+				c: 1,
+			},
+			{
+				q: "Why can software that works correctly still require attention to code smells?",
+				a: [
+					"Working code is always well designed if it passes the available test suite",
+					"Code smells are errors that must be fixed by adding more comments",
+					"Code quality depends mainly on choosing a particular detection tool",
+					"Working code can still have deeper design problems that make it hard to change and maintain",
+				],
+				c: 3,
+			},
+			{
+				q: "Which resources would help a developer apply clean-code practices more consistently?",
+				a: [
+					"It points learners toward further material about code quality and code smells",
+					"It introduces new code-smell categories not discussed in the lecture",
+					"It provides test data files that must be loaded before running the examples",
+					"It lists the required software tools for building and deploying an application",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the practical value of recognizing code smells during software maintenance?",
+				a: [
+					"The lecture concludes with a software-engineering discussion and questions",
+					"The lecture introduces a new category of code smells for future study",
+					"The lecture compares the runtime performance of different detection tools",
+					"The lecture demonstrates a complete automated refactoring workflow",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the primary goal of refactoring?",
+				a: [
+					"To improve the internal structure of existing code without changing its external behaviour",
+					"To add new user-facing features while leaving the existing structure unchanged",
+					"To rewrite a working system in a different programming language",
+					"To increase execution speed by replacing the existing test suite",
+				],
+				c: 0,
+			},
+			{
+				q: "Which activities are central to improving existing code through refactoring?",
+				a: [
+					"Refactoring and the refactoring catalog",
+					"UML structure diagrams and behaviour diagrams",
+					"Clean code rules and technology reviews",
+					"Code smells and test-smell detection tools",
+				],
+				c: 0,
+			},
+			{
+				q: "What is refactoring?",
+				a: [
+					"A code optimization that changes the observable output of a method",
+					"A large change to external behaviour that adds a new software feature",
+					"A small change to internal code structure that does not change external behaviour",
+					"A rewrite that replaces the existing architecture with a new system",
+				],
+				c: 2,
+			},
+			{
+				q: "How do Fowler and Beck describe refactoring?",
+				a: [
+					"Changing external behaviour while preserving the original source-code structure",
+					"Adding features while improving performance and changing method signatures",
+					"Replacing the entire system while keeping its user interface unchanged",
+					"Changing internal structure while preserving behaviour and improving qualities such as understandability",
+				],
+				c: 3,
+			},
+			{
+				q: "Which activity is explicitly not considered refactoring in the lecture?",
+				a: [
+					"Moving a method to a more appropriate class",
+					"Adding a new feature to the software",
+					"Renaming a method while preserving its behaviour",
+					"Extracting a repeated code block into a method",
+				],
+				c: 1,
+			},
+			{
+				q: "Which statement summarizes the history of refactoring presented in the lecture?",
+				a: [
+					"Opdyke, Johnson, Griswold, Fowler, Beck, and others contributed to its development",
+					"Refactoring began with UML 2.5 and was later adopted by object-oriented languages",
+					"Martin Fowler first introduced refactoring in 1990 without earlier contributors",
+					"Kent Beck created the first refactoring catalog before Opdyke's research",
+				],
+				c: 0,
+			},
+			{
+				q: "Which is a benefit of refactoring?",
+				a: [
+					"Adding new external features while keeping all internal structures unchanged",
+					"Improving design and making code easier to understand, debug, and change",
+					"Removing the need for tests by making every method self-validating",
+					"Guaranteeing faster execution regardless of the changes made to the code",
+				],
+				c: 1,
+			},
+			{
+				q: "When does the lecture recommend refactoring?",
+				a: [
+					"Only when the project has no automated tests or deadlines",
+					"Whenever a new feature is added, regardless of the current code structure",
+					"Only after a production release has been completed and archived",
+					"When code smells appear, before adding features, or before fixing bugs",
+				],
+				c: 3,
+			},
+			{
+				q: "When should developers consider not refactoring?",
+				a: [
+					"Whenever the code has a test suite that can be run after each change",
+					"Before adding a feature, even when the existing code is easy to understand",
+					"When the cost is too high, tests are absent, a deadline is near, or no clear benefit exists",
+					"Whenever a method contains duplicate code or a class has many responsibilities",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the Rule of Three?",
+				a: [
+					"Refactor every code smell three times before adding a new feature",
+					"Write three test cases before making any internal code change",
+					"Create three alternative implementations before choosing a refactoring",
+					"After encountering similar bad code for a third time, refactor it",
+				],
+				c: 3,
+			},
+			{
+				q: "What is the purpose of having a solid test suite before refactoring?",
+				a: [
+					"Tests allow developers to change external behaviour without updating requirements",
+					"Automated tests help catch errors introduced by small structural changes",
+					"Tests automatically choose which refactoring technique should be applied",
+					"A test suite replaces the need to commit changes after refactoring",
+				],
+				c: 1,
+			},
+			{
+				q: "Which is one of Martin Fowler's six broad refactoring technique groups?",
+				a: [
+					"Optimizing database queries",
+					"Composing methods",
+					"Generating UML diagrams",
+					"Detecting runtime exceptions",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the purpose of Moving Features Between Objects?",
+				a: [
+					"Changing method parameters while preserving the current class responsibilities",
+					"Replacing primitive values with richer data structures and constants",
+					"Combining several conditional expressions into one shared decision method",
+					"Moving behaviour or data to suitable classes and hiding implementation details",
+				],
+				c: 3,
+			},
+			{
+				q: "What does the Organizing Data technique group focus on?",
+				a: [
+					"Replacing primitives with richer class features and untangling class associations",
+					"Moving methods between classes and hiding delegate relationships",
+					"Extracting long methods and replacing temporary variables with queries",
+					"Replacing nested conditionals with polymorphism and guard clauses",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the goal of Simplifying Conditional Expressions?",
+				a: [
+					"Reducing the number of subclasses in an inheritance hierarchy",
+					"Reducing complexity in conditional logic",
+					"Reducing the number of fields stored inside data classes",
+					"Reducing the number of parameters passed between methods",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the purpose of Simplifying Method Calls?",
+				a: [
+					"Making interfaces and interactions between classes simpler",
+					"Making object fields public so that callers can access them directly",
+					"Making class inheritance hierarchies deeper and more reusable",
+					"Making conditional expressions shorter without changing their logic",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Dealing with Generalization involve?",
+				a: [
+					"Moving conditional fragments into separate switch statements",
+					"Moving method parameters into a shared data object",
+					"Moving temporary variables into local method expressions",
+					"Moving methods and fields along the class inheritance hierarchy",
+				],
+				c: 3,
+			},
+			{
+				q: "What does the linked Refactoring Guru resource provide?",
+				a: [
+					"A checklist of naming conventions for clean source code",
+					"A list of test-smell categories and their detection tools",
+					"A guide to UML symbols used for class and sequence diagrams",
+					"A reference to the broader catalog of refactoring techniques",
+				],
+				c: 3,
+			},
+			{
+				q: "What does Replace Method with Method Object do?",
+				a: [
+					"Turns a separate class into a method that delegates all behaviour elsewhere",
+					"Replaces a method's parameters with a single primitive return value",
+					"Turns a complex method into a separate object that can hold its logic and data",
+					"Moves every method in a class into its superclass without changing structure",
+				],
+				c: 2,
+			},
+			{
+				q: "Why might a developer replace a method with a method object?",
+				a: [
+					"To ensure a method can return multiple unrelated values at once",
+					"To replace automated tests with a single reusable production method",
+					"To make a complex method's logic easier to organize and work with",
+					"To avoid creating objects when a method contains only a few statements",
+				],
+				c: 2,
+			},
+			{
+				q: "Which technique belongs to the Composing Methods group?",
+				a: [
+					"Extract Method",
+					"Pull Up Constructor Body",
+					"Move Field",
+					"Replace Type Code with Subclasses",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the Tiny Quiz Challenge emphasize about refactoring?",
+				a: [
+					"Refactoring is a multi-day rewrite that changes external behaviour",
+					"Refactoring is only appropriate after every code smell has been removed",
+					"Refactoring should continue without tests and should include bug fixes",
+					"Refactoring should be supported by tests and should not be confused with optimization",
+				],
+				c: 3,
+			},
+			{
+				q: "Which technique is listed under Moving Features Between Objects?",
+				a: [
+					"Move Method",
+					"Extract Variable",
+					"Consolidate Conditional Expression",
+					"Replace Magic Number with Symbolic Constant",
+				],
+				c: 0,
+			},
+			{
+				q: "Which refactoring is suggested for Feature Envy?",
+				a: [
+					"Move the method to the class whose data it uses most",
+					"Replace the method with a conditional expression in the client",
+					"Remove the data class and duplicate its fields in every caller",
+					"Move the fields into the class that currently contains the method",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the recommended treatment for a Middle-man smell?",
+				a: [
+					"Move the server's methods into the client while preserving the delegate",
+					"Add another delegation layer between the client and server",
+					"Replace the delegate with a new superclass and retain the middle-man",
+					"Remove the middle-man class when it only delegates work",
+				],
+				c: 3,
+			},
+			{
+				q: "Which is an example of an Organizing Data refactoring?",
+				a: [
+					"Extract Method",
+					"Replace Data Value with Object",
+					"Pull Up Method",
+					"Replace Conditional with Polymorphism",
+				],
+				c: 1,
+			},
+			{
+				q: "Which technique belongs to Simplifying Conditional Expressions?",
+				a: [
+					"Replace Array with Object",
+					"Replace Nested Conditional with Guard Clauses",
+					"Push Down Field",
+					"Introduce Parameter Object",
+				],
+				c: 1,
+			},
+			{
+				q: "Which technique belongs to Simplifying Method Calls?",
+				a: [
+					"Introduce Parameter Object",
+					"Change Value to Reference",
+					"Extract Superclass",
+					"Consolidate Duplicate Conditional Fragments",
+				],
+				c: 0,
+			},
+			{
+				q: "Which technique belongs to Dealing with Generalization?",
+				a: [
+					"Remove Parameter",
+					"Pull Up Method",
+					"Extract Variable",
+					"Replace Type Code with State/Strategy",
+				],
+				c: 1,
+			},
+			{
+				q: "What does the second Tiny Quiz Challenge ask learners to identify?",
+				a: [
+					"Techniques for primitive obsession and dead code, and whether comments are required",
+					"Techniques for Feature Envy and duplicate code, and whether lengthy cleanup is refactoring",
+					"Techniques for resource optimism and assertion roulette, and whether tests can be skipped",
+					"Techniques for aggregation and composition, and whether UML replaces code",
+				],
+				c: 1,
+			},
+			{
+				q: "How can an integrated development environment support refactoring?",
+				a: [
+					"An IDE can provide built-in support for common refactoring operations",
+					"An IDE can generate every UML diagram directly from requirements",
+					"An IDE can automatically replace the need for a test suite",
+					"An IDE can detect all design problems without developer review",
+				],
+				c: 0,
+			},
+			{
+				q: "Which practice is emphasized in the lecture's takeaways?",
+				a: [
+					"Make small changes, preserve behaviour, test, and commit regularly",
+					"Make large changes, introduce features, and test only after deployment",
+					"Optimize performance first, then decide whether the code's behaviour changed",
+					"Rewrite entire classes, remove automated tests, and defer commits",
+				],
+				c: 0,
+			},
+			{
+				q: "Which resources would help a developer apply clean-code practices more consistently?",
+				a: [
+					"It lists the IDE plugins required to run the lecture's examples",
+					"It provides an implementation of every refactoring technique in one file",
+					"It directs learners to further refactoring technique and catalog references",
+					"It introduces extra code-smell categories that replace the lecture's catalog",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the long-term purpose of refactoring software?",
+				a: [
+					"Software quality depends on adding features faster than competitors",
+					"Software should be rewritten whenever its internal structure becomes complex",
+					"Software should avoid structural changes once its first release is complete",
+					"Software is continuously improved through changes that make it easier to understand and maintain",
+				],
+				c: 3,
+			},
+			{
+				q: "What is the main topic of this presentation?",
+				a: [
+					"Refactoring and the catalog of structural code transformations",
+					"UML diagrams and the relationships used to model software systems",
+					"Clean Code and the rules used to make software easier to understand and maintain",
+					"Code smells and the tools used to detect poor software design",
+				],
+				c: 2,
+			},
+			{
+				q: "Which activities are central to improving existing code through refactoring?",
+				a: [
+					"Code smells, test smells, and smell detection tools",
+					"Clean code, clean-code rules, and technology reviews",
+					"UML introductions, behaviour diagrams, and class relationships",
+					"Refactoring history, benefits, and technique catalogs",
+				],
+				c: 1,
+			},
+			{
+				q: "Which description best matches the lecture's definition of Clean Code?",
+				a: [
+					"Code that others can understand and enhance, while adding business value",
+					"Code that uses the fewest possible classes regardless of its business purpose",
+					"Code that contains extensive comments and exposes all internal data structures",
+					"Code that executes quickly and avoids using external libraries or dependencies",
+				],
+				c: 0,
+			},
+			{
+				q: "Which statement best describes how developers improve their coding practices over time?",
+				a: [
+					"Developers should avoid changing code once it has passed its first test",
+					"Consistent practice helps developers improve their coding skills over time",
+					"Clean code can be achieved by following a checklist only once",
+					"Software quality depends mainly on using a particular programming language",
+				],
+				c: 1,
+			},
+			{
+				q: "Which set contains the clean-code rule categories listed in the lecture?",
+				a: [
+					"General, design, understandability, naming, function, comment, structure, data, exception, and test rules",
+					"Naming, UML, refactoring, code-smell, deployment, and architecture rules",
+					"Design, testing, debugging, networking, versioning, compilation, and packaging rules",
+					"General, deployment, inheritance, database, interface, performance, and security rules",
+				],
+				c: 0,
+			},
+			{
+				q: "What does the Boy Scout Rule recommend?",
+				a: [
+					"Remove all comments and documentation before adding a new feature",
+					"Avoid modifying code that was written by another developer",
+					"Keep every existing implementation unchanged until a rewrite is approved",
+					"Leave the code cleaner than you found it",
+				],
+				c: 3,
+			},
+			{
+				q: "What is the purpose of keeping configurable data at a high level?",
+				a: [
+					"Move configuration values into each object that uses them independently",
+					"Make every variable configurable so that the system supports more options",
+					"Make customization visible and accessible without scattering configuration throughout the code",
+					"Hide all configuration inside low-level methods to prevent client changes",
+				],
+				c: 2,
+			},
+			{
+				q: "Why should multithreading code be separated from single-threaded code?",
+				a: [
+					"Concurrency bugs are more complex and harder to find or reproduce",
+					"Separating the code removes the need to synchronize shared resources",
+					"Multithreading code always runs more slowly when it is separated into classes",
+					"Single-threaded code cannot call methods that are used by multiple threads",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the Law of Demeter's main recommendation?",
+				a: [
+					"A class should access the internal fields of its collaborators directly",
+					"A class should know every object in the system to avoid repeated method calls",
+					"A class should know only its direct dependencies or collaborators",
+					"A class should delegate all behaviour to objects several levels away",
+				],
+				c: 2,
+			},
+			{
+				q: "Why does the lecture recommend polymorphism over switch-case constructs?",
+				a: [
+					"Switch statements prevent object-oriented code from using inheritance",
+					"Switch statements cannot be used when a class contains multiple methods",
+					"Polymorphism combines all conditional branches into one central method",
+					"Polymorphism can place behaviour in appropriate types instead of complex conditionals",
+				],
+				c: 3,
+			},
+			{
+				q: "What does consistency mean in the Understandability Tips section?",
+				a: [
+					"Use a different naming and formatting approach in every method",
+					"Use the same approach for similar things throughout the code",
+					"Use one variable name for different concepts to reduce the number of identifiers",
+					"Keep all similar methods in separate classes regardless of their responsibilities",
+				],
+				c: 1,
+			},
+			{
+				q: "Why use explanatory variables?",
+				a: [
+					"They reduce the number of statements by hiding the expression's purpose",
+					"They replace descriptive method names with shorter primitive identifiers",
+					"They communicate the intent and meaning of an expression",
+					"They allow a method to reuse the same temporary value across unrelated tasks",
+				],
+				c: 2,
+			},
+			{
+				q: "Why should developers prefer dedicated objects to primitive types?",
+				a: [
+					"Dedicated objects can encapsulate related values and avoid primitive obsession",
+					"Primitive types always create logical dependencies between methods",
+					"Primitive types cannot represent values used by more than one method",
+					"Dedicated objects eliminate the need for methods and class responsibilities",
+				],
+				c: 0,
+			},
+			{
+				q: "Which naming practice is recommended by the lecture?",
+				a: [
+					"Choose names that are similar across unrelated concepts and methods",
+					"Choose descriptive, unambiguous, pronounceable, and searchable names",
+					"Choose short, abbreviated, encoded, and interchangeable names",
+					"Choose names based on data type and avoid communicating intent",
+				],
+				c: 1,
+			},
+			{
+				q: "How should identifier length relate to scope?",
+				a: [
+					"Use the same name length for fields, parameters, locals, and loop variables",
+					"Use shorter names for long scopes and longer names for local loop variables",
+					"Use longer names for long scopes and shorter names for short scopes",
+					"Use long names only for temporary variables and short names for class fields",
+				],
+				c: 2,
+			},
+			{
+				q: "How should names reflect abstraction?",
+				a: [
+					"Classes or interfaces should generally be nouns, while methods should be verbs or verbal phrases",
+					"Classes should use action phrases, while methods should use object names",
+					"Classes and methods should both use abbreviations that describe their data types",
+					"Classes should generally be verbs, while methods should be nouns or adjectives",
+				],
+				c: 0,
+			},
+			{
+				q: "Which naming practice makes a method easier to understand?",
+				a: [
+					"A method name should be abbreviated when it has more than one parameter",
+					"A method name should hide whether it creates a value or returns an existing value",
+					"A method name should describe only its return type rather than its purpose",
+					"A descriptive method name should communicate what the method does and its side effects",
+				],
+				c: 3,
+			},
+			{
+				q: "Which combination of practices supports understandable, maintainable code?",
+				a: [
+					"Keep threaded and single-threaded code together, use noun-based method names, and make loop variables long",
+					"Prefer switch statements, use static methods for collaborators, and give all identifiers the same length",
+					"Avoid direct dependencies, initialize collaborators inside clients, and use long names for every local variable",
+					"Follow the Law of Demeter, use dependency injection, and keep loop-variable names short within their scope",
+				],
+				c: 3,
+			},
+			{
+				q: "Which statement about method naming is recommended?",
+				a: [
+					"Method names should be nouns and avoid describing the operation performed",
+					"Method names should be short even when their purpose becomes ambiguous",
+					"Method names should use type prefixes to reveal their implementation details",
+					"Method names should communicate intent and should not hide side effects",
+				],
+				c: 3,
+			},
+			{
+				q: "What is one of the Function/Method Rules?",
+				a: [
+					"A method should perform several tasks when they share the same return type",
+					"A method should be small, have few parameters, and do only one thing",
+					"A method should accept unused parameters to support future functionality",
+					"A method should be long enough to contain all related operations and branches",
+				],
+				c: 1,
+			},
+			{
+				q: "Why should methods avoid flag arguments?",
+				a: [
+					"A Boolean flag forces a method to use a static implementation",
+					"A Boolean flag prevents a method from returning a value to its caller",
+					"A Boolean flag can indicate that the method performs more than one thing",
+					"A Boolean flag makes every method depend on another method's response",
+				],
+				c: 2,
+			},
+			{
+				q: "Which statement about method behaviour is recommended?",
+				a: [
+					"Use static methods for every operation to simplify object construction",
+					"Add side effects to make methods more reusable across different classes",
+					"Prefer methods that return void and remain unused until future releases",
+					"Avoid unexpected side effects and dead methods that are never called",
+				],
+				c: 3,
+			},
+			{
+				q: "What is a key recommendation from the code example and method rules?",
+				a: [
+					"Use Boolean flags to select between several independent method behaviours",
+					"Combine multiple unrelated tasks into one method to reduce method count",
+					"Keep methods focused and avoid unexpected side effects beyond their return value",
+					"Retain unused parameters so the method can support more future use cases",
+				],
+				c: 2,
+			},
+			{
+				q: "What should comments record according to the lecture?",
+				a: [
+					"A copy of the code so future developers can restore it if deleted",
+					"A list of every variable's type and every method's return value",
+					"A line-by-line explanation of every operation in the implementation",
+					"The intent of the code rather than a repetition of its implementation",
+				],
+				c: 3,
+			},
+			{
+				q: "What does the newspaper metaphor recommend for source-code structure?",
+				a: [
+					"Group all variables at the end of the file and separate related methods",
+					"Align every statement horizontally and place unrelated methods together",
+					"Separate concepts vertically and place related code close together",
+					"Place the most detailed implementation first and the public interface last",
+				],
+				c: 2,
+			},
+			{
+				q: "Which formatting practice is recommended for source code?",
+				a: [
+					"Use whitespace meaningfully and maintain consistent indentation",
+					"Remove blank lines between unrelated concepts to reduce file length",
+					"Use horizontal alignment for every assignment and break indentation when needed",
+					"Align all method bodies to the same column regardless of nesting",
+				],
+				c: 0,
+			},
+			{
+				q: "Which rule applies to Object and Data Structures?",
+				a: [
+					"Hide internal structures and keep classes small with a single responsibility",
+					"Use static methods for all behaviour and inherit constants from base classes",
+					"Increase instance variables so each class can manage multiple responsibilities",
+					"Expose internal fields and let parent classes depend on their children",
+				],
+				c: 0,
+			},
+			{
+				q: "When should a method catch an exception?",
+				a: [
+					"Whenever it needs to use an exception as a replacement for control flow",
+					"Only when the exception can be ignored without changing program state",
+					"Whenever an exception occurs, even if it cannot respond to it",
+					"Only when it can react to the exception meaningfully",
+				],
+				c: 3,
+			},
+			{
+				q: "Why should exceptions not be used for control flow?",
+				a: [
+					"Exceptions always cause the program to terminate before cleanup can occur",
+					"Exceptions cannot be caught by methods that return values",
+					"Doing so makes it harder to separate real exceptional conditions from normal logic",
+					"Control flow requires every exception to be converted into a Boolean",
+				],
+				c: 2,
+			},
+			{
+				q: "Which set describes the Test Rules in the lecture?",
+				a: [
+					"Tests should be long, shared, dependent, and non-repeatable, with multiple assertions",
+					"Tests should inherit from production classes and use external resources without setup",
+					"Tests should execute slowly and rely on the order in which other tests run",
+					"Tests should be readable, fast, independent, and repeatable, with one assertion per test",
+				],
+				c: 3,
+			},
+			{
+				q: "Which set of concerns should developers consider when designing clean methods and source code?",
+				a: [
+					"Method abstraction level, side effects, source layout, inheritance knowledge, and exception handling",
+					"Code-smell categories, refactoring history, and detection tools",
+					"UML relationship types, actor roles, class attributes, and sequence lifelines",
+					"Naming conventions, package management, deployment, and application configuration",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main takeaway of the Clean Code lecture?",
+				a: [
+					"Write code with extensive comments and public fields to make every detail visible",
+					"Write code for computers by prioritizing compactness over clarity and consistency",
+					"Write code for people by keeping it understandable, focused, organized, and maintainable",
+					"Write code once and avoid revisiting it after the first successful execution",
+				],
+				c: 2,
+			},
+			{
+				q: "Which resources would help a developer apply clean-code practices more consistently?",
+				a: [
+					"It lists software packages required to compile and execute all lecture examples",
+					"It introduces a new clean-code category that replaces the ten rule groups",
+					"It provides further checklists, cheat sheets, and examples for clean-code practices",
+					"It provides a set of production tests that must be run before refactoring",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the long-term purpose of refactoring software?",
+				a: [
+					"Clean code is defined by the number of comments included in each class",
+					"Clean code is achieved once the application passes its first compilation",
+					"Clean code should remain easy to read, understand, test, and maintain",
+					"Clean code requires every method to use static variables and public fields",
+				],
+				c: 2,
+			},
+			{
+				q: "What does Unified Modeling Language (UML) provide for software development?",
+				a: [
+					"A standardized visual language for specifying, visualizing, and documenting software systems",
+					"A programming language for implementing object-oriented classes and methods",
+					"A testing framework for verifying the runtime behaviour of software systems",
+					"A deployment notation for configuring servers and distributing executable files",
+				],
+				c: 0,
+			},
+			{
+				q: "Which set of concepts is central to using UML to model software systems?",
+				a: [
+					"Clean code rules, naming conventions, and source organization",
+					"Code smells, test smells, and software quality tools",
+					"Refactoring definitions, history, and technique catalogs",
+					"UML introduction, UML diagram types, and practical examples",
+				],
+				c: 3,
+			},
+			{
+				q: "What does UML stand for and what is its purpose?",
+				a: [
+					"Universal Modeling Logic, used to execute, test, deploy, and monitor software modules",
+					"Unified Method Language, used to compile, optimize, debug, and package software projects",
+					"Unified Modeling Language, used to specify, visualize, construct, and document software artifacts",
+					"Universal Markup Language, used to describe, store, transfer, and validate source code",
+				],
+				c: 2,
+			},
+			{
+				q: "What does system modeling provide?",
+				a: [
+					"A testing report that records all runtime errors and performance measurements",
+					"An abstract graphical representation that hides details and captures system perspectives",
+					"A complete implementation of the system that exposes every internal detail",
+					"A source-code listing that defines every method and variable in execution order",
+				],
+				c: 1,
+			},
+			{
+				q: "How does UML relate to Agile and XP according to the discussion?",
+				a: [
+					"Modeling and documentation must be considered alongside Agile priorities such as working code and collaboration",
+					"XP requires every UML diagram to be completed before any implementation begins",
+					"UML requires teams to prioritize documentation over people and working code",
+					"Agile methods prohibit diagrams because they are considered formal documentation",
+				],
+				c: 0,
+			},
+			{
+				q: "Which statement matches the Agile Manifesto comparison shown?",
+				a: [
+					"Comprehensive documentation is valued over working software",
+					"Processes and tools are valued over people and interactions",
+					"Following a plan is valued over responding to change",
+					"People and interactions are valued over processes and tools",
+				],
+				c: 3,
+			},
+			{
+				q: "What is the focus of the XP Practices slide?",
+				a: [
+					"It presents themes and practices associated with Extreme Programming",
+					"It compares the different types of relationships in a class diagram",
+					"It explains the historical development of object-oriented programming",
+					"It lists the five structural diagrams defined by UML",
+				],
+				c: 0,
+			},
+			{
+				q: "In object-oriented terminology, what do attributes or fields represent?",
+				a: [
+					"The relationships connecting multiple classes in a system model",
+					"The data of an object, generally hidden from the outside world",
+					"The messages exchanged between objects during program execution",
+					"The behaviours of an object, generally exposed as public operations",
+				],
+				c: 1,
+			},
+			{
+				q: "What is an Association relationship?",
+				a: [
+					"An inheritance relationship in which one class derives from another",
+					"A whole-part relationship in which parts cannot exist independently",
+					"A whole-part relationship in which the whole completely owns its parts",
+					"A general relationship in which one class uses or relates to another class",
+				],
+				c: 3,
+			},
+			{
+				q: "What does HAS-A represent in the object relations discussion?",
+				a: [
+					"Aggregation or composition, where a class extends its capabilities using another object",
+					"Dependency, where one class permanently replaces another class's behaviour",
+					"Association only, where two classes have no relationship beyond inheritance",
+					"Generalization, where a subclass inherits the features of a parent class",
+				],
+				c: 0,
+			},
+			{
+				q: "What are the two major types of UML diagrams?",
+				a: [
+					"Use-case diagrams and class diagrams",
+					"Static diagrams and dynamic diagrams",
+					"Association diagrams and inheritance diagrams",
+					"Structure diagrams and behaviour diagrams",
+				],
+				c: 3,
+			},
+			{
+				q: "Which diagram is listed as a structure diagram among the five popular UML diagrams?",
+				a: [
+					"Class Diagram",
+					"Sequence Diagram",
+					"Activity Diagram",
+					"Use-case Diagram",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the main goal of a Use-Case Diagram?",
+				a: [
+					"To explain the order of messages exchanged between objects over time",
+					"To explain the internal data structure and static relationships of classes",
+					"To explain the control flow and parallel activities within a process",
+					"To explain intended system uses and the system's environment",
+				],
+				c: 3,
+			},
+			{
+				q: "What are the three components identified for a Use-Case Diagram?",
+				a: [
+					"Class, attribute, and operation",
+					"Actor, action, and association",
+					"State, transition, and entry action",
+					"Lifeline, activation, and reply",
+				],
+				c: 1,
+			},
+			{
+				q: "In the D2L use-case example, what does the diagram help represent?",
+				a: [
+					"The sequence of method calls required to authenticate a user",
+					"Actors and the actions they can perform in the system",
+					"The states that a student account moves through during a session",
+					"The internal fields and operations of each D2L class",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the purpose of the Bank ATM use-case example?",
+				a: [
+					"To illustrate the inheritance hierarchy of bank account classes",
+					"To illustrate the internal control flow of an ATM transaction",
+					"To illustrate the order of synchronous calls among ATM objects",
+					"To illustrate actors and the actions available through an ATM system",
+				],
+				c: 3,
+			},
+			{
+				q: "What does an Activity Diagram explain?",
+				a: [
+					"The messages and replies exchanged between lifelines over time",
+					"The control flow or data flow of a system, including sequence and conditions",
+					"The static relationships and attributes that exist among classes",
+					"The intended uses and external actors of a software system",
+				],
+				c: 1,
+			},
+			{
+				q: "Which component of an Activity Diagram represents a decision point?",
+				a: [
+					"A decision node used to choose a path based on a condition",
+					"An object node used to represent stored data",
+					"A fork or join node used only to represent the start of a process",
+					"An action node used to represent a completed operation",
+				],
+				c: 0,
+			},
+			{
+				q: "Which relationship represents inheritance: association, generalization, or aggregation?",
+				a: ["Association", "Aggregation", "Generalization", "Composition"],
+				c: 2,
+			},
+			{
+				q: "Which diagram type is best suited to showing the order of messages between objects?",
+				a: [
+					"Use-Case Diagram",
+					"Sequence Diagram",
+					"Activity Diagram",
+					"Class Diagram",
+				],
+				c: 1,
+			},
+			{
+				q: "What does a Sequence Diagram explain?",
+				a: [
+					"The static features and relationships that exist among classes",
+					"The intended uses and environment of a software system",
+					"The states and transitions of a finite state machine",
+					"The sequence and interchange of messages among lifelines",
+				],
+				c: 3,
+			},
+			{
+				q: "What is a lifeline in a Sequence Diagram?",
+				a: [
+					"A horizontal activity bar that represents a conditional decision",
+					"A named element or individual participant involved in message exchanges",
+					"A class attribute that stores the state of an external resource",
+					"A vertical connector that represents the full inheritance hierarchy",
+				],
+				c: 1,
+			},
+			{
+				q: "What is a synchronous call in a Sequence Diagram?",
+				a: [
+					"A message that represents the end of an object's lifetime",
+					"A message that transfers control to a parallel activity without a response",
+					"A message where execution stops while waiting for the object's reply",
+					"A message where execution continues without waiting for a reply",
+				],
+				c: 2,
+			},
+			{
+				q: "What does the Facebook OAuth 2.0 sequence example emphasize?",
+				a: [
+					"Actors, use cases, associations, and multiplicity constraints",
+					"Classes, attributes, operations, inheritance, and static relationships",
+					"States, entry actions, exit actions, and decision points",
+					"Actors, objects, lifelines, synchronous calls, replies, and vertical ordering",
+				],
+				c: 3,
+			},
+			{
+				q: "Which diagram is one of the four behaviour diagrams listed in the lecture?",
+				a: [
+					"Class Diagram",
+					"Component Diagram",
+					"State Diagram",
+					"Deployment Diagram",
+				],
+				c: 2,
+			},
+			{
+				q: "What does a State Machine Diagram explain?",
+				a: [
+					"The messages exchanged between objects and the order in which they reply",
+					"The discrete behaviour of a finite state machine and its possible states",
+					"The static structure of classes and the relationships between their fields",
+					"The intended uses of a system and the actors that initiate those uses",
+				],
+				c: 1,
+			},
+			{
+				q: "What does the Microwave Oven state-machine example encourage designers to check?",
+				a: [
+					"Whether all possible states and transitions have been considered",
+					"Whether every message call is synchronous and receives a reply",
+					"Whether all class attributes are public and all methods are static",
+					"Whether all actors can access every use case in the system",
+				],
+				c: 0,
+			},
+			{
+				q: "Which UML diagram is the main structure diagram among the five popular types?",
+				a: [
+					"State Diagram",
+					"Activity Diagram",
+					"Class Diagram",
+					"Use-Case Diagram",
+				],
+				c: 2,
+			},
+			{
+				q: "What does a Class Diagram explain?",
+				a: [
+					"Classes and their static relationships, features, constraints, and operations",
+					"The discrete states and event-driven transitions of a system",
+					"The sequence of messages exchanged by objects during runtime",
+					"The control flow and data flow through a business process",
+				],
+				c: 0,
+			},
+			{
+				q: "What does Generalization represent in a Class Diagram?",
+				a: [
+					"A HAS-A relationship where parts cannot exist outside the whole",
+					"A HAS-A relationship where a whole object manages independent parts",
+					"An IS-A relationship where a specific class inherits from a more general class",
+					"An association where one class uses another without inheritance",
+				],
+				c: 2,
+			},
+			{
+				q: "What does Aggregation represent?",
+				a: [
+					"A HAS-A relationship where parts cannot exist outside the whole",
+					"A dependency where one class calls another class's private methods",
+					"An IS-A relationship where a subclass inherits the features of a parent",
+					"A HAS-A relationship where parts can exist or be managed outside the whole",
+				],
+				c: 3,
+			},
+			{
+				q: "What distinguishes Composition from Aggregation?",
+				a: [
+					"Composition represents any association between two unrelated classes",
+					"Composition represents an IS-A relationship between a specific and general class",
+					"Composition has parts that do not exist outside the whole, which manages them completely",
+					"Composition has parts that are managed independently outside the whole",
+				],
+				c: 2,
+			},
+			{
+				q: "What does the class diagram example communicate about Student, Instructor, and User?",
+				a: [
+					"Student and Instructor are associations of each other but have no Course",
+					"Student and Instructor inherit from Course, which inherits from User",
+					"Student and Instructor are Users, and both have a Course relationship",
+					"Course inherits from Student and Instructor, which are unrelated to User",
+				],
+				c: 2,
+			},
+			{
+				q: "Which relationship is used when part objects cannot exist outside the whole?",
+				a: ["Aggregation", "Association", "Generalization", "Composition"],
+				c: 3,
+			},
+			{
+				q: "Where can developers turn to deepen their understanding of UML diagrams and modeling?",
+				a: [
+					"To introduce extra UML relationship types not covered in the lecture",
+					"To point learners toward references and tools for further UML study",
+					"To list the required source files for implementing a class diagram",
+					"To provide a complete code implementation of the example system",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the main takeaway of the UML lecture?",
+				a: [
+					"UML helps visualize, communicate, and design software structure and behaviour before coding",
+					"UML is limited to representing class inheritance in object-oriented systems",
+					"UML replaces implementation and testing by providing a complete system model",
+					"UML is primarily used to document code after the system has been deployed",
+				],
+				c: 0,
+			},
+			{
+				q: "How can UML diagrams help developers communicate a software design?",
+				a: [
+					"It presents a new relationship that replaces aggregation and composition",
+					"It summarizes the complete syntax for writing UML diagrams in code",
+					"It concludes the presentation and invites further discussion or questions",
+					"It introduces a sixth major UML diagram type for advanced systems",
+				],
+				c: 2,
+			},
+		],
 	},
 
 	CompGFX: {

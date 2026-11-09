@@ -12,6 +12,7 @@ const canonicalCategory = (value) => {
 
 const soundFiles = {
 	correct: resolveAssetUrl("./sfx/Correct.wav"),
+	aiCorrect: resolveAssetUrl("./sfx/ai-correct.mp3"),
 	highlight: resolveAssetUrl("./sfx/highlight.wav"),
 	incorrect: resolveAssetUrl("./sfx/Incorrect.wav"),
 	begin: resolveAssetUrl("./sfx/QuizBegin.wav"),
@@ -207,10 +208,9 @@ const initialQuizMusicSelection =
 		? netHubQuizMusic.track
 		: window.quizHubPreferences.quizMusic;
 if (!netHubQuizMusic?.upload) {
-	const introSource =
-		window.quizHubPreferences.resolveQuizMusicIntro(
-			initialQuizMusicSelection,
-		);
+	const introSource = window.quizHubPreferences.resolveQuizMusicIntro(
+		initialQuizMusicSelection,
+	);
 	if (introSource) {
 		quizMusicIntroMainSource = resolveQuizMusicSource();
 		quizMusicIntroPlaysRemaining =
@@ -235,10 +235,8 @@ let lautestLoopSourceUrl = "";
 let lautestLoopGeneration = 0;
 quizMusic.loop =
 	!quizMusicIntroMainSource &&
-		(Boolean(netHubQuizMusic) ||
-			!window.quizHubPreferences.isQuizMusicRotation);
-quizMusic.volume =
-	0.45 * (netHubQuizMusic?.upload ? 10 ** (-12 / 20) : 1);
+	(Boolean(netHubQuizMusic) || !window.quizHubPreferences.isQuizMusicRotation);
+quizMusic.volume = 0.45 * (netHubQuizMusic?.upload ? 10 ** (-12 / 20) : 1);
 function updateMusicToggle() {
 	musicToggle.textContent = musicMuted ? "♫̸" : "♫";
 	musicToggle.disabled = false;
@@ -360,7 +358,10 @@ function applyHostDisplayMusicChange(message, playConfirmation) {
 	confirmSound.addEventListener("ended", applySelection, { once: true });
 	confirmSound.addEventListener("error", applySelection, { once: true });
 	confirmSound.play().catch((error) => {
-		console.warn("Could not play the Host Display music confirmation sound:", error);
+		console.warn(
+			"Could not play the Host Display music confirmation sound:",
+			error,
+		);
 		applySelection();
 	});
 }
@@ -377,7 +378,9 @@ function startQuizMusic() {
 		const musicPromise = window.quizHubNetHubMusicPromise;
 		if (!musicPromise) {
 			netHubMusicLoadStarted = false;
-			console.error("Could not load saved quiz music: no storage request was started.");
+			console.error(
+				"Could not load saved quiz music: no storage request was started.",
+			);
 			return;
 		}
 		musicPromise
@@ -550,8 +553,7 @@ function startLautestQuizMusic() {
 	const mainSource = window.quizHubPreferences.resolveQuizMusic(
 		quizMusicDefaultSource,
 	);
-	quizMusicIntroMainSource =
-		window.quizHubPreferences.resolveQuizMusicIntro();
+	quizMusicIntroMainSource = window.quizHubPreferences.resolveQuizMusicIntro();
 	quizMusicIntroPlaysRemaining =
 		window.quizHubPreferences.getQuizMusicIntroPlayCount();
 	quizMusic.src = quizMusicIntroMainSource || mainSource;
@@ -660,9 +662,10 @@ function syncHostDisplayControls(room) {
 	);
 	document.body.classList.toggle("host-display-player", hostDisplayAnswerer);
 	const quizMusicButton = document.getElementById("quizMusicCycle");
-	quizMusicButton.hidden = networkPartyActive && hostDisplayEnabled
-		? !partyHost && !hostDisplayAnswerer
-		: Boolean(netHubQuizMusic);
+	quizMusicButton.hidden =
+		networkPartyActive && hostDisplayEnabled
+			? !partyHost && !hostDisplayAnswerer
+			: Boolean(netHubQuizMusic);
 	if (networkPartyActive && !partyHost) {
 		skipButton.hidden = !hostDisplayAnswerer;
 		nextButton.hidden = !hostDisplayAnswerer;
@@ -699,11 +702,11 @@ const selectedQuizTheme =
 	)
 		? window.quizHubNetHubQuiz.theme
 		: hostDisplayEnabled &&
-	["default", "quizhub", "ai-model", "blended"].includes(
-		requestedPartyQuizTheme,
-	)
-		? requestedPartyQuizTheme
-		: window.quizHubPreferences.quizTheme;
+			  ["default", "quizhub", "ai-model", "blended"].includes(
+					requestedPartyQuizTheme,
+			  )
+			? requestedPartyQuizTheme
+			: window.quizHubPreferences.quizTheme;
 const activeQuizTheme = mixedStudyActive
 	? "quizhub"
 	: selectedQuizTheme === "default"
@@ -836,7 +839,7 @@ const supportsQuestionPresentation =
 	!partyModeRequested &&
 	(window.quizHubNetHubQuiz?.allowShortAnswer === true ||
 		(["CompArch", "CloudComp"].includes(category) &&
-		requestedQuiz === "test1") ||
+			requestedQuiz === "test1") ||
 		(["DataSci", "CompGFX"].includes(category) &&
 			["test1", "lautest"].includes(requestedQuiz)));
 let partyPlayers = [];
@@ -988,19 +991,39 @@ document.body.appendChild(competitionFreezeOverlay);
 const competitionControls = document.getElementById("competitionControls");
 const competitionCharge = document.getElementById("competitionCharge");
 const competitionChargeText = document.getElementById("competitionChargeText");
-const competitionPowerupsButton = document.getElementById("competitionPowerupsButton");
-const competitionPowerupsDialog = document.getElementById("competitionPowerupsDialog");
-const competitionPowerupsBalance = document.getElementById("competitionPowerupsBalance");
-const competitionActivePowerups = document.getElementById("competitionActivePowerups");
-const competitionPointsToast = document.getElementById("competitionPointsToast");
-const competitionPowerupCatalog = document.getElementById("competitionPowerupCatalog");
+const competitionPowerupsButton = document.getElementById(
+	"competitionPowerupsButton",
+);
+const competitionPowerupsDialog = document.getElementById(
+	"competitionPowerupsDialog",
+);
+const competitionPowerupsBalance = document.getElementById(
+	"competitionPowerupsBalance",
+);
+const competitionActivePowerups = document.getElementById(
+	"competitionActivePowerups",
+);
+const competitionPointsToast = document.getElementById(
+	"competitionPointsToast",
+);
+const competitionPowerupCatalog = document.getElementById(
+	"competitionPowerupCatalog",
+);
 const competitionWager = document.getElementById("competitionWager");
 const competitionAllIn = document.getElementById("competitionAllIn");
 const competitionStatus = document.getElementById("competitionStatus");
-const competitionTargetDialog = document.getElementById("competitionTargetDialog");
-const competitionTargetChoices = document.getElementById("competitionTargetChoices");
-const competitionTargetTitle = document.getElementById("competitionTargetTitle");
-const competitionPowerupConfirm = document.getElementById("competitionPowerupConfirm");
+const competitionTargetDialog = document.getElementById(
+	"competitionTargetDialog",
+);
+const competitionTargetChoices = document.getElementById(
+	"competitionTargetChoices",
+);
+const competitionTargetTitle = document.getElementById(
+	"competitionTargetTitle",
+);
+const competitionPowerupConfirm = document.getElementById(
+	"competitionPowerupConfirm",
+);
 const competitionAnnouncement = document.createElement("div");
 competitionAnnouncement.className = "competition-announcement";
 competitionAnnouncement.setAttribute("role", "status");
@@ -1162,6 +1185,123 @@ const questionImageExpanded = document.getElementById("questionImageExpanded");
 const questionImageClose = document.getElementById("questionImageClose");
 const isSoftEngi = activeQuizTheme === "ai-model";
 const isCompGFX = category === "CompGFX" && activeQuizTheme === "blended";
+const aiCorrectOverlay = document.getElementById("aiCorrectOverlay");
+const aiCorrectCanvas = document.getElementById("aiCorrectCanvas");
+const aiCorrectCanvasContext = aiCorrectCanvas.getContext("2d");
+const aiCorrectImage = aiCorrectOverlay.querySelector("img");
+let aiCorrectDecoderPromise = null;
+let aiCorrectPlaybackGeneration = 0;
+const aiCorrectFrameDuration = 10 / 0.5;
+aiCorrectOverlay.addEventListener("animationend", (event) => {
+	if (event.animationName !== "aiCorrectFlashFade") return;
+	aiCorrectPlaybackGeneration++;
+	aiCorrectOverlay.classList.remove("is-visible");
+	aiCorrectOverlay.hidden = true;
+});
+async function getAiCorrectDecoder() {
+	if (!("ImageDecoder" in window)) {
+		throw new Error("This browser does not support animated image decoding.");
+	}
+	if (!aiCorrectDecoderPromise) {
+		aiCorrectDecoderPromise = (async () => {
+			const response = await fetch(
+				aiCorrectImage.currentSrc || aiCorrectImage.src,
+			);
+			if (!response.ok) {
+				throw new Error(
+					`Could not load the celebration GIF (${response.status}).`,
+				);
+			}
+			const decoder = new ImageDecoder({
+				data: await response.arrayBuffer(),
+				type: "image/gif",
+				preferAnimation: true,
+			});
+			await decoder.tracks.ready;
+			if (!decoder.tracks.selectedTrack?.frameCount) {
+				decoder.close();
+				throw new Error("The celebration GIF contains no decodable frames.");
+			}
+			return decoder;
+		})();
+	}
+	try {
+		return await aiCorrectDecoderPromise;
+	} catch (error) {
+		aiCorrectDecoderPromise = null;
+		throw error;
+	}
+}
+async function playAiCorrectFrames(generation, decoder) {
+	const frameCount = decoder.tracks.selectedTrack.frameCount;
+	const cycleDuration = frameCount * aiCorrectFrameDuration;
+	const startFrame = Math.random() < 0.5 ? 75 % frameCount : 0;
+	let cycleStart = performance.now();
+
+	while (generation === aiCorrectPlaybackGeneration) {
+		for (let frameOffset = 0; frameOffset < frameCount; frameOffset++) {
+			if (generation !== aiCorrectPlaybackGeneration) return;
+			const frameIndex = (startFrame + frameOffset) % frameCount;
+			const { image } = await decoder.decode({ frameIndex });
+			if (generation !== aiCorrectPlaybackGeneration) {
+				image.close();
+				return;
+			}
+			const targetTime = cycleStart + frameOffset * aiCorrectFrameDuration;
+			const wait = targetTime - performance.now();
+			if (wait > 0) {
+				await new Promise((resolve) => setTimeout(resolve, wait));
+			}
+			if (generation !== aiCorrectPlaybackGeneration) {
+				image.close();
+				return;
+			}
+			if (frameOffset === 0) {
+				aiCorrectCanvas.width = image.displayWidth;
+				aiCorrectCanvas.height = image.displayHeight;
+				aiCorrectCanvas.hidden = false;
+				aiCorrectImage.hidden = true;
+			}
+			aiCorrectCanvasContext.drawImage(
+				image,
+				0,
+				0,
+				aiCorrectCanvas.width,
+				aiCorrectCanvas.height,
+			);
+			image.close();
+		}
+		cycleStart += cycleDuration;
+		if (cycleStart < performance.now()) cycleStart = performance.now();
+	}
+}
+async function startAiCorrectAnimation() {
+	const generation = ++aiCorrectPlaybackGeneration;
+	try {
+		const decoder = await getAiCorrectDecoder();
+		if (generation === aiCorrectPlaybackGeneration) {
+			await playAiCorrectFrames(generation, decoder);
+		}
+	} catch (error) {
+		if (generation !== aiCorrectPlaybackGeneration) return;
+		console.warn("Could not play the accelerated celebration GIF:", error);
+		aiCorrectCanvas.hidden = true;
+		aiCorrectImage.hidden = false;
+	}
+}
+function playCorrectAnswerFeedback() {
+	if (!isSoftEngi) {
+		playSound("correct");
+		return;
+	}
+
+	playSound("aiCorrect");
+	aiCorrectOverlay.hidden = false;
+	aiCorrectOverlay.classList.remove("is-visible");
+	void aiCorrectOverlay.offsetWidth;
+	aiCorrectOverlay.classList.add("is-visible");
+	void startAiCorrectAnimation();
+}
 const softengiSidebar = document.getElementById("softengiSidebar");
 const softengiScore = document.getElementById("softengiScore");
 const softengiCombo = document.getElementById("softengiCombo");
@@ -1294,10 +1434,10 @@ if (networkPartyActive) {
 courseCode.textContent = window.quizHubNetHubQuiz
 	? window.quizHubNetHubQuiz.courseName
 	: mixedStudyActive
-	? "MIXED STUDY"
-	: isStatisticsPracticeQuiz
-		? "STATISTICS LAB"
-		: `${codes[category] || category}`;
+		? "MIXED STUDY"
+		: isStatisticsPracticeQuiz
+			? "STATISTICS LAB"
+			: `${codes[category] || category}`;
 if (window.quizHubNetHubQuiz) {
 	document.title = `${window.quizHubNetHubQuiz.title} - Quiz Hub`;
 }
@@ -2021,7 +2161,9 @@ function updatePartyComboStreaks(correctPlayerIds, streakKeeperPlayerIds = []) {
 		const previousStreak = partyComboStreaks.get(player.id) || 0;
 		const streak = correctPlayers.has(player.id)
 			? previousStreak + 1
-			: streakKeepers.has(player.id) ? previousStreak : 0;
+			: streakKeepers.has(player.id)
+				? previousStreak
+				: 0;
 		partyComboStreaks.set(player.id, streak);
 		partyLongestComboStreaks.set(
 			player.id,
@@ -2297,9 +2439,12 @@ function markNetworkPlayerLeaving(departingPlayer) {
 		player.id,
 		setTimeout(() => {
 			partyPlayerLeaveTimers.delete(player.id);
-			if (!partyPlayers.some(
-				(candidate) => candidate.id === player.id && candidate.leaving,
-			)) return;
+			if (
+				!partyPlayers.some(
+					(candidate) => candidate.id === player.id && candidate.leaving,
+				)
+			)
+				return;
 			partyPlayers = partyPlayers.filter(
 				(candidate) => candidate.id !== player.id,
 			);
@@ -2312,8 +2457,12 @@ function markNetworkPlayerLeaving(departingPlayer) {
 function renderCompetitionControls() {
 	if (!competitionControls) return;
 	const answerCount = answersEl.querySelectorAll(".answer").length;
-	const visible = networkPartyActive && partyCompetitionMode &&
-		!partyHostDisplay && quizStarted && !answersEl.hidden &&
+	const visible =
+		networkPartyActive &&
+		partyCompetitionMode &&
+		!partyHostDisplay &&
+		quizStarted &&
+		!answersEl.hidden &&
 		answerCount >= 2;
 	competitionControls.hidden = !visible;
 	if (!visible) return;
@@ -2326,48 +2475,55 @@ function renderCompetitionControls() {
 		`${charge} charge${Math.abs(charge) === 1 ? "" : "s"} ` +
 		(charge < 0 ? "in debt" : "available");
 
-	const targets = partyPlayers.filter((player) =>
-		player.id !== partyPlayerId && !player.host && !player.fakePlayer &&
-		player.connected !== false,
+	const targets = partyPlayers.filter(
+		(player) =>
+			player.id !== partyPlayerId &&
+			!player.host &&
+			!player.fakePlayer &&
+			player.connected !== false,
 	);
-	const drainTargets = targets.filter((player) =>
-		(Number(player.competitionCharge) || 0) > 0,
+	const drainTargets = targets.filter(
+		(player) => (Number(player.competitionCharge) || 0) > 0,
 	);
-	const thiefTargets = targets.filter((player) =>
-		(Number(player.score) || 0) > 0,
+	const thiefTargets = targets.filter(
+		(player) => (Number(player.score) || 0) > 0,
 	);
 	const scrambleActive =
 		(competitionRoomSnapshot?.scrambledPlayers?.length || 0) > 0 ||
 		(competitionRoomSnapshot?.question?.scrambledPlayerIds?.length || 0) > 0;
 	const isFrozen = playerFrozenUntil > Date.now();
 	const canUsePowerup = !answered && !isFrozen && !competitionPowerupPending;
-	competitionPowerupCatalog.querySelectorAll("[data-use-powerup]").forEach((button) => {
-		const powerup = button.dataset.usePowerup;
-		const unavailable = !canUsePowerup ||
-			(powerup === "freeze" && targets.length === 0) ||
-			(powerup === "split" &&
-				(competitionRemovedAnswers.length > 0 || answerCount !== 4)) ||
-			(powerup === "shield" && ownPlayer?.competitionShield === true) ||
-			(powerup === "scramble" && scrambleActive) ||
-			(powerup === "ghost" && targets.length === 0) ||
-			(powerup === "streak-bonus" &&
-				ownPlayer?.competitionStreakBonus === true) ||
-			(powerup === "streak-keeper" &&
-				ownPlayer?.competitionStreakKeeper === true) ||
-			(powerup === "charge-drain" && drainTargets.length === 0) ||
-			(powerup === "thief" && thiefTargets.length === 0) ||
-			(powerup === "top-thief" &&
-				competitionRoomSnapshot?.topThiefPlayerId) ||
-			(powerup === "reveal-players" &&
-				(competitionRevealedPlayers || !partyHideLockedAnswers));
-		button.disabled = unavailable;
-	});
 	competitionPowerupCatalog
-		.querySelector('[data-powerup-card="reveal-players"]')
-		.hidden = !partyHideLockedAnswers;
+		.querySelectorAll("[data-use-powerup]")
+		.forEach((button) => {
+			const powerup = button.dataset.usePowerup;
+			const unavailable =
+				!canUsePowerup ||
+				(powerup === "freeze" && targets.length === 0) ||
+				(powerup === "split" &&
+					(competitionRemovedAnswers.length > 0 || answerCount !== 4)) ||
+				(powerup === "shield" && ownPlayer?.competitionShield === true) ||
+				(powerup === "scramble" && scrambleActive) ||
+				(powerup === "ghost" && targets.length === 0) ||
+				(powerup === "streak-bonus" &&
+					ownPlayer?.competitionStreakBonus === true) ||
+				(powerup === "streak-keeper" &&
+					ownPlayer?.competitionStreakKeeper === true) ||
+				(powerup === "charge-drain" && drainTargets.length === 0) ||
+				(powerup === "thief" && thiefTargets.length === 0) ||
+				(powerup === "top-thief" &&
+					competitionRoomSnapshot?.topThiefPlayerId) ||
+				(powerup === "reveal-players" &&
+					(competitionRevealedPlayers || !partyHideLockedAnswers));
+			button.disabled = unavailable;
+		});
+	competitionPowerupCatalog.querySelector(
+		'[data-powerup-card="reveal-players"]',
+	).hidden = !partyHideLockedAnswers;
 	renderCompetitionActivePowerups();
 	competitionWager.hidden = competitionDecisionLocked || quizEnded;
-	competitionAllIn.disabled = competitionDecisionPending || competitionDecisionLocked;
+	competitionAllIn.disabled =
+		competitionDecisionPending || competitionDecisionLocked;
 	if (competitionDecisionLocked) {
 		competitionStatus.textContent = "All In locked.";
 	}
@@ -2378,22 +2534,28 @@ function renderCompetitionActivePowerups() {
 	const active = [];
 	for (const player of partyPlayers) {
 		if (player.competitionShield) active.push(`Shield: ${player.name}`);
-		if (player.competitionStreakBonus) active.push(`Streak Bonus: ${player.name}`);
-		if (player.competitionStreakKeeper) active.push(`Streak Keeper: ${player.name}`);
+		if (player.competitionStreakBonus)
+			active.push(`Streak Bonus: ${player.name}`);
+		if (player.competitionStreakKeeper)
+			active.push(`Streak Keeper: ${player.name}`);
 	}
 	const topThiefPlayer = partyPlayers.find(
 		(player) => player.id === competitionRoomSnapshot?.topThiefPlayerId,
 	);
 	if (topThiefPlayer) active.push(`Top Thief: ${topThiefPlayer.name}`);
 	for (const scramble of competitionRoomSnapshot?.scrambledPlayers || []) {
-		const player = partyPlayers.find((candidate) => candidate.id === scramble.playerId);
+		const player = partyPlayers.find(
+			(candidate) => candidate.id === scramble.playerId,
+		);
 		const remaining = scramble.remaining;
 		active.push(
 			`Scramble: ${player?.name || "A player"} (${remaining} question${remaining === 1 ? "" : "s"} remaining)`,
 		);
 	}
 	for (const freeze of competitionRoomSnapshot?.frozenPlayers || []) {
-		const player = partyPlayers.find((candidate) => candidate.id === freeze.playerId);
+		const player = partyPlayers.find(
+			(candidate) => candidate.id === freeze.playerId,
+		);
 		active.push(
 			freeze.pending
 				? `Freeze: ${player?.name || "A player"} on the next question`
@@ -2407,11 +2569,12 @@ function renderCompetitionActivePowerups() {
 
 function showCompetitionPointsToast(points) {
 	if (!partyCompetitionMode || !Number.isFinite(points)) return;
-	competitionPointsToast.textContent = points > 0
-		? `+${points} point${points === 1 ? "" : "s"}`
-		: points < 0
-			? `${points} point${Math.abs(points) === 1 ? "" : "s"}`
-			: "0 points";
+	competitionPointsToast.textContent =
+		points > 0
+			? `+${points} point${points === 1 ? "" : "s"}`
+			: points < 0
+				? `${points} point${Math.abs(points) === 1 ? "" : "s"}`
+				: "0 points";
 	competitionPointsToast.classList.toggle("positive", points > 0);
 	competitionPointsToast.classList.toggle("negative", points < 0);
 	competitionPointsToast.classList.toggle("zero", points === 0);
@@ -2445,16 +2608,21 @@ function applyRevealedAnswers(players) {
 	if (!Array.isArray(players)) return;
 	competitionRevealedPlayers = true;
 	for (const player of players) {
-		if (!player || typeof player.id !== "string" ||
-			!Number.isInteger(player.answerIndex)) continue;
+		if (
+			!player ||
+			typeof player.id !== "string" ||
+			!Number.isInteger(player.answerIndex)
+		)
+			continue;
 		const existingChoice = partyChoices.find(
 			(choice) => choice.playerId === player.id,
 		);
 		if (existingChoice) existingChoice.selectedIndex = player.answerIndex;
-		else partyChoices.push({
-			playerId: player.id,
-			selectedIndex: player.answerIndex,
-		});
+		else
+			partyChoices.push({
+				playerId: player.id,
+				selectedIndex: player.answerIndex,
+			});
 	}
 	answersEl.querySelectorAll(".answer").forEach(updatePartyAnswerMarker);
 	competitionStatus.textContent =
@@ -2484,22 +2652,25 @@ function setPlayerFrozen(expiresAt) {
 		});
 	}
 	renderCompetitionControls();
-	playerFreezeTimeout = setTimeout(() => {
-		playerFrozenUntil = 0;
-		playerFreezeTimeout = null;
-		if (playerFreezeCountdownInterval !== null) {
-			clearInterval(playerFreezeCountdownInterval);
-			playerFreezeCountdownInterval = null;
-		}
-		competitionFreezeOverlay.hidden = true;
-		if (!answered) {
-			answersEl.querySelectorAll(".answer").forEach((button) => {
-				button.disabled = false;
-			});
-			startQuestionTimer();
-		}
-		renderCompetitionControls();
-	}, Math.max(0, expiresAt - Date.now()));
+	playerFreezeTimeout = setTimeout(
+		() => {
+			playerFrozenUntil = 0;
+			playerFreezeTimeout = null;
+			if (playerFreezeCountdownInterval !== null) {
+				clearInterval(playerFreezeCountdownInterval);
+				playerFreezeCountdownInterval = null;
+			}
+			competitionFreezeOverlay.hidden = true;
+			if (!answered) {
+				answersEl.querySelectorAll(".answer").forEach((button) => {
+					button.disabled = false;
+				});
+				startQuestionTimer();
+			}
+			renderCompetitionControls();
+		},
+		Math.max(0, expiresAt - Date.now()),
+	);
 }
 
 function clearPlayerFreeze() {
@@ -2521,7 +2692,11 @@ function clearPlayerFreeze() {
 }
 
 async function submitCompetitionWager() {
-	if (!networkPartyActive || competitionDecisionLocked || competitionDecisionPending)
+	if (
+		!networkPartyActive ||
+		competitionDecisionLocked ||
+		competitionDecisionPending
+	)
 		return;
 	competitionDecisionPending = true;
 	renderCompetitionControls();
@@ -2565,25 +2740,33 @@ function openCompetitionTargetPicker(powerup) {
 		`[data-use-powerup="${powerup}"]`,
 	);
 	if (catalogButton.disabled || competitionTargetDialog.open) return;
-	const targets = partyPlayers.filter((player) =>
-		player.id !== partyPlayerId && !player.host && !player.fakePlayer &&
-		player.connected !== false &&
-		(powerup !== "charge-drain" ||
-			(Number(player.competitionCharge) || 0) > 0) &&
-		(powerup !== "thief" || (Number(player.score) || 0) > 0),
+	const targets = partyPlayers.filter(
+		(player) =>
+			player.id !== partyPlayerId &&
+			!player.host &&
+			!player.fakePlayer &&
+			player.connected !== false &&
+			(powerup !== "charge-drain" ||
+				(Number(player.competitionCharge) || 0) > 0) &&
+			(powerup !== "thief" || (Number(player.score) || 0) > 0),
 	);
 	competitionTargetDialog.dataset.powerup = powerup;
-	competitionTargetTitle.textContent = powerup === "freeze"
-		? "Choose players to freeze"
-		: powerup === "ghost"
-			? "Choose a player to inspect"
-			: powerup === "thief"
-				? "Choose a player to steal points from"
-			: "Choose a player to drain";
-	competitionPowerupConfirm.textContent = powerup === "freeze"
-		? "FREEZE SELECTED"
-		: powerup === "ghost" ? "USE GHOST"
-			: powerup === "thief" ? "STEAL POINTS" : "DRAIN CHARGE";
+	competitionTargetTitle.textContent =
+		powerup === "freeze"
+			? "Choose players to freeze"
+			: powerup === "ghost"
+				? "Choose a player to inspect"
+				: powerup === "thief"
+					? "Choose a player to steal points from"
+					: "Choose a player to drain";
+	competitionPowerupConfirm.textContent =
+		powerup === "freeze"
+			? "FREEZE SELECTED"
+			: powerup === "ghost"
+				? "USE GHOST"
+				: powerup === "thief"
+					? "STEAL POINTS"
+					: "DRAIN CHARGE";
 	competitionTargetChoices.replaceChildren(
 		...targets.map((player) => {
 			const label = document.createElement("label");
@@ -2592,10 +2775,16 @@ function openCompetitionTargetPicker(powerup) {
 			input.name = "competitionTarget";
 			input.value = player.id;
 			input.dataset.powerupTarget = "";
-			const targetDescription = powerup === "charge-drain"
-				? ` · ${player.competitionCharge || 0} charge`
-				: powerup === "thief" ? ` · ${player.score || 0} points` : "";
-			label.append(input, document.createTextNode(`${player.name}${targetDescription}`));
+			const targetDescription =
+				powerup === "charge-drain"
+					? ` · ${player.competitionCharge || 0} charge`
+					: powerup === "thief"
+						? ` · ${player.score || 0} points`
+						: "";
+			label.append(
+				input,
+				document.createTextNode(`${player.name}${targetDescription}`),
+			);
 			return label;
 		}),
 	);
@@ -2636,7 +2825,8 @@ function startNetworkQuiz(config, roomSnapshot = null) {
 	partyShowPlayerScores = config.partyOptions?.showPlayerScores !== false;
 	partyHideLockedAnswers = config.partyOptions?.showLockedAnswers === false;
 	partyCompetitionMode = config.partyOptions?.competitionMode === true;
-	competitionDecisionLocked = roomSnapshot?.allInLocked?.includes(partyPlayerId) === true;
+	competitionDecisionLocked =
+		roomSnapshot?.allInLocked?.includes(partyPlayerId) === true;
 	competitionDecisionPending = false;
 	competitionPowerupPending = false;
 	competitionRemovedAnswers = [];
@@ -2688,7 +2878,10 @@ function startNetworkQuiz(config, roomSnapshot = null) {
 			);
 			if (freeze) setPlayerFrozen(freeze.expiresAt);
 		}
-		if (Array.isArray(roomSnapshot.splitAnswers) && roomSnapshot.splitAnswers.length) {
+		if (
+			Array.isArray(roomSnapshot.splitAnswers) &&
+			roomSnapshot.splitAnswers.length
+		) {
 			applySplitAnswers(roomSnapshot.splitAnswers);
 		}
 		if (roomSnapshot.reveal) revealNetworkQuestion(roomSnapshot.reveal);
@@ -2826,7 +3019,8 @@ function lockNetworkAnswerUi(selectedIndex) {
 }
 
 function submitNetworkAnswer(selectedIndex) {
-	if (!quizStarted || quizEnded || answered || playerFrozenUntil > Date.now()) return;
+	if (!quizStarted || quizEnded || answered || playerFrozenUntil > Date.now())
+		return;
 	networkAnswerPending = true;
 	lockNetworkAnswerUi(selectedIndex);
 	partyConnection
@@ -2939,7 +3133,8 @@ function revealNetworkQuestion(message) {
 	);
 	const ownPlayer = partyPlayers.find((player) => player.id === partyPlayerId);
 	if (ownAnswer && ownAnswer.selectedIndex !== null) {
-		playSound(ownAnswer.correct ? "correct" : "incorrect");
+		if (ownAnswer.correct) playCorrectAnswerFeedback();
+		else playSound("incorrect");
 	}
 	const correctAnswer = current.a[message.correctIndex];
 	const correctCount = message.answers.filter((entry) => entry.correct).length;
@@ -3373,7 +3568,7 @@ function finishStatisticsSetResponse(resultType, isCorrect, submitted = "") {
 		longestCombo = Math.max(longestCombo, combo);
 		if (combo > 1) showComboPopup();
 		score++;
-		playSound("correct");
+		playCorrectAnswerFeedback();
 		feedback.textContent = "Correct! Your set has a mean of 4 and a mode of 6.";
 		feedback.className = "motivation visible right";
 		statisticsSetStatus.textContent = "Correct set.";
@@ -3424,7 +3619,7 @@ function finishNumericAnswerResponse(resultType, isCorrect, submitted = "") {
 		longestCombo = Math.max(longestCombo, combo);
 		if (combo > 1 && !isStatisticsPracticeQuiz) showComboPopup();
 		score++;
-		playSound("correct");
+		playCorrectAnswerFeedback();
 		feedback.textContent = "Correct!";
 		feedback.className = "motivation visible right";
 		numericAnswerStatus.textContent = "Correct answer.";
@@ -3615,7 +3810,7 @@ function finishMeshTableResponse(resultType, isCorrect, submitted = "") {
 		longestCombo = Math.max(longestCombo, combo);
 		if (combo > 1) showComboPopup();
 		score++;
-		playSound("correct");
+		playCorrectAnswerFeedback();
 		feedback.textContent = "Correct! Your table matches the answer.";
 		feedback.className = "motivation visible right";
 		tableAnswerStatus.textContent = "Correct table.";
@@ -3805,7 +4000,7 @@ function finishOpenGLResponse(resultType, isCorrect, submitted = "") {
 		longestCombo = Math.max(longestCombo, combo);
 		if (combo > 1) showComboPopup();
 		score++;
-		playSound("correct");
+		playCorrectAnswerFeedback();
 		feedback.textContent =
 			"Correct! You built the right transformation sequence.";
 		feedback.className = "motivation visible right";
@@ -4451,7 +4646,10 @@ comboPopup.addEventListener("animationend", (event) => {
 	}
 });
 
-function renderQuestion(forcedAnswerOrder = null, scrambleAnswerPositions = false) {
+function renderQuestion(
+	forcedAnswerOrder = null,
+	scrambleAnswerPositions = false,
+) {
 	if (!current) return;
 	currentQuestionPresentation = getQuestionPresentation();
 	const useShortAnswer = currentQuestionPresentation === "short-answer";
@@ -4936,12 +5134,16 @@ function revealQuestion(
 
 	if (resultType === "answer") {
 		if (shortAnswerResult) {
-			playSound(
-				shortAnswerResult.points > 0 ? "correct" : "incorrect",
-				shortAnswerResult.points >= 2 ? 1.15 : 1,
-			);
+			if (isCorrect) playCorrectAnswerFeedback();
+			else {
+				playSound(
+					shortAnswerResult.points > 0 ? "correct" : "incorrect",
+					shortAnswerResult.points >= 2 ? 1.15 : 1,
+				);
+			}
 		} else {
-			playSound(isCorrect ? "correct" : "incorrect");
+			if (isCorrect) playCorrectAnswerFeedback();
+			else playSound("incorrect");
 		}
 		if (shortAnswerResult) score += shortAnswerResult.points;
 		else if (isCorrect) score++;
@@ -5193,8 +5395,9 @@ function handleNetworkGameOver(message) {
 					player.overallScore = Number(updated.overallScore);
 				}
 				if (Number.isFinite(Number(updated.competitionPowerupsUsed))) {
-					player.competitionPowerupsUsed =
-						Number(updated.competitionPowerupsUsed);
+					player.competitionPowerupsUsed = Number(
+						updated.competitionPowerupsUsed,
+					);
 				}
 			});
 		}
@@ -5522,8 +5725,11 @@ if (networkPartyActive) {
 		updatePartySettingsSummary(message.room.quizConfig);
 		partyHideLockedAnswers =
 			message.room.partyOptions?.showLockedAnswers === false;
-		if (!message.room.partyOptions?.showLockedAnswers &&
-			message.room.question && !message.room.question.procedural) {
+		if (
+			!message.room.partyOptions?.showLockedAnswers &&
+			message.room.question &&
+			!message.room.question.procedural
+		) {
 			message.room.answersLocked = message.playerAnswered
 				? [message.playerId]
 				: [];
@@ -5598,21 +5804,24 @@ if (networkPartyActive) {
 			applySplitAnswers(message.removedAnswers);
 			competitionStatus.textContent = "Split removed two incorrect answers.";
 		} else if (message.powerup === "freeze") {
-			competitionStatus.textContent = message.targets.map((targetResult) => {
-				const target = partyPlayers.find(
-					(player) => player.id === targetResult.playerId,
-				);
-				const name = target?.name || "the player";
-				if (targetResult.reflected) {
-					return `Your Freeze was reflected back onto you by ${name}’s Shield.`;
-				}
-				if (targetResult.blocked) return `Shield blocked Freeze on ${name}.`;
-				return targetResult.pending
-					? `Freeze queued for ${name}’s next question.`
-					: `Freeze used on ${name} for 15 seconds.`;
-			}).join(" ");
+			competitionStatus.textContent = message.targets
+				.map((targetResult) => {
+					const target = partyPlayers.find(
+						(player) => player.id === targetResult.playerId,
+					);
+					const name = target?.name || "the player";
+					if (targetResult.reflected) {
+						return `Your Freeze was reflected back onto you by ${name}’s Shield.`;
+					}
+					if (targetResult.blocked) return `Shield blocked Freeze on ${name}.`;
+					return targetResult.pending
+						? `Freeze queued for ${name}’s next question.`
+						: `Freeze used on ${name} for 15 seconds.`;
+				})
+				.join(" ");
 		} else if (message.powerup === "shield") {
-			competitionStatus.textContent = "Shield is active; it will block one Freeze.";
+			competitionStatus.textContent =
+				"Shield is active; it will block one Freeze.";
 		} else if (message.powerup === "scramble") {
 			competitionStatus.textContent =
 				"Scramble will affect other players for the next three questions.";
@@ -5638,22 +5847,23 @@ if (networkPartyActive) {
 			const target = partyPlayers.find(
 				(player) => player.id === message.targetPlayerId,
 			);
-			competitionStatus.textContent =
-				`Drained ${message.amount} charge from ${target?.name || "your opponent"}.`;
+			competitionStatus.textContent = `Drained ${message.amount} charge from ${target?.name || "your opponent"}.`;
 		} else if (message.powerup === "thief") {
 			const target = partyPlayers.find(
 				(player) => player.id === message.targetPlayerId,
 			);
-			competitionStatus.textContent =
-				`Stole ${message.amount} points from ${target?.name || "your opponent"}.`;
+			competitionStatus.textContent = `Stole ${message.amount} points from ${target?.name || "your opponent"}.`;
 		}
 		renderCompetitionControls();
 	});
 	partyConnection.on("thief-stolen", (message) => {
-		const thiefName = typeof message.playerName === "string"
-			? message.playerName
-			: "Another player";
-		showCompetitionAnnouncement(`${thiefName} stole ${message.amount} points from you.`);
+		const thiefName =
+			typeof message.playerName === "string"
+				? message.playerName
+				: "Another player";
+		showCompetitionAnnouncement(
+			`${thiefName} stole ${message.amount} points from you.`,
+		);
 	});
 	partyConnection.on("ghost-answer-revealed", (message) => {
 		const target = partyPlayers.find(
@@ -5679,15 +5889,20 @@ if (networkPartyActive) {
 			"top-thief": "Top Thief",
 			"reveal-players": "Reveal Players",
 		};
-		const targets = message.targets?.map((target) =>
-			target.reflectedTo
-				? `${target.name}’s Shield reflected Freeze onto ${target.reflectedTo.name}`
-				: target.blocked ? `${target.name} (Shield blocked it)` : target.name,
-		) || [];
+		const targets =
+			message.targets?.map((target) =>
+				target.reflectedTo
+					? `${target.name}’s Shield reflected Freeze onto ${target.reflectedTo.name}`
+					: target.blocked
+						? `${target.name} (Shield blocked it)`
+						: target.name,
+			) || [];
 		const announcement =
 			`${message.player.name} used ${powerupNames[message.powerup] || "a powerup"}` +
 			(targets.length ? ` on ${targets.join(", ")}` : "") +
-			(message.powerup === "thief" ? `, stealing ${message.amount} points` : "") +
+			(message.powerup === "thief"
+				? `, stealing ${message.amount} points`
+				: "") +
 			(Number.isInteger(message.questions) && message.questions > 1
 				? ` for the next ${message.questions} questions`
 				: "");
@@ -5747,7 +5962,8 @@ if (networkPartyActive) {
 		);
 		musicButton.title = `Choose quiz song (currently ${musicName})`;
 		if (hostDisplayAnswerer) return;
-		const isLocalSelection = hostDisplayMusicLocalSelection &&
+		const isLocalSelection =
+			hostDisplayMusicLocalSelection &&
 			hostDisplayMusicLocalSelection.selection === message.selection &&
 			hostDisplayMusicLocalSelection.reshuffle === message.reshuffle &&
 			hostDisplayMusicLocalSelection.useAlternateTrack9 ===
@@ -5810,7 +6026,9 @@ if (networkPartyActive) {
 	});
 	competitionPowerupConfirm.addEventListener("click", () => {
 		const selectedTargets = [
-			...competitionTargetChoices.querySelectorAll("[data-powerup-target]:checked"),
+			...competitionTargetChoices.querySelectorAll(
+				"[data-powerup-target]:checked",
+			),
 		].map((input) => input.value);
 		const powerup = competitionTargetDialog.dataset.powerup;
 		if (!selectedTargets.length) {
@@ -5818,12 +6036,13 @@ if (networkPartyActive) {
 			return;
 		}
 		if (powerup === "freeze") {
-			const charge = Number(
-				partyPlayers.find((player) => player.id === partyPlayerId)?.competitionCharge,
-			) || 0;
+			const charge =
+				Number(
+					partyPlayers.find((player) => player.id === partyPlayerId)
+						?.competitionCharge,
+				) || 0;
 			if (selectedTargets.length * 5 > charge) {
-				competitionStatus.textContent =
-					`Freeze costs 5 charge per player; you can select at most ${Math.floor(charge / 5)}.`;
+				competitionStatus.textContent = `Freeze costs 5 charge per player; you can select at most ${Math.floor(charge / 5)}.`;
 				return;
 			}
 		}
@@ -6010,7 +6229,13 @@ window.addEventListener("quizhub:dev-menu-action", (event) => {
 		return;
 	}
 	if (action === "set-competition-charge") {
-		if (!networkPartyActive || !partyHost || !partyCompetitionMode || !quizStarted || quizEnded) {
+		if (
+			!networkPartyActive ||
+			!partyHost ||
+			!partyCompetitionMode ||
+			!quizStarted ||
+			quizEnded
+		) {
 			competitionStatus.textContent =
 				"Only the host can set charge during a Competition Mode quiz.";
 			return;
@@ -6023,11 +6248,11 @@ window.addEventListener("quizhub:dev-menu-action", (event) => {
 				charge,
 			})
 			.then(() => {
-				competitionStatus.textContent = "Competition charge updated for all players.";
+				competitionStatus.textContent =
+					"Competition charge updated for all players.";
 			})
 			.catch((error) => {
-				competitionStatus.textContent =
-					`Could not set competition charge: ${error.message}`;
+				competitionStatus.textContent = `Could not set competition charge: ${error.message}`;
 			});
 		return;
 	}

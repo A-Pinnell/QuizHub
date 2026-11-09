@@ -20,7 +20,7 @@
 		}
 
 		const script = document.createElement("script");
-		script.src = "./js/quiz.js?v=competition-points-toast-v1";
+		script.src = "./js/quiz.js?v=correct-celebration-v4";
 		script.addEventListener("error", () => {
 			console.error("Could not load the quiz runtime.");
 		});

@@ -2823,6 +2823,13 @@ body.softengi-mode #feedback:not(.visible) {
 body.softengi-mode #feedback.visible {
 	visibility: visible;
 }
+body.softengi-mode .combo-popup {
+	z-index: 10001;
+	font-weight: 900;
+	-webkit-text-stroke: 6px #777;
+	paint-order: stroke fill;
+	text-shadow: none;
+}
 body.softengi-mode .sound-toggle,
 body.softengi-mode .music-toggle {
 	top: 17px;
@@ -3035,6 +3042,42 @@ body.softengi-mode .quiz-music-cycle {
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
+	}
+}
+
+.ai-correct-overlay {
+	position: fixed;
+	z-index: 10000;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	opacity: 0;
+}
+.ai-correct-overlay[hidden] {
+	display: none;
+}
+.ai-correct-overlay.is-visible {
+	animation: aiCorrectFlashFade 1.5s ease-out forwards;
+}
+.ai-correct-overlay img,
+.ai-correct-overlay canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.ai-correct-overlay img {
+	object-fit: fill;
+}
+.ai-correct-overlay [hidden] {
+	display: none;
+}
+@keyframes aiCorrectFlashFade {
+	0%,
+	12% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
 	}
 }
 

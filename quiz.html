@@ -52,7 +52,7 @@
 				document.documentElement.classList.add("native-app");
 			}
 		</script>
-		<link rel="stylesheet" href="css/quiz.css?v=competition-points-toast-v2" />
+		<link rel="stylesheet" href="css/quiz.css?v=correct-celebration-v2" />
 		<link rel="stylesheet" href="css/preferences.css" />
 		<link rel="stylesheet" href="css/cover-screen.css" />
 		<link rel="stylesheet" href="css/quiz-music-picker.css" />
@@ -1036,6 +1036,14 @@
 			aria-live="polite"
 			aria-atomic="true"
 			hidden></div>
+		<div
+			class="ai-correct-overlay"
+			id="aiCorrectOverlay"
+			aria-hidden="true"
+			hidden>
+			<canvas id="aiCorrectCanvas" hidden></canvas>
+			<img src="assets/fuckyeah.gif?v=correct-celebration-v4" alt="" />
+		</div>
 		<div class="fade" id="fade"></div>
 	</body>
 </html>

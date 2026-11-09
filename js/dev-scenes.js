@@ -67,8 +67,8 @@
 			},
 		],
 		SoftEngi: [
-			{ id: "quiz1", label: "Lectures 1–6 Practice", detail: "Question bank" },
-			{ id: "test1", label: "Lectures 1–6 Practice", detail: "for Oct 8" },
+			{ id: "quiz1", label: "Lectures 1–6 Practice", detail: "for Oct 8" },
+			{ id: "quiz2", label: "Lectures 6-7 Practice", detail: "for Nov 12" },
 		],
 	};
 	const categoryNames = {
