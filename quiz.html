@@ -76,7 +76,7 @@
 		<script
 			type="module"
 			src="./js/semantic-short-answer-runtime.js?v=semantic-local-7"></script>
-		<script src="./js/quiz-bootstrap.js?v=competition-points-toast-v1" defer></script>
+		<script src="./js/quiz-bootstrap.js?v=competition-updates-v2" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
 	<body>
@@ -797,7 +797,7 @@
 							</div>
 							<button type="button" id="competitionPowerupsButton" class="competition-powerups-open">POWERUPS</button>
 							<div class="competition-wager" id="competitionWager">
-								<span>Optional: double points if correct; lose 3 if wrong (6 if you answered first).</span>
+								<span>All In Chain: double your points if correct; each additional player adds another multiplier. Lose all your points if wrong.</span>
 								<button type="button" id="competitionAllIn">GO ALL IN</button>
 							</div>
 							<p class="competition-status" id="competitionStatus" role="status" aria-live="polite"></p>
@@ -808,10 +808,10 @@
 								<p class="competition-powerups-balance" id="competitionPowerupsBalance"></p>
 								<p class="competition-active-powerups" id="competitionActivePowerups" role="status" aria-live="polite"></p>
 								<div class="competition-powerup-catalog" id="competitionPowerupCatalog">
-									<article class="competition-powerup-card" data-powerup-card="freeze">
-										<div><h3>Freeze</h3><p>Freeze one or more opponents for 15 seconds. Costs 5 charge per target.</p></div>
+									<article class="competition-powerup-card" data-powerup-card="icey">
+										<div><h3>Icey</h3><p>Make one or more opponents’ answer buttons slide around for this question. Costs 5 charge per target.</p></div>
 										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>5 / player</span>
-										<button type="button" data-use-powerup="freeze">Choose players</button>
+										<button type="button" data-use-powerup="icey">Choose players</button>
 									</article>
 									<article class="competition-powerup-card" data-powerup-card="split">
 										<div><h3>Split</h3><p>Remove two incorrect answers from your choices this question.</p></div>
@@ -819,8 +819,8 @@
 										<button type="button" data-use-powerup="split">Use</button>
 									</article>
 									<article class="competition-powerup-card" data-powerup-card="shield">
-										<div><h3>Shield</h3><p>Block the next Freeze used against you.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>5</span>
+										<div><h3>Shield</h3><p>Block one Icey or protect your points from one All In wrong answer.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>10</span>
 										<button type="button" data-use-powerup="shield">Use</button>
 									</article>
 									<article class="competition-powerup-card" data-powerup-card="scramble">
@@ -844,13 +844,13 @@
 										<button type="button" data-use-powerup="streak-keeper">Use</button>
 									</article>
 									<article class="competition-powerup-card" data-powerup-card="charge-drain">
-										<div><h3>Charge Drain</h3><p>Steal up to 5 charge from an opponent.</p></div>
+										<div><h3>Charge Drainer</h3><p>Remove all charge from an opponent.</p></div>
 										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>15</span>
 										<button type="button" data-use-powerup="charge-drain">Choose player</button>
 									</article>
 									<article class="competition-powerup-card" data-powerup-card="thief">
-										<div><h3>Thief</h3><p>Steal up to 10 points from an opponent.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>25</span>
+										<div><h3>Thief</h3><p>Choose how many points to steal from an opponent. Costs 2 charge per point.</p></div>
+										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>2 / point</span>
 										<button type="button" data-use-powerup="thief">Choose player</button>
 									</article>
 									<article class="competition-powerup-card" data-powerup-card="top-thief">
@@ -867,12 +867,18 @@
 								<button class="competition-powerups-close" type="submit" value="close">CLOSE</button>
 							</form>
 						</dialog>
-						<dialog class="competition-freeze-dialog" id="competitionTargetDialog" aria-labelledby="competitionTargetTitle">
+						<dialog class="competition-target-dialog" id="competitionTargetDialog" aria-labelledby="competitionTargetTitle">
 							<form method="dialog">
 								<h2 id="competitionTargetTitle"></h2>
-								<div class="competition-freeze-targets" id="competitionTargetChoices"></div>
+								<div class="competition-target-choices" id="competitionTargetChoices"></div>
+								<div class="competition-thief-amount" id="competitionThiefAmount" hidden>
+									<label for="competitionThiefPoints">Points to steal</label>
+									<input id="competitionThiefPoints" type="number" min="1" value="1" />
+									<span id="competitionThiefLimit"></span>
+									<span id="competitionThiefCost" aria-live="polite"></span>
+								</div>
 								<button type="button" id="competitionPowerupConfirm">USE POWERUP</button>
-								<button class="competition-freeze-cancel" type="submit" value="cancel">CANCEL</button>
+								<button class="competition-target-cancel" type="submit" value="cancel">CANCEL</button>
 							</form>
 						</dialog>
 						<section class="answers" id="answers">

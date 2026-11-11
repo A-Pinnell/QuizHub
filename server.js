@@ -610,13 +610,7 @@ function publicRoom(room) {
       ? getAnsweredPlayers(room)
       : [],
     allInLocked: [...(room.allInDecisions || new Map()).keys()],
-    frozenPlayers: [...(room.frozenPlayers || new Map()).entries()].map(
-      ([playerId, freeze]) => ({
-        playerId,
-        expiresAt: freeze.expiresAt,
-        pending: freeze.pending
-      })
-    ),
+    iceyPlayerIds: [...(room.iceyPlayerIds || new Set())],
     scrambledPlayers: getActiveScrambles(room),
     activity: [...(room.activity || new Map()).entries()].map(([playerId, status]) => ({ playerId, status })),
     reveal: room.reveal,
@@ -768,6 +762,10 @@ function canRevealRoomAnswers(room) {
   );
 }
 
+function getAllInChainCount(room) {
+  return [...room.allInDecisions.values()].filter(Boolean).length;
+}
+
 function revealIfReady(room) {
   if (canRevealRoomAnswers(room)) revealRoomAnswers(room);
 }
@@ -781,50 +779,7 @@ function defaultUnchosenWagers(room) {
   }
 }
 
-function clearPlayerFreeze(room, playerId, notify = false) {
-  const freeze = room.frozenPlayers.get(playerId);
-  if (!freeze) return;
-  if (freeze.timer) clearTimeout(freeze.timer);
-  room.frozenPlayers.delete(playerId);
-  if (notify) {
-    const member = room.players.get(playerId);
-    if (member?.socket?.readyState === WebSocket.OPEN) {
-      send(member.socket, { type: "player-unfrozen", playerId });
-    }
-  }
-}
-
-function startPlayerFreeze(room, playerId) {
-  const member = room.players.get(playerId);
-  if (!member) return;
-  const freeze = {
-    expiresAt: Date.now() + 15_000,
-    pending: false,
-    timer: null
-  };
-  freeze.timer = setTimeout(() => {
-    clearPlayerFreeze(room, playerId, true);
-  }, 15_000);
-  freeze.timer.unref();
-  room.frozenPlayers.set(playerId, freeze);
-  if (member.socket?.readyState === WebSocket.OPEN) {
-    send(member.socket, { type: "player-frozen", playerId, expiresAt: freeze.expiresAt });
-  }
-}
-
-function activatePendingFreezes(room) {
-  for (const [playerId, freeze] of [...room.frozenPlayers]) {
-    if (!freeze.pending) continue;
-    const source = freeze.source;
-    clearPlayerFreeze(room, playerId);
-    startPlayerFreeze(room, playerId);
-    const target = room.players.get(playerId);
-    if (source && target) announcePowerup(room, source, "freeze", [target]);
-  }
-}
-
 function announcePowerup(room, player, powerup, targetPlayers = [], blockedPlayerIds = [], details = {}) {
-  const { reflectedPlayer, ...eventDetails } = details;
   broadcast(room, {
     type: "powerup-used",
     player: { id: player.id, name: player.name },
@@ -832,12 +787,9 @@ function announcePowerup(room, player, powerup, targetPlayers = [], blockedPlaye
     targets: targetPlayers.map((target) => ({
       id: target.id,
       name: target.name,
-      blocked: blockedPlayerIds.includes(target.id),
-      ...(reflectedPlayer && blockedPlayerIds.includes(target.id)
-        ? { reflectedTo: reflectedPlayer }
-        : {})
+      blocked: blockedPlayerIds.includes(target.id)
     })),
-    ...eventDetails
+    ...details
   });
 }
 
@@ -880,14 +832,19 @@ function getCompetitionPoints(room, member, correct, regularPoints, rankPoints) 
   if (!isCompetitionMode(room)) return regularPoints;
   if (correct) {
     member.competitionCharge = (member.competitionCharge || 0) + 1;
-    const points = (rankPoints ?? regularPoints) *
-      (room.allInDecisions.get(member.id) ? 2 : 1);
+    const points = room.allInDecisions.get(member.id)
+      ? member.score * getAllInChainCount(room)
+      : rankPoints ?? regularPoints;
     const streakBonus = member.competitionStreakBonus ? 2 : 0;
     member.competitionStreakBonus = false;
     return points + streakBonus;
   }
   if (!room.allInDecisions.get(member.id)) return 0;
-  return room.firstAnsweredPlayerId === member.id ? -6 : -3;
+  if (member.competitionShield) {
+    member.competitionShield = false;
+    return 0;
+  }
+  return -Math.max(0, member.score);
 }
 
 function revealRoomAnswers(room) {
@@ -934,6 +891,7 @@ function revealRoomAnswers(room) {
         score: member.score,
         overallScore: member.overallScore,
         competitionCharge: member.competitionCharge || 0,
+        competitionShield: member.competitionShield === true,
         competitionStreakBonus: member.competitionStreakBonus === true,
         competitionStreakKeeper: member.competitionStreakKeeper === true,
         competitionPowerupsUsed: member.competitionPowerupsUsed || 0,
@@ -974,6 +932,7 @@ function revealRoomAnswers(room) {
       score: member.score,
       overallScore: member.overallScore,
       competitionCharge: member.competitionCharge || 0,
+      competitionShield: member.competitionShield === true,
       competitionStreakBonus: member.competitionStreakBonus === true,
       competitionStreakKeeper: member.competitionStreakKeeper === true,
       competitionPowerupsUsed: member.competitionPowerupsUsed || 0,
@@ -999,8 +958,8 @@ function removePlayer(room, player) {
   });
   room.allInDecisions?.delete(player.id);
   room.activity?.delete(player.id);
-  clearPlayerFreeze(room, player.id);
   room.splitAnswers?.delete(player.id);
+  room.iceyPlayerIds?.delete(player.id);
   room.scrambleRemaining?.delete(player.id);
   if (player.host) {
     for (const [playerId, member] of room.players) {
@@ -1093,7 +1052,7 @@ function handleMessage(socket, rawMessage) {
         splitAnswers: new Map(),
         topThiefPlayerId: null,
         ghostRequests: new Map(),
-        frozenPlayers: new Map(),
+        iceyPlayerIds: new Set(),
         scrambleRemaining: new Map(),
         revealPlayersUsed: false
       };
@@ -1534,7 +1493,7 @@ function handleMessage(socket, rawMessage) {
       room.allInDecisions = new Map();
       room.splitAnswers = new Map();
       room.topThiefPlayerId = null;
-      room.frozenPlayers.forEach((freeze, playerId) => clearPlayerFreeze(room, playerId));
+      room.iceyPlayerIds.clear();
       room.scrambleRemaining.clear();
       room.revealPlayersUsed = false;
       room.players.forEach((member) => { member.competitionShield = false; });
@@ -1576,7 +1535,7 @@ function handleMessage(socket, rawMessage) {
       room.allInDecisions = new Map();
       room.splitAnswers = new Map();
       room.topThiefPlayerId = null;
-      room.frozenPlayers.forEach((freeze, playerId) => clearPlayerFreeze(room, playerId));
+      room.iceyPlayerIds.clear();
       room.reveal = null;
       room.firstCorrectPlayerId = null;
       room.players.forEach((member) => {
@@ -1667,6 +1626,7 @@ function handleMessage(socket, rawMessage) {
         member.competitionPowerupsUsed = 0;
         rememberPlayerScore(room, member);
       });
+      room.iceyPlayerIds.clear();
       room.scrambleRemaining.clear();
       broadcast(room, {
         type: "quiz-start",
@@ -1787,6 +1747,7 @@ function handleMessage(socket, rawMessage) {
         return sendError(socket, "Invalid correct-answer reference.");
       }
       const scrambledPlayerIds = getScrambledPlayerIds(room);
+      room.iceyPlayerIds.clear();
       room.question = {
         questionNumber,
         questionIndex,
@@ -1829,12 +1790,12 @@ function handleMessage(socket, rawMessage) {
         questionIndex: room.question.questionIndex,
         answerOrder: room.question.answerOrder,
         scrambledPlayerIds,
+        iceyPlayerIds: [...room.iceyPlayerIds],
         scrambledPlayers: scrambledPlayerIds.map((playerId) => ({
           playerId,
           remaining: Math.max(1, room.scrambleRemaining.get(playerId) || 0)
         }))
       });
-      activatePendingFreezes(room);
       if (room.answers.size === room.players.size) {
         revealIfReady(room);
       } else if (fakePlayers.length > 0) {
@@ -1859,11 +1820,6 @@ function handleMessage(socket, rawMessage) {
       }
       if (message.questionNumber !== room.questionNumber) return sendError(socket, "That question is no longer open.");
       if (room.answers.has(player.id)) return sendError(socket, "Your answer is already locked in.");
-      const freeze = room.frozenPlayers.get(player.id);
-      if (freeze && !freeze.pending && freeze.expiresAt > Date.now()) {
-        return sendError(socket, "Your screen is frozen. Wait for the freeze to end before answering.");
-      }
-      if (freeze && freeze.expiresAt <= Date.now()) clearPlayerFreeze(room, player.id, true);
       if (room.question.procedural) {
         if (typeof message.answer !== "string" || message.answer.length > 24) {
           return sendError(socket, "Enter a valid answer.");
@@ -1949,15 +1905,21 @@ function handleMessage(socket, rawMessage) {
       if (room.hostDisplay && player.host) {
         return sendError(socket, "The Host Display cannot choose a wager.");
       }
+      if (player.score <= 0) {
+        return sendError(socket, "You need points to go All In.");
+      }
       if (room.allInDecisions.has(player.id)) {
         return sendError(socket, "Your All In wager is already locked.");
       }
       room.allInDecisions.set(player.id, true);
+      const allInChainCount = getAllInChainCount(room);
       broadcast(room, {
         type: "all-in-locked",
         playerId: player.id,
         playerName: player.name,
         allIn: true,
+        allInChainCount,
+        allInMultiplier: allInChainCount + 1,
         lockedCount: room.allInDecisions.size
       });
       break;
@@ -1974,22 +1936,26 @@ function handleMessage(socket, rawMessage) {
         return sendError(socket, "Powerups must be used before you lock your answer.");
       }
       const costs = {
-        freeze: 5,
+        icey: 5,
         split: 10,
-        shield: 5,
+        shield: 10,
         scramble: 15,
         ghost: 5,
         "streak-bonus": 10,
         "streak-keeper": 20,
         "charge-drain": 15,
-        thief: 25,
+        thief: 0,
         "top-thief": 30,
         "reveal-players": 10
       };
-      const powerupCost = Object.hasOwn(costs, message.powerup)
-        ? costs[message.powerup]
-        : 0;
-      if (!powerupCost) return sendError(socket, "Choose a valid powerup.");
+      if (!Object.hasOwn(costs, message.powerup)) {
+        return sendError(socket, "Choose a valid powerup.");
+      }
+      const powerupCost = costs[message.powerup];
+      if (message.powerup !== "icey" && message.powerup !== "thief" &&
+          player.competitionCharge < powerupCost) {
+        return sendError(socket, "You do not have enough charge for that powerup.");
+      }
       if (message.powerup === "split") {
         const wrongAnswers = room.question.answerOrder.filter(
           (answerIndex) => answerIndex !== room.question.correctIndex
@@ -2085,15 +2051,20 @@ function handleMessage(socket, rawMessage) {
             target.socket?.readyState !== WebSocket.OPEN) {
           return sendError(socket, "Choose another connected player to steal points from.");
         }
-        const stolen = Math.min(10, Math.max(0, target.score || 0));
-        if (stolen === 0) {
-          return sendError(socket, "That player has no points to steal.");
+        const stolen = message.amount;
+        if (!Number.isSafeInteger(stolen) || stolen < 1 ||
+            stolen > Math.min(10, Math.max(0, target.score || 0))) {
+          return sendError(socket, "Choose a valid number of points to steal.");
+        }
+        const thiefCost = stolen * 2;
+        if (player.competitionCharge < thiefCost) {
+          return sendError(socket, "You do not have enough charge to steal that many points.");
         }
         target.score -= stolen;
         target.overallScore -= stolen;
         player.score += stolen;
         player.overallScore += stolen;
-        player.competitionCharge -= powerupCost;
+        player.competitionCharge -= thiefCost;
         rememberPlayerScore(room, target);
         rememberPlayerScore(room, player);
         send(player.socket, {
@@ -2115,19 +2086,16 @@ function handleMessage(socket, rawMessage) {
             target.socket?.readyState !== WebSocket.OPEN) {
           return sendError(socket, "Choose another connected player to drain.");
         }
-        const drained = Math.min(5, target.competitionCharge || 0);
-        if (drained === 0) {
+        if ((target.competitionCharge || 0) <= 0) {
           return sendError(socket, "That player has no charge to drain.");
         }
-        target.competitionCharge -= drained;
+        target.competitionCharge = 0;
         player.competitionCharge -= powerupCost;
-        player.competitionCharge += drained;
         rememberPlayerScore(room, target);
         send(player.socket, {
           type: "powerup-applied",
           powerup: "charge-drain",
-          targetPlayerId: target.id,
-          amount: drained
+          targetPlayerId: target.id
         });
         announcePowerup(room, player, "charge-drain", [target]);
       } else if (message.powerup === "reveal-players") {
@@ -2144,71 +2112,49 @@ function handleMessage(socket, rawMessage) {
           answeredPlayers: getAnsweredPlayers(room)
         });
         announcePowerup(room, player, "reveal-players");
-      } else {
+      } else if (message.powerup === "icey") {
         const targetPlayerIds = message.targetPlayerIds;
         if (!Array.isArray(targetPlayerIds) || targetPlayerIds.length < 1 ||
             targetPlayerIds.length > room.players.size - 1 ||
             !targetPlayerIds.every((targetId) => typeof targetId === "string") ||
             new Set(targetPlayerIds).size !== targetPlayerIds.length) {
-          return sendError(socket, "Choose one or more different players to freeze.");
+          return sendError(socket, "Choose one or more different players for Icey.");
         }
         const targets = targetPlayerIds.map((targetId) => findPlayer(room, targetId));
         if (targets.some((target) => !target || target.id === player.id || target.host ||
             target.fakePlayer || target.socket?.readyState !== WebSocket.OPEN)) {
-          return sendError(socket, "Choose only other connected players to freeze.");
+          return sendError(socket, "Choose only other connected players for Icey.");
         }
-        const freezeCost = powerupCost * targets.length;
-        if (targets.some((target) => room.frozenPlayers.has(target.id))) {
-          return sendError(socket, "A selected player is already frozen or queued to be frozen.");
+        const iceyCost = powerupCost * targets.length;
+        if (player.competitionCharge < iceyCost) {
+          return sendError(socket, "You do not have enough charge for the selected Icey targets.");
         }
-        const blockedPlayerIds = [];
-        const freezeResults = [];
-        const immediatelyAnnouncedTargets = [];
-        let freezeReflected = false;
+        const targetResults = [];
         for (const target of targets) {
           if (target.competitionShield) {
             target.competitionShield = false;
-            blockedPlayerIds.push(target.id);
-            immediatelyAnnouncedTargets.push(target);
-            if (!freezeReflected) {
-              startPlayerFreeze(room, player.id);
-              freezeReflected = true;
-            }
-            freezeResults.push({
-              playerId: target.id,
-              blocked: true,
-              reflected: true,
-              pending: false
-            });
-            continue;
-          }
-          const pending = room.answers.has(target.id);
-          if (pending) {
-            room.frozenPlayers.set(target.id, {
-              expiresAt: 0,
-              pending: true,
-              timer: null,
-              source: { id: player.id, name: player.name }
-            });
+            targetResults.push({ playerId: target.id, blocked: true });
           } else {
-            startPlayerFreeze(room, target.id);
-            immediatelyAnnouncedTargets.push(target);
+            room.iceyPlayerIds.add(target.id);
+            targetResults.push({ playerId: target.id, blocked: false });
+            send(target.socket, { type: "player-icey", playerId: target.id });
           }
-          freezeResults.push({ playerId: target.id, blocked: false, pending });
         }
-        player.competitionCharge -= freezeCost;
+        player.competitionCharge -= iceyCost;
         send(player.socket, {
           type: "powerup-applied",
-          powerup: "freeze",
-          targets: freezeResults
+          powerup: "icey",
+          targets: targetResults
         });
-        if (immediatelyAnnouncedTargets.length > 0) {
-          announcePowerup(room, player, "freeze", immediatelyAnnouncedTargets, blockedPlayerIds, {
-            ...(freezeReflected
-              ? { reflectedPlayer: { id: player.id, name: player.name } }
-              : {})
-          });
-        }
+        announcePowerup(
+          room,
+          player,
+          "icey",
+          targets,
+          targetResults.filter((result) => result.blocked).map((result) => result.playerId)
+        );
+      } else {
+        return sendError(socket, "Choose a valid powerup.");
       }
       player.competitionPowerupsUsed = (player.competitionPowerupsUsed || 0) + 1;
       rememberPlayerScore(room, player);

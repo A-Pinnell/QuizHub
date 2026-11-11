@@ -455,6 +455,26 @@
 		window.quizHubDevMenu.updateContext(event.detail);
 	});
 	document.addEventListener("keydown", (event) => {
+		if (
+			(event.ctrlKey || event.metaKey) &&
+			event.shiftKey &&
+			event.key.toLowerCase() === "d"
+		) {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			devTypingBuffer = "";
+			if (menuOpen) closeMenu();
+			else openMenu();
+			return;
+		}
+		if (
+			pageName === "quiz" &&
+			event.key.toLowerCase() === "d" &&
+			document.querySelector("#answers:not([hidden]) .answer:not(:disabled)")
+		) {
+			devTypingBuffer = "";
+			return;
+		}
 		const target =
 			event.target instanceof Element ? event.target : document.body;
 		if (event.key.length !== 1 || !/^[a-z]$/i.test(event.key)) {

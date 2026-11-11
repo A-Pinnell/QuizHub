@@ -857,9 +857,7 @@ let competitionAnsweredPlayerIds = new Set();
 let competitionRevealedPlayers = false;
 let competitionRoomSnapshot = null;
 let networkAnswerPending = false;
-let playerFrozenUntil = 0;
-let playerFreezeTimeout = null;
-let playerFreezeCountdownInterval = null;
+let competitionIceyTimeout = null;
 if (partyModeRequested) {
 	try {
 		const savedPartyPlayers = JSON.parse(
@@ -967,27 +965,6 @@ root.style.setProperty("--quiz-danger-color", theme.danger);
 
 const courseCode = document.getElementById("courseCode");
 const answersEl = document.getElementById("answers");
-const competitionFreezeOverlay = document.createElement("div");
-competitionFreezeOverlay.className = "competition-freeze-overlay";
-competitionFreezeOverlay.setAttribute("role", "alert");
-competitionFreezeOverlay.hidden = true;
-const competitionFreezeMessage = document.createElement("div");
-competitionFreezeMessage.className = "competition-freeze-message";
-const competitionFreezeTitle = document.createElement("strong");
-competitionFreezeTitle.textContent = "FROZEN";
-const competitionFreezeCountdown = document.createElement("span");
-competitionFreezeCountdown.className = "competition-freeze-countdown";
-competitionFreezeCountdown.setAttribute("aria-live", "off");
-const competitionFreezeCaption = document.createElement("span");
-competitionFreezeCaption.className = "competition-freeze-caption";
-competitionFreezeCaption.textContent = "SECONDS REMAINING";
-competitionFreezeMessage.append(
-	competitionFreezeTitle,
-	competitionFreezeCountdown,
-	competitionFreezeCaption,
-);
-competitionFreezeOverlay.appendChild(competitionFreezeMessage);
-document.body.appendChild(competitionFreezeOverlay);
 const competitionControls = document.getElementById("competitionControls");
 const competitionCharge = document.getElementById("competitionCharge");
 const competitionChargeText = document.getElementById("competitionChargeText");
@@ -1024,6 +1001,16 @@ const competitionTargetTitle = document.getElementById(
 const competitionPowerupConfirm = document.getElementById(
 	"competitionPowerupConfirm",
 );
+const competitionThiefAmount = document.getElementById(
+	"competitionThiefAmount",
+);
+const competitionThiefPoints = document.getElementById(
+	"competitionThiefPoints",
+);
+const competitionThiefLimit = document.getElementById(
+	"competitionThiefLimit",
+);
+const competitionThiefCost = document.getElementById("competitionThiefCost");
 const competitionAnnouncement = document.createElement("div");
 competitionAnnouncement.className = "competition-announcement";
 competitionAnnouncement.setAttribute("role", "status");
@@ -2491,15 +2478,28 @@ function renderCompetitionControls() {
 	const scrambleActive =
 		(competitionRoomSnapshot?.scrambledPlayers?.length || 0) > 0 ||
 		(competitionRoomSnapshot?.question?.scrambledPlayerIds?.length || 0) > 0;
-	const isFrozen = playerFrozenUntil > Date.now();
-	const canUsePowerup = !answered && !isFrozen && !competitionPowerupPending;
+	const powerupCosts = {
+		icey: 5,
+		split: 10,
+		shield: 10,
+		scramble: 15,
+		ghost: 5,
+		"streak-bonus": 10,
+		"streak-keeper": 20,
+		"charge-drain": 15,
+		thief: 2,
+		"top-thief": 30,
+		"reveal-players": 10,
+	};
+	const canUsePowerup = !answered && !competitionPowerupPending;
 	competitionPowerupCatalog
 		.querySelectorAll("[data-use-powerup]")
 		.forEach((button) => {
 			const powerup = button.dataset.usePowerup;
 			const unavailable =
 				!canUsePowerup ||
-				(powerup === "freeze" && targets.length === 0) ||
+				charge < powerupCosts[powerup] ||
+				(powerup === "icey" && targets.length === 0) ||
 				(powerup === "split" &&
 					(competitionRemovedAnswers.length > 0 || answerCount !== 4)) ||
 				(powerup === "shield" && ownPlayer?.competitionShield === true) ||
@@ -2510,7 +2510,8 @@ function renderCompetitionControls() {
 				(powerup === "streak-keeper" &&
 					ownPlayer?.competitionStreakKeeper === true) ||
 				(powerup === "charge-drain" && drainTargets.length === 0) ||
-				(powerup === "thief" && thiefTargets.length === 0) ||
+				(powerup === "thief" &&
+					(charge < 2 || thiefTargets.length === 0)) ||
 				(powerup === "top-thief" &&
 					competitionRoomSnapshot?.topThiefPlayerId) ||
 				(powerup === "reveal-players" &&
@@ -2523,7 +2524,9 @@ function renderCompetitionControls() {
 	renderCompetitionActivePowerups();
 	competitionWager.hidden = competitionDecisionLocked || quizEnded;
 	competitionAllIn.disabled =
-		competitionDecisionPending || competitionDecisionLocked;
+		competitionDecisionPending ||
+		competitionDecisionLocked ||
+		(Number(ownPlayer?.score) || 0) <= 0;
 	if (competitionDecisionLocked) {
 		competitionStatus.textContent = "All In locked.";
 	}
@@ -2550,16 +2553,6 @@ function renderCompetitionActivePowerups() {
 		const remaining = scramble.remaining;
 		active.push(
 			`Scramble: ${player?.name || "A player"} (${remaining} question${remaining === 1 ? "" : "s"} remaining)`,
-		);
-	}
-	for (const freeze of competitionRoomSnapshot?.frozenPlayers || []) {
-		const player = partyPlayers.find(
-			(candidate) => candidate.id === freeze.playerId,
-		);
-		active.push(
-			freeze.pending
-				? `Freeze: ${player?.name || "A player"} on the next question`
-				: `Freeze: ${player?.name || "A player"} for ${Math.max(1, Math.ceil((freeze.expiresAt - Date.now()) / 1000))}s`,
 		);
 	}
 	competitionActivePowerups.textContent = active.length
@@ -2630,65 +2623,55 @@ function applyRevealedAnswers(players) {
 	renderCompetitionControls();
 }
 
-function setPlayerFrozen(expiresAt) {
-	if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) return;
-	if (playerFreezeTimeout !== null) clearTimeout(playerFreezeTimeout);
-	if (playerFreezeCountdownInterval !== null) {
-		clearInterval(playerFreezeCountdownInterval);
+function stopCompetitionIcey() {
+	if (competitionIceyTimeout !== null) {
+		clearTimeout(competitionIceyTimeout);
+		competitionIceyTimeout = null;
 	}
-	playerFrozenUntil = expiresAt;
-	competitionFreezeOverlay.hidden = false;
-	const updateCountdown = () => {
-		competitionFreezeCountdown.textContent = String(
-			Math.max(0, Math.ceil((playerFrozenUntil - Date.now()) / 1000)),
-		);
-	};
-	updateCountdown();
-	playerFreezeCountdownInterval = setInterval(updateCountdown, 250);
-	stopQuestionTimer();
-	if (!answered) {
-		answersEl.querySelectorAll(".answer").forEach((button) => {
-			button.disabled = true;
-		});
-	}
-	renderCompetitionControls();
-	playerFreezeTimeout = setTimeout(
-		() => {
-			playerFrozenUntil = 0;
-			playerFreezeTimeout = null;
-			if (playerFreezeCountdownInterval !== null) {
-				clearInterval(playerFreezeCountdownInterval);
-				playerFreezeCountdownInterval = null;
-			}
-			competitionFreezeOverlay.hidden = true;
-			if (!answered) {
-				answersEl.querySelectorAll(".answer").forEach((button) => {
-					button.disabled = false;
-				});
-				startQuestionTimer();
-			}
-			renderCompetitionControls();
-		},
-		Math.max(0, expiresAt - Date.now()),
-	);
+	answersEl.classList.remove("competition-icey");
+	document.body.classList.remove("competition-icey-active");
+	answersEl.querySelectorAll(".answer").forEach((button) => {
+		button.style.transition = "none";
+		button.style.removeProperty("transform");
+	});
+	void answersEl.offsetWidth;
+	answersEl.querySelectorAll(".answer").forEach((button) => {
+		button.style.removeProperty("transition");
+	});
 }
 
-function clearPlayerFreeze() {
-	if (playerFreezeTimeout !== null) clearTimeout(playerFreezeTimeout);
-	if (playerFreezeCountdownInterval !== null) {
-		clearInterval(playerFreezeCountdownInterval);
-		playerFreezeCountdownInterval = null;
-	}
-	playerFreezeTimeout = null;
-	playerFrozenUntil = 0;
-	competitionFreezeOverlay.hidden = true;
-	if (!answered) {
-		answersEl.querySelectorAll(".answer").forEach((button) => {
-			button.disabled = false;
+function startCompetitionIcey() {
+	stopCompetitionIcey();
+	const buttons = [...answersEl.querySelectorAll(".answer:not([hidden])")];
+	if (!buttons.length) return;
+	answersEl.classList.add("competition-icey");
+	document.body.classList.add("competition-icey-active");
+	const baseRects = buttons.map((button) => button.getBoundingClientRect());
+	buttons.forEach((button) => {
+		button.style.animation = "none";
+		button.style.opacity = "1";
+	});
+	const slideButtons = () => {
+		buttons.forEach((button, index) => {
+			const rect = baseRects[index];
+			const slideRight = Math.random() < 0.5;
+			const x = slideRight
+				? window.innerWidth - rect.left + 32
+				: -(rect.right + 32);
+			const y = (Math.random() - 0.5) * window.innerHeight * 1.4;
+			const rotation = (Math.random() - 0.5) * 8;
+			const duration = 300 + Math.random() * 450;
+			button.style.transition =
+				`transform ${duration.toFixed(0)}ms cubic-bezier(0.2, 0.75, 0.3, 1)`;
+			button.style.transform =
+				`translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rotation.toFixed(1)}deg)`;
 		});
-		startQuestionTimer();
-	}
-	renderCompetitionControls();
+		competitionIceyTimeout = window.setTimeout(
+			slideButtons,
+			550 + Math.random() * 450,
+		);
+	};
+	slideButtons();
 }
 
 async function submitCompetitionWager() {
@@ -2714,7 +2697,11 @@ async function submitCompetitionWager() {
 	}
 }
 
-async function useCompetitionPowerup(powerup, targetPlayerId = null) {
+async function useCompetitionPowerup(
+	powerup,
+	targetPlayerId = null,
+	amount = null,
+) {
 	if (!networkPartyActive || competitionPowerupPending) return;
 	competitionPowerupPending = true;
 	renderCompetitionControls();
@@ -2723,10 +2710,11 @@ async function useCompetitionPowerup(powerup, targetPlayerId = null) {
 			type: "competition-powerup",
 			code: partyRoomCode,
 			powerup,
-			...(powerup === "freeze" ? { targetPlayerIds: targetPlayerId } : {}),
+			...(powerup === "icey" ? { targetPlayerIds: targetPlayerId } : {}),
 			...(["ghost", "charge-drain", "thief"].includes(powerup)
 				? { targetPlayerId }
 				: {}),
+			...(powerup === "thief" ? { amount } : {}),
 		});
 	} catch (error) {
 		competitionPowerupPending = false;
@@ -2746,38 +2734,42 @@ function openCompetitionTargetPicker(powerup) {
 			!player.host &&
 			!player.fakePlayer &&
 			player.connected !== false &&
-			(powerup !== "charge-drain" ||
-				(Number(player.competitionCharge) || 0) > 0) &&
 			(powerup !== "thief" || (Number(player.score) || 0) > 0),
 	);
 	competitionTargetDialog.dataset.powerup = powerup;
+	competitionThiefAmount.hidden = powerup !== "thief";
 	competitionTargetTitle.textContent =
-		powerup === "freeze"
-			? "Choose players to freeze"
+		powerup === "icey"
+			? "Choose players for Icey"
 			: powerup === "ghost"
 				? "Choose a player to inspect"
 				: powerup === "thief"
 					? "Choose a player to steal points from"
-					: "Choose a player to drain";
+					: "Choose a player to drain all charge from";
 	competitionPowerupConfirm.textContent =
-		powerup === "freeze"
-			? "FREEZE SELECTED"
+		powerup === "icey"
+			? "USE ICEY"
 			: powerup === "ghost"
 				? "USE GHOST"
 				: powerup === "thief"
 					? "STEAL POINTS"
-					: "DRAIN CHARGE";
+					: "DRAIN ALL CHARGE";
 	competitionTargetChoices.replaceChildren(
 		...targets.map((player) => {
 			const label = document.createElement("label");
 			const input = document.createElement("input");
-			input.type = powerup === "freeze" ? "checkbox" : "radio";
+			input.type = powerup === "icey" ? "checkbox" : "radio";
 			input.name = "competitionTarget";
 			input.value = player.id;
 			input.dataset.powerupTarget = "";
+			input.disabled =
+				powerup === "charge-drain" &&
+				(Number(player.competitionCharge) || 0) <= 0;
 			const targetDescription =
 				powerup === "charge-drain"
-					? ` · ${player.competitionCharge || 0} charge`
+					? input.disabled
+						? " · 0 charge"
+						: ""
 					: powerup === "thief"
 						? ` · ${player.score || 0} points`
 						: "";
@@ -2788,7 +2780,41 @@ function openCompetitionTargetPicker(powerup) {
 			return label;
 		}),
 	);
+	competitionThiefPoints.value = "1";
+	competitionThiefPoints.disabled = true;
+	competitionThiefLimit.textContent = "";
+	competitionThiefCost.textContent = "";
 	if (targets.length) competitionTargetDialog.showModal();
+}
+
+function updateCompetitionThiefLimit() {
+	if (competitionTargetDialog.dataset.powerup !== "thief") return;
+	const selectedTargetId = competitionTargetChoices.querySelector(
+		"[data-powerup-target]:checked",
+	)?.value;
+	const target = partyPlayers.find((player) => player.id === selectedTargetId);
+	const charge =
+		Number(
+			partyPlayers.find((player) => player.id === partyPlayerId)
+				?.competitionCharge,
+		) || 0;
+	const limit = Math.min(
+		10,
+		Math.max(0, Number(target?.score) || 0),
+		Math.floor(charge / 2),
+	);
+	competitionThiefPoints.max = String(limit);
+	competitionThiefPoints.disabled = limit === 0;
+	if (Number(competitionThiefPoints.value) > limit) {
+		competitionThiefPoints.value = String(Math.max(1, limit));
+	}
+	competitionThiefLimit.textContent =
+		`Maximum ${limit} point${limit === 1 ? "" : "s"} with your available charge.`;
+	const amount = Number(competitionThiefPoints.value);
+	competitionThiefCost.textContent =
+		Number.isSafeInteger(amount) && amount > 0
+			? `This will cost ${amount * 2} charge.`
+			: "Enter the number of points to steal.";
 }
 
 function openCompetitionPowerups() {
@@ -2866,18 +2892,15 @@ function startNetworkQuiz(config, roomSnapshot = null) {
 	if (roomSnapshot?.question) {
 		const question = roomSnapshot.question;
 		displayNetworkQuestion(question);
+		if (roomSnapshot.iceyPlayerIds?.includes(partyPlayerId)) {
+			startCompetitionIcey();
+		}
 		if (roomSnapshot.revealPlayersActive) {
 			applyRevealedAnswers(roomSnapshot.revealedAnsweredPlayers);
 		}
 		competitionAnsweredPlayerIds = new Set(roomSnapshot.answersLocked || []);
 		competitionDecisionLocked =
 			roomSnapshot.allInLocked?.includes(partyPlayerId) === true;
-		if (Array.isArray(roomSnapshot.frozenPlayers)) {
-			const freeze = roomSnapshot.frozenPlayers.find(
-				(entry) => entry.playerId === partyPlayerId && !entry.pending,
-			);
-			if (freeze) setPlayerFrozen(freeze.expiresAt);
-		}
 		if (
 			Array.isArray(roomSnapshot.splitAnswers) &&
 			roomSnapshot.splitAnswers.length
@@ -2976,6 +2999,9 @@ function displayNetworkQuestion(message) {
 		? message.scrambledPlayerIds
 		: [];
 	renderQuestion(answerOrder, scrambledPlayerIds.includes(partyPlayerId));
+	if (message.iceyPlayerIds?.includes(partyPlayerId)) {
+		startCompetitionIcey();
+	}
 	if (partyHostDisplay) {
 		answered = false;
 		answersEl.querySelectorAll(".answer").forEach((button) => {
@@ -3019,8 +3045,7 @@ function lockNetworkAnswerUi(selectedIndex) {
 }
 
 function submitNetworkAnswer(selectedIndex) {
-	if (!quizStarted || quizEnded || answered || playerFrozenUntil > Date.now())
-		return;
+	if (!quizStarted || quizEnded || answered) return;
 	networkAnswerPending = true;
 	lockNetworkAnswerUi(selectedIndex);
 	partyConnection
@@ -3034,7 +3059,7 @@ function submitNetworkAnswer(selectedIndex) {
 			networkAnswerPending = false;
 			answered = false;
 			answersEl.querySelectorAll(".answer").forEach((button) => {
-				button.disabled = button.hidden || playerFrozenUntil > Date.now();
+				button.disabled = button.hidden;
 			});
 			renderCompetitionControls();
 			setupError.textContent = `Could not submit answer: ${error.message}`;
@@ -3083,6 +3108,7 @@ function skipNetworkQuestion() {
 
 function revealNetworkQuestion(message) {
 	if (!current || !Array.isArray(message.answers)) return;
+	stopCompetitionIcey();
 	skipQuestionPending = false;
 	stopQuestionTimer();
 	answered = true;
@@ -3099,6 +3125,9 @@ function revealNetworkQuestion(message) {
 			player.score = Number(entry.score);
 		if (Number.isFinite(Number(entry.competitionCharge))) {
 			player.competitionCharge = Number(entry.competitionCharge);
+		}
+		if (typeof entry.competitionShield === "boolean") {
+			player.competitionShield = entry.competitionShield;
 		}
 		if (typeof entry.competitionStreakBonus === "boolean") {
 			player.competitionStreakBonus = entry.competitionStreakBonus;
@@ -4651,6 +4680,7 @@ function renderQuestion(
 	scrambleAnswerPositions = false,
 ) {
 	if (!current) return;
+	stopCompetitionIcey();
 	currentQuestionPresentation = getQuestionPresentation();
 	const useShortAnswer = currentQuestionPresentation === "short-answer";
 	currentShortAnswerQuestion = useShortAnswer
@@ -5784,9 +5814,13 @@ if (networkPartyActive) {
 		if (message.playerId === partyPlayerId) {
 			competitionDecisionLocked = true;
 			competitionDecisionPending = false;
-			competitionStatus.textContent = message.allIn
-				? "All-in locked. Waiting for the other players…"
-				: "Normal wager locked. Waiting for the other players…";
+		}
+		if (message.allIn === true) {
+			const chainCount = Number(message.allInChainCount) || 1;
+			const multiplier = Number(message.allInMultiplier) || chainCount + 1;
+			competitionStatus.textContent =
+				`All In chain: ${chainCount} player${chainCount === 1 ? "" : "s"} — ` +
+				`${multiplier}× points if correct, lose all your points if wrong.`;
 			renderCompetitionControls();
 		}
 		if (partyHostDisplay && message.allIn === true) {
@@ -5794,7 +5828,8 @@ if (networkPartyActive) {
 				(member) => member.id === message.playerId,
 			);
 			showCompetitionAnnouncement(
-				`${message.playerName || player?.name || "A player"} went ALL IN!`,
+				`${message.playerName || player?.name || "A player"} went ALL IN! ` +
+					`The chain is now ${Number(message.allInMultiplier) || 2}×.`,
 			);
 		}
 	});
@@ -5803,25 +5838,21 @@ if (networkPartyActive) {
 		if (message.powerup === "split") {
 			applySplitAnswers(message.removedAnswers);
 			competitionStatus.textContent = "Split removed two incorrect answers.";
-		} else if (message.powerup === "freeze") {
+		} else if (message.powerup === "icey") {
 			competitionStatus.textContent = message.targets
 				.map((targetResult) => {
 					const target = partyPlayers.find(
 						(player) => player.id === targetResult.playerId,
 					);
 					const name = target?.name || "the player";
-					if (targetResult.reflected) {
-						return `Your Freeze was reflected back onto you by ${name}’s Shield.`;
-					}
-					if (targetResult.blocked) return `Shield blocked Freeze on ${name}.`;
-					return targetResult.pending
-						? `Freeze queued for ${name}’s next question.`
-						: `Freeze used on ${name} for 15 seconds.`;
+					return targetResult.blocked
+						? `Shield blocked Icey on ${name}.`
+						: `Icey is making ${name}’s buttons slide for this question.`;
 				})
 				.join(" ");
 		} else if (message.powerup === "shield") {
 			competitionStatus.textContent =
-				"Shield is active; it will block one Freeze.";
+				"Shield is active; it blocks one Icey or protects your points on one All In wrong answer.";
 		} else if (message.powerup === "scramble") {
 			competitionStatus.textContent =
 				"Scramble will affect other players for the next three questions.";
@@ -5847,7 +5878,7 @@ if (networkPartyActive) {
 			const target = partyPlayers.find(
 				(player) => player.id === message.targetPlayerId,
 			);
-			competitionStatus.textContent = `Drained ${message.amount} charge from ${target?.name || "your opponent"}.`;
+			competitionStatus.textContent = `Charge Drainer removed all charge from ${target?.name || "your opponent"}.`;
 		} else if (message.powerup === "thief") {
 			const target = partyPlayers.find(
 				(player) => player.id === message.targetPlayerId,
@@ -5877,42 +5908,37 @@ if (networkPartyActive) {
 	partyConnection.on("powerup-used", (message) => {
 		if (!partyHostDisplay) return;
 		const powerupNames = {
-			freeze: "Freeze",
+			icey: "Icey",
 			split: "Split",
 			shield: "Shield",
 			scramble: "Scramble",
 			ghost: "Ghost",
 			"streak-bonus": "Streak Bonus",
 			"streak-keeper": "Streak Keeper",
-			"charge-drain": "Charge Drain",
+			"charge-drain": "Charge Drainer",
 			thief: "Thief",
 			"top-thief": "Top Thief",
 			"reveal-players": "Reveal Players",
 		};
 		const targets =
 			message.targets?.map((target) =>
-				target.reflectedTo
-					? `${target.name}’s Shield reflected Freeze onto ${target.reflectedTo.name}`
-					: target.blocked
-						? `${target.name} (Shield blocked it)`
-						: target.name,
+				target.blocked ? `${target.name} (Shield blocked it)` : target.name,
 			) || [];
 		const announcement =
 			`${message.player.name} used ${powerupNames[message.powerup] || "a powerup"}` +
 			(targets.length ? ` on ${targets.join(", ")}` : "") +
 			(message.powerup === "thief"
 				? `, stealing ${message.amount} points`
+				: message.powerup === "charge-drain"
+					? ", draining all charge"
 				: "") +
 			(Number.isInteger(message.questions) && message.questions > 1
 				? ` for the next ${message.questions} questions`
 				: "");
 		showCompetitionAnnouncement(announcement);
 	});
-	partyConnection.on("player-frozen", (message) => {
-		if (message.playerId === partyPlayerId) setPlayerFrozen(message.expiresAt);
-	});
-	partyConnection.on("player-unfrozen", (message) => {
-		if (message.playerId === partyPlayerId) clearPlayerFreeze();
+	partyConnection.on("player-icey", (message) => {
+		if (message.playerId === partyPlayerId) startCompetitionIcey();
 	});
 	partyConnection.on("reveal", revealNetworkQuestion);
 	partyConnection.on("next-question", () => {
@@ -5933,12 +5959,6 @@ if (networkPartyActive) {
 		updateNetworkPlayers(message.room.players);
 		renderCompetitionControls();
 		updatePartySettingsSummary(message.room.quizConfig);
-		const freeze = message.room.frozenPlayers?.find(
-			(entry) => entry.playerId === partyPlayerId && !entry.pending,
-		);
-		if (freeze && freeze.expiresAt > playerFrozenUntil) {
-			setPlayerFrozen(freeze.expiresAt);
-		}
 	});
 	partyConnection.on("host-display-music", (message) => {
 		if (!partyHostDisplay && !hostDisplayAnswerer) return;
@@ -5981,12 +6001,12 @@ if (networkPartyActive) {
 			networkAnswerPending = false;
 			answered = false;
 			answersEl.querySelectorAll(".answer").forEach((button) => {
-				button.disabled = button.hidden || playerFrozenUntil > Date.now();
+				button.disabled = button.hidden;
 			});
 			skipButton.disabled = !hostDisplayAnswerer;
 			feedback.textContent = message.message;
 			feedback.className = "motivation visible wrong";
-			if (playerFrozenUntil <= Date.now()) startQuestionTimer();
+			startQuestionTimer();
 			renderCompetitionControls();
 		}
 		if (partyCompetitionMode) {
@@ -6016,7 +6036,7 @@ if (networkPartyActive) {
 		const button = event.target.closest("[data-use-powerup]");
 		if (!button || button.disabled) return;
 		const powerup = button.dataset.usePowerup;
-		if (["freeze", "ghost", "charge-drain", "thief"].includes(powerup)) {
+		if (["icey", "ghost", "charge-drain", "thief"].includes(powerup)) {
 			competitionPowerupsDialog.close();
 			openCompetitionTargetPicker(powerup);
 			return;
@@ -6035,23 +6055,59 @@ if (networkPartyActive) {
 			competitionStatus.textContent = "Choose at least one player.";
 			return;
 		}
-		if (powerup === "freeze") {
+		if (powerup === "icey") {
 			const charge =
 				Number(
 					partyPlayers.find((player) => player.id === partyPlayerId)
 						?.competitionCharge,
 				) || 0;
 			if (selectedTargets.length * 5 > charge) {
-				competitionStatus.textContent = `Freeze costs 5 charge per player; you can select at most ${Math.floor(charge / 5)}.`;
+				competitionStatus.textContent = `Icey costs 5 charge per player; you can select at most ${Math.floor(charge / 5)}.`;
+				return;
+			}
+		}
+		let amount = null;
+		if (powerup === "thief") {
+			amount = Number(competitionThiefPoints.value);
+			const target = partyPlayers.find(
+				(player) => player.id === selectedTargets[0],
+			);
+			const charge =
+				Number(
+					partyPlayers.find((player) => player.id === partyPlayerId)
+						?.competitionCharge,
+				) || 0;
+			const maxAmount = Math.min(
+				10,
+				Number(target?.score) || 0,
+				Math.floor(charge / 2),
+			);
+			if (
+				selectedTargets.length !== 1 ||
+				!Number.isSafeInteger(amount) ||
+				amount < 1 ||
+				amount > maxAmount
+			) {
+				competitionStatus.textContent =
+					"Choose a valid number of points within your available charge.";
 				return;
 			}
 		}
 		competitionTargetDialog.close();
 		useCompetitionPowerup(
 			powerup,
-			powerup === "freeze" ? selectedTargets : selectedTargets[0],
+			powerup === "icey" ? selectedTargets : selectedTargets[0],
+			amount,
 		);
 	});
+	competitionTargetChoices.addEventListener(
+		"change",
+		updateCompetitionThiefLimit,
+	);
+	competitionThiefPoints.addEventListener(
+		"input",
+		updateCompetitionThiefLimit,
+	);
 	partyConnection.on("close", () => {
 		if (!quizEnded) {
 			setupError.textContent =

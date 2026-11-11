@@ -1830,7 +1830,7 @@ test("Competition Mode rank scoring scales to two players and Top Thief swaps aw
   );
 });
 
-test("Competition Mode locks wagers, scores all-in, and validates Split and Freeze", async (t) => {
+test("Competition Mode scores All In and validates Split and Icey powerups", async (t) => {
   const port = 19080 + Math.floor(Math.random() * 1000);
   const server = spawn(process.execPath, ["server.js"], {
     cwd: process.cwd(),
@@ -2045,9 +2045,14 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   }
 
   await openQuestion(0);
-  await wager(displayPlayer, displayJoin.playerId, 0);
-  await wager(otherPlayer, otherJoin.playerId, 0);
-  await wager(thirdPlayer, thirdJoin.playerId, 0);
+  const zeroScoreAllInError = waitForMessage(displayPlayer, "error");
+  send(displayPlayer, {
+    type: "all-in-decision",
+    code: hosted.room.code,
+    questionNumber: 0,
+    allIn: true
+  });
+  assert.match((await zeroScoreAllInError).message, /need points/i);
   await answer(displayPlayer, displayJoin.playerId, 0, 0);
   const firstRevealPromise = waitForMessage(host, "reveal");
   await answer(otherPlayer, otherJoin.playerId, 0, 2);
@@ -2055,19 +2060,104 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   const firstReveal = await firstRevealPromise;
   assert.equal(
     firstReveal.answers.find((entry) => entry.playerId === displayJoin.playerId).pointsEarned,
-    -6
+    0
   );
   const firstCorrect = firstReveal.answers.find((entry) => entry.playerId === otherJoin.playerId);
-  assert.equal(firstCorrect.pointsEarned, 12);
+  assert.equal(firstCorrect.pointsEarned, 6);
   assert.equal(firstCorrect.competitionCharge, 1);
   assert.equal(
     firstReveal.answers.find((entry) => entry.playerId === thirdJoin.playerId).pointsEarned,
-    2
+    1
   );
 
   for (let questionNumber = 1; questionNumber <= 9; questionNumber++) {
     await nextQuestion(questionNumber);
-    const reveal = await answerCorrectAndPass(questionNumber);
+    let reveal;
+    if (questionNumber === 2) {
+      const firstChainWager = await wager(
+        displayPlayer,
+        displayJoin.playerId,
+        questionNumber
+      );
+      const secondChainWager = await wager(
+        otherPlayer,
+        otherJoin.playerId,
+        questionNumber
+      );
+      assert.equal(firstChainWager.allInMultiplier, 2);
+      assert.equal(secondChainWager.allInMultiplier, 3);
+      const revealPromise = waitForMessage(host, "reveal");
+      await answer(displayPlayer, displayJoin.playerId, questionNumber, 2);
+      await answer(otherPlayer, otherJoin.playerId, questionNumber, 2);
+      await answer(thirdPlayer, thirdJoin.playerId, questionNumber, 2);
+      reveal = await revealPromise;
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === displayJoin.playerId).pointsEarned,
+        18
+      );
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === otherJoin.playerId).pointsEarned,
+        24
+      );
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === displayJoin.playerId).score,
+        27
+      );
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === otherJoin.playerId).score,
+        36
+      );
+    } else if (questionNumber === 3) {
+      const firstChainWager = await wager(
+        displayPlayer,
+        displayJoin.playerId,
+        questionNumber
+      );
+      const secondChainWager = await wager(
+        otherPlayer,
+        otherJoin.playerId,
+        questionNumber
+      );
+      const thirdChainWager = await wager(
+        thirdPlayer,
+        thirdJoin.playerId,
+        questionNumber
+      );
+      assert.equal(firstChainWager.allInMultiplier, 2);
+      assert.equal(secondChainWager.allInMultiplier, 3);
+      assert.equal(thirdChainWager.allInMultiplier, 4);
+      const revealPromise = waitForMessage(host, "reveal");
+      await answer(displayPlayer, displayJoin.playerId, questionNumber, 2);
+      await answer(otherPlayer, otherJoin.playerId, questionNumber, 2);
+      await answer(thirdPlayer, thirdJoin.playerId, questionNumber, 2);
+      reveal = await revealPromise;
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === displayJoin.playerId).pointsEarned,
+        81
+      );
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === otherJoin.playerId).pointsEarned,
+        108
+      );
+      assert.equal(
+        reveal.answers.find((entry) => entry.playerId === thirdJoin.playerId).pointsEarned,
+        9
+      );
+    } else if (questionNumber === 4) {
+      await wager(displayPlayer, displayJoin.playerId, questionNumber);
+      const revealPromise = waitForMessage(host, "reveal");
+      await answer(displayPlayer, displayJoin.playerId, questionNumber, 0);
+      await answer(otherPlayer, otherJoin.playerId, questionNumber, 2);
+      await answer(thirdPlayer, thirdJoin.playerId, questionNumber, 2);
+      reveal = await revealPromise;
+      const allInLoss = reveal.answers.find(
+        (entry) => entry.playerId === displayJoin.playerId
+      );
+      assert.equal(allInLoss.pointsEarned, -108);
+      assert.equal(allInLoss.score, 0);
+    } else {
+      reveal = await answerCorrectAndPass(questionNumber);
+    }
     if (questionNumber === 1) {
       assert.equal(
         reveal.answers.find((entry) => entry.playerId === displayJoin.playerId).pointsEarned,
@@ -2156,15 +2246,33 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   await streakApplied;
   assert.equal((await streakAnnouncement).player.name, "Other Player");
 
+  const unaffordableShield = waitForMessage(thirdPlayer, "error");
+  send(thirdPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "shield"
+  });
+  assert.match((await unaffordableShield).message, /not have enough charge/i);
+  const shieldCharge = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((player) => player.id === thirdJoin.playerId)
+      ?.competitionCharge === 10
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: thirdJoin.playerId,
+    charge: 10
+  });
+  await shieldCharge;
   const reflectedShieldApplied = waitForMessage(thirdPlayer, "powerup-applied", (message) =>
     message.powerup === "shield"
   );
-  const reflectedShieldDebt = waitForMessage(host, "room-state", (message) =>
-    message.room.players.find((player) => player.id === thirdJoin.playerId)
-      ?.competitionCharge === -5
-  );
   const shieldAnnouncement = waitForMessage(host, "powerup-used", (message) =>
     message.powerup === "shield"
+  );
+  const shieldChargeSpent = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((player) => player.id === thirdJoin.playerId)
+      ?.competitionCharge === 0
   );
   send(thirdPlayer, {
     type: "competition-powerup",
@@ -2173,7 +2281,7 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   });
   await reflectedShieldApplied;
   assert.equal((await shieldAnnouncement).player.name, "Third Player");
-  await reflectedShieldDebt;
+  await shieldChargeSpent;
 
   const ghostResult = waitForMessage(otherPlayer, "powerup-applied", (message) =>
     message.powerup === "ghost"
@@ -2221,21 +2329,26 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   });
   await activeScrambleError;
 
-  const multiFreezeApplied = waitForMessage(otherPlayer, "powerup-applied", (message) =>
-    message.powerup === "freeze"
+  const iceyApplied = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "icey"
+  );
+  const iceyTargeted = waitForMessage(displayPlayer, "player-icey");
+  const iceyAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "icey"
   );
   send(otherPlayer, {
     type: "competition-powerup",
     code: hosted.room.code,
-    powerup: "freeze",
+    powerup: "icey",
     targetPlayerIds: [displayJoin.playerId]
   });
-  const multiFreeze = await multiFreezeApplied;
+  const icey = await iceyApplied;
+  assert.equal((await iceyTargeted).playerId, displayJoin.playerId);
+  assert.equal((await iceyAnnouncement).targets[0].id, displayJoin.playerId);
   assert.deepEqual(
-    multiFreeze.targets.map(({ playerId, blocked, reflected }) => ({
+    icey.targets.map(({ playerId, blocked }) => ({
       playerId,
-      blocked,
-      ...(reflected ? { reflected } : {})
+      blocked
     })),
     [{ playerId: displayJoin.playerId, blocked: false }]
   );
@@ -2248,36 +2361,27 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
     8
   );
 
-  const frozenPromise = waitForMessage(displayPlayer, "player-frozen");
-  const delayedFreezeAnnouncement = waitForMessage(host, "powerup-used", (message) =>
-    message.powerup === "freeze" &&
-    message.targets.some((target) => target.id === displayJoin.playerId)
-  );
   const question16Messages = await nextQuestion(16);
-  const frozen = await frozenPromise;
-  const delayedFreeze = await delayedFreezeAnnouncement;
-  assert.equal(frozen.playerId, displayJoin.playerId);
-  assert.equal(delayedFreeze.targets[0].id, displayJoin.playerId);
   assert.ok(question16Messages.every((message) =>
     message.scrambledPlayerIds.includes(displayJoin.playerId) &&
     message.scrambledPlayerIds.includes(thirdJoin.playerId) &&
     !message.scrambledPlayerIds.includes(otherJoin.playerId)
   ));
-  const frozenAnswerError = waitForMessage(displayPlayer, "error");
-  send(displayPlayer, {
-    type: "answer",
-    code: hosted.room.code,
-    questionNumber: 16,
-    answerIndex: 2
-  });
-  assert.match((await frozenAnswerError).message, /screen is frozen/);
-  const timedOutReveal = waitForMessage(host, "reveal");
-  send(host, { type: "question-timeout", code: hosted.room.code });
-  const timedOut = await timedOutReveal;
-  assert.equal(
-    timedOut.answers.find((entry) => entry.playerId === displayJoin.playerId).pointsEarned,
-    0
+  const thirdScoreBeforeShield = revealWithStreak.answers.find(
+    (entry) => entry.playerId === thirdJoin.playerId
+  ).score;
+  await wager(thirdPlayer, thirdJoin.playerId, 16);
+  const shieldedWrongAnswer = waitForMessage(host, "reveal");
+  await answer(displayPlayer, displayJoin.playerId, 16, 2);
+  await answer(otherPlayer, otherJoin.playerId, 16, 2);
+  await answer(thirdPlayer, thirdJoin.playerId, 16, 0);
+  const shieldedReveal = await shieldedWrongAnswer;
+  const shieldedAnswer = shieldedReveal.answers.find(
+    (entry) => entry.playerId === thirdJoin.playerId
   );
+  assert.equal(shieldedAnswer.pointsEarned, 0);
+  assert.equal(shieldedAnswer.score, thirdScoreBeforeShield);
+  assert.equal(shieldedAnswer.competitionShield, false);
   for (const questionNumber of [17, 18]) {
     const questionMessages = await nextQuestion(questionNumber);
     assert.ok(questionMessages.every((message) =>
@@ -2368,7 +2472,7 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
     message.powerup === "charge-drain"
   );
   const drainedRoomState = waitForMessage(host, "room-state", (message) =>
-    message.room.players.find((player) => player.id === thirdJoin.playerId)?.competitionCharge === 3
+    message.room.players.find((player) => player.id === thirdJoin.playerId)?.competitionCharge === 0
   );
   send(otherPlayer, {
     type: "competition-powerup",
@@ -2377,17 +2481,17 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
     targetPlayerId: thirdJoin.playerId
   });
   const drained = await drainResult;
-  assert.equal(drained.amount, 5);
+  assert.equal(Object.hasOwn(drained, "amount"), false);
   const drainedState = await drainedRoomState.catch((error) => {
     throw new Error(`Drain room-state update missing: ${error.message}`);
   });
   assert.equal(
     drainedState.room.players.find((player) => player.id === otherJoin.playerId).competitionCharge,
-    20
+    15
   );
   assert.equal(
     drainedState.room.players.find((player) => player.id === thirdJoin.playerId).competitionCharge,
-    3
+    0
   );
 
   const thiefTarget = drainedState.room.players.find((member) =>
@@ -2397,6 +2501,26 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   const otherScoreBeforeThief = drainedState.room.players.find(
     (member) => member.id === otherJoin.playerId
   );
+  const lowThiefCharge = waitForMessage(host, "room-state", (message) =>
+    message.room.players.find((member) => member.id === otherJoin.playerId)
+      ?.competitionCharge === 5
+  );
+  send(host, {
+    type: "dev-set-competition-charge",
+    code: hosted.room.code,
+    playerId: otherJoin.playerId,
+    charge: 5
+  });
+  await lowThiefCharge;
+  const unaffordableThief = waitForMessage(otherPlayer, "error");
+  send(otherPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "thief",
+    targetPlayerId: thiefTarget.id,
+    amount: 3
+  });
+  assert.match((await unaffordableThief).message, /not have enough charge/i);
   const thiefChargeUpdate = waitForMessage(host, "room-state", (message) =>
     message.room.players.find((member) => member.id === otherJoin.playerId)
       ?.competitionCharge === 25
@@ -2420,20 +2544,21 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   );
   const thiefRoomState = waitForMessage(host, "room-state", (message) =>
     message.room.players.find((member) => member.id === otherJoin.playerId)
-      ?.competitionCharge === 0
+      ?.competitionCharge === 19
   );
   send(otherPlayer, {
     type: "competition-powerup",
     code: hosted.room.code,
     powerup: "thief",
-    targetPlayerId: thiefTarget.id
+    targetPlayerId: thiefTarget.id,
+    amount: 3
   });
   const thiefResult = await thiefResultPromise;
   const stolenNotice = await thiefTargetNotice;
   const thiefPopup = await thiefAnnouncement;
   const afterThief = await thiefRoomState;
   assert.equal(thiefResult.targetPlayerId, thiefTarget.id);
-  assert.equal(thiefResult.amount, Math.min(10, thiefTarget.score));
+  assert.equal(thiefResult.amount, 3);
   assert.equal(stolenNotice.playerId, otherJoin.playerId);
   assert.equal(stolenNotice.amount, thiefResult.amount);
   assert.equal(thiefPopup.amount, thiefResult.amount);
@@ -2500,7 +2625,7 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
   assert.equal(keeperResult.competitionStreakKeeper, false);
   assert.equal(keeperResult.competitionPowerupsUsed, 9);
   await nextQuestion(20);
-  const chargesForReflectedFreeze = waitForMessage(host, "room-state", (message) =>
+  const chargesForIcey = waitForMessage(host, "room-state", (message) =>
     message.room.players.filter((player) => !player.host)
       .every((player) => player.competitionCharge === 25)
   );
@@ -2510,30 +2635,34 @@ test("Competition Mode locks wagers, scores all-in, and validates Split and Free
     allPlayers: true,
     charge: 25
   });
-  await chargesForReflectedFreeze;
-  const reflectedFreezeApplied = waitForMessage(otherPlayer, "powerup-applied", (message) =>
-    message.powerup === "freeze"
+  await chargesForIcey;
+  const renewedShield = waitForMessage(thirdPlayer, "powerup-applied", (message) =>
+    message.powerup === "shield"
   );
-  const reflectedFrozen = waitForMessage(otherPlayer, "player-frozen");
-  const reflectedAnnouncement = waitForMessage(host, "powerup-used", (message) =>
-    message.powerup === "freeze" &&
-    message.targets.some((target) => target.reflectedTo?.id === otherJoin.playerId)
+  send(thirdPlayer, {
+    type: "competition-powerup",
+    code: hosted.room.code,
+    powerup: "shield"
+  });
+  await renewedShield;
+  const blockedIceyApplied = waitForMessage(otherPlayer, "powerup-applied", (message) =>
+    message.powerup === "icey"
+  );
+  const blockedIceyAnnouncement = waitForMessage(host, "powerup-used", (message) =>
+    message.powerup === "icey"
   );
   send(otherPlayer, {
     type: "competition-powerup",
     code: hosted.room.code,
-    powerup: "freeze",
+    powerup: "icey",
     targetPlayerIds: [thirdJoin.playerId]
   });
-  const reflectedResult = await reflectedFreezeApplied;
-  assert.equal(reflectedResult.targets[0].reflected, true);
-  assert.equal((await reflectedFrozen).playerId, otherJoin.playerId);
-  assert.deepEqual((await reflectedAnnouncement).targets, [{
-    id: thirdJoin.playerId,
-    name: "Third Player",
-    blocked: true,
-    reflectedTo: { id: otherJoin.playerId, name: "Other Player" }
+  const blockedIcey = await blockedIceyApplied;
+  assert.deepEqual(blockedIcey.targets, [{
+    playerId: thirdJoin.playerId,
+    blocked: true
   }]);
+  assert.equal((await blockedIceyAnnouncement).targets[0].blocked, true);
   const hiddenNextQuestionLock = waitForMessage(host, "answer-locked");
   await answer(thirdPlayer, thirdJoin.playerId, 20, 2);
   const hiddenNextQuestion = await hiddenNextQuestionLock;

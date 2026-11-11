@@ -399,6 +399,36 @@ body.compgfx-mode .question-image-view {
 .answers[hidden] {
 	display: none !important;
 }
+body.competition-icey-active::before {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	border: 12px solid rgba(198, 246, 255, 0.3);
+	background:
+		repeating-linear-gradient(
+			132deg,
+			transparent 0 42px,
+			rgba(222, 251, 255, 0.07) 43px 46px,
+			transparent 47px 76px
+		),
+		radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(119, 222, 248, 0.22)),
+		linear-gradient(145deg, rgba(215, 250, 255, 0.14), rgba(87, 190, 225, 0.2));
+	box-shadow:
+		inset 0 0 70px 20px rgba(211, 250, 255, 0.28),
+		inset 0 0 180px rgba(70, 180, 218, 0.2);
+	backdrop-filter: saturate(0.78) blur(0.7px);
+	content: "";
+	pointer-events: none;
+	animation: competitionIceyFrost 2.8s ease-in-out infinite alternate;
+}
+@keyframes competitionIceyFrost {
+	to {
+		border-color: rgba(215, 251, 255, 0.48);
+		box-shadow:
+			inset 0 0 90px 28px rgba(211, 250, 255, 0.34),
+			inset 0 0 210px rgba(70, 180, 218, 0.26);
+	}
+}
 .answer[hidden] {
 	display: none !important;
 }
@@ -480,7 +510,7 @@ body.compgfx-mode .question-image-view {
 	background: linear-gradient(135deg, #176b48, #104832);
 }
 .competition-powerups-dialog,
-.competition-freeze-dialog {
+.competition-target-dialog {
 	width: min(620px, calc(100vw - 32px));
 	max-height: min(84vh, 760px);
 	padding: 22px;
@@ -491,16 +521,16 @@ body.compgfx-mode .question-image-view {
 	box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
 }
 .competition-powerups-dialog::backdrop,
-.competition-freeze-dialog::backdrop {
+.competition-target-dialog::backdrop {
 	background: rgba(5, 8, 20, 0.76);
 }
 .competition-powerups-dialog form,
-.competition-freeze-dialog form {
+.competition-target-dialog form {
 	display: grid;
 	gap: 12px;
 }
 .competition-powerups-dialog h2,
-.competition-freeze-dialog h2 {
+.competition-target-dialog h2 {
 	margin: 0;
 	font-size: clamp(20px, 5vw, 28px);
 }
@@ -574,7 +604,7 @@ body.compgfx-mode .question-image-view {
 }
 .competition-powerup-card button,
 .competition-powerups-close,
-.competition-freeze-dialog button {
+.competition-target-dialog button {
 	min-height: 40px;
 	padding: 7px 12px;
 	border: 1px solid rgba(255, 255, 255, 0.28);
@@ -604,70 +634,13 @@ body.compgfx-mode .question-image-view {
 	color: #ffda77;
 	font-weight: 700;
 }
-.competition-freeze-overlay {
-	position: fixed;
-	inset: 0;
-	z-index: 10000;
-	display: grid;
-	place-items: center;
-	overflow: hidden;
-	background:
-		radial-gradient(ellipse at 18% 20%, rgba(255, 255, 255, 0.4), transparent 34%),
-		radial-gradient(ellipse at 82% 76%, rgba(89, 234, 255, 0.32), transparent 42%),
-		repeating-linear-gradient(128deg, transparent 0 22px, rgba(226, 255, 255, 0.08) 23px 25px),
-		rgba(94, 226, 244, 0.58);
-	backdrop-filter: blur(7px) saturate(0.72);
-	color: #e7fdff;
-	text-align: center;
-	text-shadow: 0 2px 20px rgba(0, 94, 125, 0.62);
-	animation: competitionIceShimmer 3.5s ease-in-out infinite alternate;
-}
-.competition-freeze-message {
-	display: grid;
-	justify-items: center;
-	gap: 6px;
-	padding: 26px 36px;
-	border: 1px solid rgba(236, 255, 255, 0.58);
-	border-radius: 22px;
-	background: rgba(157, 241, 250, 0.2);
-	box-shadow:
-		inset 0 0 35px rgba(255, 255, 255, 0.22),
-		0 0 45px rgba(38, 193, 224, 0.28);
-}
-.competition-freeze-message strong {
-	font-size: clamp(32px, 8vw, 76px);
-	font-weight: 1000;
-	letter-spacing: 0.12em;
-}
-.competition-freeze-countdown {
-	font-size: clamp(56px, 15vw, 132px);
-	font-variant-numeric: tabular-nums;
-	font-weight: 1000;
-	line-height: 0.95;
-}
-.competition-freeze-caption {
-	font-size: clamp(11px, 2vw, 16px);
-	font-weight: 900;
-	letter-spacing: 0.2em;
-}
-@keyframes competitionIceShimmer {
-	from {
-		filter: brightness(0.94);
-	}
-	to {
-		filter: brightness(1.08);
-	}
-}
-.competition-freeze-overlay[hidden] {
-	display: none !important;
-}
-.competition-freeze-targets {
+.competition-target-choices {
 	display: grid;
 	gap: 8px;
 	max-height: 52vh;
 	overflow-y: auto;
 }
-.competition-freeze-targets label {
+.competition-target-choices label {
 	display: flex;
 	align-items: center;
 	gap: 10px;
@@ -678,13 +651,37 @@ body.compgfx-mode .question-image-view {
 	font-weight: 700;
 	cursor: pointer;
 }
-.competition-freeze-targets input {
+.competition-target-choices input {
 	width: 18px;
 	height: 18px;
 	accent-color: #8ce7ad;
 }
-.competition-freeze-dialog .competition-freeze-cancel {
+.competition-target-dialog .competition-target-cancel {
 	background: transparent;
+}
+.competition-thief-amount {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 8px 12px;
+	font-weight: 700;
+}
+.competition-thief-amount[hidden] {
+	display: none !important;
+}
+.competition-thief-amount input {
+	width: 90px;
+	padding: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.28);
+	border-radius: 8px;
+	background: #0e152c;
+	color: #fff;
+	font: inherit;
+}
+.competition-thief-amount span {
+	grid-column: 1 / -1;
+	color: rgba(255, 255, 255, 0.76);
+	font-size: 13px;
 }
 @media (max-width: 560px) {
 	.competition-powerup-card {
