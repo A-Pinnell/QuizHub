@@ -65,7 +65,9 @@
 		<script src="./js/dev-scenes.js" defer></script>
 		<script src="./js/dev.js" defer></script>
 		<script src="./js/questionBank.js" defer></script>
-		<script src="./js/net-hub-storage.js?v=uploaded-music-blob-url" defer></script>
+		<script
+			src="./js/net-hub-storage.js?v=uploaded-music-blob-url"
+			defer></script>
 		<script src="./js/party-config.js?v=nethub-d1-v1" defer></script>
 		<script src="./js/net-hub-quiz.js?v=nethub-d1-v1" defer></script>
 		<script src="./js/mixed-study.js" defer></script>
@@ -76,7 +78,7 @@
 		<script
 			type="module"
 			src="./js/semantic-short-answer-runtime.js?v=semantic-local-7"></script>
-		<script src="./js/quiz-bootstrap.js?v=competition-updates-v2" defer></script>
+		<script src="./js/quiz-bootstrap.js?v=quick-play-bank-v4" defer></script>
 		<script src="./js/active-presence.js" defer></script>
 	</head>
 	<body>
@@ -356,17 +358,12 @@
 							id="questionPresentationOptions"
 							hidden>
 							<legend>Question presentation</legend>
-							<p>
-								Short answers earn up to 3 stars based on how closely their
-								meaning matches the correct answer. A local semantic model
-								and runtime (about 50 MB) load when short answer is selected.
-							</p>
 							<label class="choice"
 								><input
 									type="radio"
 									name="questionPresentation"
 									value="multiple-choice"
-									checked /><span>Multiple choice</span></label
+									checked /><span>Normal</span></label
 							>
 							<label class="choice"
 								><input
@@ -795,90 +792,288 @@
 								<progress id="competitionCharge" max="15" value="0"></progress>
 								<span id="competitionChargeText">0 / 15</span>
 							</div>
-							<button type="button" id="competitionPowerupsButton" class="competition-powerups-open">POWERUPS</button>
+							<button
+								type="button"
+								id="competitionPowerupsButton"
+								class="competition-powerups-open">
+								POWERUPS
+							</button>
 							<div class="competition-wager" id="competitionWager">
-								<span>All In Chain: double your points if correct; each additional player adds another multiplier. Lose all your points if wrong.</span>
+								<span
+									>All In Chain: double your points if correct; each additional
+									player adds another multiplier. Lose all your points if
+									wrong.</span
+								>
 								<button type="button" id="competitionAllIn">GO ALL IN</button>
 							</div>
-							<p class="competition-status" id="competitionStatus" role="status" aria-live="polite"></p>
+							<p
+								class="competition-status"
+								id="competitionStatus"
+								role="status"
+								aria-live="polite"></p>
 						</section>
-						<dialog class="competition-powerups-dialog" id="competitionPowerupsDialog" aria-labelledby="competitionPowerupsTitle">
+						<dialog
+							class="competition-powerups-dialog"
+							id="competitionPowerupsDialog"
+							aria-labelledby="competitionPowerupsTitle">
 							<form method="dialog">
 								<h2 id="competitionPowerupsTitle">Competition Powerups</h2>
-								<p class="competition-powerups-balance" id="competitionPowerupsBalance"></p>
-								<p class="competition-active-powerups" id="competitionActivePowerups" role="status" aria-live="polite"></p>
-								<div class="competition-powerup-catalog" id="competitionPowerupCatalog">
-									<article class="competition-powerup-card" data-powerup-card="icey">
-										<div><h3>Icey</h3><p>Make one or more opponents’ answer buttons slide around for this question. Costs 5 charge per target.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>5 / player</span>
-										<button type="button" data-use-powerup="icey">Choose players</button>
+								<p
+									class="competition-powerups-balance"
+									id="competitionPowerupsBalance"></p>
+								<p
+									class="competition-active-powerups"
+									id="competitionActivePowerups"
+									role="status"
+									aria-live="polite"></p>
+								<div
+									class="competition-powerup-catalog"
+									id="competitionPowerupCatalog">
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="icey">
+										<div>
+											<h3>Icey</h3>
+											<p>
+												Make one or more opponents’ answer buttons slide around
+												for this question. Costs 5 charge per target.
+											</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>5 / player</span
+										>
+										<button type="button" data-use-powerup="icey">
+											Choose players
+										</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="split">
-										<div><h3>Split</h3><p>Remove two incorrect answers from your choices this question.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>10</span>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="split">
+										<div>
+											<h3>Split</h3>
+											<p>
+												Remove two incorrect answers from your choices this
+												question.
+											</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>10</span
+										>
 										<button type="button" data-use-powerup="split">Use</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="shield">
-										<div><h3>Shield</h3><p>Block one Icey or protect your points from one All In wrong answer.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>10</span>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="shield">
+										<div>
+											<h3>Shield</h3>
+											<p>
+												Block one Icey or protect your points from one All In
+												wrong answer.
+											</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>10</span
+										>
 										<button type="button" data-use-powerup="shield">Use</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="scramble">
-										<div><h3>Scramble</h3><p>Randomly rearrange answer buttons on every player's screen for three questions.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>15</span>
-										<button type="button" data-use-powerup="scramble">Use</button>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="scramble">
+										<div>
+											<h3>Scramble</h3>
+											<p>
+												Randomly rearrange answer buttons on every player's
+												screen for three questions.
+											</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>15</span
+										>
+										<button type="button" data-use-powerup="scramble">
+											Use
+										</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="ghost">
-										<div><h3>Ghost</h3><p>See one opponent's locked answer for this question.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>5</span>
-										<button type="button" data-use-powerup="ghost">Choose player</button>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="ghost">
+										<div>
+											<h3>Ghost</h3>
+											<p>See one opponent's locked answer for this question.</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>5</span
+										>
+										<button type="button" data-use-powerup="ghost">
+											Choose player
+										</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="streak-bonus">
-										<div><h3>Streak Bonus</h3><p>Your next correct answer earns 2 extra points.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>10</span>
-										<button type="button" data-use-powerup="streak-bonus">Use</button>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="streak-bonus">
+										<div>
+											<h3>Streak Bonus</h3>
+											<p>Your next correct answer earns 2 extra points.</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>10</span
+										>
+										<button type="button" data-use-powerup="streak-bonus">
+											Use
+										</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="streak-keeper">
-										<div><h3>Streak Keeper</h3><p>Keep your combo if you get one answer wrong.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>20</span>
-										<button type="button" data-use-powerup="streak-keeper">Use</button>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="streak-keeper">
+										<div>
+											<h3>Streak Keeper</h3>
+											<p>Keep your combo if you get one answer wrong.</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>20</span
+										>
+										<button type="button" data-use-powerup="streak-keeper">
+											Use
+										</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="charge-drain">
-										<div><h3>Charge Drainer</h3><p>Remove all charge from an opponent.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>15</span>
-										<button type="button" data-use-powerup="charge-drain">Choose player</button>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="charge-drain">
+										<div>
+											<h3>Charge Drainer</h3>
+											<p>Remove all charge from an opponent.</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>15</span
+										>
+										<button type="button" data-use-powerup="charge-drain">
+											Choose player
+										</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="thief">
-										<div><h3>Thief</h3><p>Choose how many points to steal from an opponent. Costs 2 charge per point.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>2 / point</span>
-										<button type="button" data-use-powerup="thief">Choose player</button>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="thief">
+										<div>
+											<h3>Thief</h3>
+											<p>
+												Choose how many points to steal from an opponent. Costs
+												2 charge per point.
+											</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>2 / point</span
+										>
+										<button type="button" data-use-powerup="thief">
+											Choose player
+										</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="top-thief">
-										<div><h3>Top Thief</h3><p>Swap your point award with the first player to answer this question.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>30</span>
-										<button type="button" data-use-powerup="top-thief">Use</button>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="top-thief">
+										<div>
+											<h3>Top Thief</h3>
+											<p>
+												Swap your point award with the first player to answer
+												this question.
+											</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>30</span
+										>
+										<button type="button" data-use-powerup="top-thief">
+											Use
+										</button>
 									</article>
-									<article class="competition-powerup-card" data-powerup-card="reveal-players" hidden>
-										<div><h3>Reveal Players</h3><p>See who has answered this question while answer visibility is off.</p></div>
-										<span class="competition-powerup-price"><span class="competition-charge-orb" aria-hidden="true"></span>10</span>
-										<button type="button" data-use-powerup="reveal-players">Use</button>
+									<article
+										class="competition-powerup-card"
+										data-powerup-card="reveal-players"
+										hidden>
+										<div>
+											<h3>Reveal Players</h3>
+											<p>
+												See who has answered this question while answer
+												visibility is off.
+											</p>
+										</div>
+										<span class="competition-powerup-price"
+											><span
+												class="competition-charge-orb"
+												aria-hidden="true"></span
+											>10</span
+										>
+										<button type="button" data-use-powerup="reveal-players">
+											Use
+										</button>
 									</article>
 								</div>
-								<button class="competition-powerups-close" type="submit" value="close">CLOSE</button>
+								<button
+									class="competition-powerups-close"
+									type="submit"
+									value="close">
+									CLOSE
+								</button>
 							</form>
 						</dialog>
-						<dialog class="competition-target-dialog" id="competitionTargetDialog" aria-labelledby="competitionTargetTitle">
+						<dialog
+							class="competition-target-dialog"
+							id="competitionTargetDialog"
+							aria-labelledby="competitionTargetTitle">
 							<form method="dialog">
 								<h2 id="competitionTargetTitle"></h2>
-								<div class="competition-target-choices" id="competitionTargetChoices"></div>
-								<div class="competition-thief-amount" id="competitionThiefAmount" hidden>
+								<div
+									class="competition-target-choices"
+									id="competitionTargetChoices"></div>
+								<div
+									class="competition-thief-amount"
+									id="competitionThiefAmount"
+									hidden>
 									<label for="competitionThiefPoints">Points to steal</label>
-									<input id="competitionThiefPoints" type="number" min="1" value="1" />
+									<input
+										id="competitionThiefPoints"
+										type="number"
+										min="1"
+										value="1" />
 									<span id="competitionThiefLimit"></span>
 									<span id="competitionThiefCost" aria-live="polite"></span>
 								</div>
-								<button type="button" id="competitionPowerupConfirm">USE POWERUP</button>
-								<button class="competition-target-cancel" type="submit" value="cancel">CANCEL</button>
+								<button type="button" id="competitionPowerupConfirm">
+									USE POWERUP
+								</button>
+								<button
+									class="competition-target-cancel"
+									type="submit"
+									value="cancel">
+									CANCEL
+								</button>
 							</form>
 						</dialog>
 						<section class="answers" id="answers">

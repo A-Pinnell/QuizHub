@@ -3335,6 +3335,9 @@ body.softengi-mode .quiz-music-cycle {
 	min-height: 42px;
 	cursor: pointer;
 }
+#questionPresentationOptions .choice[hidden] {
+	display: none !important;
+}
 .choice input {
 	width: 18px;
 	height: 18px;

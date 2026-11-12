@@ -2035,6 +2035,11 @@ textbookLibraryLink.addEventListener("click", (event) => {
 });
 
 patchnotesContent.textContent = `
+Version 3.1.6
+- Added Nov 12 practice for Cloud Computing
+- Quick Play has been added as a new gameplay style in quizzes! It is only avaiable in the new Cloud Computing quiz, but it will be added to all future quizzes! It is shortened, more consice versions, of the questions for quick review before the actual test!
+- Various multiplayer tweaks and additions
+
 Version 3.1.5
 - Added Operating System Support Review quiz for this wednesday
 - Party Mode Tweaks

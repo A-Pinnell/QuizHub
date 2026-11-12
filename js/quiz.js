@@ -716,13 +716,19 @@ const activeQuizTheme = mixedStudyActive
 				? "blended"
 				: "quizhub"
 		: selectedQuizTheme;
+const socIndiReviewKey =
+	requestedQuiz === "reviewQuiz"
+		? "review"
+		: ["review2", "review2Quiz"].includes(requestedQuiz)
+			? "review2"
+			: null;
 const socIndiReviewSections =
 	category === "SocIndi" &&
-	requestedQuiz === "reviewQuiz" &&
+	socIndiReviewKey &&
 	questionBank.SocIndi &&
-	questionBank.SocIndi.review &&
-	!Array.isArray(questionBank.SocIndi.review)
-		? questionBank.SocIndi.review
+	questionBank.SocIndi[socIndiReviewKey] &&
+	!Array.isArray(questionBank.SocIndi[socIndiReviewKey])
+		? questionBank.SocIndi[socIndiReviewKey]
 		: null;
 const availableReviewSections = socIndiReviewSections
 	? Object.keys(socIndiReviewSections)
@@ -750,9 +756,16 @@ const initialQuestionTimeLimit =
 		? requestedQuestionTimeLimit
 		: null;
 
-function resolveQuestionBank(course, quizId = null) {
-	const source = questionBank[course];
-	if (Array.isArray(source)) return source;
+function resolveQuestionBank(
+	course,
+	quizId = null,
+	bankSource = questionBank,
+	requireExactQuiz = false,
+) {
+	const source = bankSource[course];
+	if (Array.isArray(source)) {
+		return requireExactQuiz && quizId ? [] : source;
+	}
 	if (!source || typeof source !== "object") return [];
 
 	if (quizId && Array.isArray(source[quizId])) return source[quizId];
@@ -775,6 +788,8 @@ function resolveQuestionBank(course, quizId = null) {
 					: [];
 	}
 
+	if (requireExactQuiz && quizId) return [];
+
 	return Array.isArray(source.review)
 		? source.review
 		: Array.isArray(source.textbook)
@@ -782,12 +797,37 @@ function resolveQuestionBank(course, quizId = null) {
 			: Object.values(source).find(Array.isArray) || [];
 }
 
-function getSelectedQuestionBank() {
-	if (!socIndiReviewSections)
-		return resolveQuestionBank(category, requestedQuiz);
+function getSelectedQuestionBank(
+	bankSource = questionBank,
+	requireExactQuiz = false,
+) {
+	if (!socIndiReviewSections) {
+		return resolveQuestionBank(
+			category,
+			requestedQuiz,
+			bankSource,
+			requireExactQuiz,
+		);
+	}
+	const reviewSections = bankSource.SocIndi?.[socIndiReviewKey];
+	if (!reviewSections || Array.isArray(reviewSections)) return [];
 	return selectedReviewSections.flatMap(
-		(section) => socIndiReviewSections[section] || [],
+		(section) => reviewSections[section] || [],
 	);
+}
+
+function getConfiguredQuestionBank(bankSource, requireExactQuiz = false) {
+	const selectedBank = mixedStudyActive
+		? window.QuizHubMixedStudy.buildQuestionBank(
+				bankSource,
+				requestedMixedSources,
+			)
+		: getSelectedQuestionBank(bankSource, requireExactQuiz);
+	return isStatisticsPracticeQuiz
+		? selectedBank.filter((question) =>
+				selectedStatisticsPracticeSections.has(question.interaction.section),
+			)
+		: selectedBank;
 }
 
 let bank = [];
@@ -803,6 +843,7 @@ if (mixedStudyActive && !mixedStudyConfigError) {
 } else if (!mixedStudyActive) {
 	bank = getSelectedQuestionBank();
 }
+let usingQuickPlayBank = false;
 const statisticsPracticeAllQuestions = isStatisticsPracticeQuiz ? bank : [];
 const statisticsPracticeSectionNames = {
 	"central-tendency": "Central tendency",
@@ -1007,9 +1048,7 @@ const competitionThiefAmount = document.getElementById(
 const competitionThiefPoints = document.getElementById(
 	"competitionThiefPoints",
 );
-const competitionThiefLimit = document.getElementById(
-	"competitionThiefLimit",
-);
+const competitionThiefLimit = document.getElementById("competitionThiefLimit");
 const competitionThiefCost = document.getElementById("competitionThiefCost");
 const competitionAnnouncement = document.createElement("div");
 competitionAnnouncement.className = "competition-announcement";
@@ -1135,7 +1174,33 @@ const beginButton = document.getElementById("beginQuiz");
 const questionPresentationOptions = document.getElementById(
 	"questionPresentationOptions",
 );
-questionPresentationOptions.hidden = !supportsQuestionPresentation;
+const shortAnswerPresentationChoice = questionPresentationOptions
+	.querySelector('input[value="short-answer"]')
+	.closest(".choice");
+const mixedPresentationChoice = questionPresentationOptions
+	.querySelector('input[value="mixed"]')
+	.closest(".choice");
+const quickPlayPresentationChoice = document.createElement("label");
+quickPlayPresentationChoice.className = "choice";
+quickPlayPresentationChoice.id = "quickPlayPresentationChoice";
+const quickPlayPresentationInput = document.createElement("input");
+quickPlayPresentationInput.type = "radio";
+quickPlayPresentationInput.name = "questionPresentation";
+quickPlayPresentationInput.value = "quick-play";
+const quickPlayPresentationLabel = document.createElement("span");
+quickPlayPresentationLabel.textContent = "Quick Play";
+quickPlayPresentationChoice.append(
+	quickPlayPresentationInput,
+	quickPlayPresentationLabel,
+);
+questionPresentationOptions
+	.querySelector('input[value="multiple-choice"]')
+	.closest(".choice")
+	.after(quickPlayPresentationChoice);
+questionPresentationOptions.hidden = false;
+shortAnswerPresentationChoice.hidden = !supportsQuestionPresentation;
+mixedPresentationChoice.hidden = !supportsQuestionPresentation;
+updateQuickPlayVisibility();
 const shortAnswerBuilder = document.getElementById("shortAnswerBuilder");
 const shortAnswerInput = document.getElementById("shortAnswerInput");
 const shortAnswerSubmit = document.getElementById("shortAnswerSubmit");
@@ -1697,16 +1762,13 @@ if (socIndiReviewSections) {
 			].map((input) => input.value);
 			bank = getSelectedQuestionBank();
 			totalAvailable = bank.length;
-			const currentCount = Number.parseInt(countInput.value, 10);
 			countInput.max = Math.max(1, totalAvailable);
-			countInput.value = Math.min(
-				Number.isFinite(currentCount) ? currentCount : totalAvailable,
-				Math.max(1, totalAvailable),
-			);
+			countInput.value = String(Math.max(1, totalAvailable));
 			selectedQuestionCount = Number.parseInt(countInput.value, 10);
 			countMax.textContent = `of ${totalAvailable}`;
 			setupCount.textContent = `${totalAvailable} question${totalAvailable === 1 ? "" : "s"} available in the selected sections.`;
 			reviewSectionTrigger.textContent = `Choose review sections (${selectedReviewSections.length} selected)`;
+			updateQuickPlayVisibility();
 			setupError.textContent = "";
 			publishPartySettings();
 		});
@@ -1995,6 +2057,48 @@ questionPresentationOptions.addEventListener("change", () => {
 		shortAnswerModelStatus.textContent = "";
 	}
 });
+
+function buildQuickPlayBank() {
+	try {
+		const quickQuestionBank = window.questionBankQuick;
+		if (!quickQuestionBank) {
+			throw new Error("The Quick Play question bank is unavailable.");
+		}
+		const nextBank = getConfiguredQuestionBank(quickQuestionBank, true);
+		if (!nextBank.length) {
+			throw new Error(
+				`The Quick Play bank has no questions for ${category} ${requestedQuiz || "quiz"}.`,
+			);
+		}
+		bank = nextBank;
+		usingQuickPlayBank = true;
+		return true;
+	} catch (error) {
+		console.error("Could not build the Quick Play question bank:", error);
+		setupError.textContent = `Could not start Quick Play: ${error.message}`;
+		return false;
+	}
+}
+
+function hasQuickPlayBank() {
+	if (!window.questionBankQuick) return false;
+	try {
+		return getConfiguredQuestionBank(window.questionBankQuick, true).length > 0;
+	} catch (error) {
+		console.error("Could not check Quick Play bank availability:", error);
+		return false;
+	}
+}
+
+function updateQuickPlayVisibility() {
+	const hasQuestions = !partyModeRequested && hasQuickPlayBank();
+	quickPlayPresentationChoice.hidden = !hasQuestions;
+	if (!hasQuestions && quickPlayPresentationInput.checked) {
+		questionPresentationOptions.querySelector(
+			'input[value="multiple-choice"]',
+		).checked = true;
+	}
+}
 
 function updateStatisticsPracticeMeters() {
 	if (
@@ -2510,8 +2614,7 @@ function renderCompetitionControls() {
 				(powerup === "streak-keeper" &&
 					ownPlayer?.competitionStreakKeeper === true) ||
 				(powerup === "charge-drain" && drainTargets.length === 0) ||
-				(powerup === "thief" &&
-					(charge < 2 || thiefTargets.length === 0)) ||
+				(powerup === "thief" && (charge < 2 || thiefTargets.length === 0)) ||
 				(powerup === "top-thief" &&
 					competitionRoomSnapshot?.topThiefPlayerId) ||
 				(powerup === "reveal-players" &&
@@ -2661,10 +2764,8 @@ function startCompetitionIcey() {
 			const y = (Math.random() - 0.5) * window.innerHeight * 1.4;
 			const rotation = (Math.random() - 0.5) * 8;
 			const duration = 300 + Math.random() * 450;
-			button.style.transition =
-				`transform ${duration.toFixed(0)}ms cubic-bezier(0.2, 0.75, 0.3, 1)`;
-			button.style.transform =
-				`translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rotation.toFixed(1)}deg)`;
+			button.style.transition = `transform ${duration.toFixed(0)}ms cubic-bezier(0.2, 0.75, 0.3, 1)`;
+			button.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rotation.toFixed(1)}deg)`;
 		});
 		competitionIceyTimeout = window.setTimeout(
 			slideButtons,
@@ -2808,8 +2909,7 @@ function updateCompetitionThiefLimit() {
 	if (Number(competitionThiefPoints.value) > limit) {
 		competitionThiefPoints.value = String(Math.max(1, limit));
 	}
-	competitionThiefLimit.textContent =
-		`Maximum ${limit} point${limit === 1 ? "" : "s"} with your available charge.`;
+	competitionThiefLimit.textContent = `Maximum ${limit} point${limit === 1 ? "" : "s"} with your available charge.`;
 	const amount = Number(competitionThiefPoints.value);
 	competitionThiefCost.textContent =
 		Number.isSafeInteger(amount) && amount > 0
@@ -5556,10 +5656,25 @@ function beginQuiz() {
 		'input[name="questionPresentation"]:checked',
 	)?.value;
 	activeQuestionPresentation =
-		supportsQuestionPresentation &&
-		["short-answer", "mixed"].includes(selectedPresentation)
-			? selectedPresentation
-			: "multiple-choice";
+		selectedPresentation === "quick-play"
+			? "quick-play"
+			: supportsQuestionPresentation &&
+				  ["short-answer", "mixed"].includes(selectedPresentation)
+				? selectedPresentation
+				: "multiple-choice";
+
+	if (activeQuestionPresentation === "quick-play") {
+		if (!buildQuickPlayBank()) return;
+	} else if (usingQuickPlayBank) {
+		try {
+			bank = getConfiguredQuestionBank(questionBank);
+			usingQuickPlayBank = false;
+		} catch (error) {
+			console.error("Could not restore the full question bank:", error);
+			setupError.textContent = `Could not start the quiz: ${error.message}`;
+			return;
+		}
+	}
 
 	if (miniQuizMode && customQuestionSequence.length) {
 		const validIndexes = customQuestionSequence.filter(
@@ -5575,7 +5690,10 @@ function beginQuiz() {
 	} else if (!validateSetup()) {
 		return;
 	} else {
-		if (isStatisticsPracticeQuiz) {
+		if (
+			isStatisticsPracticeQuiz &&
+			activeQuestionPresentation !== "quick-play"
+		) {
 			try {
 				bank = window.QuizHubStatisticsPractice.generateQuestions(
 					selectedQuestionCount,
@@ -5931,7 +6049,7 @@ if (networkPartyActive) {
 				? `, stealing ${message.amount} points`
 				: message.powerup === "charge-drain"
 					? ", draining all charge"
-				: "") +
+					: "") +
 			(Number.isInteger(message.questions) && message.questions > 1
 				? ` for the next ${message.questions} questions`
 				: "");
@@ -6104,10 +6222,7 @@ if (networkPartyActive) {
 		"change",
 		updateCompetitionThiefLimit,
 	);
-	competitionThiefPoints.addEventListener(
-		"input",
-		updateCompetitionThiefLimit,
-	);
+	competitionThiefPoints.addEventListener("input", updateCompetitionThiefLimit);
 	partyConnection.on("close", () => {
 		if (!quizEnded) {
 			setupError.textContent =

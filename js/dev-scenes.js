@@ -38,12 +38,22 @@
 			{ id: "quiz1", label: "First Slides Practice", detail: "for Sept 24" },
 			{ id: "quiz2", label: "Week 4 Slides Practice", detail: "for Oct 8" },
 			{ id: "test1", label: "Midterm Practice", detail: "for Oct 22" },
+			{
+				id: "quiz3",
+				label: "Advanced Cloud Security (SOC, SIEM & SOAR) Review",
+				detail: "for Nov 12",
+			},
 		],
 		SocIndi: [
 			{
 				id: "reviewQuiz",
 				label: "Exam 1 Quiz",
 				detail: "Based on expected Exam 1 material",
+			},
+			{
+				id: "review2Quiz",
+				label: "Exam 2 Quiz",
+				detail: "Based on expected Exam 2 material",
 			},
 			{
 				id: "textbookQuiz",
