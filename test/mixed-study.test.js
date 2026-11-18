@@ -18,6 +18,8 @@ test("mixed source normalization is canonical and rejects empty, duplicate, and 
   assert.deepEqual(
     mixedStudy.normalizeSources([
       { category: "CloudComp", quiz: "quiz2" },
+      { category: "CloudComp", quiz: "quiz3" },
+      { category: "CloudComp", quiz: "quiz4" },
       { category: "CompArch", quiz: "quiz2" },
       { category: "CompArch", quiz: "quiz1" },
     ]),
@@ -25,6 +27,8 @@ test("mixed source normalization is canonical and rejects empty, duplicate, and 
       { category: "CompArch", quiz: "quiz1" },
       { category: "CompArch", quiz: "quiz2" },
       { category: "CloudComp", quiz: "quiz2" },
+      { category: "CloudComp", quiz: "quiz3" },
+      { category: "CloudComp", quiz: "quiz4" },
     ],
   );
   assert.throws(() => mixedStudy.normalizeSources([]), /at least one/i);

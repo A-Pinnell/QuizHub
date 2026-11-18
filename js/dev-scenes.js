@@ -33,6 +33,11 @@
 				label: "Operating System Support Review",
 				detail: "for Nov 11",
 			},
+			{
+				id: "quiz4",
+				label: "RISC Review",
+				detail: "for Nov 25",
+			},
 		],
 		CloudComp: [
 			{ id: "quiz1", label: "First Slides Practice", detail: "for Sept 24" },
@@ -42,6 +47,11 @@
 				id: "quiz3",
 				label: "Advanced Cloud Security (SOC, SIEM & SOAR) Review",
 				detail: "for Nov 12",
+			},
+			{
+				id: "quiz4",
+				label: "Cloud Databases Foundations Review",
+				detail: "for Nov 26",
 			},
 		],
 		SocIndi: [

@@ -54,6 +54,8 @@
     CloudComp:[
       ["quiz1","First Slides Practice"],
       ["quiz2","Week 4 Slides Practice"],
+      ["quiz3","Advanced Cloud Security (SOC, SIEM & SOAR) Review"],
+      ["quiz4","Cloud Databases Foundations Review"],
       ["test1","Midterm Practice"]
     ],
     SocIndi:[["reviewQuiz","Exam 1 Quiz"],["textbookQuiz","Textbook Quiz"]],

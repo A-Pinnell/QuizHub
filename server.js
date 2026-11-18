@@ -1389,7 +1389,7 @@ function handleMessage(socket, rawMessage) {
       const validQuizzes = {
         CompArch: ["quiz1", "quiz2", "quiz3", "test1", "binary", "hexadecimal"],
         CompGFX: ["test1", ...(room.excludedQuizzesEnabled ? ["lautest"] : [])],
-        CloudComp: ["quiz1", "quiz2", "test1"],
+        CloudComp: ["quiz1", "quiz2", "quiz3", "quiz4", "test1"],
         SocIndi: ["reviewQuiz", "textbookQuiz"],
         DataSci: ["test1", ...(room.excludedQuizzesEnabled ? ["lautest"] : [])],
         SoftEngi: ["test1"]

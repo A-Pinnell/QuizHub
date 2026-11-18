@@ -110,6 +110,8 @@ test("hosted room auto-readies players, shares locked answers and handles depart
   await verifyPartyQuizLaunch("CompArch", "quiz2");
   await verifyPartyQuizLaunch("CompArch", "quiz3");
   await verifyPartyQuizLaunch("CloudComp", "test1");
+  await verifyPartyQuizLaunch("CloudComp", "quiz3");
+  await verifyPartyQuizLaunch("CloudComp", "quiz4");
   await verifyPartyQuizLaunch("CompArch", "binary");
   await verifyPartyQuizLaunch("CompArch", "hexadecimal");
   const netHubQuizId = "123e4567-e89b-42d3-a456-426614174000";

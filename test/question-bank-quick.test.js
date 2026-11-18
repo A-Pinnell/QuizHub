@@ -43,6 +43,8 @@ test("Quick Play loads its authored quiz data without replacing the regular bank
 	assert.ok(quickQuestions.length > 0);
 	assert.ok(Array.isArray(quickBank.CloudComp.quiz3));
 	assert.equal(quickBank.CloudComp.quiz3[0].q, "What is a SOC's purpose?");
+	assert.ok(Array.isArray(quickBank.CloudComp.quiz4));
+	assert.ok(quickBank.CloudComp.quiz4.length > 0);
 	for (const [index, question] of quickQuestions.entries()) {
 		assert.equal(typeof question.q, "string", `question ${index} text`);
 		assert.ok(Array.isArray(question.a), `question ${index} answers`);

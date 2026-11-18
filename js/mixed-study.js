@@ -20,6 +20,8 @@
 		["CompArch", "test1", null, "Midterm Practice", true],
 		["CloudComp", "quiz1", null, "First Slides Practice"],
 		["CloudComp", "quiz2", null, "Week 4 Slides Practice"],
+		["CloudComp", "quiz3", null, "Advanced Cloud Security (SOC, SIEM & SOAR) Review"],
+		["CloudComp", "quiz4", null, "Cloud Databases Foundations Review"],
 		["CloudComp", "test1", null, "Midterm Practice", true],
 		["SocIndi", "textbookQuiz", null, "Textbook Quiz"],
 		["SocIndi", "reviewQuiz", "CHAPTER 1", "Chapter 1", true],

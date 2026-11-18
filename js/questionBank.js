@@ -7629,6 +7629,888 @@ window.questionBank = {
 				c: 0,
 			},
 		],
+		quiz4: [
+			{
+				q: "What is the main topic of this lecture?",
+				a: [
+					"Computer networking and communication",
+					"Reduced Instruction Set Computers",
+					"Database management systems",
+					"Operating system architecture",
+				],
+				c: 1,
+			},
+			{
+				q: "Which of the following is one of the main learning objectives of this lecture?",
+				a: [
+					"Understanding how graphics cards render images",
+					"Learning how network protocols communicate",
+					"Explaining compiler register allocation",
+					"Designing database storage structures",
+				],
+				c: 2,
+			},
+			{
+				q: "What was an important contribution of the IBM System/360?",
+				a: [
+					"Introducing the computer family concept",
+					"Creating the first microprocessor",
+					"Introducing modern cache memory",
+					"Developing the first RISC architecture",
+				],
+				c: 0,
+			},
+			{
+				q: "What did pipelining introduce into the instruction execution process?",
+				a: [
+					"Larger instruction storage",
+					"Faster secondary storage",
+					"Automatic memory compression",
+					"Parallelism between execution stages",
+				],
+				c: 3,
+			},
+			{
+				q: "Which characteristic is commonly associated with RISC processors?",
+				a: [
+					"Instructions that frequently access memory directly",
+					"Simple instructions and register-to-register operations",
+					"A large number of specialized instruction formats",
+					"Complex operations handled entirely by microcode",
+				],
+				c: 1,
+			},
+			{
+				q: "Which instruction-set architecture is an example of a modern RISC design?",
+				a: ["x86", "CISC-64", "RISC-V", "MS-DOS"],
+				c: 2,
+			},
+			{
+				q: "Why do RISC principles remain important in modern processors?",
+				a: [
+					"They eliminate the need for compiler optimization",
+					"They guarantee that every instruction takes one cycle",
+					"They remove the need for processor caches",
+					"They can simplify instruction decoding and pipeline design",
+				],
+				c: 3,
+			},
+			{
+				q: "In a RISC load/store architecture, which instructions access data memory?",
+				a: [
+					"Load and store instructions",
+					"Arithmetic and logical instructions",
+					"Branch and comparison instructions",
+					"All instructions access memory directly",
+				],
+				c: 0,
+			},
+			{
+				q: "What was one of the main reasons for the development of CISC architectures?",
+				a: [
+					"To eliminate the use of high-level programming languages",
+					"To reduce the number of available addressing modes",
+					"To better support increasingly complex high-level languages",
+					"To remove the need for hardware-based instruction execution",
+				],
+				c: 2,
+			},
+			{
+				q: "What do execution characteristics help determine in processor design?",
+				a: [
+					"The physical size of the computer case",
+					"Processor operations, operand storage, and execution sequencing",
+					"The programming language used to write the operating system",
+					"The amount of data stored on secondary storage",
+				],
+				c: 1,
+			},
+			{
+				q: "Which type of high-level language operation is primarily associated with moving data?",
+				a: [
+					"Conditional statements",
+					"Procedure returns",
+					"Loop control",
+					"Assignment statements",
+				],
+				c: 3,
+			},
+			{
+				q: "What factors can affect the time required for procedure calls?",
+				a: [
+					"The number of parameters and the level of nesting",
+					"The number of files stored on the computer",
+					"The size of the processor's instruction cache alone",
+					"The programming language's variable naming conventions",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a local variable?",
+				a: [
+					"A variable that is shared by every program",
+					"A variable permanently stored in processor hardware",
+					"A variable declared and used within a function or code block",
+					"A variable that can only contain numerical values",
+				],
+				c: 2,
+			},
+			{
+				q: "What makes a scalar local variable different from an array?",
+				a: [
+					"A scalar variable can only store text",
+					"A scalar variable holds one individual value",
+					"An array can only be declared outside functions",
+					"An array always stores values of different types",
+				],
+				c: 1,
+			},
+			{
+				q: "What does temporal locality describe?",
+				a: [
+					"Accessing nearby memory addresses in sequence",
+					"Accessing memory only when a program starts",
+					"Storing variables in consecutive memory locations",
+					"Reusing recently accessed memory locations",
+				],
+				c: 3,
+			},
+			{
+				q: "Which situation is an example of spatial locality?",
+				a: [
+					"Accessing consecutive elements of an array",
+					"Repeatedly accessing the same variable in a loop",
+					"Calling the same function several times",
+					"Reading an instruction from a register",
+				],
+				c: 0,
+			},
+			{
+				q: "How does cache memory benefit from temporal locality?",
+				a: [
+					"By storing every variable permanently",
+					"By increasing the size of the main memory",
+					"By keeping recently accessed data available for reuse",
+					"By eliminating the need for processor registers",
+				],
+				c: 2,
+			},
+			{
+				q: "In nested procedure calls where A calls B and B calls C, which procedure returns first?",
+				a: [
+					"Procedure A",
+					"Procedure C",
+					"Procedure B",
+					"All three return simultaneously",
+				],
+				c: 1,
+			},
+			{
+				q: "What is an important consideration when optimizing processor performance?",
+				a: [
+					"Optimizing every instruction equally",
+					"Reducing the number of available registers",
+					"Avoiding the use of instruction pipelines",
+					"Focusing on frequently used and time-consuming features",
+				],
+				c: 3,
+			},
+			{
+				q: "What is one of the main reasons RISC architectures use a large number of registers?",
+				a: [
+					"To reduce the number of memory references",
+					"To increase the size of executable files",
+					"To eliminate the need for instruction decoding",
+					"To store every program instruction permanently",
+				],
+				c: 0,
+			},
+			{
+				q: "What is a benefit of storing local scalar variables in registers?",
+				a: [
+					"It allows variables to be shared across all programs",
+					"It removes the need for procedure calls",
+					"It reduces the number of memory accesses",
+					"It increases the available secondary storage",
+				],
+				c: 2,
+			},
+			{
+				q: "What happens to register usage when a procedure call changes the current execution context?",
+				a: [
+					"All registers are permanently cleared",
+					"Parameters and results must be handled, and previous variables may need restoration",
+					"The processor switches to a different instruction set",
+					"All local variables are automatically transferred to cache",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the main purpose of register windows?",
+				a: [
+					"To increase the size of main memory",
+					"To store instructions before they are decoded",
+					"To eliminate the use of local variables",
+					"To provide different register sets for procedure calls",
+				],
+				c: 3,
+			},
+			{
+				q: "Which three areas make up a register window?",
+				a: [
+					"Parameter, local, and temporary registers",
+					"Cache, memory, and instruction registers",
+					"Input, output, and control registers",
+					"Global, branch, and address registers",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of overlapping register windows?",
+				a: [
+					"To allow multiple processors to share one instruction",
+					"To increase the amount of available cache memory",
+					"To pass parameters between procedures without moving data",
+					"To permanently store local variables in main memory",
+				],
+				c: 2,
+			},
+			{
+				q: "In overlapping register windows, which registers are physically shared between adjacent procedure levels?",
+				a: [
+					"Local registers at both levels",
+					"Temporary registers at one level and parameter registers at the next",
+					"Global registers and local registers",
+					"Parameter registers at both levels",
+				],
+				c: 1,
+			},
+			{
+				q: "What does the Current Window Pointer (CWP) identify?",
+				a: [
+					"The oldest procedure stored in memory",
+					"The number of available processor registers",
+					"The next instruction to be executed",
+					"The register window of the currently active procedure",
+				],
+				c: 3,
+			},
+			{
+				q: "What happens when all register windows in a circular buffer are in use?",
+				a: [
+					"An interrupt occurs and an older window is saved to memory",
+					"The processor permanently stops executing instructions",
+					"All active procedure calls are immediately cancelled",
+					"The register windows are automatically expanded",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of a Saved Window Pointer (SWP)?",
+				a: [
+					"To identify the currently executing instruction",
+					"To track the number of active processor cores",
+					"To identify the window most recently saved in memory",
+					"To determine the size of the processor cache",
+				],
+				c: 2,
+			},
+			{
+				q: "What is a key difference between a large register file and cache memory?",
+				a: [
+					"Registers store memory blocks, while cache stores individual variables",
+					"Registers use compiler assignment, while cache uses a replacement algorithm",
+					"Registers are slower than cache in every processor",
+					"Cache only stores local variables, while registers store instructions",
+				],
+				c: 1,
+			},
+			{
+				q: "In compiler-based register optimization, what are symbolic registers used for?",
+				a: [
+					"Replacing the processor's physical memory",
+					"Storing completed program instructions",
+					"Determining the processor's clock speed",
+					"Representing variables before mapping them to real registers",
+				],
+				c: 3,
+			},
+			{
+				q: "What happens when a program requires more real registers than are available?",
+				a: [
+					"Some variables must be stored in memory",
+					"The processor creates unlimited physical registers",
+					"The compiler removes all unused instructions",
+					"The program automatically switches to CISC",
+				],
+				c: 0,
+			},
+			{
+				q: "Why is the claim that CISC makes compiler writing easier disputed?",
+				a: [
+					"CISC processors cannot execute high-level language programs",
+					"CISC instructions always require multiple processors",
+					"Complex instructions can be harder to exploit and optimize",
+					"CISC architectures do not support memory addressing",
+				],
+				c: 2,
+			},
+			{
+				q: "Why might CISC instructions not necessarily produce faster programs?",
+				a: [
+					"They cannot perform arithmetic operations",
+					"Complex control and microprogrammed execution can add overhead",
+					"They require every instruction to access secondary storage",
+					"They eliminate the use of processor registers",
+				],
+				c: 1,
+			},
+			{
+				q: "Which of the following is a typical characteristic of RISC architectures?",
+				a: [
+					"Many complex addressing modes",
+					"Variable instruction formats",
+					"Heavy reliance on microprogrammed control",
+					"Fixed instruction formats and simple addressing modes",
+				],
+				c: 3,
+			},
+			{
+				q: "How do modern x86 processors handle their complex instruction set?",
+				a: [
+					"They can decode instructions into simpler internal operations",
+					"They convert all instructions into RISC-V programs",
+					"They execute every instruction directly from main memory",
+					"They remove complex instructions before program execution",
+				],
+				c: 0,
+			},
+			{
+				q: "Which two phases are commonly used to describe the execution of a register-to-register RISC instruction?",
+				a: [
+					"Decode and memory access",
+					"Memory and write-back",
+					"Instruction fetch and execute",
+					"Execute and secondary storage",
+				],
+				c: 2,
+			},
+			{
+				q: "Which stage of a five-stage pipeline is responsible for interpreting an instruction?",
+				a: [
+					"IF (Instruction Fetch)",
+					"ID (Instruction Decode)",
+					"EX (Execute)",
+					"WB (Write-Back)",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the main benefit of instruction pipelining?",
+				a: [
+					"It eliminates all instruction dependencies",
+					"It reduces the number of instructions in a program",
+					"It guarantees that every instruction finishes in one cycle",
+					"It allows multiple instructions to progress through different stages simultaneously",
+				],
+				c: 3,
+			},
+			{
+				q: "What is a delayed branch?",
+				a: [
+					"A branch that takes effect after the following instruction executes",
+					"A branch that is removed before instruction decoding",
+					"A branch that always executes twice",
+					"A branch that waits for main memory to become empty",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of a delayed load?",
+				a: [
+					"To prevent the processor from accessing registers",
+					"To execute memory operations without an instruction",
+					"To allow instructions to be rearranged while a loaded value becomes available",
+					"To ensure that every load instruction takes multiple clock cycles",
+				],
+				c: 2,
+			},
+			{
+				q: "What is loop unrolling?",
+				a: [
+					"Removing every loop from a program",
+					"Repeating the loop body multiple times to reduce loop overhead",
+					"Moving all loop variables into main memory",
+					"Executing each loop iteration on a separate processor",
+				],
+				c: 1,
+			},
+			{
+				q: "What is one benefit of unrolling a loop twice?",
+				a: [
+					"It removes the need for conditional statements",
+					"It guarantees that memory accesses are eliminated",
+					"It reduces the number of available registers",
+					"It reduces loop overhead and increases instruction parallelism",
+				],
+				c: 3,
+			},
+			{
+				q: "What is the purpose of a NOOP instruction in delayed branch execution?",
+				a: [
+					"To occupy an instruction slot without performing useful work",
+					"To immediately cancel the current procedure",
+					"To force the processor to access main memory",
+					"To repeat the previous arithmetic operation",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one way an optimized delayed branch can improve execution?",
+				a: [
+					"By removing the need for instruction fetching",
+					"By increasing the number of branch instructions",
+					"By placing a useful instruction in the branch delay slot",
+					"By preventing the processor from executing subsequent instructions",
+				],
+				c: 2,
+			},
+			{
+				q: "Which statement best summarizes the relationship between RISC and CISC in modern processors?",
+				a: [
+					"RISC has completely replaced CISC in modern computers",
+					"Modern processors combine techniques from both design traditions",
+					"CISC processors cannot use pipelining",
+					"Both architectures guarantee identical performance",
+				],
+				c: 1,
+			},
+			{
+				q: "What does RISC stand for?",
+				a: [
+					"Reduced Instruction Set Computer",
+					"Rapid Integrated System Controller",
+					"Register Instruction Storage Component",
+					"Reduced Internal Software Configuration",
+				],
+				c: 0,
+			},
+			{
+				q: "Which topic is specifically included in the learning objectives for this lecture?",
+				a: [
+					"Network packet routing",
+					"Database indexing",
+					"Graph coloring for register allocation",
+					"Virtual machine installation",
+				],
+				c: 2,
+			},
+			{
+				q: "What was the main purpose of separating architecture from implementation in the computer family concept?",
+				a: [
+					"To eliminate the need for software",
+					"To allow related computers to share an architecture while differing in implementation",
+					"To make every computer use identical hardware",
+					"To remove the need for processor instructions",
+				],
+				c: 1,
+			},
+			{
+				q: "Which processor development was introduced by Intel in 1971?",
+				a: [
+					"The first cache memory",
+					"The first pipelined processor",
+					"The IBM System/360",
+					"The Intel 4004 microprocessor",
+				],
+				c: 3,
+			},
+			{
+				q: "Why are regular instruction formats useful in RISC architectures?",
+				a: [
+					"They make instruction decoding more predictable",
+					"They allow instructions to bypass the CPU",
+					"They eliminate the need for registers",
+					"They allow every operation to access memory directly",
+				],
+				c: 0,
+			},
+			{
+				q: "Where are ARM-based processors commonly found?",
+				a: [
+					"Only in desktop computers",
+					"Only in scientific research equipment",
+					"Smartphones, tablets, laptops, and servers",
+					"Exclusively in older embedded systems",
+				],
+				c: 2,
+			},
+			{
+				q: "What does the open-standard nature of RISC-V mean?",
+				a: [
+					"Its processors must be manufactured by one company",
+					"Its specifications are publicly available for implementation",
+					"It can only be used in academic environments",
+					"Its instruction set cannot be modified or extended",
+				],
+				c: 1,
+			},
+			{
+				q: "In the example LW R1, 0(R2), what does the instruction accomplish?",
+				a: [
+					"Adds the values stored in R1 and R2",
+					"Stores R1 into the memory location after R2",
+					"Copies the contents of R2 into R1",
+					"Loads a value from memory at the address calculated using R2 into R1",
+				],
+				c: 3,
+			},
+			{
+				q: "What does the term semantic gap refer to in the discussion of CISC development?",
+				a: [
+					"The difference between high-level language operations and the instructions supported by hardware",
+					"The difference between cache memory and RAM capacity",
+					"The difference between processor clock speeds",
+					"The difference between local and global variables",
+				],
+				c: 0,
+			},
+			{
+				q: "What does execution sequencing primarily influence?",
+				a: [
+					"The amount of physical memory installed",
+					"The number of available programming languages",
+					"The processor's control and pipeline organization",
+					"The storage capacity of the hard drive",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the primary role of a conditional statement such as IF?",
+				a: [
+					"Moving data between registers",
+					"Controlling the sequence of program execution",
+					"Allocating memory to local variables",
+					"Transferring instructions to secondary storage",
+				],
+				c: 1,
+			},
+			{
+				q: "Why are procedure calls considered potentially expensive operations?",
+				a: [
+					"They always require a new processor",
+					"They permanently increase the program size",
+					"They disable the processor cache",
+					"They involve handling parameters, execution state, and return information",
+				],
+				c: 3,
+			},
+			{
+				q: "What normally happens to a local variable when its function finishes executing?",
+				a: [
+					"Its lifetime ends",
+					"It becomes a global variable",
+					"It is permanently stored in a register",
+					"It is automatically copied into every other function",
+				],
+				c: 0,
+			},
+			{
+				q: "Which of these is an example of a scalar variable?",
+				a: [
+					"int numbers[10]",
+					"float temperatures[5]",
+					"char grade = 'A'",
+					"int scores[20]",
+				],
+				c: 2,
+			},
+			{
+				q: "A program repeatedly accesses the same memory location within a short period. Which locality principle does this demonstrate?",
+				a: [
+					"Spatial locality",
+					"Temporal locality",
+					"Sequential execution",
+					"Instruction parallelism",
+				],
+				c: 1,
+			},
+			{
+				q: "Why does accessing one array element make nearby elements likely to be accessed?",
+				a: [
+					"Array elements are always stored in processor registers",
+					"The processor automatically executes every array operation twice",
+					"Arrays prevent the use of random memory addresses",
+					"Array elements are normally stored in consecutive memory locations",
+				],
+				c: 3,
+			},
+			{
+				q: "If a processor accesses address 2000 and then accesses address 2001, which principle is being demonstrated?",
+				a: [
+					"Spatial locality",
+					"Temporal locality",
+					"Register allocation",
+					"Procedure nesting",
+				],
+				c: 0,
+			},
+			{
+				q: "What is the purpose of the call stack during nested procedure execution?",
+				a: [
+					"To permanently store all program variables",
+					"To organize processor cache blocks",
+					"To keep track of active procedure calls and their return order",
+					"To determine which instructions access main memory",
+				],
+				c: 2,
+			},
+			{
+				q: "Why might a straightforward instruction pipeline become inefficient?",
+				a: [
+					"It uses too many general-purpose registers",
+					"Conditional branches and procedure calls can cause prefetched instructions to go unused",
+					"It prevents instructions from being decoded",
+					"It requires every instruction to access secondary storage",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the software-based approach to improving register usage?",
+				a: [
+					"Allowing every variable to use a separate processor",
+					"Increasing the physical size of the register file",
+					"Moving all variables into cache",
+					"Using the compiler to allocate registers to frequently used variables",
+				],
+				c: 3,
+			},
+			{
+				q: "Why is a processor register file suitable for frequently accessed operands?",
+				a: [
+					"It provides very fast storage close to the ALU and control unit",
+					"It has greater capacity than main memory",
+					"It stores all data permanently",
+					"It does not require any addressing",
+				],
+				c: 0,
+			},
+			{
+				q: "What must be considered when a procedure returns to its calling program?",
+				a: [
+					"The processor must reset its instruction set",
+					"All cache blocks must be deleted",
+					"The calling program's variables and results may need to be restored or passed back",
+					"The entire program must be loaded again",
+				],
+				c: 2,
+			},
+			{
+				q: "How does a procedure call use register windows?",
+				a: [
+					"It copies every register into secondary storage",
+					"It switches the processor to another register set",
+					"It replaces all general-purpose registers with cache",
+					"It permanently increases the register count",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the role of temporary registers within a register window?",
+				a: [
+					"To store global variables permanently",
+					"To hold the processor's current instruction",
+					"To store all data from main memory",
+					"To exchange parameters and results with the next lower procedure level",
+				],
+				c: 3,
+			},
+			{
+				q: "What problem do register windows help reduce during procedure calls?",
+				a: [
+					"The need to save and restore registers through memory on every call",
+					"The need to decode instructions",
+					"The need to access the instruction cache",
+					"The need to execute arithmetic operations",
+				],
+				c: 0,
+			},
+			{
+				q: "In a register window system, how are parameters passed between adjacent procedures?",
+				a: [
+					"Through the processor's instruction cache",
+					"By copying them into global memory",
+					"Through overlapping temporary and parameter registers",
+					"By writing them to secondary storage",
+				],
+				c: 2,
+			},
+			{
+				q: "How does the Current Window Pointer help access registers?",
+				a: [
+					"It identifies the oldest procedure in the program",
+					"It offsets register references to identify the actual physical registers",
+					"It determines the number of instructions in memory",
+					"It tracks the processor's clock cycle",
+				],
+				c: 1,
+			},
+			{
+				q: "Why can a register window overflow interrupt occur?",
+				a: [
+					"The processor has executed too many arithmetic instructions",
+					"The program has accessed too many cache blocks",
+					"The instruction set has run out of available operations",
+					"A new procedure call would overwrite a register window that must be preserved",
+				],
+				c: 3,
+			},
+			{
+				q: "What happens when a saved register window needs to be used again after a procedure returns?",
+				a: [
+					"The saved window is restored from memory",
+					"A new processor is assigned to the procedure",
+					"The program skips the remaining instructions",
+					"The window is permanently discarded",
+				],
+				c: 0,
+			},
+			{
+				q: "How are global variables commonly handled in the compiler-based approach described in the lecture?",
+				a: [
+					"They are always stored in temporary registers",
+					"They are placed inside the instruction cache",
+					"They are allocated to memory by the compiler",
+					"They are stored only in procedure call stacks",
+				],
+				c: 2,
+			},
+			{
+				q: "What does a cache generally store compared with a large register file?",
+				a: [
+					"Only processor instructions",
+					"Blocks of recently accessed memory",
+					"Only variables declared inside functions",
+					"Only parameters passed between procedures",
+				],
+				c: 1,
+			},
+			{
+				q: "What happens when symbolic registers cannot all be mapped to available physical registers?",
+				a: [
+					"The processor automatically creates more physical registers",
+					"The program switches to a different architecture",
+					"All symbolic registers are removed",
+					"Some variables must be assigned to memory",
+				],
+				c: 3,
+			},
+			{
+				q: "Why is the claim that CISC produces smaller programs not always convincing?",
+				a: [
+					"A shorter symbolic instruction does not necessarily require fewer encoded bits",
+					"CISC programs cannot contain arithmetic instructions",
+					"CISC instructions always require more memory than entire programs",
+					"CISC processors do not support instruction encoding",
+				],
+				c: 0,
+			},
+			{
+				q: "What is one possible disadvantage of using a large microprogram control store?",
+				a: [
+					"It prevents the processor from using registers",
+					"It removes the need for instruction decoding",
+					"It can increase the complexity and execution overhead of instruction control",
+					"It prevents the processor from executing simple instructions",
+				],
+				c: 2,
+			},
+			{
+				q: "Which statement about RISC instruction formats is correct?",
+				a: [
+					"They require many different variable-length formats",
+					"They commonly use fixed and relatively simple instruction formats",
+					"They only support instructions involving memory",
+					"They require every operation to use microcode",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the relationship between ARM and x86 in the modern architecture comparison?",
+				a: [
+					"Both use identical instruction sets",
+					"ARM is a CISC architecture and x86 is a RISC architecture",
+					"Both are exclusively used in mobile devices",
+					"ARM is associated with RISC, while x86 is associated with CISC",
+				],
+				c: 3,
+			},
+			{
+				q: "During the execution of a RISC load instruction, what occurs in the memory stage?",
+				a: [
+					"Data is transferred between memory and a register",
+					"The instruction is translated into machine code",
+					"The processor calculates the next branch destination",
+					"The instruction is permanently stored in cache",
+				],
+				c: 0,
+			},
+			{
+				q: "Which stage of a five-stage pipeline performs the actual arithmetic or logical operation?",
+				a: ["IF", "ID", "EX", "MEM"],
+				c: 2,
+			},
+			{
+				q: "What is a possible disadvantage of pipelining?",
+				a: [
+					"Instructions can no longer execute in parallel",
+					"Dependencies and branches can introduce execution hazards",
+					"The processor must execute instructions one at a time",
+					"It prevents the use of general-purpose registers",
+				],
+				c: 1,
+			},
+			{
+				q: "What is the purpose of rearranging instructions during delayed load optimization?",
+				a: [
+					"To increase the number of memory operations",
+					"To eliminate the instruction fetch stage",
+					"To force the processor to wait after every instruction",
+					"To perform useful work while the loaded value is becoming available",
+				],
+				c: 3,
+			},
+			{
+				q: "How can loop unrolling improve register and data cache locality?",
+				a: [
+					"By allowing values to be reused across multiple loop operations",
+					"By preventing the processor from accessing array elements",
+					"By removing all variables from the loop",
+					"By moving every array element into secondary storage",
+				],
+				c: 0,
+			},
+			{
+				q: "In the delayed branch example, what is the purpose of placing a NOOP after a branch?",
+				a: [
+					"To calculate the branch destination",
+					"To load the next instruction into a register",
+					"To fill the delay slot when no useful instruction can be placed there",
+					"To execute the branch instruction a second time",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the main idea demonstrated by the final summary slide?",
+				a: [
+					"RISC processors always outperform CISC processors",
+					"Processor performance depends on architecture, implementation, compiler optimization, and workload",
+					"Modern processors no longer require instruction pipelines",
+					"Compiler optimization has little effect on processor performance",
+				],
+				c: 1,
+			},
+		],
 	},
 
 	CloudComp: {
@@ -13425,6 +14307,878 @@ window.questionBank = {
 					"SOC provides automated detection, SIEM manages analyst scheduling, and SOAR stores historical telemetry",
 				],
 				c: 0,
+			},
+		],
+		quiz4: [
+			{
+				q: "What is the main topic of this lecture?",
+				a: [
+					"Cloud networking and infrastructure",
+					"Cloud databases and managed services",
+					"Virtual machines and operating systems",
+					"Cloud storage and file systems",
+				],
+				c: 1,
+			},
+			{
+				q: "Which is a key learning objective of this lecture?",
+				a: [
+					"Understanding cloud database services",
+					"Developing custom database engines",
+					"Building physical database servers",
+					"Programming database operating systems",
+				],
+				c: 0,
+			},
+			{
+				q: "Which topic is included in today's agenda?",
+				a: [
+					"Network security protocols",
+					"Operating system management",
+					"Database design trade-offs",
+					"Virtual machine configuration",
+				],
+				c: 2,
+			},
+			{
+				q: "What is a benefit of managed cloud databases?",
+				a: [
+					"Eliminating all database costs",
+					"Removing the need for applications",
+					"Replacing every database administrator",
+					"Automating backups and maintenance",
+				],
+				c: 3,
+			},
+			{
+				q: "Which deployment model came after IaaS databases?",
+				a: [
+					"Managed RDS",
+					"On-premises servers",
+					"Local databases",
+					"Physical hosting",
+				],
+				c: 0,
+			},
+			{
+				q: "Which database category supports flexible schemas?",
+				a: [
+					"Relational databases",
+					"NoSQL databases",
+					"Traditional SQL databases",
+					"Distributed file systems",
+				],
+				c: 1,
+			},
+			{
+				q: "What does atomicity guarantee in ACID?",
+				a: [
+					"Transactions always execute quickly",
+					"Data is permanently stored",
+					"Transactions complete fully or roll back",
+					"Multiple users cannot access data",
+				],
+				c: 2,
+			},
+			{
+				q: "What does vertical scaling involve?",
+				a: [
+					"Adding more database servers",
+					"Distributing data across regions",
+					"Creating additional database replicas",
+					"Upgrading an existing server",
+				],
+				c: 3,
+			},
+			{
+				q: "What is a limitation of vertical scaling?",
+				a: [
+					"Hardware eventually reaches its limits",
+					"It requires multiple geographic regions",
+					"It cannot increase processing power",
+					"It always requires additional servers",
+				],
+				c: 0,
+			},
+			{
+				q: "Which database type is commonly used for complex joins?",
+				a: [
+					"Key-value databases",
+					"Relational databases",
+					"Document databases",
+					"Graph databases",
+				],
+				c: 1,
+			},
+			{
+				q: "Which database type is commonly used for real-time leaderboards?",
+				a: [
+					"Relational databases",
+					"Graph databases",
+					"Key-value stores",
+					"Traditional file systems",
+				],
+				c: 2,
+			},
+			{
+				q: "What does NewSQL combine?",
+				a: [
+					"File storage and object caching",
+					"Document storage and graph queries",
+					"Traditional servers and local backups",
+					"SQL transactions and horizontal scalability",
+				],
+				c: 3,
+			},
+			{
+				q: "What does partition tolerance mean in the CAP theorem?",
+				a: [
+					"The system operates despite network partitions",
+					"The database prevents all duplicate records",
+					"The system always returns the newest data",
+					"The database automatically increases storage",
+				],
+				c: 0,
+			},
+			{
+				q: "Which AWS service provides managed MySQL and PostgreSQL databases?",
+				a: [
+					"Amazon Neptune",
+					"Amazon RDS",
+					"Amazon DynamoDB",
+					"Amazon Timestream",
+				],
+				c: 1,
+			},
+			{
+				q: "Which AWS service provides a managed graph database?",
+				a: [
+					"Amazon RDS",
+					"Amazon Aurora",
+					"Amazon Neptune",
+					"Amazon Keyspaces",
+				],
+				c: 2,
+			},
+			{
+				q: "Which Azure service supports globally distributed multi-model databases?",
+				a: [
+					"Azure SQL Database",
+					"Azure Cache for Redis",
+					"Azure Synapse",
+					"Azure Cosmos DB",
+				],
+				c: 3,
+			},
+			{
+				q: "Which Google Cloud service provides globally distributed relational databases?",
+				a: ["Cloud Spanner", "Cloud SQL", "Firestore", "Memorystore"],
+				c: 0,
+			},
+			{
+				q: "Which AWS service corresponds to Google's Memorystore for in-memory caching?",
+				a: [
+					"Amazon Neptune",
+					"Amazon ElastiCache",
+					"Amazon DocumentDB",
+					"Amazon RDS",
+				],
+				c: 1,
+			},
+			{
+				q: "What is sharding used for?",
+				a: [
+					"Encrypting database connections",
+					"Creating automated database backups",
+					"Splitting data across multiple nodes",
+					"Reducing the number of database users",
+				],
+				c: 2,
+			},
+			{
+				q: "Which consistency model guarantees the latest committed write?",
+				a: [
+					"Eventual consistency",
+					"Session consistency",
+					"Bounded staleness",
+					"Strong consistency",
+				],
+				c: 3,
+			},
+			{
+				q: "What is the purpose of a Multi-AZ deployment?",
+				a: [
+					"Providing automatic failover",
+					"Reducing database storage costs",
+					"Improving query complexity",
+					"Replacing database backups",
+				],
+				c: 0,
+			},
+			{
+				q: "What should influence the choice of a cloud database?",
+				a: [
+					"Server brand and appearance",
+					"Data model and access patterns",
+					"Programming language popularity",
+					"Number of available cloud regions",
+				],
+				c: 1,
+			},
+			{
+				q: "Which service is suitable for IoT time-series ingestion?",
+				a: [
+					"Amazon Neptune",
+					"Azure SQL Database",
+					"Amazon Timestream",
+					"Google Cloud SQL",
+				],
+				c: 2,
+			},
+			{
+				q: "What is a homogeneous database migration?",
+				a: [
+					"Moving between different database engines",
+					"Converting relational data into documents",
+					"Replacing a database with file storage",
+					"Moving between the same database engines",
+				],
+				c: 3,
+			},
+			{
+				q: "Which is a common cloud database cost driver?",
+				a: [
+					"Data transfer",
+					"User interface design",
+					"Programming language choice",
+					"Database naming conventions",
+				],
+				c: 0,
+			},
+			{
+				q: "Which security practice should be used for database access?",
+				a: [
+					"Sharing administrator credentials",
+					"Applying least-privilege access",
+					"Disabling authentication requirements",
+					"Allowing unrestricted public access",
+				],
+				c: 1,
+			},
+			{
+				q: "What is an important consideration when choosing a cloud database?",
+				a: [
+					"Using the largest available instance",
+					"Avoiding all distributed databases",
+					"Balancing consistency and availability",
+					"Selecting services based only on popularity",
+				],
+				c: 2,
+			},
+			{
+				q: "What is an important next step when learning cloud databases?",
+				a: [
+					"Replacing all existing database systems",
+					"Disabling monitoring and performance alerts",
+					"Avoiding automated backups",
+					"Experimenting with free-tier database services",
+				],
+				c: 3,
+			},
+			{
+				q: "What does ACID stand for?",
+				a: [
+					"Atomicity, Consistency, Isolation, Durability",
+					"Access, Control, Integration, Distribution",
+					"Availability, Consistency, Indexing, Deployment",
+					"Atomicity, Connectivity, Isolation, Data",
+				],
+				c: 0,
+			},
+			{
+				q: "What does SQL stand for?",
+				a: [
+					"Structured Query Language",
+					"Standard Question Logic",
+					"System Query Listing",
+					"Sequential Query Language",
+				],
+				c: 0,
+			},
+			{
+				q: "What does NoSQL generally refer to?",
+				a: [
+					"Network Operating System Query Language",
+					"Not Only SQL",
+					"Non-Organized Storage Query Logic",
+					"New Object Storage Language",
+				],
+				c: 1,
+			},
+			{
+				q: "What does CAP stand for?",
+				a: [
+					"Consistency, Access, Processing",
+					"Capacity, Availability, Performance",
+					"Consistency, Availability, Partition Tolerance",
+					"Control, Authentication, Protection",
+				],
+				c: 2,
+			},
+			{
+				q: "How many properties are included in ACID?",
+				a: ["Three", "Five", "Six", "Four"],
+				c: 3,
+			},
+			{
+				q: "How many consistency levels does Azure Cosmos DB offer?",
+				a: ["Five", "Three", "Four", "Six"],
+				c: 0,
+			},
+			{
+				q: "What does IaaS stand for?",
+				a: [
+					"Internet as a Service",
+					"Infrastructure as a Service",
+					"Integration as a System",
+					"Information and Storage",
+				],
+				c: 1,
+			},
+			{
+				q: "What does OLTP stand for?",
+				a: [
+					"Online Link Transfer Protocol",
+					"Operational Language Transaction Processing",
+					"Online Transaction Processing",
+					"Open Layer Transfer Protocol",
+				],
+				c: 2,
+			},
+			{
+				q: "How much RAM is used in the vertical scaling example after upgrading?",
+				a: ["16 GB", "32 GB", "48 GB", "64 GB"],
+				c: 3,
+			},
+			{
+				q: "In the scaling example, how many CPU cores does the upgraded server have?",
+				a: ["16 cores", "8 cores", "12 cores", "32 cores"],
+				c: 0,
+			},
+			{
+				q: "How many database servers share the workload after horizontal scaling in the example?",
+				a: ["Two", "Three", "Four", "Five"],
+				c: 1,
+			},
+			{
+				q: "What does HA stand for in database architecture?",
+				a: [
+					"Hardware Allocation",
+					"Host Administration",
+					"High Availability",
+					"Hybrid Access",
+				],
+				c: 2,
+			},
+			{
+				q: "What does RDS stand for in Amazon RDS?",
+				a: [
+					"Remote Data Storage",
+					"Relational Deployment System",
+					"Resource Database Software",
+					"Relational Database Service",
+				],
+				c: 3,
+			},
+			{
+				q: "What does AWS stand for?",
+				a: [
+					"Amazon Web Services",
+					"Advanced Web Systems",
+					"Automated Workload Storage",
+					"Application Web Software",
+				],
+				c: 0,
+			},
+			{
+				q: "What does GCP stand for?",
+				a: [
+					"Global Computing Platform",
+					"Google Cloud Platform",
+					"General Cloud Processing",
+					"Google Computing Protocol",
+				],
+				c: 1,
+			},
+			{
+				q: "What does IoT stand for?",
+				a: [
+					"Integration of Technology",
+					"Internet of Terminals",
+					"Internet of Things",
+					"Interface of Technology",
+				],
+				c: 2,
+			},
+			{
+				q: "What does SLA stand for?",
+				a: [
+					"System Level Access",
+					"Service Link Agreement",
+					"Software Licensing Application",
+					"Service Level Agreement",
+				],
+				c: 3,
+			},
+			{
+				q: "What availability range is typical for managed database SLAs?",
+				a: ["99.9% to 99.99%", "90% to 95%", "95% to 98%", "99% to 99.5%"],
+				c: 0,
+			},
+			{
+				q: "What does IAM stand for?",
+				a: [
+					"Internal Application Management",
+					"Identity and Access Management",
+					"Integrated Authentication Method",
+					"Internet Access Monitoring",
+				],
+				c: 1,
+			},
+			{
+				q: "What does IOPS measure in database storage?",
+				a: [
+					"Internet operations per server",
+					"Input output processing speed",
+					"Input/output operations per second",
+					"Internal operating processes",
+				],
+				c: 2,
+			},
+			{
+				q: "What does BSON stand for?",
+				a: [
+					"Binary Structured Object Notation",
+					"Basic Standard Object Network",
+					"Binary JSON",
+					"Backend System Object Notation",
+				],
+				c: 2,
+			},
+			{
+				q: "What does CPU stand for?",
+				a: [
+					"Central Processing Unit",
+					"Computer Program Utility",
+					"Core Processing User",
+					"Central Performance Unit",
+				],
+				c: 0,
+			},
+			{
+				q: "What does RAM stand for?",
+				a: [
+					"Read Access Memory",
+					"Random Access Memory",
+					"Rapid Application Management",
+					"Remote Allocation Module",
+				],
+				c: 1,
+			},
+			{
+				q: "What does DR refer to in cloud database architecture?",
+				a: [
+					"Data Replication",
+					"Database Routing",
+					"Distributed Resources",
+					"Disaster Recovery",
+				],
+				c: 3,
+			},
+			{
+				q: "What does RBAC stand for?",
+				a: [
+					"Remote Backup Access Control",
+					"Resource-Based Application Configuration",
+					"Role-Based Access Control",
+					"Regional Backup Administration Center",
+				],
+				c: 2,
+			},
+			{
+				q: "What does KMS stand for in cloud security?",
+				a: [
+					"Key Management Service",
+					"Kernel Monitoring System",
+					"Knowledge Management Software",
+					"Key Migration Standard",
+				],
+				c: 0,
+			},
+			{
+				q: "What does ORM stand for?",
+				a: [
+					"Online Resource Management",
+					"Object-Relational Mapping",
+					"Operational Record Management",
+					"Object Retrieval Method",
+				],
+				c: 1,
+			},
+			{
+				q: "What does RDF stand for in graph databases?",
+				a: [
+					"Relational Data Framework",
+					"Remote Database Format",
+					"Resource Distribution Function",
+					"Resource Description Framework",
+				],
+				c: 3,
+			},
+			{
+				q: "What does API stand for?",
+				a: [
+					"Application Programming Interface",
+					"Automated Processing Integration",
+					"Application Performance Index",
+					"Advanced Program Interaction",
+				],
+				c: 0,
+			},
+			{
+				q: "What does DMS stand for in AWS Database Migration Service?",
+				a: [
+					"Database Management Software",
+					"Database Migration Service",
+					"Distributed Memory Storage",
+					"Data Monitoring System",
+				],
+				c: 1,
+			},
+			{
+				q: "What does RCU represent in DynamoDB?",
+				a: [
+					"Read Configuration Unit",
+					"Remote Compute Usage",
+					"Read Capacity Unit",
+					"Regional Connection Utility",
+				],
+				c: 2,
+			},
+			{
+				q: "What does WCU represent in DynamoDB?",
+				a: [
+					"Wide Column Utility",
+					"Web Connection Unit",
+					"Write Configuration Utility",
+					"Write Capacity Unit",
+				],
+				c: 3,
+			},
+			{
+				q: "What does OLTP primarily involve?",
+				a: [
+					"Processing everyday database transactions",
+					"Analyzing historical data for reports",
+					"Managing cloud infrastructure resources",
+					"Transferring files between storage systems",
+				],
+				c: 0,
+			},
+			{
+				q: "What does IOPS measure?",
+				a: [
+					"Database users per hour",
+					"Storage operations performed per second",
+					"Network connections per database",
+					"Memory capacity per server",
+				],
+				c: 1,
+			},
+			{
+				q: "In the vertical scaling example, what was the original RAM capacity?",
+				a: ["32 GB", "64 GB", "16 GB", "8 GB"],
+				c: 2,
+			},
+			{
+				q: "How many CPU cores did the original scaling example have?",
+				a: ["2", "8", "16", "4"],
+				c: 3,
+			},
+			{
+				q: "How many additional servers were added in the horizontal scaling example?",
+				a: ["Two", "Three", "Four", "Five"],
+				c: 0,
+			},
+			{
+				q: "How many users did the original database server handle in the scaling example?",
+				a: ["5,000", "10,000", "15,000", "20,000"],
+				c: 1,
+			},
+			{
+				q: "What was the storage capacity shown for the original SQL server in the scaling diagram?",
+				a: ["500 GB", "2 TB", "1 TB", "5 TB"],
+				c: 2,
+			},
+			{
+				q: "What was the CPU capacity shown for the original SQL server?",
+				a: ["2 CPUs", "4 CPUs", "8 CPUs", "1 CPU"],
+				c: 3,
+			},
+			{
+				q: "What is the lower end of the typical managed database SLA range?",
+				a: ["99.9%", "99%", "99.95%", "99.99%"],
+				c: 0,
+			},
+			{
+				q: "What is the upper end of the typical managed database SLA range?",
+				a: ["99.9%", "99.99%", "99.5%", "99.95%"],
+				c: 1,
+			},
+			{
+				q: "How long can automatic Multi-AZ failover typically take?",
+				a: [
+					"Several hours",
+					"One full day",
+					"Seconds to minutes",
+					"Several weeks",
+				],
+				c: 2,
+			},
+			{
+				q: "How many consistency levels does Azure Cosmos DB provide?",
+				a: ["Three", "Four", "Six", "Five"],
+				c: 3,
+			},
+			{
+				q: "Which database deployment model still requires OS management?",
+				a: [
+					"IaaS databases",
+					"Managed RDS",
+					"Serverless databases",
+					"Cloud-native databases",
+				],
+				c: 0,
+			},
+			{
+				q: "Which database category is designed for social network relationships?",
+				a: [
+					"Key-value",
+					"Graph databases",
+					"Relational databases",
+					"Wide-column databases",
+				],
+				c: 1,
+			},
+			{
+				q: "Which database category is particularly suitable for time-series workloads?",
+				a: [
+					"Graph databases",
+					"Relational databases",
+					"Wide-column databases",
+					"Traditional file systems",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the main advantage of read replicas?",
+				a: [
+					"Automatically encrypting stored records",
+					"Replacing the primary database entirely",
+					"Eliminating all write operations",
+					"Handling additional read traffic",
+				],
+				c: 3,
+			},
+			{
+				q: "What is storage auto-growth designed to do?",
+				a: [
+					"Expand database storage without downtime",
+					"Automatically delete older database records",
+					"Move all data to another cloud provider",
+					"Reduce the number of database connections",
+				],
+				c: 0,
+			},
+			{
+				q: "Which consistency model allows replicas to become synchronized over time?",
+				a: [
+					"Strong consistency",
+					"Eventual consistency",
+					"Session consistency",
+					"Consistent prefix",
+				],
+				c: 1,
+			},
+			{
+				q: "What does session consistency guarantee?",
+				a: [
+					"Every user sees identical data worldwide",
+					"All replicas update simultaneously",
+					"A client can see its own writes",
+					"Database transactions never overlap",
+				],
+				c: 2,
+			},
+			{
+				q: "Which consistency model prevents reads from seeing out-of-order writes?",
+				a: [
+					"Eventual consistency",
+					"Bounded staleness",
+					"Strong consistency",
+					"Consistent prefix",
+				],
+				c: 3,
+			},
+			{
+				q: "What does bounded staleness limit?",
+				a: [
+					"How far behind replicas can be",
+					"How many users can access a database",
+					"How much storage a database can use",
+					"How many tables a database supports",
+				],
+				c: 0,
+			},
+			{
+				q: "Which database migration changes the database engine?",
+				a: [
+					"Homogeneous migration",
+					"Heterogeneous migration",
+					"Vertical migration",
+					"Regional migration",
+				],
+				c: 1,
+			},
+			{
+				q: "Which tool is associated with AWS database migrations?",
+				a: [
+					"Azure Database Migration Service",
+					"Google Database Migration Service",
+					"AWS DMS",
+					"Amazon CloudWatch",
+				],
+				c: 2,
+			},
+			{
+				q: "Which migration strategy moves applications in stages?",
+				a: [
+					"Big-bang migration",
+					"Manual migration",
+					"Single-server migration",
+					"Phased migration",
+				],
+				c: 3,
+			},
+			{
+				q: "What is a potential cost of cross-region database replication?",
+				a: [
+					"Data transfer charges",
+					"Programming language licenses",
+					"Operating system installation",
+					"Application interface development",
+				],
+				c: 0,
+			},
+			{
+				q: "Which database cost is commonly charged per GB-month?",
+				a: [
+					"Compute capacity",
+					"Storage",
+					"Database connections",
+					"User authentication",
+				],
+				c: 1,
+			},
+			{
+				q: "When can serverless database pricing be more economical?",
+				a: [
+					"When workloads never change",
+					"When maximum capacity is always required",
+					"When workloads have unpredictable spikes",
+					"When databases are permanently offline",
+				],
+				c: 2,
+			},
+			{
+				q: "What is a benefit of continuous replication during migration?",
+				a: [
+					"Removing the need for database testing",
+					"Eliminating all network traffic",
+					"Preventing future database updates",
+					"Keeping the destination database updated",
+				],
+				c: 3,
+			},
+			{
+				q: "Which database feature helps recover data to an earlier point in time?",
+				a: [
+					"Automated backups",
+					"Read replicas",
+					"Horizontal scaling",
+					"Query optimization",
+				],
+				c: 0,
+			},
+			{
+				q: "Which three metrics are specifically recommended for database monitoring?",
+				a: [
+					"Screen size, memory color, and file names",
+					"CPU, connections, and latency",
+					"Usernames, passwords, and table names",
+					"Operating system, browser, and display size",
+				],
+				c: 1,
+			},
+			{
+				q: "Where should cloud encryption keys be managed?",
+				a: [
+					"Within application source code",
+					"In publicly accessible storage",
+					"Through a cloud KMS",
+					"Inside database table names",
+				],
+				c: 2,
+			},
+			{
+				q: "What is the purpose of least-privilege access?",
+				a: [
+					"Giving every user administrator permissions",
+					"Removing all database authentication",
+					"Allowing unrestricted database access",
+					"Granting only necessary permissions",
+				],
+				c: 3,
+			},
+			{
+				q: "Which database service is designed for mobile and web applications on GCP?",
+				a: ["Firestore", "Cloud Spanner", "AlloyDB", "Cloud SQL"],
+				c: 0,
+			},
+			{
+				q: "Which AWS service is compatible with Apache Cassandra?",
+				a: [
+					"Amazon Neptune",
+					"Amazon Keyspaces",
+					"Amazon Aurora",
+					"Amazon DocumentDB",
+				],
+				c: 1,
+			},
+			{
+				q: "Which database service provides Redis-compatible in-memory storage on AWS?",
+				a: [
+					"Amazon RDS",
+					"Amazon Timestream",
+					"Amazon MemoryDB",
+					"Amazon Neptune",
+				],
+				c: 2,
+			},
+			{
+				q: "Which database service is PostgreSQL-compatible and designed for enterprise workloads on GCP?",
+				a: ["Firestore", "Bigtable", "Memorystore", "AlloyDB"],
+				c: 3,
 			},
 		],
 	},
